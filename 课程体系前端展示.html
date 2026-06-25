@@ -1,0 +1,2091 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>昇腾AI — 掌握大模型技术，开启 AI 工程职业新赛道</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+/* ============================================================
+   DESIGN TOKENS — Apple.com: white space, SF system type, blue
+   ============================================================ */
+:root {
+  --bg-base: #ffffff;
+  --bg-surface: #f5f5f7;
+  --bg-card: #ffffff;
+  --bg-card-hover: #fbfbfd;
+  --text-primary: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --text-muted: #86868b;
+  --text-dim: #aeaeb2;
+  --ink: #0071e3;
+  --ink-soft: #2997ff;
+  --ink-glow: rgba(0,113,227,0.10);
+  --ink-surface: rgba(0,113,227,0.06);
+  --link: #0066cc;
+  --accent: #6e6e73;
+  --accent-soft: rgba(110,110,115,0.10);
+  --teal: #0071e3;
+  --border-subtle: rgba(0,0,0,0.05);
+  --border-default: rgba(0,0,0,0.10);
+  --border-strong: rgba(0,0,0,0.16);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.06);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.10);
+  --r-xs: 8px; --r-sm: 12px; --r-md: 18px; --r-lg: 22px; --r-xl: 28px;
+  --r-pill: 980px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --font: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --font-display: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Noto Sans SC", sans-serif;
+  --font-grotesk: "SF Pro Display", -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+  --font-mono: "SF Mono", "Cascadia Code", "Consolas", monospace;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{font-family:var(--font);background:var(--bg-base);color:var(--text-primary);line-height:1.5;overflow-x:hidden;letter-spacing:-0.01em}
+::selection{background:rgba(0,113,227,0.18);color:var(--ink)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.18);border-radius:3px}
+
+/* Clean canvas — no grain, no orbs */
+body::before{content:none}
+body::after{content:none}
+
+/* ============================================================
+   NAV — Apple translucent bar
+   ============================================================ */
+.nav{position:sticky;top:0;z-index:1000;height:48px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 40px;background:rgba(255,255,255,0.72);backdrop-filter:saturate(180%) blur(20px);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--border-subtle);}
+.nav-left{display:flex;align-items:center;gap:32px}
+.nav-logo{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:600;font-family:var(--font-display);color:var(--text-primary);text-decoration:none;cursor:pointer;letter-spacing:-0.2px}
+.nav-logo-dot{width:26px;height:26px;border-radius:7px;background:var(--text-primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;letter-spacing:-0.4px}
+.nav-links{display:flex;gap:0;list-style:none}
+.nav-links a{text-decoration:none;color:var(--text-primary);opacity:.82;font-size:12px;font-weight:400;padding:6px 12px;border-radius:6px;transition:opacity .2s var(--ease-out)}
+.nav-links a:hover{opacity:1}
+.nav-right{display:flex;align-items:center;gap:14px}
+.nav-lang{display:inline-flex;align-items:center;gap:3px;font-size:12px;color:var(--text-secondary);cursor:pointer;padding:6px 10px;border-radius:6px;border:1px solid transparent;transition:all .15s;line-height:1}
+.nav-lang svg{width:14px;height:14px;flex-shrink:0}
+.nav-lang:hover{color:var(--text-primary)}
+.btn{padding:8px 18px;border-radius:var(--r-pill);font-size:14px;font-weight:400;cursor:pointer;border:none;transition:all .25s var(--ease-out);font-family:var(--font);text-decoration:none;display:inline-flex;align-items:center;gap:6px;position:relative;overflow:hidden;letter-spacing:-0.01em}
+.btn::after{content:'';position:absolute;inset:0;border-radius:inherit;opacity:0;transition:opacity .3s}
+.btn:active{transform:scale(0.98)}
+.btn-primary{background:var(--ink);color:#fff;}
+.btn-primary:hover{background:#0077ed}
+.btn-outline{border:1px solid var(--border-strong);color:var(--text-primary);background:transparent}
+.btn-outline:hover{border-color:var(--text-primary);background:transparent}
+.btn-lg{padding:12px 26px;font-size:17px;border-radius:var(--r-pill)}
+.btn-white{background:#fff;color:var(--text-primary);box-shadow:none;border:1px solid var(--border-default)}
+.btn-white:hover{background:#fff;border-color:var(--text-primary)}
+.btn-notify{width:36px;height:36px;border-radius:50%;border:1px solid var(--border-default);background:transparent;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s var(--ease-smooth);position:relative}
+.btn-notify:hover{background:rgba(0,0,0,0.03);color:var(--text-primary);border-color:var(--border-strong);transform:scale(1.05)}
+.btn-notify::after{content:'';position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;background:#e05555;border:1.5px solid #fff}
+.notify-dropdown{position:absolute;top:44px;right:0;width:300px;background:#fff;border:1px solid var(--border-default);border-radius:var(--r-md);box-shadow:0 12px 40px rgba(0,0,0,0.1);z-index:500;display:none;overflow:hidden;animation:fadeIn .2s var(--ease-out)}
+.notify-dropdown.open{display:block}
+.notify-header{padding:14px 18px;font-size:14px;font-weight:700;color:var(--text-primary);border-bottom:1px solid var(--border-subtle);display:flex;align-items:center;justify-content:space-between}
+.notify-body{padding:14px 18px}
+.notify-divider{height:1px;background:var(--border-subtle);margin:8px 0}
+.notify-item{padding:10px 12px;border-radius:var(--r-xs);cursor:pointer;transition:all .15s;margin-bottom:4px}
+.notify-item:hover{background:var(--bg-surface)}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ============================================================
+   HERO — Apple centered composition on light tile
+   ============================================================ */
+.hero{position:relative;min-height:74vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:72px 40px 64px;overflow:hidden;
+  background:linear-gradient(180deg, #f0f2ff 0%, #f5f5f7 40%, #fff 100%);}
+.hero::after{display:none}
+.hero::before{display:none}
+.hero-bg{position:absolute;inset:0;z-index:0;pointer-events:none}
+.hero-bg-grid{display:none}
+.hero-bg-orb1{display:none}
+.hero-bg-orb2{display:none}
+.hero-bg-particle{display:none}
+.hero-content{position:relative;z-index:2;max-width:820px;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:0;border:none;background:none;font-size:21px;font-weight:600;color:var(--ink);margin-bottom:8px;letter-spacing:-0.01em}
+.hero-badge-dot{display:none}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-size:clamp(40px,6.4vw,80px);font-weight:600;font-family:var(--font-display);color:var(--text-primary);line-height:1.05;letter-spacing:-0.025em;margin-bottom:18px}
+.hero h1 span{color:var(--ink);position:relative;display:inline-block}
+.hero h1 span::after{display:none}
+.hero-subtitle{font-size:clamp(19px,2.4vw,26px);color:var(--text-secondary);margin-bottom:28px;line-height:1.4;font-weight:400;max-width:640px;margin-left:auto;margin-right:auto}
+.hero-actions{display:flex;gap:24px;flex-wrap:wrap;justify-content:center;align-items:center}
+.hero .btn-outline{border:none;color:var(--link);background:none;padding:8px 4px}
+.hero .btn-outline::after{content:' ›';opacity:1;position:static}
+.hero .btn-outline:hover{border:none;color:var(--link);text-decoration:underline;background:none}
+
+/* Hero big dynamic visual */
+.hero-visual{position:relative;z-index:2;width:100%;max-width:1040px;margin:52px auto 0;
+  opacity:0;transform:translateY(40px) scale(0.985);
+  animation:heroVisualIn 1s .35s var(--ease-out) forwards}
+@keyframes heroVisualIn{to{opacity:1;transform:translateY(0) scale(1)}}
+.hero-visual-frame{position:relative;border-radius:var(--r-xl);overflow:hidden;
+  box-shadow:0 30px 70px -20px rgba(0,0,0,0.32),0 8px 24px rgba(0,0,0,0.10);
+  aspect-ratio:16/8;background:#0b0b0d;will-change:transform}
+.hero-visual-frame.no-img{background:linear-gradient(135deg,#0071e3,#1d1d1f 70%)}
+.hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;
+  transform:scale(1.06);transform-origin:60% 40%;
+  animation:heroKenBurns 22s ease-in-out infinite alternate;will-change:transform}
+@keyframes heroKenBurns{
+  0%{transform:scale(1.06) translate3d(0,0,0)}
+  100%{transform:scale(1.16) translate3d(-2.2%,-2.6%,0)}
+}
+/* sweeping light sheen */
+.hero-visual-shine{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,0.16) 47%,rgba(255,255,255,0.04) 54%,transparent 70%);
+  transform:translateX(-120%);animation:heroShine 7s 1.2s ease-in-out infinite}
+@keyframes heroShine{0%{transform:translateX(-120%)}28%,100%{transform:translateX(120%)}}
+/* breathing color glow + bottom legibility scrim */
+.hero-visual-glow{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(80% 60% at 50% 8%,rgba(41,151,255,0.22),transparent 60%),
+            linear-gradient(to top,rgba(0,0,0,0.45) 0%,transparent 42%);
+  animation:heroGlow 6s ease-in-out infinite alternate}
+@keyframes heroGlow{0%{opacity:.75}100%{opacity:1}}
+.hero-visual-caption{position:absolute;left:0;right:0;bottom:22px;display:flex;justify-content:center;z-index:2}
+.hero-visual-pill{display:inline-flex;align-items:center;gap:9px;padding:9px 18px;border-radius:var(--r-pill);
+  font-size:14px;font-weight:500;color:#fff;letter-spacing:-0.01em;
+  background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.22);
+  backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px)}
+.hero-visual-dot{width:7px;height:7px;border-radius:50%;background:#2997ff;
+  box-shadow:0 0 0 0 rgba(41,151,255,0.6);animation:heroPing 2.2s ease-out infinite}
+@keyframes heroPing{0%{box-shadow:0 0 0 0 rgba(41,151,255,0.55)}70%,100%{box-shadow:0 0 0 9px rgba(41,151,255,0)}}
+@media(max-width:700px){
+  .hero-visual{margin-top:36px}
+  .hero-visual-frame{aspect-ratio:4/3;border-radius:var(--r-lg)}
+  .hero-visual-pill{font-size:12px;padding:7px 14px}
+}
+@media (prefers-reduced-motion: reduce){
+  .hero-visual{opacity:1;transform:none;animation:none}
+  .hero-img{animation:none;transform:scale(1.04)}
+  .hero-visual-shine,.hero-visual-glow,.hero-visual-dot{animation:none}
+}
+
+/* ============================================================
+   HERO TWO-FACE CARD — image ⇄ philosophy crossfade
+   ============================================================ */
+/* Faces are stacked inside the frame */
+.hv-face{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  transition:opacity .55s cubic-bezier(0.4,0,0.2,1),visibility 0s .55s;visibility:hidden;opacity:0}
+.hv-face.active{visibility:visible;opacity:1;transition:opacity .55s cubic-bezier(0.4,0,0.2,1),visibility 0s 0s}
+/* Face B — philosophy: dark editorial surface */
+.hv-face-phil{background:linear-gradient(145deg,#1a1a1d 0%,#1d1d1f 50%,#111113 100%)}
+
+.hv-phil-scroll{width:100%;height:100%;overflow:hidden;padding:5% 44px 5%;display:flex;flex-direction:column;justify-content:center}
+.hv-phil-heading{font-size:26px;font-weight:600;color:#f5f5f7;letter-spacing:-0.015em;margin-bottom:18px;line-height:1.15;flex-shrink:0}
+.hv-phil-scroll p{font-size:13.5px;color:rgba(255,255,255,0.72);line-height:1.7;margin-bottom:8px;font-weight:400;letter-spacing:-0.005em;flex-shrink:0}
+.hv-phil-scroll p:last-of-type{margin-bottom:12px}
+.hv-phil-signature{text-align:right;font-size:13px;font-weight:600;color:#0071e3;padding-top:12px;border-top:1px solid rgba(255,255,255,0.12);margin-top:2px;letter-spacing:-0.01em;flex-shrink:0}
+
+/* Caption pill — toggle */
+.hero-visual-caption{cursor:pointer;user-select:none}
+.hero-visual-caption:hover .hero-visual-pill{border-color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.2)}
+.hero-visual-pill{transition:all .3s var(--ease-out)}
+/* Pill dot — green when on phil face */
+.hv-face-phil.active ~ .hero-visual-caption .hero-visual-dot{background:#34c759;box-shadow:0 0 0 0 rgba(52,199,89,0.6);animation:heroPingGreen 2.2s ease-out infinite}
+@keyframes heroPingGreen{0%{box-shadow:0 0 0 0 rgba(52,199,89,0.55)}70%,100%{box-shadow:0 0 0 9px rgba(52,199,89,0)}}
+
+@media(max-width:700px){
+  .hv-phil-scroll{padding:20px 22px 20px}
+  .hv-phil-heading{font-size:22px;margin-bottom:18px}
+  .hv-phil-scroll p{font-size:13.5px;line-height:1.7}
+}
+@media (prefers-reduced-motion: reduce){
+  .hv-face{transition:none}
+}
+/* ============================================================
+   TRUST BAR — Number rhythm
+   ============================================================ */
+.trust-bar{border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle);background:var(--bg-surface);padding:14px 40px;overflow:hidden}
+.trust-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:56px;flex-wrap:wrap}
+.trust-stat{text-align:center}
+.trust-stat-num{font-size:34px;font-weight:600;color:var(--text-primary);letter-spacing:-0.02em;font-family:var(--font-display)}
+.trust-stat-label{font-size:12px;color:var(--text-secondary);margin-top:2px;letter-spacing:0;font-weight:400}
+.trust-divider{width:1px;height:28px;background:var(--border-subtle)}
+.trust-logos{display:flex;align-items:center;gap:36px}
+.trust-logo{font-size:12px;color:var(--text-muted);font-weight:600;letter-spacing:1px;opacity:.7}
+
+/* ============================================================
+   SECTION COMMON
+   ============================================================ */
+.section{padding:80px 40px;position:relative;z-index:1}
+.section-inner{max-width:1080px;margin:0 auto}
+.section-label{display:inline-block;font-size:14px;font-weight:600;text-transform:none;letter-spacing:0;color:var(--ink);margin-bottom:8px;padding:0;background:none;border-radius:0}
+.section-title{font-size:clamp(32px,4vw,48px);font-weight:600;font-family:var(--font-display);color:var(--text-primary);letter-spacing:-0.02em;margin-bottom:14px;line-height:1.08}
+.section-desc{font-size:clamp(17px,1.6vw,21px);color:var(--text-secondary);max-width:640px;line-height:1.5;margin-bottom:36px;font-weight:400}
+
+/* ============================================================
+   DIRECTION CARDS — Uniform 3×2 grid
+   ============================================================ */
+.dir-grid{display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:14px}
+.dir-card{background:var(--bg-surface);border:none;border-radius:var(--r-md);padding:30px 26px;text-align:left;cursor:pointer;transition:all .4s var(--ease-out);position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:188px}
+.dir-card::before{display:none}
+.dir-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+.dir-card-icon{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:18px;background:#fff;border:none;color:var(--ink)}
+.dir-card h4{font-size:19px;font-weight:600;color:var(--text-primary);margin-bottom:6px;letter-spacing:-0.01em}
+.dir-card p{font-size:14px;color:var(--text-secondary);line-height:1.5;max-width:none;flex:1}
+
+/* ============================================================
+   HOT COURSES — Editorial cards
+   ============================================================ */
+.course-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:1100px){.course-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.course-grid{grid-template-columns:1fr}}
+.course-card{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--r-md);overflow:hidden;cursor:pointer;transition:all .4s var(--ease-out);display:flex;flex-direction:column}
+.course-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:transparent}
+.course-card-top{padding:22px 24px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.course-card-tags{display:flex;gap:6px}
+.course-tag{padding:4px 10px;border-radius:var(--r-pill);font-size:10px;font-weight:500;letter-spacing:0}
+.tag-level{background:var(--ink-surface);color:var(--ink)}
+.tag-format{background:var(--accent-soft);color:var(--accent)}
+.course-card-img{width:44px;height:44px;border-radius:50%;background:var(--bg-surface);border:none;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;color:var(--ink)}
+.course-card-body{padding:14px 24px 0}
+.course-card-body h3{font-size:20px;font-weight:600;color:var(--text-primary);line-height:1.25;margin-bottom:10px;letter-spacing:-0.01em}
+.course-duration{display:flex;align-items:baseline;gap:6px;margin-bottom:10px}
+.course-duration .num{font-size:30px;font-weight:600;color:var(--text-primary);line-height:1;letter-spacing:-0.02em;font-family:var(--font-display)}
+.course-duration .unit{font-size:12px;color:var(--text-muted)}
+.course-takeaways{list-style:none;margin-bottom:10px}
+.course-takeaways li{font-size:13px;color:var(--text-secondary);line-height:1.55;padding-left:18px;position:relative;margin-bottom:5px}
+.course-takeaways li::before{content:'';position:absolute;left:0;top:8px;width:5px;height:5px;border-radius:50%;background:var(--ink);opacity:.9}
+.course-card-footer{padding:10px 20px 18px;margin-top:auto}
+.course-card-footer .btn{padding:7px 0;width:100%;justify-content:center;font-size:12px}
+
+/* ============================================================
+   LEARNING PATH — SVG drawn pathway
+   ============================================================ */
+.path-wrap{
+  background:var(--bg-card);border:1px solid var(--border-subtle);
+  border-radius:var(--r-lg);padding:48px 32px 40px;
+  overflow-x:auto;box-shadow:var(--shadow-md);
+}
+.path-wrap svg{display:block;width:100%;max-width:960px;min-width:720px;margin:0 auto}
+
+/* ============================================================
+   STUDENT PROJECTS — Clean scroll
+   ============================================================ */
+.projects-scroll{display:flex;gap:16px;overflow-x:auto;padding:8px 0 20px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.projects-scroll::-webkit-scrollbar{height:4px}
+.projects-scroll::-webkit-scrollbar-thumb{background:var(--border-default);border-radius:2px}
+.project-card{flex:0 0 320px;scroll-snap-align:start;background:var(--bg-surface);border:none;border-radius:var(--r-md);padding:28px;cursor:pointer;transition:all .4s var(--ease-out)}
+.project-card:hover{box-shadow:var(--shadow-md);transform:translateY(-4px)}
+.project-card-icon{font-size:28px;margin-bottom:14px;color:var(--ink)}
+.project-card h4{font-size:19px;font-weight:600;color:var(--text-primary);margin-bottom:9px;letter-spacing:-0.01em}
+.project-card p{font-size:14px;color:var(--text-secondary);line-height:1.55;margin-bottom:16px}
+.project-card .project-tags{display:flex;gap:6px;flex-wrap:wrap}
+.project-card .project-tags span{padding:4px 11px;border-radius:var(--r-pill);font-size:11px;font-weight:400;background:#fff;color:var(--text-secondary)}
+
+/* ============================================================
+   FAQ — Minimal accordion
+   ============================================================ */
+.faq-list{max-width:720px;margin:0 auto}
+.faq-item{border-bottom:1px solid var(--border-subtle);background:transparent;overflow:hidden}
+.faq-item:first-child{border-top:1px solid var(--border-subtle)}
+.faq-q{width:100%;text-align:left;padding:22px 0;font-size:19px;font-weight:600;color:var(--text-primary);cursor:pointer;border:none;background:none;display:flex;align-items:center;justify-content:space-between;gap:16px;font-family:var(--font);transition:color .2s;letter-spacing:-0.01em}
+.faq-q:hover{color:var(--ink)}
+.faq-a{padding:0}
+.faq-item.open .faq-a{padding-bottom:20px}
+.faq-a p{font-size:16px;color:var(--text-secondary);line-height:1.6}
+.faq-q-icon{flex-shrink:0;width:22px;height:22px;border-radius:50%;border:1px solid var(--border-default);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text-muted);transition:all .35s var(--ease-spring)}
+.faq-item.open .faq-q-icon{transform:rotate(45deg);border-color:var(--ink);color:var(--ink)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s var(--ease-out),padding .4s var(--ease-out)}
+.faq-item.open .faq-a{max-height:400px;padding-bottom:22px}
+
+/* ============================================================
+   CTA BANNER — Cool gradient
+   ============================================================ */
+.cta-banner{position:relative;margin:0 22px 60px;border-radius:var(--r-xl);overflow:hidden;padding:80px 56px;
+  background:#1d1d1f;border:none;display:flex;flex-direction:column;align-items:center;text-align:center;gap:0}
+.cta-banner::before{display:none}
+.cta-banner-img{display:none}
+.cta-banner-content{position:relative;z-index:1;text-align:center}
+.cta-banner h2{font-size:clamp(32px,4vw,48px);font-weight:600;font-family:var(--font-display);color:#f5f5f7;margin-bottom:14px;letter-spacing:-0.02em;line-height:1.08}
+.cta-banner p{font-size:clamp(17px,1.6vw,21px);color:#a1a1a6;margin-bottom:0;line-height:1.5}
+.cta-banner .btn{font-size:17px;padding:12px 28px;border-radius:var(--r-pill)}
+.cta-banner .btn-white{background:var(--ink);color:#fff;border:none}
+.cta-banner .btn-white:hover{background:#0077ed}
+
+/* ============================================================
+   FOOTER — Cool dark
+   ============================================================ */
+.footer{background:var(--bg-surface);border-top:none;padding:40px 40px 20px}
+.footer,.footer a,.footer h3,.footer h4,.footer p,.footer span{color:var(--text-secondary)}
+.footer a:hover{color:var(--text-primary)}
+.footer h4{color:var(--text-primary)}
+.footer-grid{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px;margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--border-default)}
+.footer-brand h3{font-size:17px;font-weight:600;margin-bottom:10px;color:var(--text-primary)}
+.footer-brand p{font-size:12px;color:var(--text-secondary);line-height:1.6}
+.footer-col h4{font-size:12px;font-weight:600;color:var(--text-primary);text-transform:none;letter-spacing:0;margin-bottom:14px}
+.footer-col ul{list-style:none}
+.footer-col li{margin-bottom:9px}
+.footer-col a{font-size:12px;color:var(--text-secondary);text-decoration:none;transition:color .15s}
+.footer-col a:hover{color:var(--text-primary);text-decoration:underline}
+.footer-bottom{max-width:1080px;margin:0 auto;padding-top:18px;border-top:none;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.footer-bottom span{font-size:12px;color:var(--text-muted)}
+
+/* ============================================================
+   SMART CUSTOMER SERVICE — Minimal floating icon + chat
+   ============================================================ */
+.cs-float{position:fixed;bottom:84px;right:28px;z-index:999;width:48px;height:48px;border-radius:50%;
+  background:var(--text-primary);color:#fff;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;box-shadow:0 2px 16px rgba(0,0,0,0.10);transition:all .3s var(--ease-out);
+  border:none}
+.cs-float:hover{transform:scale(1.06);box-shadow:0 4px 24px rgba(0,0,0,0.15)}
+.cs-float:active{transform:scale(0.96)}
+.cs-float .cs-dot{position:absolute;top:3px;right:3px;width:8px;height:8px;border-radius:50%;
+  background:#34c759;border:2px solid #fff}
+.cs-overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.2);display:flex;align-items:flex-end;justify-content:flex-end;
+  padding:20px 28px 96px;opacity:0;pointer-events:none;transition:opacity .25s var(--ease-out)}
+.cs-overlay.open{opacity:1;pointer-events:auto}
+.cs-dialog{width:100%;max-width:380px;height:480px;max-height:68vh;background:#fff;border-radius:var(--r-lg);
+  box-shadow:0 8px 40px rgba(0,0,0,0.12),0 2px 8px rgba(0,0,0,0.06);display:flex;flex-direction:column;overflow:hidden;
+  transform:translateY(16px) scale(0.97);transition:transform .3s var(--ease-spring)}
+.cs-overlay.open .cs-dialog{transform:translateY(0) scale(1)}
+.cs-dialog-header{flex-shrink:0;padding:18px 20px 14px;background:#fff;border-bottom:1px solid var(--border-subtle);
+  display:flex;align-items:center;justify-content:space-between}
+.cs-dialog-header h3{font-size:15px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:7px;letter-spacing:-0.01em}
+.cs-dialog-header .cs-close{width:28px;height:28px;border-radius:50%;border:none;background:transparent;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .15s}
+.cs-dialog-header .cs-close:hover{background:var(--bg-surface);color:var(--text-primary)}
+.cs-dialog-body{flex:1;overflow-y:auto;padding:16px 16px 8px;display:flex;flex-direction:column;gap:8px;background:#fff}
+.cs-msg{max-width:80%;padding:9px 13px;border-radius:16px;font-size:13px;line-height:1.55;word-break:break-word}
+.cs-msg.bot{align-self:flex-start;background:#f4f4f5;color:var(--text-primary);border-bottom-left-radius:6px}
+.cs-msg.user{align-self:flex-end;background:var(--text-primary);color:#fff;border-bottom-right-radius:6px}
+.cs-msg .cs-time{font-size:9px;opacity:.4;margin-top:3px;text-align:right}
+.cs-dialog-input{border-top:1px solid var(--border-subtle);padding:10px 14px;display:flex;gap:6px;align-items:center;flex-shrink:0;background:#fff}
+.cs-dialog-input input{flex:1;padding:9px 14px;border:1px solid var(--border-subtle);border-radius:20px;font-size:13px;
+  font-family:var(--font);outline:none;transition:border .2s;background:#f8f8f9}
+.cs-dialog-input input:focus{border-color:var(--border-strong);background:#fff}
+.cs-dialog-input button{width:34px;height:34px;border-radius:50%;border:none;background:var(--text-primary);color:#fff;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+.cs-dialog-input button:hover{background:#333}
+.cs-dialog-input button:active{transform:scale(0.94)}
+.cs-quick-qs{display:flex;flex-wrap:wrap;gap:5px;padding:6px 16px 12px;flex-shrink:0}
+.cs-quick-q{padding:5px 11px;border-radius:14px;border:1px solid var(--border-subtle);background:#fff;
+  font-size:11px;color:var(--text-secondary);cursor:pointer;transition:all .15s;font-family:var(--font);white-space:nowrap}
+.cs-quick-q:hover{border-color:var(--text-primary);color:var(--text-primary);background:#fafafa}
+
+/* ============================================================
+   BACK TO TOP
+   ============================================================ */
+.back-top{position:fixed;bottom:28px;right:28px;z-index:500;width:42px;height:42px;border-radius:50%;border:1px solid var(--border-default);background:var(--bg-card);color:var(--text-muted);display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transform:translateY(10px);transition:all .35s var(--ease-out);pointer-events:none}
+.back-top.visible{opacity:1;transform:translateY(0);pointer-events:auto}
+.back-top:hover{border-color:var(--ink);color:var(--ink);box-shadow:0 2px 12px rgba(0,0,0,0.06)}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media(max-width:900px){
+  .nav-links{display:none}
+  .nav{padding:0 20px}
+  .hero{padding:48px 24px 64px}
+  .hero-content{max-width:100%}
+  /* hero::before is now the readability overlay — keep visible */
+  .section{padding:36px 20px}
+  .trust-inner{gap:32px}
+  .trust-divider{display:none}
+  .dir-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto}
+  .course-grid{grid-template-columns:1fr}
+  .path-wrap{padding:32px 16px 28px}
+  .path-wrap svg{min-width:560px}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:30px}
+  .cta-banner{margin:0 20px 36px;padding:36px 28px}
+
+}
+@media(max-width:500px){
+  .hero h1{font-size:28px}
+  .hero-actions{flex-direction:column;align-items:flex-start}
+  .hero-actions .btn{width:100%}
+  .dir-grid{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr}
+}
+/* Student projects auto-scroll */
+@keyframes autoScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.projects-track{display:flex;gap:16px;animation:autoScroll 40s linear infinite;width:max-content}
+.projects-track:hover{animation-play-state:paused}
+/* Course center: grid */
+.cc-grid{grid-template-columns:repeat(3,1fr)}
+.cc-card-top{padding:18px 20px 0}
+.cc-card-body{padding:12px 20px 0}
+@media(max-width:1100px){.cc-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.cc-grid{grid-template-columns:1fr}}
+/* Nav lang fix */
+.nav-lang{display:inline-flex;align-items:center;gap:3px;font-size:12px;color:var(--text-muted);cursor:pointer;padding:6px 10px;border-radius:6px;border:1px solid transparent;transition:all .15s;line-height:1}
+.nav-lang svg{width:14px;height:14px;flex-shrink:0}
+/* Booking modal */
+.booking-overlay{position:fixed;inset:0;z-index:3000;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s var(--ease-out)}
+.booking-overlay.open{opacity:1;pointer-events:auto}
+.booking-modal{background:#fff;border-radius:var(--r-md);width:100%;max-width:460px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.15);position:relative;animation:modalIn .35s var(--ease-spring);scrollbar-width:none;-ms-overflow-style:none}
+.booking-modal::-webkit-scrollbar{display:none}
+@keyframes modalIn{from{opacity:0;transform:translateY(20px) scale(0.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.booking-close{position:sticky;top:12px;float:right;margin-right:12px;margin-top:12px;width:32px;height:32px;border-radius:50%;border:none;background:var(--bg-surface);color:var(--text-muted);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .15s;z-index:3}
+.booking-close:hover{background:#fce8e8;color:#e05555}
+.booking-header{position:sticky;top:0;z-index:1;background:#fff;padding:28px 28px 16px;text-align:left;border-bottom:1px solid var(--border-subtle);margin-bottom:0}
+.booking-header h2{font-size:24px;font-weight:600;font-family:var(--font-display);color:var(--text-primary);margin-bottom:4px;letter-spacing:-0.01em}
+.booking-header p{font-size:13px;color:var(--text-muted)}
+.booking-body{padding:20px 28px 28px}
+.booking-body label{display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:4px;margin-top:14px}
+.booking-body label:first-child{margin-top:0}
+.booking-body label .req{color:#e05555;margin-left:2px}
+.booking-body select,.booking-body input{width:100%;padding:10px 12px;border:1px solid var(--border-default);border-radius:var(--r-xs);font-size:13px;color:var(--text-primary);background:var(--bg-base);font-family:var(--font);transition:border .2s;outline:none;box-sizing:border-box}
+.booking-body select:focus,.booking-body input:focus{border-color:var(--ink);box-shadow:0 0 0 4px var(--ink-surface)}
+.booking-phone-row{display:flex;gap:0;align-items:center}
+.booking-phone-row input{flex:1;min-width:0;padding:10px 8px;border:1px solid var(--border-default);border-radius:var(--r-xs);font-size:14px;color:var(--text-primary);background:var(--bg-base);font-family:var(--font);outline:none;transition:all .2s var(--ease-out);text-align:center;box-sizing:border-box}
+.booking-phone-row input:hover{border-color:var(--border-strong)}
+.booking-phone-row input:focus{border-color:var(--ink);box-shadow:0 0 0 4px var(--ink-surface);z-index:1;position:relative}
+.booking-phone-row span.sep{flex-shrink:0;width:16px;text-align:center;color:var(--text-dim);font-size:14px;user-select:none}
+.booking-submit{width:100%;padding:13px;border-radius:var(--r-pill);border:none;background:var(--ink);color:#fff;font-size:16px;font-weight:400;cursor:pointer;margin-top:20px;font-family:var(--font);transition:all .2s var(--ease-out)}
+.booking-submit:hover{background:#0077ed}
+.booking-submit:disabled{background:#cbd5e1;color:var(--text-dim);cursor:default;transform:none}
+.booking-success{text-align:center;padding:40px 20px}
+.booking-success-icon{font-size:48px;margin-bottom:12px}
+.booking-success h3{font-size:18px;color:var(--text-primary);margin-bottom:6px}
+.booking-success p{font-size:13px;color:var(--text-muted)}
+
+/* ============================================================
+   IMAGE STYLES
+   ============================================================ */
+
+.course-card-cover{width:100%;height:140px;object-fit:cover;background:var(--bg-surface);border-bottom:1px solid var(--border-subtle)}
+
+.cc-card-cover{width:100%;height:160px;object-fit:cover;background:var(--bg-surface);border-bottom:1px solid var(--border-subtle)}
+
+.about-banner{width:100%;max-width:700px;height:220px;object-fit:cover;border-radius:var(--r-md);margin-bottom:24px;box-shadow:var(--shadow-md)}
+
+.cta-banner-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.08}
+
+
+/* ============================================================
+   LUCIDE ICONS
+   ============================================================ */
+.dir-card-icon i,.course-card-img i,.project-card-icon i,.info-card-icon i{width:22px;height:22px;stroke-width:1.6}
+.dir-card-icon{color:var(--ink)}
+.course-card-img{color:var(--ink)}
+.project-card-icon{color:var(--ink)}
+.info-card-icon{font-size:22px;margin-bottom:10px;color:var(--ink)}
+.info-card-icon i{width:24px;height:24px}
+.btn i,.btn-notify i,.nav-lang i{stroke-width:2}
+.faq-q-icon{font-family:var(--font)}
+/* Icon spin on card hover */
+.dir-card:hover .dir-card-icon i{animation:iconWiggle .4s var(--ease-spring)}
+@keyframes iconWiggle{0%{transform:rotate(0)}30%{transform:rotate(-8deg)}60%{transform:rotate(6deg)}100%{transform:rotate(0)}}
+.course-card:hover .course-card-img i{transition:transform .3s var(--ease-spring);transform:scale(1.15)}
+.project-card:hover .project-card-icon i{transition:transform .3s var(--ease-spring);transform:scale(1.1) rotate(-5deg)}
+.info-card:hover .info-card-icon i{transition:transform .3s var(--ease-spring);transform:scale(1.1)}
+
+
+/* ============================================================
+   MOTION SYSTEM — Scroll, Hover, Entrance
+   ============================================================ */
+
+/* ---------- Reduced Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}
+  .projects-track{animation:none!important}
+  .hero-badge-dot{animation:none!important}
+}
+
+/* ---------- Scroll Progress Bar ---------- */
+.scroll-progress{position:fixed;top:0;left:0;height:2.5px;background:linear-gradient(90deg,var(--ink),var(--ink-soft));z-index:10000;width:0;transition:width .1s linear}
+
+/* ---------- Nav Scroll States ---------- */
+.nav.scrolled{height:44px;background:rgba(255,255,255,0.82);box-shadow:0 1px 0 var(--border-subtle)}
+.nav.scrolled .nav-logo-dot{width:24px;height:24px;font-size:10px}
+
+/* ---------- Enhanced Hover: Card Lift ---------- */
+.dir-card,.course-card,.project-card,.info-card,.cc-card,.cd-chapter-card{
+  transition:transform .4s cubic-bezier(0.16,1,0.3,1),box-shadow .4s cubic-bezier(0.16,1,0.3,1),border-color .35s ease!important}
+
+/* ---------- Enhanced Hover: Button Spring ---------- */
+.btn{transition:all .35s cubic-bezier(0.34,1.56,0.64,1)!important}
+.btn:active{transform:scale(0.94)!important}
+
+/* ---------- Hero Entrance Keyframes ---------- */
+@keyframes heroTitleIn{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
+@keyframes heroBadgeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes heroSubIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes heroBtnsIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes heroBgReveal{from{opacity:.6;transform:scale(1.04)}to{opacity:1;transform:scale(1)}}
+
+/* ---------- Counter Pop ---------- */
+@keyframes counterPop{0%{transform:scale(1)}40%{transform:scale(1.15)}100%{transform:scale(1)}}
+
+/* ---------- Card Directional Glow ---------- */
+.dir-card{transition:transform .4s cubic-bezier(0.16,1,0.3,1),box-shadow .4s cubic-bezier(0.16,1,0.3,1),border-color .35s ease}
+.dir-card:hover{box-shadow:var(--shadow-md)}
+
+/* ---------- Subtle Float on Trust Stats ---------- */
+.trust-stat-num{transition:transform .3s cubic-bezier(0.34,1.56,0.64,1)}
+.trust-stat:hover .trust-stat-num{transform:translateY(-3px);color:var(--ink-soft)}
+
+/* ---------- FAQ Enhanced ---------- */
+.faq-q{transition:color .25s ease,padding .3s ease}
+.faq-q:hover{padding-left:4px}
+
+/* ---------- Back to Top Enhanced ---------- */
+.back-top{transition:all .4s cubic-bezier(0.34,1.56,0.64,1),opacity .3s ease,transform .35s cubic-bezier(0.16,1,0.3,1)}
+.back-top:hover{transform:translateY(-4px)!important;box-shadow:var(--shadow-md)!important}
+
+
+
+</style>
+</head>
+<body>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- ========== NAV ========== -->
+<nav class="nav">
+  <div class="nav-left">
+    <a class="nav-logo" onclick="goHome()" style="cursor:pointer"><span class="nav-logo-dot">logo</span>昇腾AI</a>
+    <ul class="nav-links">
+      <li><span style="color:var(--text-secondary);font-size:13px;font-weight:500;padding:6px 14px;cursor:pointer;border-radius:6px;transition:all .15s" onmouseover="this.style.background='rgba(0,0,0,0.03)';this.style.color='var(--text-primary)'" onmouseout="this.style.background='transparent';this.style.color=''" onclick="window.goHome()">首页</span></li>
+      <li><span style="color:var(--text-secondary);font-size:13px;font-weight:500;padding:6px 14px;cursor:pointer;border-radius:6px;transition:all .15s" onmouseover="this.style.background='rgba(0,0,0,0.03)';this.style.color='var(--text-primary)'" onmouseout="this.style.background='transparent';this.style.color=''" onclick="window.showCourseCenter()">课程中心</span></li>
+      <li><span style="color:var(--text-secondary);font-size:13px;font-weight:500;padding:6px 14px;cursor:pointer;border-radius:6px;transition:all .15s" onmouseover="this.style.background='rgba(0,0,0,0.03)';this.style.color='var(--text-primary)'" onmouseout="this.style.background='transparent';this.style.color=''" onclick="window.showLearningPath()">学习路径</span></li>
+      <li><span style="color:var(--text-secondary);font-size:13px;font-weight:500;padding:6px 14px;cursor:pointer;border-radius:6px;transition:all .15s" onmouseover="this.style.background='rgba(0,0,0,0.03)';this.style.color='var(--text-primary)'" onmouseout="this.style.background='transparent';this.style.color=''" onclick="window.showAbout()">关于我们</span></li>
+      <li><span style="color:var(--text-secondary);font-size:13px;font-weight:500;padding:6px 14px;cursor:pointer;border-radius:6px;transition:all .15s" onmouseover="this.style.background='rgba(0,0,0,0.03)';this.style.color='var(--text-primary)'" onmouseout="this.style.background='transparent';this.style.color=''" onclick="window.showFAQ()">FAQ</span></li>
+    </ul>
+  </div>
+  <div class="nav-right">
+    <div class="nav-lang"><i data-lucide="globe" style="width:14px;height:14px"></i> 中文 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;flex-shrink:0"><polyline points="6 9 12 15 18 9"/></svg></div>
+    <div style="position:relative">
+      <button class="btn-notify" onclick="toggleNotify()" title="预约记录">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+      </button>
+      <div class="notify-dropdown" id="notifyDropdown">
+        <div class="notify-header" style="display:flex;align-items:center;justify-content:space-between">
+          <span style="display:inline-flex;align-items:center;gap:6px"><i data-lucide="clipboard-list" style="width:14px;height:14px"></i> 预约记录</span>
+          <button class="btn btn-primary" style="font-size:11px;padding:5px 12px" onclick="openBooking()"><i data-lucide="calendar-check" style="width:12px;height:12px"></i> 预约试听</button>
+        </div>
+        <div class="notify-body">
+          <div class="notify-divider"></div>
+          <div style="display:flex;gap:6px;margin-bottom:10px">
+            <input type="text" id="notifyPhoneSearch" placeholder="输入手机号" style="flex:1;padding:8px 12px;border:1px solid var(--border-default);border-radius:6px;font-size:12px;color:var(--text-primary);background:var(--bg-base);font-family:var(--font);outline:none;box-sizing:border-box">
+            <button onclick="searchNotifyRecords()" style="width:56px;height:36px;border-radius:6px;border:1px solid var(--border-default);background:var(--bg-base);color:var(--text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;font-family:var(--font);font-size:12px;gap:3px" onmouseover="this.style.borderColor='var(--ink)';this.style.color='var(--ink)'" onmouseout="this.style.borderColor='';this.style.color=''" title="查询"><i data-lucide="search" style="width:14px;height:14px"></i> 查询</button>
+          </div>
+          <div id="notifyRecords">
+            <div id="notifyEmpty" style="text-align:center;padding:32px 0 28px">
+              <i data-lucide="inbox" style="width:36px;height:36px;color:var(--text-dim);opacity:.5;margin-bottom:8px;display:block;margin-left:auto;margin-right:auto"></i>
+              <div style="font-size:12px;color:var(--text-dim)">暂无预约记录</div>
+              <div style="font-size:11px;color:var(--text-dim);opacity:.6;margin-top:2px">输入手机号查询</div>
+            </div>
+            <div id="notifyResults" style="display:none"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ========== MAIN PAGE ========== -->
+<div id="mainPage">
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-bg-grid"></div>
+    <div class="hero-bg-orb1"></div>
+    <div class="hero-bg-orb2"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge"><span class="hero-badge-dot"></span>产业级大模型人才培养平台</div>
+    <h1>掌握<span>大模型技术</span>，开启<br>AI 工程职业新赛道</h1>
+    <p class="hero-subtitle">一线工程师主讲 &nbsp;·&nbsp; 项目驱动 &nbsp;·&nbsp; 结业证书</p>
+    <div class="hero-actions">
+      <a href="#courses" class="btn btn-primary btn-lg">浏览全部课程</a>
+      <a href="javascript:void(0)" class="btn btn-outline btn-lg" onclick="openBooking()"><i data-lucide="calendar-check" style="width:16px;height:16px"></i> 预约试听</a>
+    </div>
+  </div>
+  <!-- Hero big dynamic card: image ↔ philosophy toggle -->
+  <div class="hero-visual" id="heroVisual">
+    <div class="hero-visual-frame" id="heroVisualFrame">
+      <!-- Face A: dynamic image -->
+      <div class="hv-face hv-face-img active" id="hvFaceImg">
+        <img class="hero-img" src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=2000&h=1100&q=85&auto=format&fit=crop" alt="大模型与 AI 工程" onerror="this.closest('.hero-visual-frame').classList.add('no-img')">
+        <div class="hero-visual-shine"></div>
+        <div class="hero-visual-glow"></div>
+      </div>
+      <!-- Face B: philosophy text -->
+      <div class="hv-face hv-face-phil" id="hvFacePhil">
+        <div class="hv-phil-scroll">
+          <div class="hv-phil-heading">课程理念</div>
+          <p>模型正在改变世界。从 Transformer 架构的底层突破到 Copilot 的日常辅助，从智能体的自主决策到端侧设备上的实时推理——AI 工程能力已经成为这个时代最稀缺的课程特色。昇腾 AI 学院成立于这个技术浪潮之中，致力于为每一位有志于 AI 领域的学习者提供系统化的工程训练。</p>
+          <p>我们的课程体系覆盖从模型原理到工程交付的完整链路：基础大模型、Prompt Engineering、模型微调、RAG 与 Agent、多模态理解、LLM 工程化——六大方向为你构建完整的 AI 工程技能树。每一门课程都由一线工程师设计并主讲，以真实产业项目为驱动，确保你学到的不是"纸上谈兵"，而是能够直接交付给真实用户的可运行系统。</p>
+          <p>我们相信，真正的学习发生在"做"的过程中。因此，每一门课程都以一个可展示的项目 Demo 作为最终交付物——无论是基于 MCP 协议的学术文献助手、面向金融场景的 RAG 推理引擎，还是运行在端侧设备上的实时姿态检测系统。这些项目不仅是你的学习成果，更是你进入 AI 行业的名片。</p>
+          <p>我们邀请你，一起从 AI 的使用者，成长为 AI 应用的创造者。</p>
+          <div class="hv-phil-signature">昇腾 AI 教学团队 · 2026 夏</div>
+        </div>
+      </div>
+      <!-- Toggle pill — flips faces -->
+      <div class="hero-visual-caption" onclick="event.stopPropagation();togglePhilosophy()" id="hvCaption">
+        <span class="hero-visual-pill"><span class="hero-visual-dot"></span><span id="hvCaptionText">实时智能体 · 端侧推理 · 全栈交付</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ========== TRUST BAR ========== -->
+<div class="trust-bar">
+  <div class="trust-inner" style="justify-content:center">
+    <div class="trust-stat"><div class="trust-stat-num" data-count="5000">5,000+</div><div class="trust-stat-label">累计学员</div></div>
+    <div class="trust-divider"></div>
+    <div class="trust-stat"><div class="trust-stat-num" data-count="98">98%</div><div class="trust-stat-label">课程好评率</div></div>
+    <div class="trust-divider"></div>
+    <div class="trust-stat"><div class="trust-stat-num" data-count="30">30+</div><div class="trust-stat-label">企业合作</div></div>
+  </div>
+</div>
+
+<!-- ========== COURSE DIRECTIONS ========== -->
+<section class="section" style="background:var(--bg-base);padding:80px 40px">
+  <div class="section-inner">
+    <div class="section-label">课程体系</div>
+    <h2 class="section-title">我们的课程体系</h2>
+    <p class="section-desc">六大核心技术方向，覆盖从模型原理到工程落地的完整技能树，为不同基础学员提供清晰的能力进阶路径</p>
+    <div class="dir-grid">
+      <div class="dir-card">
+        <div class="dir-card-icon"><i data-lucide="brain"></i></div>
+        <h4>基础大模型</h4>
+        <p>Transformer 架构、Token/Embedding、自注意力机制，建立模型底层认知</p>
+      </div>
+      <div class="dir-card">
+        <div class="dir-card-icon"><i data-lucide="pen-tool"></i></div>
+        <h4>Prompt Engineering</h4>
+        <p>BROKE/COAST/ROSES 框架、CoT 思维链、上下文工程与结构化输出设计</p>
+      </div>
+      <div class="dir-card">
+        <div class="dir-card-icon"><i data-lucide="wrench"></i></div>
+        <h4>模型微调</h4>
+        <p>LoRA/QLoRA 微调、知识蒸馏、模型量化、剪枝与端侧推理优化</p>
+      </div>
+      <div class="dir-card">
+        <div class="dir-card-icon"><i data-lucide="bot"></i></div>
+        <h4>RAG & Agent</h4>
+        <p>检索增强生成、向量数据库、Function Call、MCP 协议与智能体构建</p>
+      </div>
+      <div class="dir-card">
+        <div class="dir-card-icon"><i data-lucide="eye"></i></div>
+        <h4>多模态</h4>
+        <p>视觉语言模型、YOLOv8-Pose、ONNX 跨平台推理与实时检测部署</p>
+      </div>
+      <div class="dir-card">
+        <div class="dir-card-icon"><i data-lucide="rocket"></i></div>
+        <h4>LLM 工程化</h4>
+        <p>FastAPI/Next.js 全栈集成、RESTful API 封装、前后端联调与 Web 交付</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== HOT COURSES ========== -->
+<section class="section" id="courses" style="background:var(--bg-surface)">
+  <div class="section-inner">
+    <div class="section-label">热门推荐</div>
+    <h2 class="section-title">热门课程推荐</h2>
+    <p class="section-desc">精选一线实战课程，真实产业项目驱动，从零基础到可交付智能体的完整闭环</p>
+    <div class="course-grid">
+
+      <!-- Course 1: Agent -->
+      <div class="course-card" onclick="showCourseDetail('agent')">
+        <img class="course-card-cover" src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&h=300&q=80&auto=format&fit=crop" alt="agent" onerror="this.style.display='none'">
+        <div class="course-card-top">
+          <div class="course-card-tags">
+            <span class="course-tag tag-level">进阶</span>
+            <span class="course-tag tag-format">线下面授</span>
+          </div>
+          <div class="course-card-img"><i data-lucide="bot"></i></div>
+        </div>
+        <div class="course-card-body">
+          <h3>产业级闭环与科研演进：Agent 进阶之道</h3>
+          <div class="course-duration">
+            <span class="num">10</span><span class="unit">周 &nbsp;|&nbsp; 10 课次</span>
+          </div>
+        </div>
+        <div class="course-card-footer">
+          <button class="btn btn-primary">立即了解</button>
+        </div>
+      </div>
+
+      <!-- Course 2: RAG -->
+      <div class="course-card" onclick="showCourseDetail('rag')">
+        <img class="course-card-cover" src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=600&h=300&q=80&auto=format&fit=crop" alt="rag" onerror="this.style.display='none'">
+        <div class="course-card-top">
+          <div class="course-card-tags">
+            <span class="course-tag tag-level">进阶</span>
+            <span class="course-tag tag-format">线下面授</span>
+          </div>
+          <div class="course-card-img"><i data-lucide="search"></i></div>
+        </div>
+        <div class="course-card-body">
+          <h3>产业级闭环与科研演进：RAG 进阶之道</h3>
+          <div class="course-duration">
+            <span class="num">10</span><span class="unit">周 &nbsp;|&nbsp; 10 课次</span>
+          </div>
+        </div>
+        <div class="course-card-footer">
+          <button class="btn btn-primary">立即了解</button>
+        </div>
+      </div>
+
+      <!-- Course 3: Edge AI -->
+      <div class="course-card" onclick="showCourseDetail('edge')">
+        <img class="course-card-cover" src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=300&q=80&auto=format&fit=crop" alt="edge" onerror="this.style.display='none'">
+        <div class="course-card-top">
+          <div class="course-card-tags">
+            <span class="course-tag tag-level">入门到进阶</span>
+            <span class="course-tag tag-format">实训营</span>
+          </div>
+          <div class="course-card-img"><i data-lucide="cpu"></i></div>
+        </div>
+        <div class="course-card-body">
+          <h3>端侧 AI 智能应用开发与部署实践：基于香橙派 AIpro 平台</h3>
+          <div class="course-duration">
+            <span class="num">5</span><span class="unit">周 &nbsp;|&nbsp; 软硬件协同</span>
+          </div>
+        </div>
+        <div class="course-card-footer">
+          <button class="btn btn-primary">立即了解</button>
+        </div>
+      </div>
+
+      <!-- Course 4: FinTech -->
+      <div class="course-card" onclick="showCourseDetail('fintech')">
+        <img class="course-card-cover" src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&h=300&q=80&auto=format&fit=crop" alt="fintech" onerror="this.style.display='none'">
+        <div class="course-card-top">
+          <div class="course-card-tags">
+            <span class="course-tag tag-level">入门到进阶</span>
+            <span class="course-tag tag-format">实训营</span>
+          </div>
+          <div class="course-card-img"><i data-lucide="landmark"></i></div>
+        </div>
+        <div class="course-card-body">
+          <h3>金融 AI 实验室：用自然语言重塑金融研究</h3>
+          <div class="course-duration">
+            <span class="num">10</span><span class="unit">天 &nbsp;|&nbsp; 密集实训</span>
+          </div>
+        </div>
+        <div class="course-card-footer">
+          <button class="btn btn-primary">立即了解</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ========== LEARNING PATH ========== -->
+<section class="section" id="path" style="background:var(--bg-base);padding-top:40px">
+  <div class="section-inner">
+    <div class="section-label">成长路线</div>
+    <h2 class="section-title">推荐学习路径</h2>
+    <p class="section-desc">从 AI 基础认知到专业智能体交付，四阶段递进式培养，每阶段均产出可展示的项目成果</p>
+    <div class="path-wrap">
+      <svg viewBox="0 0 980 300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="pathGrad2" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#0071e3"/>
+            <stop offset="100%" stop-color="#86868b"/>
+          </linearGradient>
+          <filter id="softShadow2" x="-10%" y="-10%" width="120%" height="130%">
+            <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#1d1d1f" flood-opacity="0.06"/>
+          </filter>
+        </defs>
+        <path d="M80,100 C180,100 180,100 280,100 C320,100 330,70 350,55 C370,40 380,40 400,55 C420,70 430,100 460,100 C570,100 570,100 680,100 C720,100 730,70 750,55 C770,40 780,40 800,55 C820,70 830,100 860,100"
+              fill="none" stroke="url(#pathGrad2)" stroke-width="3" stroke-linecap="round" stroke-dasharray="8,4" opacity="0.4"/>
+        <g filter="url(#softShadow2)"><circle cx="80" cy="100" r="28" fill="#ffffff" stroke="#0071e3" stroke-width="2.5"/><text x="80" y="105" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,PingFang SC,sans-serif" font-size="17" font-weight="600" fill="#0071e3">01</text></g>
+        <text x="80" y="155" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,PingFang SC,sans-serif" font-size="14" font-weight="600" fill="#1d1d1f">模型底座认知</text>
+        <text x="80" y="175" text-anchor="middle" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="11" fill="#6e6e73">Transformer 架构</text>
+        <text x="80" y="192" text-anchor="middle" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="11" fill="#6e6e73">模型生态认知</text>
+        <g filter="url(#softShadow2)"><circle cx="280" cy="100" r="28" fill="#ffffff" stroke="#2997ff" stroke-width="2.5"/><text x="280" y="105" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,PingFang SC,sans-serif" font-size="17" font-weight="600" fill="#0071e3">02</text></g>
+        <text x="280" y="155" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,PingFang SC,sans-serif" font-size="14" font-weight="600" fill="#1d1d1f">交互与工具工程</text>
+        <text x="280" y="175" text-anchor="middle" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="11" fill="#6e6e73">Prompt 设计</text>
+        <text x="280" y="192" text-anchor="middle" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="11" fill="#6e6e73">Function Call · MCP</text>
+        <g filter="url(#softShadow2)"><circle cx="680" cy="100" r="28" fill="#ffffff" stroke="#86868b" stroke-width="2.5"/><text x="680" y="105" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,PingFang SC,sans-serif" font-size="17" font-weight="600" fill="#86868b">03</text></g>
+        <text x="680" y="155" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,PingFang SC,sans-serif" font-size="14" font-weight="600" fill="#1d1d1f">端侧与多模态</text>
+        <text x="680" y="175" text-anchor="middle" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="11" fill="#6e6e73">模型量化部署</text>
+        <text x="680" y="192" text-anchor="middle" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="11" fill="#6e6e73">ONNX · YOLOv8</text>
+        <g filter="url(#softShadow2)"><circle cx="860" cy="100" r="28" fill="#0071e3" stroke="#0071e3" stroke-width="2.5"/><text x="860" y="105" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,PingFang SC,sans-serif" font-size="17" font-weight="600" fill="#ffffff">04</text></g>
+        <text x="860" y="155" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,PingFang SC,sans-serif" font-size="14" font-weight="600" fill="#1d1d1f">项目集成与交付</text>
+        <text x="860" y="175" text-anchor="middle" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="11" fill="#6e6e73">FastAPI + Next.js 全栈项目</text>
+        <text x="860" y="192" text-anchor="middle" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="11" fill="#6e6e73">Web 化智能体 Demo 上线</text>
+        <text x="180" y="45" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,PingFang SC,sans-serif" font-size="10" font-weight="600" fill="#0071e3" opacity="0.5" letter-spacing="1">第1-3周</text>
+        <text x="460" y="45" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,PingFang SC,sans-serif" font-size="10" font-weight="600" fill="#0071e3" opacity="0.5" letter-spacing="1">第3-7周</text>
+        <text x="770" y="220" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,PingFang SC,sans-serif" font-size="10" font-weight="600" fill="#86868b" opacity="0.5" letter-spacing="1">第1-5周</text>
+        <text x="860" y="220" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,PingFang SC,sans-serif" font-size="10" font-weight="600" fill="#86868b" opacity="0.5" letter-spacing="1">第8-10周</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ========== STUDENT PROJECTS ========== -->
+<section class="section" style="background:var(--bg-surface);padding-top:40px">
+  <div class="section-inner">
+    <div class="section-label">学员成果</div>
+    <h2 class="section-title">学员真实项目</h2>
+    <p class="section-desc">每一门课程的最终产出均为可直接用于答辩、面试和科研原型展示的项目 Demo</p>
+    <div class="projects-scroll" style="overflow:hidden"><div class="projects-track" id="projectsTrack">
+      <div class="project-card">
+        <div class="project-card-icon"><i data-lucide="file-text"></i></div>
+        <h4>智能文献引用助手</h4>
+        <p>基于 Arxiv MCP 的科研写作 Agent，理解主题 → 检索论文 → 解析内容 → 生成引用建议，支持 Web 端交互</p>
+        <div class="project-tags"><span>Agent</span><span>MCP</span><span>FastAPI</span><span>Next.js</span></div>
+      </div>
+      <div class="project-card">
+        <div class="project-card-icon"><i data-lucide="search"></i></div>
+        <h4>联网搜索 Agent</h4>
+        <p>集成智谱联网搜索 MCP，先调用搜索工具获取信息，再总结结果并引用来源，完整 MCP Client-Server 调用闭环</p>
+        <div class="project-tags"><span>MCP</span><span>SSE/HTTP</span><span>搜索</span></div>
+      </div>
+      <div class="project-card">
+        <div class="project-card-icon"><i data-lucide="message-circle"></i></div>
+        <h4>通义千问端侧对话 Demo</h4>
+        <p>Qwen2-0.5B ONNX 转换 → 量化 → 香橙派 AIpro 端侧推理，完整的端侧大模型部署链路</p>
+        <div class="project-tags"><span>Qwen</span><span>ONNX</span><span>量化</span><span>香橙派</span></div>
+      </div>
+      <div class="project-card">
+        <div class="project-card-icon"><i data-lucide="activity"></i></div>
+        <h4>实时人体姿态检测</h4>
+        <p>YOLOv8-Pose 端侧部署，香橙派 AIpro 实时人体关键点检测，含完整性能分析报告</p>
+        <div class="project-tags"><span>YOLOv8</span><span>NPU</span><span>视觉推理</span></div>
+      </div>
+      <div class="project-card">
+        <div class="project-card-icon"><i data-lucide="landmark"></i></div>
+        <h4>全能金融投资 Agent</h4>
+        <p>整合搜索 + 计算 + 研报阅读能力，在 Coze/Dify 平台实现"分析黄金走势 + 非农数据 → 500字建议"自动流程</p>
+        <div class="project-tags"><span>Agent</span><span>RAG</span><span>Coze</span><span>金融</span></div>
+      </div>
+      <div class="project-card">
+        <div class="project-card-icon"><i data-lucide="scale"></i></div>
+        <h4>行业 RAG 推理引擎</h4>
+        <p>政务/法律垂直领域高精度 RAG 系统，混合检索 + Prompt 调优 + 幻觉率评估，具备真实交互能力</p>
+        <div class="project-tags"><span>RAG</span><span>向量DB</span><span>混合检索</span></div>
+      </div>
+    </div></div>
+  </div>
+</section>
+
+<!-- ========== FAQ ========== -->
+<section class="section" id="faq" style="padding-top:24px">
+  <div class="section-inner">
+    <div class="section-label">常见问题</div>
+    <h2 class="section-title">FAQ</h2>
+    <p class="section-desc">关于课程你可能有这些疑问，我们整理了一些高频问题的解答</p>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">课程适合零基础学员吗？<span class="faq-q-icon"><i data-lucide="plus" style="width:12px;height:12px"></i></span></button>
+        <div class="faq-a"><p>适合。课程设计以"从零基础起步"为原则，第一阶段从 Transformer 底层原理讲起，配合 HuggingFace 实训和预训练模型调用，确保无 AI 背景的学员也能跟上节奏。金融 AI 实验室课程更面向非 CS 专业学员，通过 Cursor、Coze、Dify 等低代码平台降低技术门槛。</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">课程是线上还是线下？<span class="faq-q-icon"><i data-lucide="plus" style="width:12px;height:12px"></i></span></button>
+        <div class="faq-a"><p>课程以线下面授实训为主，配合远程开发环境（SSH 远程登录香橙派 AIpro 开发板）进行实操。端侧 AI 课程提供真实硬件（香橙派 AIpro 开发板）供学员操作。部分模块支持线上直播参与，具体请咨询课程顾问。</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">课程结束后有什么产出？<span class="faq-q-icon"><i data-lucide="plus" style="width:12px;height:12px"></i></span></button>
+        <div class="faq-a"><p>每门课程均有明确的最终交付物：Agent 课程产出可 Web 访问的专业智能体项目 Demo；RAG 课程产出具备真实交互能力的智能应用服务；端侧 AI 课程产出端侧部署的对话/视觉检测应用；金融 AI 课程产出金融业务智能体 + 项目路演材料。所有成果均可用于答辩展示和作品集。</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">是否提供结业证书？<span class="faq-q-icon"><i data-lucide="plus" style="width:12px;height:12px"></i></span></button>
+        <div class="faq-a"><p>是的，完成全部实训内容并通过最终项目答辩的学员将获得结业证书，证明其具备对应课程方向的大模型应用开发工程能力。</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">课程对硬件配置有什么要求？<span class="faq-q-icon"><i data-lucide="plus" style="width:12px;height:12px"></i></span></button>
+        <div class="faq-a"><p>大模型应用开发类课程（Agent、RAG、金融 AI）使用云端 API 调用，个人电脑即可完成全部实训。端侧 AI 课程提供香橙派 AIpro 开发板，学员无需自备硬件。建议自备笔记本电脑（8GB+ 内存），用于本地开发环境搭建。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CTA BANNER ========== -->
+<div class="cta-banner">
+  <img class="cta-banner-img" src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1200&h=400&q=80&auto=format&fit=crop" alt="" onerror="this.style.display='none'">
+  <div class="cta-banner-content">
+    <h2>准备好开启你的<br>AI 工程之旅了吗？</h2>
+    <p style="font-size:13px;color:rgba(255,255,255,0.55);max-width:480px;margin:0 auto 20px;line-height:1.75">加入 5,000+ 学员，从模型底座到智能体交付，构建完整的大模型应用开发能力。预约试听，课程顾问将在 24 小时内与您联系。</p>
+    <button class="btn btn-white" onclick="openBooking()">立即预约试听</button>
+  </div>
+</div>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+  <div class="footer-grid" style="grid-template-columns:2fr 1.5fr 1fr">
+    <div class="footer-brand">
+      <h3>北京昇腾人工智能创新有限公司</h3>
+      <p style="margin-bottom:0">产业级大模型人才培养平台。以真实项目驱动，从 Transformer 底层原理到 Web 化智能体交付。</p>
+    </div>
+    <div class="footer-col">
+      <h4>联系我们</h4>
+      <ul>
+        <li style="display:flex;align-items:flex-start;gap:6px"><i data-lucide="map-pin" style="width:13px;height:13px;flex-shrink:0;margin-top:2px;color:var(--text-muted)"></i> <span style="font-size:12px;color:var(--text-secondary);line-height:1.5">北京市门头沟区莲石湖西路98号院创业大厦13号楼D座5层</span></li>
+        <li style="display:flex;align-items:center;gap:6px"><i data-lucide="phone" style="width:13px;height:13px;flex-shrink:0;color:var(--text-muted)"></i> <a href="tel:18611003838" style="font-size:12px">18611003838</a></li>
+        <li style="display:flex;align-items:center;gap:6px"><i data-lucide="mail" style="width:13px;height:13px;flex-shrink:0;color:var(--text-muted)"></i> <a href="mailto:bjascend@jingxizhigu.com" style="font-size:12px">bjascend@jingxizhigu.com</a></li>
+      </ul>
+    </div>
+    <div class="footer-col" style="text-align:center">
+      <h4>京西智谷</h4>
+      <div style="width:96px;height:96px;margin:0 auto;background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;overflow:hidden">
+        <div style="text-align:center;color:var(--text-dim);font-size:9px;line-height:1.4">
+          <i data-lucide="qr-code" style="width:34px;height:34px;display:block;margin:0 auto 4px;color:var(--text-secondary)"></i>
+          微信小程序码
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 北京昇腾人工智能创新有限公司. All rights reserved.</span>
+    <span>京ICP备XXXXXXXX号</span>
+  </div>
+</footer>
+
+<!-- Smart Customer Service Floating Button -->
+<button class="cs-float" id="csFloat" onclick="openCustomerService()" title="智能客服">
+  <i data-lucide="message-circle" style="width:24px;height:24px"></i>
+  <span class="cs-dot"></span>
+</button>
+
+<!-- Smart Customer Service Dialog -->
+<div class="cs-overlay" id="csOverlay" onclick="if(event.target===this)closeCustomerService()">
+  <div class="cs-dialog">
+    <div class="cs-dialog-header">
+      <h3>智能客服</h3>
+      <button class="cs-close" onclick="closeCustomerService()"><i data-lucide="x" style="width:16px;height:16px"></i></button>
+    </div>
+    <div class="cs-dialog-body" id="csBody">
+      <div class="cs-msg bot">
+        你好，我是昇腾AI智能助手。有什么可以帮你的？
+        <div class="cs-time">刚刚</div>
+      </div>
+    </div>
+    <div class="cs-quick-qs" id="csQuickQs">
+      <button class="cs-quick-q" onclick="sendQuickQ('课程有哪些方向？')">课程有哪些方向？</button>
+      <button class="cs-quick-q" onclick="sendQuickQ('如何预约试听？')">如何预约试听？</button>
+      <button class="cs-quick-q" onclick="sendQuickQ('课程适合零基础吗？')">课程适合零基础吗？</button>
+      <button class="cs-quick-q" onclick="sendQuickQ('上课时间和地点？')">上课时间和地点？</button>
+    </div>
+    <div class="cs-dialog-input">
+      <input type="text" id="csInput" placeholder="输入您的问题…" onkeydown="if(event.key==='Enter')sendCSMessage()">
+      <button onclick="sendCSMessage()"><i data-lucide="send" style="width:16px;height:16px"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- Back to Top -->
+<div class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i data-lucide="arrow-up" style="width:18px;height:18px"></i></div>
+
+<!-- ========== PAGE SYSTEM ========== -->
+<style>
+.page-view{display:none;position:relative;z-index:1;min-height:100vh}
+.page-view.active{display:block!important}
+/* Course Center */
+.cc-hero{padding:40px 40px 40px;text-align:left;background:var(--bg-surface);border-bottom:1px solid var(--border-subtle)}
+.cc-hero h1{font-size:40px;font-weight:600;color:var(--text-primary);letter-spacing:-0.02em}
+.cc-hero p{font-size:19px;color:var(--text-secondary);margin-top:8px}
+.cc-hero .cc-back,.cc-hero .cc-back:hover{color:var(--text-muted)}
+.cc-back{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--text-muted);cursor:pointer;margin-bottom:16px;transition:color .2s;background:none;border:none;font-family:var(--font)}
+.cc-back:hover{color:var(--ink)}
+.cc-grid{padding:40px;max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(540px,1fr));gap:20px}
+.cc-card{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--r-md);overflow:hidden;cursor:pointer;transition:all .3s var(--ease-out)}
+.cc-card:hover{border-color:transparent;transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.cc-card-top{padding:28px 28px 0;display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.cc-card-info h3{font-size:24px;font-weight:600;color:var(--text-primary);margin-bottom:9px;line-height:1.25;letter-spacing:-0.01em}
+.cc-card-meta{font-size:12px;color:var(--text-muted);margin-bottom:12px}
+.cc-card-desc{font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:16px}
+.cc-card-chapters{padding:0 28px 24px}
+.cc-chapter-list{display:flex;flex-direction:column;gap:6px}
+.cc-chapter-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:var(--r-xs);background:var(--bg-base);border:1px solid var(--border-subtle);font-size:13px;color:var(--text-secondary);cursor:pointer;transition:all .2s var(--ease-out)}
+.cc-chapter-item:hover{background:var(--ink-surface);border-color:transparent;color:var(--ink)}
+.cc-chapter-item .ch-arrow{color:var(--text-dim);transition:all .2s var(--ease-out)}
+.cc-chapter-item:hover .ch-arrow{color:var(--ink);transform:translateX(3px)}
+.cc-card-enter-btn{display:block;width:calc(100% - 56px);margin:0 28px 24px;padding:12px;border-radius:var(--r-pill);text-align:center;font-size:15px;font-weight:400;color:#fff;background:var(--ink);cursor:pointer;border:none;transition:all .25s var(--ease-out);font-family:var(--font)}
+.cc-card-enter-btn:hover{background:#0077ed;transform:translateY(-1px)}
+.cc-card-enter-btn:active{transform:scale(0.97)}
+.cc-filter-bar{display:flex;gap:8px;flex-wrap:wrap}
+.cc-filter-chip{padding:7px 16px;border-radius:var(--r-pill);border:1px solid var(--border-default);font-size:12px;font-weight:500;cursor:pointer;background:transparent;color:var(--text-muted);transition:all .2s var(--ease-out);font-family:var(--font)}
+.cc-filter-chip:hover{border-color:var(--border-strong);color:var(--text-primary)}
+.cc-filter-chip.active{background:var(--ink-surface);border-color:var(--ink);color:var(--ink)}
+
+/* Course Detail */
+.cd-hero{padding:40px 40px 40px;position:relative;overflow:hidden;background:var(--bg-surface);border-bottom:1px solid var(--border-subtle)}
+.cd-hero.llm,.cd-hero.edge,.cd-hero.agent{background:var(--bg-surface)}
+.cd-hero h1{font-size:36px;font-weight:600;color:var(--text-primary);max-width:900px;margin:0 auto;line-height:1.15;letter-spacing:-0.02em}
+.cd-hero-meta{max-width:900px;margin:16px auto 0;font-size:13px;color:var(--text-muted)}
+.cd-overview{max-width:900px;margin:0 auto;padding:40px 32px;background:var(--bg-card)}
+.cd-overview h2{font-size:28px;font-weight:600;color:var(--text-primary);margin-bottom:16px;letter-spacing:-0.01em}
+.cd-overview p{font-size:17px;color:var(--text-secondary);line-height:1.6;margin-bottom:12px}
+.cd-chapter-section{max-width:900px;margin:0 auto;padding:0 32px 60px;background:var(--bg-card)}
+.cd-chapter-section h2{font-size:28px;font-weight:600;color:var(--text-primary);margin-bottom:6px;letter-spacing:-0.01em}
+.cd-chapter-section .section-subtitle{font-size:13px;color:var(--text-muted);margin-bottom:20px}
+.cd-chapter-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.cd-chapter-card{padding:24px;background:var(--bg-surface);border:none;border-radius:var(--r-md);cursor:pointer;transition:all .25s var(--ease-out)}
+.cd-chapter-card:hover{box-shadow:var(--shadow-md);transform:translateY(-3px)}
+.cd-chapter-card .ch-num{font-size:12px;font-weight:600;color:var(--ink);text-transform:none;letter-spacing:0;margin-bottom:8px}
+.cd-chapter-card h4{font-size:18px;font-weight:600;color:var(--text-primary);margin-bottom:7px;line-height:1.3;letter-spacing:-0.01em}
+.cd-chapter-card .ch-desc{font-size:14px;color:var(--text-secondary);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* Chapter Detail */
+.ch-body{max-width:800px;margin:0 auto;padding:40px 32px 80px}
+.ch-body h2{font-size:34px;font-weight:600;color:var(--text-primary);margin-bottom:10px;letter-spacing:-0.02em;line-height:1.1}
+.ch-body .ch-tag{display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;font-weight:700;background:var(--ink-surface);color:var(--ink);margin-bottom:20px}
+.ch-body .ch-content{font-size:17px;color:var(--text-secondary);line-height:1.7}
+.ch-body .ch-content p{margin-bottom:12px}
+.ch-nav{display:flex;justify-content:space-between;align-items:center;max-width:800px;margin:0 auto;padding:20px 32px 60px;gap:16px}
+.ch-nav-btn{padding:10px 22px;border-radius:var(--r-pill);border:1px solid var(--border-default);background:var(--bg-card);color:var(--text-secondary);cursor:pointer;font-size:13px;font-weight:500;transition:all .2s var(--ease-out);font-family:var(--font)}
+.ch-nav-btn:hover{border-color:var(--ink);color:var(--ink)}
+.ch-nav-btn:disabled{opacity:.3;cursor:default;pointer-events:none}
+/* Info cards */
+.info-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.info-card{background:var(--bg-surface);border:none;border-radius:var(--r-md);padding:24px;transition:all .25s var(--ease-out);position:relative;overflow:hidden}
+.info-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--ink);opacity:0;transition:opacity .3s}
+.info-card:hover{box-shadow:var(--shadow-md);transform:translateY(-3px)}
+.info-card:hover::before{opacity:1}
+.info-card-icon{font-size:22px;margin-bottom:10px}
+.info-card h4{font-size:18px;font-weight:600;margin-bottom:7px;color:var(--text-primary);letter-spacing:-0.01em}
+.info-card p{font-size:14px;color:var(--text-secondary);line-height:1.5;margin:0}
+@media(max-width:768px){
+  .cc-grid{grid-template-columns:1fr;padding:20px}
+  .cd-overlay{padding:20px 16px}
+}
+</style>
+
+<!-- ========== COURSE CENTER PAGE ========== -->
+<style>
+.modal-overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:40px;opacity:0;pointer-events:none;transition:opacity .3s var(--ease-out)}
+.modal-overlay.open{opacity:1;pointer-events:auto}
+.modal{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--r-lg);max-width:800px;width:100%;max-height:85vh;overflow-y:auto;padding:40px;position:relative;animation:modalIn .35s var(--ease-spring)}
+.modal-close{position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;border:1px solid var(--border-default);background:var(--bg-card);color:var(--text-muted);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .2s var(--ease-out)}
+.modal-close:hover{border-color:var(--border-strong);color:var(--text-primary);background:var(--bg-surface)}
+.modal h2{font-size:30px;font-weight:600;color:var(--text-primary);margin-bottom:20px;letter-spacing:-0.02em;line-height:1.15}
+.modal-meta{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:24px;font-size:13px;color:var(--text-muted)}
+.modal h3{font-size:21px;font-weight:600;color:var(--text-primary);margin:30px 0 14px;letter-spacing:-0.01em}
+.modal p{font-size:16px;color:var(--text-secondary);line-height:1.65;margin-bottom:10px}
+.modal ul{margin:10px 0 10px 20px}
+.modal li{font-size:16px;color:var(--text-secondary);line-height:1.65;margin-bottom:6px}
+.modal .modal-table{width:100%;border-collapse:collapse;font-size:13px;margin:20px 0;border:1px solid var(--border-subtle);border-radius:var(--r-sm);overflow:hidden}
+.modal .modal-table th{background:var(--bg-surface);padding:12px 14px;text-align:left;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);border-bottom:1px solid var(--border-subtle)}
+.modal .modal-table td{padding:12px 14px;border-bottom:1px solid var(--border-subtle);color:var(--text-secondary);line-height:1.6}
+.modal .modal-table tr:last-child td{border-bottom:none}
+.modal .quote{background:var(--bg-surface);border-left:4px solid var(--ink);padding:20px 24px;border-radius:0 var(--r-sm) var(--r-sm) 0;margin:24px 0;font-style:italic}
+</style>
+
+</div><!-- /#mainPage -->
+
+<div class="page-view" id="courseCenterView">
+  <div class="cc-hero">
+    <h1>课程中心</h1>
+    <p>完整的课程体系，点击课程卡片查看详情，选择章节开始学习</p>
+  </div>
+  <div style="max-width:1200px;margin:0 auto;padding:24px 40px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div class="cc-filter-bar" id="ccFilterBar" style="margin-top:0">
+      <button class="cc-filter-chip active" data-cat="all" onclick="ccSetFilter('all',this)">全部课程</button>
+      <button class="cc-filter-chip" data-cat="llm" onclick="ccSetFilter('llm',this)"><i data-lucide="layers" style="width:13px;height:13px;display:inline;vertical-align:-2px"></i> 大模型应用开发</button>
+      <button class="cc-filter-chip" data-cat="edge" onclick="ccSetFilter('edge',this)"><i data-lucide="cpu" style="width:13px;height:13px;display:inline;vertical-align:-2px"></i> 端侧 AI 开发</button>
+      <button class="cc-filter-chip" data-cat="agent" onclick="ccSetFilter('agent',this)"><i data-lucide="bot" style="width:13px;height:13px;display:inline;vertical-align:-2px"></i> 智能体应用开发</button>
+    </div>
+    <button class="btn btn-primary" style="white-space:nowrap" onclick="openBooking()"><i data-lucide="calendar-check" style="width:14px;height:14px"></i> 课程预约</button>
+  </div>
+  <div class="cc-grid" id="ccGrid"></div>
+</div>
+
+<div class="page-view" id="courseDetailView">
+  <div style="position:sticky;top:0;z-index:20;height:52px;display:flex;align-items:center;gap:14px;padding:0 28px;background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-subtle)">
+    <button class="cc-back" onclick="showCourseCenter()"><i data-lucide="arrow-left" style="width:14px;height:14px"></i> 课程中心</button>
+    <span style="font-size:12px;color:var(--text-dim)" id="cdBreadcrumb"></span>
+  </div>
+  <div class="cd-hero" id="cdHero"></div>
+  <div class="cd-overview" id="cdOverview"></div>
+  <div class="cd-chapter-section" id="cdChapters"></div>
+</div>
+
+<div class="page-view" id="chapterView">
+  <div style="position:sticky;top:0;z-index:20;height:52px;display:flex;align-items:center;gap:14px;padding:0 28px;background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-subtle)">
+    <button class="cc-back" id="chBackBtn"><i data-lucide="arrow-left" style="width:14px;height:14px"></i> 返回课程总览</button>
+    <span style="font-size:12px;color:var(--text-dim)" id="chBreadcrumb"></span>
+  </div>
+  <div class="ch-body" id="chBody"></div>
+  <div class="ch-nav" id="chNav"></div>
+</div>
+
+<div class="page-view" id="learningPathView">
+  <div class="cc-hero">
+    <h1>推荐学习路径</h1>
+    <p>从 AI 基础认知到专业智能体交付，四阶段递进式培养，每阶段均产出可展示的项目成果</p>
+  </div>
+  <div style="max-width:1100px;margin:0 auto;padding:48px 32px;display:flex;align-items:flex-start;justify-content:center;gap:0;flex-wrap:wrap">
+    <div style="flex:1;min-width:200px;max-width:260px;text-align:center;padding:20px 12px;position:relative">
+      <div style="width:80px;height:80px;border-radius:50%;background:var(--bg-card);border:2px solid var(--border-default);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:600;color:var(--ink);margin:0 auto 16px">01</div>
+      <div style="position:absolute;top:40px;right:-8px;color:var(--text-dim)"><i data-lucide="arrow-right" style="width:18px;height:18px"></i></div>
+      <h4 style="font-size:19px;font-weight:600;color:var(--text-primary);margin-bottom:7px;letter-spacing:-0.01em">模型底座认知</h4>
+      <p style="font-size:12px;color:var(--text-muted);line-height:1.55">理解 Transformer 架构、模型生态与 API 服务化调用</p>
+      <p style="font-size:11px;color:var(--text-dim);margin-top:8px">Agent / RAG 第1-3周</p>
+    </div>
+    <div style="flex:1;min-width:200px;max-width:260px;text-align:center;padding:20px 12px;position:relative">
+      <div style="width:80px;height:80px;border-radius:50%;background:var(--bg-card);border:2px solid var(--border-default);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:600;color:var(--ink);margin:0 auto 16px">02</div>
+      <div style="position:absolute;top:40px;right:-8px;color:var(--text-dim)"><i data-lucide="arrow-right" style="width:18px;height:18px"></i></div>
+      <h4 style="font-size:19px;font-weight:600;color:var(--text-primary);margin-bottom:7px;letter-spacing:-0.01em">交互与工具工程</h4>
+      <p style="font-size:12px;color:var(--text-muted);line-height:1.55">Prompt 设计、上下文组织、Function Call 与 MCP 工具接入</p>
+      <p style="font-size:11px;color:var(--text-dim);margin-top:8px">Agent 第3-7周 · RAG 第4-7周</p>
+    </div>
+    <div style="flex:1;min-width:200px;max-width:260px;text-align:center;padding:20px 12px;position:relative">
+      <div style="width:80px;height:80px;border-radius:50%;background:var(--bg-card);border:2px solid var(--border-default);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:600;color:var(--ink);margin:0 auto 16px">03</div>
+      <div style="position:absolute;top:40px;right:-8px;color:var(--text-dim)"><i data-lucide="arrow-right" style="width:18px;height:18px"></i></div>
+      <h4 style="font-size:19px;font-weight:600;color:var(--text-primary);margin-bottom:7px;letter-spacing:-0.01em">端侧与多模态</h4>
+      <p style="font-size:12px;color:var(--text-muted);line-height:1.55">模型量化部署、ONNX 推理、视觉模型实时检测</p>
+      <p style="font-size:11px;color:var(--text-dim);margin-top:8px">端侧 AI 第1-5周</p>
+    </div>
+    <div style="flex:1;min-width:200px;max-width:260px;text-align:center;padding:20px 12px">
+      <div style="width:80px;height:80px;border-radius:50%;background:var(--bg-card);border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:600;color:var(--ink);margin:0 auto 16px;box-shadow:var(--shadow-md)">04</div>
+      <h4 style="font-size:19px;font-weight:600;color:var(--text-primary);margin-bottom:7px;letter-spacing:-0.01em">项目集成与交付</h4>
+      <p style="font-size:12px;color:var(--text-muted);line-height:1.55">FastAPI + Next.js 全栈项目，Web 化智能体 Demo 上线</p>
+      <p style="font-size:11px;color:var(--text-dim);margin-top:8px">Agent 第8-10周 · RAG 第8-10周</p>
+    </div>
+  </div>
+</div>
+
+<div class="page-view" id="faqView">
+  <div class="cc-hero">
+    <h1>常见问题</h1>
+    <p>关于课程你可能有这些疑问，我们整理了一些高频问题的解答</p>
+  </div>
+  <div style="max-width:760px;margin:0 auto;padding:40px 32px 80px">
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">课程适合零基础学员吗？<span class="faq-q-icon"><i data-lucide="plus" style="width:12px;height:12px"></i></span></button>
+        <div class="faq-a"><p>适合。课程设计以"从零基础起步"为原则，第一阶段从 Transformer 底层原理讲起，配合 HuggingFace 实训和预训练模型调用，确保无 AI 背景的学员也能跟上节奏。金融 AI 实验室课程更面向非 CS 专业学员，通过 Cursor、Coze、Dify 等低代码平台降低技术门槛。</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">课程是线上还是线下？<span class="faq-q-icon"><i data-lucide="plus" style="width:12px;height:12px"></i></span></button>
+        <div class="faq-a"><p>课程以线下面授实训为主，配合远程开发环境（SSH 远程登录香橙派 AIpro 开发板）进行实操。端侧 AI 课程提供真实硬件（香橙派 AIpro 开发板）供学员操作。部分模块支持线上直播参与，具体请咨询课程顾问。</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">课程结束后有什么产出？<span class="faq-q-icon"><i data-lucide="plus" style="width:12px;height:12px"></i></span></button>
+        <div class="faq-a"><p>每门课程均有明确的最终交付物：Agent 课程产出可 Web 访问的专业智能体项目 Demo；RAG 课程产出具备真实交互能力的智能应用服务；端侧 AI 课程产出端侧部署的对话/视觉检测应用；金融 AI 课程产出金融业务智能体 + 项目路演材料。所有成果均可用于答辩展示和作品集。</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">是否提供结业证书？<span class="faq-q-icon"><i data-lucide="plus" style="width:12px;height:12px"></i></span></button>
+        <div class="faq-a"><p>是的，完成全部实训内容并通过最终项目答辩的学员将获得结业证书，证明其具备对应课程方向的大模型应用开发工程能力。</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">课程对硬件配置有什么要求？<span class="faq-q-icon"><i data-lucide="plus" style="width:12px;height:12px"></i></span></button>
+        <div class="faq-a"><p>大模型应用开发类课程（Agent、RAG、金融 AI）使用云端 API 调用，个人电脑即可完成全部实训。端侧 AI 课程提供香橙派 AIpro 开发板，学员无需自备硬件。建议自备笔记本电脑（8GB+ 内存），用于本地开发环境搭建。</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page-view" id="aboutView">
+  <div class="cc-hero">
+    <h1>关于我们</h1>
+    <p>产业级大模型人才培养平台</p>
+  </div>
+  <div style="max-width:700px;margin:0 auto;padding:48px 32px">
+    <img class="about-banner" src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=400&q=80&auto=format&fit=crop" alt="Team" onerror="this.style.display='none'">
+    <p style="font-size:19px;color:var(--text-secondary);line-height:1.5;margin-bottom:24px">昇腾 AI 是一个专注于大模型应用开发与智能体构建的产业级人才培养平台。以真实项目驱动、一线工程师主讲，覆盖从 Transformer 底层原理到 Web 化智能体交付的完整 AI 工程能力闭环。</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-top:24px;margin-bottom:32px">
+      <div class="info-card"><div class="info-card-icon"><i data-lucide="target"></i></div><h4>使命</h4><p>帮助学员从 AI 使用者迈向 AI 应用创造者</p></div>
+      <div class="info-card"><div class="info-card-icon"><i data-lucide="factory"></i></div><h4>课程特色</h4><p>真实产业项目驱动，全栈交付闭环</p></div>
+      <div class="info-card"><div class="info-card-icon"><i data-lucide="graduation-cap"></i></div><h4>师资</h4><p>一线工程师主讲，实战经验丰富</p></div>
+      <div class="info-card"><div class="info-card-icon"><i data-lucide="award"></i></div><h4>认证</h4><p>结业证书 + 项目作品集</p></div>
+    </div>
+    <h2 style="font-size:28px;font-weight:600;color:var(--text-primary);margin-bottom:16px;letter-spacing:-0.01em">联系我们</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px">
+      <div class="info-card"><div class="info-card-icon"><i data-lucide="mail"></i></div><h4>邮箱</h4><p>bjascend@jingxizhigu.com</p></div>
+      <div class="info-card"><div class="info-card-icon"><i data-lucide="phone"></i></div><h4>电话</h4><p>18611003838</p></div>
+      <div class="info-card"><div class="info-card-icon"><i data-lucide="map-pin"></i></div><h4>地址</h4><p>北京市门头沟区莲石湖西路98号院创业大厦13号楼D座5层</p></div>
+      <div class="info-card"><div class="info-card-icon"><i data-lucide="qr-code"></i></div><h4>京西智谷</h4><p>微信小程序</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- Booking Modal -->
+<div class="booking-overlay" id="bookingOverlay">
+  <div class="booking-modal">
+    <button class="booking-close" onclick="closeBooking()"><i data-lucide="x" style="width:16px;height:16px"></i></button>
+    <div id="bookingFormWrap">
+      <div class="booking-header">
+        <h2 style="display:flex;align-items:center;gap:10px"><i data-lucide="calendar-check" style="width:24px;height:24px"></i> 预约试听课程</h2>
+        <p>填写信息，开启 AI 学习之旅</p>
+      </div>
+      <div class="booking-body">
+        <label>选择课程 <span class="req">*</span></label>
+        <select id="bkCourse">
+          <option value="">请选择课程</option>
+          <option value="agent">Agent 进阶之道（10周）</option>
+          <option value="rag">RAG 进阶之道（10周）</option>
+          <option value="edge">端侧 AI 开发实践（5周）</option>
+          <option value="fintech">金融 AI 实验室（10天）</option>
+        </select>
+        <label>期望日期 <span class="req">*</span></label>
+        <input type="date" id="bkDate">
+        <label>姓名 <span class="req">*</span></label>
+        <input type="text" id="bkName" placeholder="请输入您的姓名">
+        <label>手机号 <span class="req">*</span></label>
+        <div class="booking-phone-row">
+          <input type="text" id="bkPhone1" maxlength="3" oninput="autoFocusNext(this,'bkPhone2',3)">
+          <span class="sep">-</span>
+          <input type="text" id="bkPhone2" maxlength="4" oninput="autoFocusNext(this,'bkPhone3',4)">
+          <span class="sep">-</span>
+          <input type="text" id="bkPhone3" maxlength="4">
+        </div>
+        <label style="margin-top:14px">意向课程方向 <span style="font-size:11px;color:var(--text-muted);font-weight:400">（选填）</span></label>
+        <select id="bkInterest">
+          <option value="">不限</option>
+          <option>基础大模型</option>
+          <option>Prompt Engineering</option>
+          <option>模型微调</option>
+          <option>RAG & Agent</option>
+          <option>多模态</option>
+          <option>LLM 工程化</option>
+        </select>
+        <label>消息获取渠道 <span style="font-size:11px;color:var(--text-muted);font-weight:400">（选填）</span></label>
+        <select id="bkSource">
+          <option value="">请选择</option>
+          <option>朋友推荐</option>
+          <option>微信公众号</option>
+          <option>知乎/B站</option>
+          <option>搜索引擎</option>
+          <option>线下活动</option>
+          <option>其他</option>
+        </select>
+        <label style="margin-top:14px">建议/备注 <span style="font-size:11px;color:var(--text-muted);font-weight:400">（选填）</span></label>
+        <input type="text" id="bkNote" placeholder="如有特殊需求请在此留言">
+        <button class="booking-submit" id="bkSubmit" onclick="submitBooking()">提交预约</button>
+      </div>
+    </div>
+    <div class="booking-success" id="bookingSuccess" style="display:none">
+      <div class="booking-success-icon">✅</div>
+      <h3>预约成功！</h3>
+      <p>课程顾问将在 24 小时内与您联系确认</p>
+      <button class="booking-submit" style="margin-top:24px" onclick="closeBooking()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeDetail()">
+  <div class="modal" id="modalContent">
+    <button class="modal-close" onclick="closeDetail()">✕</button>
+    <div id="modalInner"></div>
+  </div>
+</div>
+
+<!-- ========== SCRIPTS ========== -->
+<script>
+// FAQ toggle
+function toggleFaq(btn) {
+  const item = btn.parentElement;
+  item.classList.toggle('open');
+}
+
+// Philosophy text reveal toggle
+// ========== Two-face hero card toggle (image ↔ philosophy) ==========
+var philFaceImg = document.getElementById('hvFaceImg');
+var philFaceText = document.getElementById('hvFacePhil');
+var philCaption = document.getElementById('hvCaptionText');
+var philVisual = document.getElementById('heroVisual');
+var philShine = document.querySelector('.hero-visual-shine');
+var philGlow = document.querySelector('.hero-visual-glow');
+var isPhilOpen = false;
+
+function closePhilosophy(){
+  if (!isPhilOpen) return;
+  isPhilOpen = false;
+  philFaceImg.classList.add('active');
+  philFaceText.classList.remove('active');
+  philCaption.textContent = '实时智能体 · 端侧推理 · 全栈交付';
+  if(philShine) philShine.style.display = '';
+  if(philGlow) philGlow.style.display = '';
+}
+
+function togglePhilosophy(){
+  if (isPhilOpen) { closePhilosophy(); return; }
+  isPhilOpen = true;
+  philFaceImg.classList.remove('active');
+  philFaceText.classList.add('active');
+  philCaption.textContent = '返回 · 查看动态视觉';
+  if(philShine) philShine.style.display = 'none';
+  if(philGlow) philGlow.style.display = 'none';
+}
+
+// Auto-close on scroll past hero
+window.addEventListener('scroll', function(){
+  if (!isPhilOpen) return;
+  var h = document.querySelector('.hero');
+  if (!h) return;
+  var heroBottom = h.offsetTop + h.offsetHeight;
+  if (window.scrollY > heroBottom - 80) closePhilosophy();
+}, {passive: true});
+window.togglePhilosophy = togglePhilosophy;
+
+// Notification dropdown
+function toggleNotify() {
+  var dd = document.getElementById('notifyDropdown');
+  dd.classList.toggle('open');
+}
+function searchNotifyRecords(){
+  var phone = document.getElementById('notifyPhoneSearch').value.trim();
+  var empty = document.getElementById('notifyEmpty');
+  var results = document.getElementById('notifyResults');
+  if(!phone || phone.length < 11){alert('请输入正确的11位手机号');return}
+  // Simulate search results
+  empty.style.display = 'none';
+  results.style.display = '';
+  results.innerHTML = '<div class="notify-item"><div><strong>Agent 进阶之道</strong></div><div style="font-size:11px;color:var(--text-muted)">2026-06-20 14:00</div></div><div class="notify-item"><div><strong>端侧 AI 开发实践</strong></div><div style="font-size:11px;color:var(--text-muted)">2026-06-18 09:30</div></div>';
+}
+document.addEventListener('click', function(e) {
+  var dd = document.getElementById('notifyDropdown');
+  var btn = document.querySelector('.btn-notify');
+  if (dd && btn && !btn.contains(e.target) && !dd.contains(e.target)) {
+    dd.classList.remove('open');
+  }
+});
+
+// ============ BOOKING MODAL ============
+function openBooking() {
+  document.getElementById('bookingOverlay').classList.add('open');
+  document.getElementById('bookingFormWrap').style.display = '';
+  document.getElementById('bookingSuccess').style.display = 'none';
+  document.body.style.overflow = 'hidden';
+  resetBookingForm();
+}
+function closeBooking() {
+  document.getElementById('bookingOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function resetBookingForm() {
+  document.getElementById('bkCourse').value = '';
+  document.getElementById('bkDate').value = '';
+  document.getElementById('bkName').value = '';
+  document.getElementById('bkPhone1').value = '';
+  document.getElementById('bkPhone2').value = '';
+  document.getElementById('bkPhone3').value = '';
+  document.getElementById('bkInterest').value = '';
+  document.getElementById('bkSource').value = '';
+  document.getElementById('bkSubmit').disabled = false;
+  document.getElementById('bkSubmit').textContent = '提交预约';
+}
+
+function getPhone(prefix) {
+  var p1 = document.getElementById(prefix + '1').value.trim();
+  var p2 = document.getElementById(prefix + '2').value.trim();
+  var p3 = document.getElementById(prefix + '3').value.trim();
+  return p1 + p2 + p3;
+}
+
+function autoFocusNext(current, nextId, maxLen) {
+  current.value = current.value.replace(/\D/g, '');
+  if (current.value.length >= maxLen) {
+    current.value = current.value.substring(0, maxLen);
+    var next = document.getElementById(nextId);
+    if (next) next.focus();
+  }
+}
+function submitBooking() {
+  var course = document.getElementById('bkCourse').value;
+  var date = document.getElementById('bkDate').value;
+  var name = document.getElementById('bkName').value;
+  var phone = getPhone('bkPhone');
+  if (!course || !date || !name) { alert('请填写所有必填项'); return; }
+  if (phone.length !== 11) { alert('请输入正确的11位手机号'); return; }
+  var formattedPhone = phone.substring(0,3) + '-' + phone.substring(3,7) + '-' + phone.substring(7,11);
+  if (!confirm('请确认手机号：' + formattedPhone + '\n\n信息无误请点击"确定"提交')) { return; }
+  document.getElementById('bkSubmit').textContent = '提交中...';
+  document.getElementById('bkSubmit').disabled = true;
+  setTimeout(function() {
+    document.getElementById('bookingFormWrap').style.display = 'none';
+    document.getElementById('bookingSuccess').style.display = '';
+  }, 800);
+}
+document.getElementById('bookingOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeBooking();
+});
+
+// Back to top
+const backTop = document.getElementById('backTop');
+window.addEventListener('scroll', () => {
+  backTop.classList.toggle('visible', window.scrollY > 500);
+});
+
+// ============ COURSE DETAIL DATA ============
+const courseDetails = {
+  agent: {
+    title: '产业级闭环与科研演进：Agent 进阶之道',
+    meta: '⏱ 10 周（共 10 课次） &nbsp;|&nbsp; 📶 进阶 &nbsp;|&nbsp; 🏷 Agent / MCP / Function Call / Next.js',
+    goal: `<p>通过为期 10 个课次的系统化实训，学员将沿着"理解大模型 - 调用模型服务 - 设计交互上下文 - 构建 Agent - 接入 MCP 工具 - 完成 Web 化项目集成"的路径，逐步掌握大模型应用开发与专业场景智能体实现的完整流程。</p>`,
+    competitiveness: [
+      '架构认知完整：从 Transformer 的 Token、Embedding、位置编码、自注意力、多头注意力讲起，帮助学生理解大模型为什么能够处理自然语言任务。',
+      '模型生态前沿：覆盖大模型演化主线、MoE、世界模型、Sora 2、开源模型生态与 Model-as-a-Service，让学生理解当前 AI 技术从通用模型走向工具化、智能体化的趋势。',
+      '工具调用闭环：从手写计算器 Agent 到 Function Call，再到 MCP 的 Stdio、SSE、HTTP、Client-Server 架构，逐步拆解模型如何从"输出文本"升级为"调用动作"。',
+      '场景项目具体：课程不是抽象讲 Agent，而是用搜索 MCP、Arxiv Paper MCP、论文引用助手、Next.js 前端、FastAPI 后端等明确案例完成系统集成。',
+      '可展示可迁移：最终项目可以迁移到科研助理、法律顾问、医学问答、教育教练、工程优化等专业场景，形成课程答辩和后续科研原型。'
+    ],
+    matrix: [
+      ['第一阶段','模型底座认知','Transformer、Token、Embedding、位置编码、Self-Attention','预训练模型调用示例与 Transformer 结构说明'],
+      ['第二阶段','模型生态与服务化','GPT/Qwen/DeepSeek、MoE、World Model、MaaS、API 调用','可调用远程模型服务的脚本与服务化理解笔记'],
+      ['第三阶段','交互与上下文工程','System/User/Assistant Prompt、BROKE、COAST、ROSES、CoT、RAG、Memory','Prompt 模板、上下文组织方案与输出对比报告'],
+      ['第四阶段','Agent 行为机制','任务分解、ReAct、Plan-and-Solve、Reflection、计算器工具','可完成任务拆解与工具调用的基础 Agent'],
+      ['第五阶段','工具协议与 MCP 实践','Function Call、MCP、Stdio、SSE、HTTP、搜索 MCP、Arxiv MCP','支持 MCP 工具调用的搜索 Agent 与文献引用助手'],
+      ['第六阶段','项目集成与交付','Next.js、shadcn/ui、ai-elements、FastAPI、RESTful API、前后端联调','可通过 Web 页面交互的专业智能体项目 Demo']
+    ],
+    timeline: [
+      ['第 1-2 周 — 研发基石：大模型架构与模型服务化','理论：系统讲解 Transformer 的 Encoder-Decoder 架构、Token IDs、子词分词、Embedding、位置编码、自注意力与并行计算优势；梳理从 BERT、GPT、ChatGPT 到 Qwen、DeepSeek 的演化脉络。<br>延展：MoE 专家网络与门控网络、World Model 与 Sora 2。<br>实训：HuggingFace Transformers 分词/编码/分类；调用 DeepSeek/Qwen 接口完成摘要、问答。'],
+      ['第 3 周 — 交互工程：提示词设计与上下文组织','理论：system/user/assistant prompt 角色边界；BROKE、COAST、ROSES 框架；Zero-shot/One-shot/Few-shot/CoT。<br>实训：对比不同 Prompt 输出差异；将指令、对话历史、RAG 检索信息纳入上下文工程。<br>产出：可复用 Prompt 模板、上下文工程策略清单。'],
+      ['第 4-5 周 — 执行机制：Agent 任务分解与 Function Call','理论：Agent 定义、历史、核心模块；感知-决策-执行循环；ReAct、Plan-and-Solve、Reflection 范式。<br>实训：构建基础计算器 Agent → 改造为 Function Call 模式 → 处理复合请求。<br>产出：具备任务分解与工具调用能力的最小 Agent、JSON Schema 示例。'],
+      ['第 6-7 周 — 工具协议：MCP 原理与联网搜索实践','理论：Model Context Protocol 背景与标准化价值；MCP Client-Server 架构；Stdio/SSE/HTTP 传输。<br>实训：基于 MCP World/ModelScope MCP 完成 tools/list、tools/call；开发 Web Search Agent。<br>产出：MCP 架构说明、具备联网搜索能力的 MCP Agent。'],
+      ['第 8-9 周 — 项目攻坚：专业场景智能体开发与系统集成','理论：专业智能体角色、输出格式、上下文记忆与任务边界；前后端集成思路。<br>实训：ArxivAssistantAgent + 本地 Arxiv MCP；前端 Next.js/shadcn/ui + 后端 FastAPI 封装。<br>产出：面向科研写作的智能文献引用助手 Web 应用原型。'],
+      ['第 10 周 — 交付闭环：项目展示与课程总结','展示与互评：学员展示专业智能体项目，围绕完成度、工具调用准确性、可靠性、可用性进行互评。<br>总结：回顾从 Transformer 到 MaaS、Prompt、Agent、MCP、Web 集成的完整链路。<br>产出：最终项目 Demo、展示材料、后续优化计划。']
+    ],
+    extensions: [
+      'Agent 思考范式对比研究：比较 ReAct、Plan-and-Solve、Reflection、Sequential Thinking 在复杂任务中的完成率、稳定性和工具调用成本。',
+      'Function Call 可靠性优化：研究工具选择错误、参数缺失、JSON schema 不兼容等问题的检测与修复机制。',
+      'MCP 工具生态扩展：围绕搜索、论文、知识库、数据库、文件系统和业务接口，构建可复用的专业 MCP 服务集合。',
+      '科研智能体评测：以文献检索、引用推荐、论文摘要等任务为对象，评估 Agent 的事实准确率、引用规范性和可解释性。'
+    ],
+    quote: '"我们希望留给学生的不只是一个能够运行的代码包，而是一套可以持续进化的工程思维：理解模型底层机制，知道模型服务如何被调用，能够设计稳定的 Prompt 和上下文，懂得用 Function Call 与 MCP 把外部工具接入 Agent，并最终把命令行脚本封装成真实用户可以访问的 Web 应用。"<br><br>这样的训练能帮助学生从 AI 使用者迈向 AI 应用创造者，也能让课程成果继续沉淀为科研原型、行业 Demo 或个人作品集。'
+  },
+  rag: {
+    title: '产业级闭环与科研演进：RAG 进阶之道',
+    meta: '⏱ 10 周（共 10 课次） &nbsp;|&nbsp; 📶 进阶 &nbsp;|&nbsp; 🏷 RAG / 向量数据库 / 混合检索 / FastAPI',
+    goal: `<p>通过为期10个课次的系统化实训，学员将从零基础起步，逐步建立对大模型应用开发与 RAG（检索增强生成）架构的系统认知。课程以"认知—实现—优化—应用"为学习闭环，旨在培养学员在真实产业背景下构建、调优及部署高性能 AI 系统的能力。</p>`,
+    competitiveness: [
+      '真实落地项目驱动：课程逻辑提炼自政务、法律、金融等行业大模型项目的实际开发闭环。',
+      '解决工程化痛点：直击企业在落地 RAG 过程中遭遇的"长文档检索精度"、"数据清洗标准"及"系统鲁棒性"等研发难题。',
+      '全栈交付闭环：从底层 Transformer 原理到 FastAPI 前后端集成，构建完整的"认知—实现—优化—应用"学习闭环。'
+    ],
+    matrix: [
+      ['第一阶段','架构认知','Transformer、Decoder-only、环境工程','产业应用背景下的开发环境部署'],
+      ['第二阶段','知识中台','词向量、向量数据库、数据清洗','工业级知识库的向量化转换与管理'],
+      ['第三阶段','检索增强','混合检索、提示词工程、上下文管理','高精度、低幻觉的 RAG 推理引擎'],
+      ['第四阶段','系统集成','FastAPI、RESTful、系统优化','具备真实交互能力的智能应用服务']
+    ],
+    timeline: [
+      ['第 1-3 周 — 研发基石：大模型架构与环境工程','理论：结合真实产业场景，解析 Transformer 与 Decoder-only 架构；探讨机器学习三大范式在业务中的边界。<br>实训：配置项目相关开发环境；利用预训练模型实现摘要与分类任务。'],
+      ['第 4-5 周 — 知识中台：RAG 核心组件研发','理论：LangChain 模块化设计；词向量（Embedding）技术与企业级向量数据库选型。<br>实训：数据清洗流程、文本分块（Chunking）优化及知识嵌入全流程实操。'],
+      ['第 6-7 周 — 算法优化：检索增强生成的精度攻坚','理论：混合检索模式（稀疏+稠密）在高频查询下的平衡；提示词（Prompt）工程中的上下文管理。<br>实训：生成参数（Temperature, Top-k）调优；通过基准测试提升系统鲁棒性。'],
+      ['第 8-10 周 — 交付闭环：全栈集成与产业化部署','理论：基于 FastAPI 的架构设计；前后端组件化开发与系统集成原理。<br>实训：系统整体优化方案讲解；完成最终系统调试与实训答辩。']
+    ],
+    extensions: [
+      '混合检索策略优化研究：探索在不同行业语料下，稀疏检索与稠密检索的最优权重配比及融合算法。',
+      'Embedding 表示稳定性分析：研究不同维度 Embedding 向量在面对长文档切分时的语义漂移问题。',
+      '幻觉问题的量化评估模型：基于真实业务反馈数据，构建多维度的"幻觉"检测指标。',
+      '行业语料特化模型对比实验：对比通用大模型与行业微调模型在特定垂直领域 RAG 架构下的推理性能差异。'
+    ],
+    quote: '"我们希望留给学生的不仅是一个可以运行的代码包，而是一套可以持续进化的科研思路。这种从落地项目中提炼出的工程思维，能确保学生在解决当前课程问题的同时，具备追踪 AI 技术演进的能力。"'
+  },
+  edge: {
+    title: '端侧 AI 智能应用开发与部署实践：基于香橙派 AIpro 平台',
+    meta: '⏱ 5 周 &nbsp;|&nbsp; 📶 入门到进阶 &nbsp;|&nbsp; 🏷 香橙派 / MindSpore / Qwen / YOLOv8',
+    goal: `<p>通过为期 5 周的系统化课程训练，学员将从零基础起步，逐步建立对端侧人工智能计算平台与生态体系的系统认知，全面理解香橙派 AIpro 平台的软硬件架构、算力特征、NPU 加速能力与开发环境。</p><p>课程以"认知 - 实现 - 优化 - 应用"为学习闭环，从操作系统与开发环境准备、Linux 基础操作、开源社区资源使用，到 MindSpore 模型训练与推理，再到 Qwen、MiniCPM 等大语言模型的端侧部署、模型转换、量化优化和性能测试，最终延伸至 YOLOv8-Pose 实时人体姿态检测等视觉模型部署任务。</p>`,
+    competitiveness: [
+      '真实硬件平台驱动：以香橙派 AIpro 为核心开发平台，训练学员理解 NPU、CANN、系统镜像、远程调试、环境变量和板端资源管理。',
+      '国产 AI 生态贯通：结合 MindSpore、昇腾社区、魔搭社区、HuggingFace、Git 等资源，帮助学员建立模型获取与开源协作能力。',
+      '大模型端侧部署导向：围绕 Qwen2-0.5B、MiniCPM 等轻量模型，完整训练模型转换、ONNX 推理、量化、部署全流程。',
+      '多模态应用延展：课程最终拓展到 YOLOv8-Pose 端侧实时人体姿态检测，同时具备语言与视觉模型部署经验。'
+    ],
+    matrix: [
+      ['第 1 周','系统与生态认知','Linux、Git、HuggingFace、魔搭社区、AIpro','能独立完成 AIpro 开发环境初始化与基础操作'],
+      ['第 2 周','框架实践能力','MindSpore、CANN、ModelZoo、训练推理、性能评估','完成模型训练、推理与性能分析'],
+      ['第 3 周','大语言模型部署','Qwen、ONNX、量化、SSH、远程调试、端侧推理','通义千问端侧对话 Demo'],
+      ['第 4 周','模型压缩与加速','MiniCPM、蒸馏、剪枝、量化、内存控制','轻量化端侧对话模型服务'],
+      ['第 5 周','视觉实战能力','YOLOv8-Pose、ONNX、视觉推理、姿态估计','实时人体姿态检测应用']
+    ],
+    timeline: [
+      ['第 1 周 — 研发基石：从硬件平台到开源生态','理论：香橙派 AIpro 硬件架构、NPU 能力；Linux 文件系统与常用命令；HuggingFace/魔搭社区/Git。<br>实训：板子系统初始化、Linux 环境操作、模型权重下载。<br>产出：可独立操作的 AIpro 开发环境。'],
+      ['第 2 周 — 框架入门：基于 AIpro 的 MindSpore 训练与推理','理论：MindSpore 与昇腾生态定位；CANN 框架与硬件加速。<br>实训：镜像烧录、MindSpore 配置、模型构建与推理。<br>评估：Latency、Throughput、mAP、CPU/NPU 占用分析。'],
+      ['第 3 周 — 大模型落地：通义千问模型从转换到高效推理','理论：大语言模型结构与推理；SSH 远程开发；Qwen1.5 vs Qwen2 架构差异。<br>实训：ONNX 导出、量化、推理加速；端侧 Qwen 对话 Demo。<br>产出：端侧对话 Demo + 性能对比报告。'],
+      ['第 4 周 — 轻量优化：MiniCPM 核心算法与工程实现','理论：知识蒸馏、剪枝、量化、内存控制、算子优化。<br>实训：MiniCPM ONNX 转换与部署、端侧推理服务搭建。<br>产出：MiniCPM 轻量端侧对话应用 + 基准测试报告。'],
+      ['第 5 周 — 多模态实战：YOLOv8-Pose 端侧部署与实时姿态追踪','理论：YOLOv8-Pose 结构、人体关键点检测原理。<br>实训：YOLOv8-Pose 转换、量化、部署；实时姿态估计代码。<br>产出：实时人体姿态检测应用 + 视觉推理性能分析报告。']
+    ],
+    extensions: [
+      '端侧大模型量化策略对比：比较不同量化位宽、算子优化对 Qwen、MiniCPM 推理速度与回答质量的影响。',
+      'NPU 资源调度与性能优化：研究 CPU、内存、NPU 占用之间的瓶颈关系。',
+      '多模型协同应用：将语言模型与视觉模型结合，构建"视觉感知 + 语言交互"端侧多模态应用。',
+      '行业化边缘 AI 原型：面向校园、工业巡检、健康监测、智能安防、运动分析等场景扩展。'
+    ],
+    quote: '"我们希望留给学生的不只是一个能跑通的端侧 Demo，而是一套理解端侧 AI 系统的工程思维：知道模型如何获得、如何转换、如何部署，知道硬件资源如何限制推理效率，也知道如何通过量化、剪枝、算子优化和性能分析把模型真正落到设备上。"'
+  },
+  fintech: {
+    title: '金融 AI 实验室：用自然语言重塑金融研究',
+    meta: '⏱ 10 天 &nbsp;|&nbsp; 📶 入门到进阶 &nbsp;|&nbsp; 🏷 金融科技 / RAG / Agent / Coze/Dify',
+    goal: `<p>本课程旨在帮助金融学子破除 AI 技术壁垒，实现从"简单对话"到"深度协作"的思维跃迁。通过 10 天的实训，学生将掌握结构化提示工程、AI 数据处理及低代码开发工具，使学生具备整合 <strong>RAG 检索增强技术</strong> 的能力，亲手搭建具备多维任务处理能力的<strong>金融业务智能体</strong>，培养在 AI 时代具备课程特色的"数智化"金融实务处理能力。</p>`,
+    competitiveness: [
+      '金融场景深度定制：专为金融专业学生设计，将 AI 技术与金融业务场景深度融合，覆盖研报分析、数据获取、投资建议等真实金融工作流。',
+      '从对话到智能体的跃迁：10 天完成从基础对话到构建自主决策智能体的完整进阶，帮助学生建立"AI 不仅是工具，更是协作伙伴"的认知。',
+      '低门槛高产出：通过 Cursor、Coze、Dify 等低代码平台降低技术门槛，让金融专业学生无需深厚编程背景即可构建可用的 AI 应用。'
+    ],
+    matrix: [
+      ['第一阶段（第1-2天）','建立连接','结构化指令、Role-Context-Task-Constraint、Excel AI 辅助','能编写高效 Prompt，用 AI 处理金融数据'],
+      ['第二阶段（第3-4天）','生产力飞跃','Vibe Coding、Cursor、OpenClaw、金融数据自动化','个人金融小工具 Demo + 自动化数据获取流程'],
+      ['第三阶段（第5-7天）','构建大脑','RAG、知识分段、Chunking、幻觉评测','个人金融助理 RAG 系统 + 评测报告'],
+      ['第四阶段（第8-9天）','迈向智能体','Agent 思考范式、Coze/Dify、任务拆解、工具使用','全能金融投资 Agent + 日报自动生成'],
+      ['第五阶段（第10天）','成果产出','项目路演、答辩、场景迁移','可展示的金融 AI 项目 + 路演材料']
+    ],
+    timeline: [
+      ['第一阶段：建立连接（从"聊天"到"协作"）','第 1 天 — 驯服"黑盒"：万能指令公式。破除 AI 是"搜索引擎"的误区，学习结构化指令（Role-Context-Task-Constraint）。<br>第 2 天 — Excel 的"外挂"：AI 辅助处理数据。零基础实现复杂数据清洗与财务建模。'],
+      ['第二阶段：生产力飞跃（从"对话"到"工具"）','第 3 天 — Vibe Coding：谁都能写金融小工具。通过对话生成"复利计算器"网页 Demo。<br>第 4 天 — OpenClaw 实战：自动化获取金融数据。配置 OpenClaw 自动抓取财联社实时快讯。'],
+      ['第三阶段：构建大脑（从"通用"到"垂直"）','第 5 天 — 搭建个人金融助理（RAG 基础）。上传 20 份深度研报，测试 AI 基于私有文档的问答能力。<br>第 6 天 — RAG 优化：知识分段与提示词微调，解决 AI"胡说八道"。<br>第 7 天 — 金融助理大考：设计刁钻问题交叉测试，找出最优 RAG 系统。'],
+      ['第四阶段：迈向智能体（从"被动"到"主动"）','第 8 天 — 理解 Agent：金融任务的自动拆解。在 Coze/Dify 配置"日报生成专家"。<br>第 9 天 — 实战：打造全能金融投资 Agent。整合搜索+计算+研报阅读，完成"分析本周黄金走势"任务。'],
+      ['第五阶段：成果产出','第 10 天 — 结业答辩与项目路演。选题方向：① 研报深挖专家 ② 个人财务审计助手 ③ 金融面试模拟器 ④ 实时舆情监控站。']
+    ],
+    extensions: [
+      '研报深挖专家：垂直于某一细分行业（如半导体）的深度问答系统。',
+      '个人财务审计助手：自动识别票据、分类支出并分析风险的智能体。',
+      '金融面试模拟器：基于特定投行/券商风格的压力面试 AI。',
+      '实时舆情监控站：针对特定自选股进行全网情绪分析。'
+    ],
+    quote: '"在 AI 时代，金融从业者的课程特色不再是信息获取的速度，而是与 AI 深度协作的能力。我们希望通过这门课程，让金融学子从 AI 的使用者，成长为 AI 协作系统的设计者。"'
+  }
+};
+
+// ============ PAGE ROUTING ============
+let currentPage = 'home';
+let currentCDCourse = null;
+let currentChIdx = -1;
+
+function hideAllPages() {
+  document.getElementById('mainPage').style.display = '';
+  document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+}
+
+function goHome() {
+  hideAllPages();
+  document.getElementById('mainPage').style.display = '';
+  document.getElementById('mainNav').style.display = '';
+  currentPage = 'home';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showCourseCenter() {
+  document.body.style.background = '';
+  document.body.style.color = '';
+  var all = document.querySelectorAll('#mainPage, .page-view, #mainNav');
+  for (var i = 0; i < all.length; i++) { all[i].style.display = 'none'; }
+  var ccv = document.getElementById('courseCenterView');
+  ccv.style.display = 'block';
+  ccv.style.minHeight = '100vh';
+  ccv.style.background = '#f5f5f7';
+  currentPage = 'courseCenter';
+  renderCourseCenter();
+  window.scrollTo({top:0,behavior:'auto'});
+}
+
+function goHome() {
+  var all = document.querySelectorAll('.page-view');
+  for (var i = 0; i < all.length; i++) { all[i].style.display = 'none'; }
+  document.getElementById('mainPage').style.display = '';
+  document.getElementById('mainNav').style.display = '';
+  currentPage = 'home';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showCourseDetail(courseId) {
+  // Hide all
+  var all = document.querySelectorAll('#mainPage, .page-view, #mainNav');
+  for (var i = 0; i < all.length; i++) {
+    all[i].style.display = 'none';
+  }
+  // Show detail view
+  var cd = document.getElementById('courseDetailView');
+  cd.style.display = 'block';
+  cd.style.minHeight = '100vh';
+  cd.style.background = '#ffffff';
+
+  currentPage = 'courseDetail';
+  currentCDCourse = courseId;
+  renderCourseDetail(courseId);
+  window.scrollTo({top:0,behavior:'auto'});
+}
+
+function showChapter(courseId, idx) {
+  var all = document.querySelectorAll('#mainPage, .page-view, #mainNav');
+  for (var i = 0; i < all.length; i++) { all[i].style.display = 'none'; }
+  var cv = document.getElementById('chapterView');
+  cv.style.display = 'block';
+  cv.style.minHeight = '100vh';
+  cv.style.background = '#ffffff';
+  currentPage = 'chapter';
+  currentCDCourse = courseId;
+  currentChIdx = idx;
+
+  var d = courseDetails[courseId];
+  if (!d || !d.timeline[idx]) return;
+  var ch = d.timeline[idx];
+
+  document.getElementById('chBreadcrumb').textContent = d.title;
+  document.getElementById('chBackBtn').setAttribute('onclick', 'window.showCourseDetail(\''+courseId+'\')');
+
+  document.getElementById('chBody').innerHTML =
+    '<div style="display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;font-weight:700;background:var(--ink-surface);color:var(--ink);margin-bottom:20px">第 '+(idx+1)+' 章 / 共 '+d.timeline.length+' 章</div>'+
+    '<h2 style="font-size:34px;font-weight:600;color:var(--text-primary);margin-bottom:10px;letter-spacing:-0.02em;line-height:1.1">'+ch[0]+'</h2>'+
+    '<div style="font-size:17px;color:var(--text-secondary);line-height:1.7">'+ch[1].replace(/\n/g,'<br>')+'</div>';
+
+  var prevDisabled = idx === 0 ? 'disabled' : '';
+  var nextDisabled = idx >= d.timeline.length-1 ? 'disabled' : '';
+  document.getElementById('chNav').innerHTML =
+    '<button style="padding:10px 20px;border-radius:20px;border:1px solid var(--border-default);background:var(--bg-card);color:var(--text-secondary);cursor:pointer;font-size:13px;font-weight:500;font-family:var(--font)" onclick="window.showChapter(\''+courseId+'\','+(idx-1)+')" '+prevDisabled+'><i data-lucide=\'arrow-left\' style=\'width:14px;height:14px;display:inline;vertical-align:-2px\'></i> 上一章</button>'+
+    '<span style="font-size:12px;color:var(--text-secondary)">'+(idx+1)+' / '+d.timeline.length+'</span>'+
+    '<button style="padding:10px 20px;border-radius:20px;border:1px solid var(--border-default);background:var(--bg-card);color:var(--text-secondary);cursor:pointer;font-size:13px;font-weight:500;font-family:var(--font)" onclick="window.showChapter(\''+courseId+'\','+(idx+1)+')" '+nextDisabled+'>下一章 <i data-lucide=\'arrow-right\' style=\'width:14px;height:14px;display:inline;vertical-align:-2px\'></i></button>';
+
+  window.scrollTo({top:0,behavior:'auto'});
+}
+
+// ============ RENDER COURSE CENTER ============
+var ccCurrentFilter = 'all';
+
+function ccSetFilter(cat, el) {
+  ccCurrentFilter = cat;
+  var chips = document.querySelectorAll('.cc-filter-chip');
+  for (var i = 0; i < chips.length; i++) { chips[i].classList.remove('active'); }
+  el.classList.add('active');
+  renderCourseCenter(cat);
+}
+
+function renderCourseCenter(filter) {
+  filter = filter || ccCurrentFilter;
+  var grid = document.getElementById('ccGrid');
+  if (!grid) return;
+  var html = '';
+  var cc = [
+    { id:'agent', icon:'bot', cat:'llm', img:'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&h=200&q=80&auto=format&fit=crop' },
+    { id:'rag', icon:'search', cat:'llm', img:'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=600&h=200&q=80&auto=format&fit=crop' },
+    { id:'edge', icon:'cpu', cat:'edge', img:'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=200&q=80&auto=format&fit=crop' },
+    { id:'fintech', icon:'landmark', cat:'agent', img:'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&h=200&q=80&auto=format&fit=crop' }
+  ];
+  var count = 0;
+  for (var i = 0; i < cc.length; i++) {
+    var c = cc[i];
+    if (filter !== 'all' && c.cat !== filter) continue;
+    var d = courseDetails[c.id];
+    if (!d) continue;
+    count++;
+    html += '<div class="cc-card">';
+    if (c.img) html += '<img class="cc-card-cover" src="'+c.img+'" onerror="this.style.display=\'none\'">';
+    html += '<div class="cc-card-top"><div class="cc-card-info">';
+    html += '<h3><i data-lucide="'+c.icon+'" style="width:18px;height:18px;display:inline;vertical-align:-3px;margin-right:4px"></i> '+d.title+'</h3>';
+    html += '<div class="cc-card-meta">'+d.meta.replace(/&nbsp;/g,' ')+'</div>';
+    html += '<div class="cc-card-desc">'+d.goal.replace(/<[^>]*>/g,'').substring(0,150)+'...</div>';
+    html += '</div></div>';
+    html += '<button class="cc-card-enter-btn" onclick="event.stopPropagation();window.showCourseDetail(\''+c.id+'\')">查看详情 <i data-lucide=\'arrow-right\' style=\'width:14px;height:14px;display:inline;vertical-align:-2px\'></i></button>';
+    html += '</div>';
+  }
+  if (count === 0) {
+    html = '<div style="text-align:center;padding:60px;color:var(--text-muted)"><p style="margin-bottom:12px"><i data-lucide="inbox" style="width:40px;height:40px;color:var(--text-dim)"></i></p><p>该分类下暂无课程</p></div>';
+  }
+  grid.innerHTML = html;
+}
+
+// ============ RENDER COURSE DETAIL ============
+function renderCourseDetail(courseId) {
+  var d = courseDetails[courseId];
+  if (!d) return;
+
+  // cdHero
+  var hero = document.getElementById('cdHero');
+  if (!hero) return;
+  var hc = {agent:'llm',rag:'llm',edge:'edge',fintech:'agent'};
+  hero.style.background = '';
+  hero.style.padding = '56px 40px 40px';
+  hero.style.position = 'relative';
+  hero.style.overflow = 'hidden';
+  hero.innerHTML = '<div style="max-width:900px;margin:0 auto;padding-top:8px"><div style="display:inline-block;padding:4px 12px;border-radius:4px;font-size:12px;font-weight:600;background:var(--ink-surface);color:var(--ink);margin-bottom:16px;letter-spacing:0">课程详情</div><h1 style="font-size:36px;font-weight:600;color:var(--text-primary);line-height:1.15;letter-spacing:-0.02em">'+d.title+'</h1><div style="margin-top:16px;font-size:13px;color:var(--text-muted)">'+d.meta+'</div></div>';
+
+  document.getElementById('cdBreadcrumb').textContent = d.title;
+
+  // cdOverview
+  var ov = document.getElementById('cdOverview');
+  if (!ov) return;
+  var ovHtml = '<h2 style="font-size:20px;font-weight:700;color:var(--text-primary);margin-bottom:16px;display:flex;align-items:center;gap:8px"><i data-lucide=\'target\' style=\'width:20px;height:20px\'></i> 课程目标</h2>'+d.goal;
+  ovHtml += '<h2 style="font-size:20px;font-weight:700;color:var(--text-primary);margin:28px 0 16px;display:flex;align-items:center;gap:8px"><i data-lucide=\'sparkles\' style=\'width:20px;height:20px\'></i> 课程特色</h2><div class="info-cards">';
+  for (var i = 0; i < d.competitiveness.length; i++) {
+    var parts = d.competitiveness[i].split('：');
+    ovHtml += '<div class="info-card"><h4>'+(parts[0]||'')+'</h4><p>'+(parts.slice(1).join('：')||d.competitiveness[i])+'</p></div>';
+  }
+  ovHtml += '</div>';
+  ov.innerHTML = ovHtml;
+
+  // cdChapters
+  var chEl = document.getElementById('cdChapters');
+  if (!chEl) return;
+  var chHtml = '<h2 style="font-size:20px;font-weight:700;color:var(--text-primary);margin-bottom:6px;display:flex;align-items:center;gap:8px"><i data-lucide=\'book-open\' style=\'width:20px;height:20px\'></i> 课程章节</h2>';
+  chHtml += '<p style="font-size:13px;color:var(--text-muted);margin-bottom:20px">共 '+d.timeline.length+' 个章节，点击进入学习</p>';
+  chHtml += '<div class="cd-chapter-grid">';
+  for (var j = 0; j < d.timeline.length; j++) {
+    chHtml += '<div class="cd-chapter-card" onclick="window.showChapter(\''+courseId+'\','+j+')" style="cursor:pointer">';
+    chHtml += '<div class="ch-num">第 '+(j+1)+' 章</div>';
+    chHtml += '<h4>'+d.timeline[j][0]+'</h4>';
+    chHtml += '<div class="ch-desc">'+d.timeline[j][1].replace(/<[^>]*>/g,'').substring(0,80)+'...</div>';
+    chHtml += '</div>';
+  }
+  chHtml += '</div>';
+  chEl.innerHTML = chHtml;
+}
+
+function showLearningPath() {
+  var all = document.querySelectorAll('#mainPage, .page-view, #mainNav');
+  for (var i = 0; i < all.length; i++) { all[i].style.display = 'none'; }
+  var v = document.getElementById('learningPathView');
+  v.style.display = 'block';
+  v.style.minHeight = '100vh';
+  v.style.background = '#f5f5f7';
+  currentPage = 'learningPath';
+  window.scrollTo({top:0,behavior:'auto'});
+}
+
+function showAbout() {
+  var all = document.querySelectorAll('#mainPage, .page-view, #mainNav');
+  for (var i = 0; i < all.length; i++) { all[i].style.display = 'none'; }
+  var v = document.getElementById('aboutView');
+  v.style.display = 'block';
+  v.style.minHeight = '100vh';
+  v.style.background = '#ffffff';
+  currentPage = 'about';
+  window.scrollTo({top:0,behavior:'auto'});
+}
+
+
+// Expose to window for inline onclick handlers
+window.showCourseCenter = showCourseCenter;
+window.showCourseDetail = showCourseDetail;
+window.showChapter = showChapter;
+window.showLearningPath = showLearningPath;
+function showFAQ() {
+  var all = document.querySelectorAll('#mainPage, .page-view, #mainNav');
+  for (var i = 0; i < all.length; i++) { all[i].style.display = 'none'; }
+  var v = document.getElementById('faqView');
+  v.style.display = 'block';
+  v.style.minHeight = '100vh';
+  v.style.background = '#ffffff';
+  currentPage = 'faq';
+  window.scrollTo({top:0,behavior:'auto'});
+}
+
+window.showAbout = showAbout;
+window.showFAQ = showFAQ;
+window.goHome = goHome;
+window.openBooking = openBooking;
+window.closeBooking = closeBooking;
+
+// ============ MODAL (homepage hot-course buttons) ============
+function openDetail(courseId) {
+  const d = courseDetails[courseId];
+  if (!d) return;
+  let html = `<h2>${d.title}</h2><div class="modal-meta">${d.meta}</div>`;
+  html += `<h3 style="display:flex;align-items:center;gap:8px"><i data-lucide="target" style="width:18px;height:18px"></i> 课程目标</h3>${d.goal}`;
+  html += `<h3 style="display:flex;align-items:center;gap:8px"><i data-lucide="sparkles" style="width:18px;height:18px"></i> 课程特色</h3><ul>${d.competitiveness.map(c=>`<li>${c}</li>`).join('')}</ul>`;
+  html += `<h3 style="display:flex;align-items:center;gap:8px"><i data-lucide="bar-chart-3" style="width:18px;height:18px"></i> 核心交付矩阵</h3><table class="modal-table"><thead><tr><th>阶段</th><th>能力维度</th><th>研发实战关键词</th><th>最终产出</th></tr></thead><tbody>${d.matrix.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+  html += `<h3 style="display:flex;align-items:center;gap:8px"><i data-lucide="book-open" style="width:18px;height:18px"></i> 详细实训计划</h3>${d.timeline.map(t=>`<p style="margin-bottom:16px"><strong>${t[0]}</strong><br><span style="color:var(--text-muted)">${t[1]}</span></p>`).join('')}`;
+  html += `<h3 style="display:flex;align-items:center;gap:8px"><i data-lucide="rocket" style="width:18px;height:18px"></i> 课后延展</h3><ul>${d.extensions.map(e=>`<li>${e}</li>`).join('')}</ul>`;
+  html += `<h3 style="display:flex;align-items:center;gap:8px"><i data-lucide="lightbulb" style="width:18px;height:18px"></i> 初心</h3><div class="quote"><p>${d.quote}</p></div>`;
+  document.getElementById('modalInner').innerHTML = html;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDetail() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (document.getElementById('modalOverlay').classList.contains('open')) { closeDetail(); }
+    else if (currentPage === 'chapter') { showCourseDetail(currentCDCourse); }
+    else if (currentPage === 'courseDetail') { showCourseCenter(); }
+    else if (currentPage === 'courseCenter') { goHome(); }
+    else if (currentPage === 'learningPath' || currentPage === 'about' || currentPage === 'faq') { goHome(); }
+  }
+});
+
+// HOT COURSES — flat 3-col grid, no carousel
+
+// ============ STUDENT PROJECTS AUTO-SCROLL ============
+(function(){
+  var track = document.getElementById('projectsTrack');
+  if (!track) return;
+  var cards = track.querySelectorAll('.project-card');
+  if (cards.length === 0) return;
+  for (var i = 0; i < cards.length; i++) {
+    var clone = cards[i].cloneNode(true);
+    track.appendChild(clone);
+  }
+})();
+</script>
+
+<script>
+// ============================================================
+//   MOTION SYSTEM
+// ============================================================
+(function(){
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var hero = document.querySelector(".hero");
+  var nav = document.querySelector(".nav");
+  var progBar = document.getElementById("scrollProgress");
+  var backTop = document.getElementById("backTop");
+
+  // 1. Hero entrance on page load
+  function heroEntrance() {
+    if (!hero || reduceMotion) return;
+    var items = [
+      { el: hero.querySelector(".hero-badge"), anim: "heroBadgeIn", delay: "0.05s" },
+      { el: hero.querySelector("h1"),          anim: "heroTitleIn", delay: "0.15s" },
+      { el: hero.querySelector(".hero-subtitle"), anim: "heroSubIn", delay: "0.28s" },
+      { el: hero.querySelector(".hero-actions"), anim: "heroBtnsIn", delay: "0.4s"  }
+    ];
+    items.forEach(function(item) {
+      if (!item.el) return;
+      item.el.style.opacity = "0";
+      item.el.style.animation = item.anim + " .65s " + item.delay + " cubic-bezier(0.16,1,0.3,1) forwards";
+    });
+    hero.style.animation = "heroBgReveal .9s .05s cubic-bezier(0.16,1,0.3,1) forwards";
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", heroEntrance);
+  } else { heroEntrance(); }
+
+  // 2. Scroll parallax for hero visual
+  var heroVisual = document.getElementById("heroVisual");
+  function updateParallax() {
+    if (!heroVisual || reduceMotion) return;
+    var scrollY = window.scrollY;
+    var heroH = hero ? hero.offsetHeight : 800;
+    if (scrollY > heroH + 200) return;
+    var shift = scrollY * 0.12;
+    var fade = Math.max(0, 1 - scrollY / (heroH * 0.9));
+    heroVisual.style.transform = "translateY(" + shift + "px) scale(" + (1 + scrollY / 9000) + ")";
+    // Don't fade when philosophy is showing — keep text legible
+    heroVisual.style.opacity = isPhilOpen ? "1" : (0.35 + fade * 0.65).toFixed(3);
+  }
+  window.addEventListener("scroll", updateParallax, {passive: true});
+
+  // 3. Scroll progress bar
+  function updateProgress() {
+    if (!progBar) return;
+    var scrollTop = window.scrollY;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    progBar.style.width = docHeight > 0 ? Math.min((scrollTop / docHeight) * 100, 100) + "%" : "0%";
+  }
+  window.addEventListener("scroll", updateProgress, {passive: true});
+
+  // 4. Nav scroll state
+  function updateNav() {
+    if (!nav) return;
+    nav.classList.toggle("scrolled", window.scrollY > 60);
+  }
+  window.addEventListener("scroll", updateNav, {passive: true});
+  updateNav(); updateProgress();
+
+  // 5. Enhanced scroll reveals (bidirectional)
+  if (typeof IntersectionObserver !== "undefined" && !reduceMotion) {
+    var revealObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        var el = entry.target;
+        if (entry.isIntersecting) {
+          el.style.animationPlayState = "running";
+          if (el.dataset.revealed === "out") {
+            el.style.animation = "none";
+            el.offsetHeight;
+            el.style.animation = el.dataset.animName + " .55s " + (el.dataset.animDelay || "0s") + " cubic-bezier(0.16,1,0.3,1) forwards";
+            el.style.animationPlayState = "running";
+          }
+          el.dataset.revealed = "in";
+        } else {
+          if (el.dataset.revealed === "in") el.dataset.revealed = "out";
+        }
+      });
+    }, { threshold: 0.08, rootMargin: "0px 0px -30px 0px" });
+
+    function addReveal(selector, animName, delayOffset) {
+      delayOffset = delayOffset || 0;
+      document.querySelectorAll(selector).forEach(function(el, i) {
+        if (el.dataset.revealed) return;
+        el.dataset.revealed = "pending";
+        var delay = (i * 0.06 + delayOffset).toFixed(2);
+        el.dataset.animName = animName;
+        el.dataset.animDelay = delay + "s";
+        el.style.opacity = "0";
+        el.style.animation = animName + " .55s " + delay + "s cubic-bezier(0.16,1,0.3,1) forwards";
+        el.style.animationPlayState = "paused";
+        revealObserver.observe(el);
+      });
+    }
+
+    var kfStyle = document.createElement("style");
+    kfStyle.textContent = "@keyframes revealUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}@keyframes revealLeft{from{opacity:0;transform:translateX(-24px)}to{opacity:1;transform:translateX(0)}}@keyframes revealRight{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}@keyframes revealScale{from{opacity:0;transform:scale(0.93)}to{opacity:1;transform:scale(1)}}";
+    document.head.appendChild(kfStyle);
+
+    function initReveals() {
+      addReveal(".hero-content",  "revealLeft",  0);
+      addReveal(".dir-card",      "revealUp",    0.08);
+      addReveal(".course-card", "revealScale", 0.12);
+      addReveal(".path-wrap",     "revealUp",    0.15);
+      addReveal(".project-card",  "revealUp",    0.05);
+      addReveal(".faq-item",      "revealUp",    0.04);
+      addReveal(".cta-banner",    "revealScale", 0);
+      addReveal(".info-card",     "revealUp",    0.06);
+    }
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initReveals);
+    } else { initReveals(); }
+  }
+
+  // 6. Trust bar counter animation
+  if (!reduceMotion) {
+    function animateCounters() {
+      document.querySelectorAll(".trust-stat-num").forEach(function(stat) {
+        if (stat.dataset.counted) return;
+        stat.dataset.counted = "1";
+        var text = stat.textContent.trim();
+        var target = parseInt(stat.dataset.count, 10);
+        if (!target) return;
+        var hasPlus = text.includes('+');
+        var hasPct = text.includes('%');
+        var duration = 1400, start = performance.now();
+        function step(now) {
+          var p = Math.min((now - start) / duration, 1);
+          var eased = 1 - Math.pow(1 - p, 3);
+          var display = Math.round(target * eased).toLocaleString();
+          if (hasPlus) display += '+';
+          if (hasPct) display += '%';
+          stat.textContent = display;
+          if (p < 1) requestAnimationFrame(step);
+          else {
+            stat.textContent = target.toLocaleString() + (hasPlus ? '+' : '') + (hasPct ? '%' : '');
+            stat.style.animation = "counterPop .35s cubic-bezier(0.34,1.56,0.64,1)";
+          }
+        }
+        requestAnimationFrame(step);
+      });
+    }
+    var co = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) { if (e.isIntersecting) { animateCounters(); co.unobserve(e.target); } });
+    }, { threshold: 0.5 });
+    var tb = document.querySelector(".trust-bar");
+    if (tb) co.observe(tb);
+  }
+
+  // 7. Back to top
+  if (backTop) {
+    window.addEventListener("scroll", function() {
+      backTop.classList.toggle("visible", window.scrollY > 500);
+    }, {passive: true});
+  }
+})();
+</script>
+
+<script>
+// ============ SMART CUSTOMER SERVICE ============
+var csKnowledgeBase = {
+  '课程方向': '我们目前开设六大核心技术方向：<br>① 基础大模型 — Transformer架构、Token/Embedding<br>② Prompt Engineering — 提示词设计与上下文工程<br>③ 模型微调 — LoRA/QLoRA微调与模型量化<br>④ RAG & Agent — 检索增强生成与智能体构建<br>⑤ 多模态 — 视觉语言模型与端侧推理<br>⑥ LLM 工程化 — FastAPI/Next.js全栈集成',
+  '预约': '您可以通过页面上的"预约试听"按钮提交预约申请。选择课程和期望日期，填写姓名和手机号，提交后我们的课程顾问会在24小时内与您联系确认。',
+  '试听': '我们提供免费试听课程，您可以点击页面上的"预约试听"按钮选择心仪的课程方向和时间。试听课后如满意可正式报名。',
+  '零基础': '我们的大部分课程都为零基础学员设计！特别是"基础大模型"方向，会从Transformer架构原理讲起，逐步深入到工程实践。如果对编程不熟悉，建议优先选择"金融AI实验室"（10天密集实训），门槛较低、产出明确。',
+  '适合': '我们的课程适合：<br>• 在校大学生 — 构建AI工程能力，增强就业竞争力<br>• 转行开发者 — 快速切入大模型应用开发<br>• 金融从业者 — 用AI重塑金融研究能力<br>• 企业技术团队 — 提升LLM工程化交付能力',
+  '时间': '上课时间灵活安排，支持周末班和工作日晚班。具体课表请查看课程详情页，或联系课程顾问获取最新排期。线下授课地点位于北京市门头沟区。',
+  '地点': '我们的线下授课地点在北京市门头沟区莲石湖西路98号院创业大厦13号楼D座5层。交通便利，距离地铁站步行10分钟。',
+  '地址': '北京市门头沟区莲石湖西路98号院创业大厦13号楼D座5层。欢迎来访！',
+  '价格': '不同课程收费标准不同，详细价格请咨询课程顾问。我们提供早鸟优惠和企业团报折扣。您可以先预约试听，了解课程内容后再决定。',
+  '费用': '课程费用因课程时长和方向而异。我们提供多种优惠方案：早鸟价、团报价、学生价等。具体费用请预约后由课程顾问提供详细报价。',
+  '证书': '完成课程后，学员将获得昇腾AI学院颁发的结业证书。同时，课程中的项目Demo和实训成果可以组成个人作品集，作为进入AI行业的敲门砖。',
+  '就业': '我们培养的是产业级AI工程人才。课程由一线工程师主讲，以真实项目驱动，已有多期学员成功进入AI行业。课程成果可直接作为面试作品展示。',
+  '报名': '您可以先预约试听，体验课程后再决定是否正式报名。点击页面上的"预约试听"按钮即可开始。',
+  '老师': '我们的讲师均为一线AI工程师，具备丰富的产业实战经验。课程内容结合真实项目案例，确保学到的知识可以直接应用于工作场景。',
+  '企业': '我们已服务30+企业客户，累计培养5000+学员。提供企业定制化培训方案，欢迎联系咨询。',
+  '微信': '您可以搜索微信小程序"京西智谷"关注我们，获取最新课程资讯和活动信息。',
+  '电话': '您可以拨打 18611003838 联系我们，工作时间为周一至周五 9:00-18:00。',
+  '联系方式': '📞 电话：18611003838<br>📧 邮箱：bjascend@jingxizhigu.com<br>📍 地址：北京市门头沟区莲石湖西路98号院创业大厦13号楼D座5层<br>📱 微信小程序：京西智谷',
+};
+
+function openCustomerService() {
+  document.getElementById('csOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('csFloat').style.display = 'none';
+  setTimeout(function() {
+    var body = document.getElementById('csBody');
+    body.scrollTop = body.scrollHeight;
+    document.getElementById('csInput').focus();
+  }, 400);
+}
+
+function closeCustomerService() {
+  document.getElementById('csOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  document.getElementById('csFloat').style.display = '';
+}
+
+function addCSMessage(text, type) {
+  var body = document.getElementById('csBody');
+  var now = new Date();
+  var time = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+  var div = document.createElement('div');
+  div.className = 'cs-msg ' + type;
+  div.innerHTML = text + '<div class="cs-time">' + time + '</div>';
+  body.appendChild(div);
+  body.scrollTop = body.scrollHeight;
+}
+
+function getCSReply(query) {
+  var q = query.toLowerCase();
+  for (var key in csKnowledgeBase) {
+    if (q.indexOf(key) !== -1 || key.indexOf(q) !== -1) {
+      return csKnowledgeBase[key];
+    }
+  }
+  // Fuzzy fallback
+  if (q.indexOf('课程') !== -1) return csKnowledgeBase['课程方向'];
+  if (q.indexOf('学') !== -1 || q.indexOf('教') !== -1) return csKnowledgeBase['课程方向'];
+  if (q.indexOf('钱') !== -1 || q.indexOf('价') !== -1 || q.indexOf('费') !== -1) return csKnowledgeBase['价格'];
+  return '感谢您的咨询！我正在努力学习更多知识来回答您的问题 😊<br><br>您也可以直接：<br>📞 致电 18611003838<br>📧 发送邮件至 bjascend@jingxizhigu.com<br>📱 或搜索微信小程序"京西智谷"<br><br>我们的课程顾问会在工作时间尽快回复您！';
+}
+
+function sendCSMessage() {
+  var input = document.getElementById('csInput');
+  var text = input.value.trim();
+  if (!text) return;
+  addCSMessage(text, 'user');
+  input.value = '';
+  setTimeout(function() {
+    var reply = getCSReply(text);
+    addCSMessage(reply, 'bot');
+  }, 500 + Math.random() * 800);
+}
+
+function sendQuickQ(question) {
+  addCSMessage(question, 'user');
+  setTimeout(function() {
+    var reply = getCSReply(question);
+    addCSMessage(reply, 'bot');
+  }, 500 + Math.random() * 800);
+}
+</script>
+
+<script>
+// ============ LUCIDE ICON INITIALIZATION ============
+function initLucideIcons() {
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
+}
+// Init on load
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initLucideIcons);
+} else {
+  initLucideIcons();
+}
+// Re-init after dynamic content render (with slight delay for DOM update)
+var _origShowCourseCenter = window.showCourseCenter;
+var _origShowCourseDetail = window.showCourseDetail;
+var _origShowChapter = window.showChapter;
+var _origShowAbout = window.showAbout;
+var _origShowFAQ = window.showFAQ;
+var _origShowLearningPath = window.showLearningPath;
+var _origOpenDetail = (typeof openDetail !== 'undefined') ? openDetail : null;
+
+function _reinitIcons() { setTimeout(initLucideIcons, 50); }
+if (_origShowCourseCenter) { window.showCourseCenter = function(){ _origShowCourseCenter.apply(this, arguments); _reinitIcons(); }; }
+if (_origShowCourseDetail) { window.showCourseDetail = function(){ _origShowCourseDetail.apply(this, arguments); _reinitIcons(); }; }
+if (_origShowChapter) { window.showChapter = function(){ _origShowChapter.apply(this, arguments); _reinitIcons(); }; }
+if (_origShowAbout) { window.showAbout = function(){ _origShowAbout.apply(this, arguments); _reinitIcons(); }; }
+if (_origShowFAQ) { window.showFAQ = function(){ _origShowFAQ.apply(this, arguments); _reinitIcons(); }; }
+if (_origShowLearningPath) { window.showLearningPath = function(){ _origShowLearningPath.apply(this, arguments); _reinitIcons(); }; }
+if (_origOpenDetail) { openDetail = function(){ _origOpenDetail.apply(this, arguments); _reinitIcons(); }; window.openDetail = openDetail; }
+// Re-init icons after page routing
+setTimeout(initLucideIcons, 500);
+</script>
+
+</body>
+</html>

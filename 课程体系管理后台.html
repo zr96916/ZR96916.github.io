@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>昇腾AI管理后台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+/* ============================================================
+   DESIGN TOKENS — Aligned with 课程体系前端展示 (Apple-style)
+   ============================================================ */
+:root {
+  --bg-base: #ffffff;
+  --bg-surface: #f5f5f7;
+  --bg-elevated: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #fbfbfd;
+  --text-primary: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --text-muted: #86868b;
+  --text-dim: #aeaeb2;
+  --ink: #0071e3;
+  --ink-soft: #2997ff;
+  --ink-glow: rgba(0,113,227,0.10);
+  --ink-surface: rgba(0,113,227,0.06);
+  --link: #0066cc;
+  --accent: #6e6e73;
+  --accent-soft: rgba(110,110,115,0.10);
+  --green: #34c759;
+  --green-surface: rgba(52,199,89,0.08);
+  --orange: #ff9500;
+  --orange-surface: rgba(255,149,0,0.08);
+  --red: #ff3b30;
+  --red-surface: rgba(255,59,48,0.08);
+  --purple: #af52de;
+  --purple-surface: rgba(175,82,222,0.08);
+  --border-subtle: rgba(0,0,0,0.05);
+  --border-default: rgba(0,0,0,0.10);
+  --border-strong: rgba(0,0,0,0.16);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.06);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.10);
+  --r-xs: 8px; --r-sm: 12px; --r-md: 18px; --r-lg: 22px; --r-xl: 28px;
+  --r-pill: 980px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --font: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --font-display: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Noto Sans SC", sans-serif;
+  --font-mono: "SF Mono", "Cascadia Code", "Consolas", monospace;
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{font-family:var(--font);background:var(--bg-surface);color:var(--text-primary);line-height:1.5;display:flex;min-height:100vh;letter-spacing:-0.01em;overflow-x:hidden}
+::selection{background:rgba(0,113,227,0.18);color:var(--ink)}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.18);border-radius:3px}
+a{color:var(--link);text-decoration:none}
+
+/* ============================================================
+   LUCIDE ICON DEFAULTS
+   ============================================================ */
+.sidebar-item i,.stat-icon i,.panel-header i,.topbar-title i,.btn i,.tag i,.empty i{stroke-width:1.8}
+.stat-icon i{width:20px;height:20px}
+.sidebar-item i{width:16px;height:16px;flex-shrink:0}
+.btn i{width:14px;height:14px}
+.tab i{width:14px;height:14px}
+
+/* ============================================================
+   SIDEBAR — Clean light sidebar
+   ============================================================ */
+.sidebar{width:240px;background:var(--bg-card);color:var(--text-primary);display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh;border-right:1px solid var(--border-subtle);overflow:hidden}
+.sidebar-brand{padding:20px 20px 16px;font-size:15px;font-weight:600;font-family:var(--font-display);display:flex;align-items:center;gap:9px;flex-shrink:0;color:var(--text-primary);letter-spacing:-0.2px}
+.sidebar-brand-dot{width:26px;height:26px;border-radius:7px;background:var(--text-primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600}
+.sidebar-nav{padding:8px 0;flex:1;overflow-y:auto}
+.sidebar-section{margin-bottom:4px}
+.sidebar-section-title{padding:10px 20px 6px;font-size:10px;font-weight:600;text-transform:none;letter-spacing:0.5px;color:var(--text-dim)}
+.sidebar-item{padding:8px 16px 8px 20px;margin:1px 8px;font-size:13px;color:var(--text-secondary);cursor:pointer;transition:all .2s var(--ease-out);display:flex;align-items:center;gap:8px;border-radius:var(--r-xs);font-weight:400;letter-spacing:-0.01em}
+.sidebar-item:hover{color:var(--text-primary);background:var(--bg-surface)}
+.sidebar-item.active{color:var(--ink);background:var(--ink-surface);font-weight:500}
+.sidebar-item .badge{font-size:10px;padding:1px 7px;border-radius:var(--r-pill);margin-left:auto;background:var(--ink-surface);color:var(--ink);font-weight:500}
+
+/* ============================================================
+   MAIN AREA
+   ============================================================ */
+.main{flex:1;display:flex;flex-direction:column;overflow-x:hidden;background:var(--bg-surface)}
+.topbar{height:48px;background:rgba(255,255,255,0.72);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--border-subtle);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:10}
+.topbar-title{font-size:14px;font-weight:600;font-family:var(--font-display);color:var(--text-primary);letter-spacing:-0.01em;display:flex;align-items:center;gap:8px}
+.topbar-title i{width:16px;height:16px;color:var(--ink)}
+.topbar-right{display:flex;align-items:center;gap:16px;font-size:13px;color:var(--text-muted)}
+.topbar-right span{color:var(--text-secondary);font-weight:500}
+.page-content{padding:28px;flex:1}
+.page{display:none}
+.page.active{display:block;animation:fadeIn .3s var(--ease-out)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ============================================================
+   GLOBAL FORM ELEMENTS
+   ============================================================ */
+select,input[type=date],input[type=time],input[type=text],input[type=tel],input[type=search]{
+  padding:8px 12px;border:1px solid var(--border-default);border-radius:var(--r-xs);
+  font-size:13px;color:var(--text-primary);background:var(--bg-base);
+  font-family:var(--font);outline:none;transition:all .2s var(--ease-out);
+}
+select:hover,input[type=date]:hover,input[type=time]:hover,input[type=text]:hover,input[type=tel]:hover,input[type=search]:hover{
+  border-color:var(--border-strong);
+}
+select:focus,input[type=date]:focus,input[type=time]:focus,input[type=text]:focus,input[type=tel]:focus,input[type=search]:focus{
+  border-color:var(--ink);box-shadow:0 0 0 4px var(--ink-surface);
+}
+
+/* ============================================================
+   STAT CARDS
+   ============================================================ */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin-bottom:28px}
+.stat-card{background:var(--bg-card);border-radius:var(--r-md);padding:22px 24px;box-shadow:var(--shadow-sm);border:1px solid var(--border-subtle);display:flex;align-items:center;gap:16px;transition:all .35s var(--ease-out);cursor:default}
+.stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.stat-icon{width:44px;height:44px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center}
+.stat-icon i{width:20px;height:20px}
+.stat-icon.blue{background:var(--ink-surface);color:var(--ink)}
+.stat-icon.green{background:var(--green-surface);color:var(--green)}
+.stat-icon.purple{background:var(--purple-surface);color:var(--purple)}
+.stat-icon.orange{background:var(--orange-surface);color:var(--orange)}
+.stat-info .num{font-size:28px;font-weight:600;line-height:1.1;font-family:var(--font-display);color:var(--text-primary);letter-spacing:-0.02em}
+.stat-info .label{font-size:12px;color:var(--text-muted);margin-top:2px;font-weight:400}
+.stat-info .num{position:relative}
+.stat-scale{position:absolute;top:-2px;right:-28px;font-size:9px;font-weight:500;color:var(--text-dim);background:var(--bg-surface);padding:1px 5px;border-radius:var(--r-pill);line-height:1.3}
+.stat-clickable{cursor:pointer;transition:all .3s var(--ease-out)}
+.stat-clickable:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:var(--ink-soft)}
+.dashboard-page.active{display:flex!important;flex-direction:column;gap:16px;height:calc(100vh - 48px - 56px);overflow:hidden}
+
+/* ============================================================
+   PANELS
+   ============================================================ */
+.panel{background:var(--bg-card);border-radius:var(--r-md);box-shadow:var(--shadow-sm);border:1px solid var(--border-subtle);margin-bottom:20px;overflow:hidden;transition:box-shadow .35s var(--ease-out)}
+.panel:hover{box-shadow:var(--shadow-md)}
+.panel-header{padding:16px 24px;border-bottom:1px solid var(--border-subtle);font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:space-between;color:var(--text-primary);letter-spacing:-0.01em}
+.panel-header .panel-header-left{display:flex;align-items:center;gap:8px}
+.panel-header .panel-header-left i{width:16px;height:16px;color:var(--ink)}
+.panel-header .tabs{margin-bottom:0;border-bottom:none}
+.panel-header .tab{padding:4px 12px;font-size:12px;font-weight:500}
+.panel-body{padding:24px}
+
+/* ============================================================
+   TABLES — Clean & minimal
+   ============================================================ */
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:10px 16px;background:transparent;font-size:11px;font-weight:600;color:var(--text-muted);letter-spacing:0;border-bottom:1px solid var(--border-default)}
+td{padding:12px 16px;border-bottom:1px solid var(--border-subtle);color:var(--text-secondary);transition:background .15s var(--ease-out)}
+td input,td select{padding:6px 10px;border:1px solid var(--border-default);border-radius:var(--r-xs);font-size:12px;color:var(--text-primary);background:var(--bg-base);font-family:var(--font);outline:none;transition:all .2s var(--ease-out);width:100%;box-sizing:border-box}
+td input:hover,td select:hover{border-color:var(--border-strong)}
+td input:focus,td select:focus{border-color:var(--ink);box-shadow:0 0 0 3px var(--ink-surface)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg-card-hover)}
+.tag{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:var(--r-pill);font-size:10px;font-weight:500;letter-spacing:0}
+.tag i{width:11px;height:11px}
+.tag-blue{background:var(--ink-surface);color:var(--ink)}
+.tag-green{background:var(--green-surface);color:var(--green)}
+.tag-purple{background:var(--purple-surface);color:var(--purple)}
+.tag-orange{background:var(--orange-surface);color:var(--orange)}
+.tag-red{background:var(--red-surface);color:var(--red)}
+
+/* ============================================================
+   BUTTONS — Apple pill style
+   ============================================================ */
+.btn{padding:8px 18px;border-radius:var(--r-pill);font-size:13px;font-weight:400;cursor:pointer;border:none;font-family:var(--font);transition:all .25s var(--ease-out);display:inline-flex;align-items:center;gap:5px;position:relative;overflow:hidden;letter-spacing:-0.01em}
+.btn i{width:14px;height:14px}
+.btn:active{transform:scale(0.98)}
+.btn-primary{background:var(--ink);color:#fff}
+.btn-primary:hover{background:#0077ed}
+.btn-outline{border:1px solid var(--border-strong);background:transparent;color:var(--text-primary)}
+.btn-outline:hover{border-color:var(--text-primary);background:transparent}
+.btn-danger{background:transparent;color:var(--red);border:1px solid rgba(255,59,48,0.3)}
+.btn-danger:hover{background:var(--red-surface);border-color:var(--red)}
+.btn-sm{padding:5px 12px;font-size:11px}
+.btn-sm i{width:12px;height:12px}
+.btn-lg{padding:10px 24px;font-size:14px;border-radius:var(--r-pill)}
+.btn-lg i{width:16px;height:16px}
+
+/* ============================================================
+   STEPS WIZARD
+   ============================================================ */
+.steps{display:flex;gap:0;margin-bottom:28px;border-radius:var(--r-md);overflow:hidden}
+.step{flex:1;text-align:center;padding:16px 14px;position:relative;background:var(--bg-card);border:1px solid var(--border-subtle);font-size:13px;color:var(--text-muted);cursor:pointer;transition:all .25s var(--ease-out);display:flex;align-items:center;justify-content:center;gap:8px;font-family:var(--font)}
+.step+.step{margin-left:-1px}
+.step .step-num{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;border:2px solid var(--border-default);font-size:11px;font-weight:600;flex-shrink:0;transition:all .25s var(--ease-out)}
+.step i{width:16px;height:16px}
+.step:hover{background:var(--bg-card-hover)}
+.step.active{background:var(--ink-surface);border-color:var(--ink);color:var(--ink);z-index:1}
+.step.active .step-num{background:var(--ink);border-color:var(--ink);color:#fff}
+.step.done{background:var(--green-surface);border-color:var(--green);color:var(--green)}
+.step.done .step-num{background:var(--green);border-color:var(--green);color:#fff}
+
+/* ============================================================
+   FORMS
+   ============================================================ */
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:4px;letter-spacing:-0.01em}
+.form-group label .req{color:var(--red);margin-left:2px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 14px;border:1px solid var(--border-default);border-radius:var(--r-xs);font-size:13px;color:var(--text-primary);background:var(--bg-base);font-family:var(--font);outline:none;transition:all .2s var(--ease-out)}
+.form-group input:hover,.form-group select:hover,.form-group textarea:hover{border-color:var(--border-strong)}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--ink);box-shadow:0 0 0 4px var(--ink-surface);background:#fff}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+textarea{resize:vertical;min-height:80px}
+
+/* ============================================================
+   DYNAMIC LIST
+   ============================================================ */
+.dyn-list{margin-top:8px}
+.dyn-item{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.dyn-item>input,.dyn-item>textarea{flex:1;padding:8px 12px;border:1px solid var(--border-default);border-radius:var(--r-xs);font-size:12px;font-family:var(--font);outline:none;background:var(--bg-base);transition:all .2s var(--ease-out)}
+.dyn-item>input:focus,.dyn-item>textarea:focus{border-color:var(--ink);box-shadow:0 0 0 3px var(--ink-surface)}
+.dyn-item .btn{padding:8px 10px;flex-shrink:0}
+
+/* ============================================================
+   MODALS
+   ============================================================ */
+.modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s var(--ease-out)}
+.modal-overlay.open{opacity:1;pointer-events:auto}
+.modal{background:var(--bg-card);border-radius:var(--r-md);width:100%;max-width:520px;max-height:85vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:modalIn .35s var(--ease-spring)}
+@keyframes modalIn{from{opacity:0;transform:translateY(20px) scale(0.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.modal-header{padding:18px 24px;border-bottom:1px solid var(--border-subtle);font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:space-between;color:var(--text-primary);letter-spacing:-0.01em}
+.modal-close{width:28px;height:28px;border-radius:50%;border:none;background:var(--bg-surface);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:all .15s var(--ease-out)}
+.modal-close:hover{background:#fce8e8;color:var(--red)}
+.modal-body{padding:24px}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--border-subtle);display:flex;justify-content:flex-end;gap:8px}
+
+/* ============================================================
+   TOGGLE
+   ============================================================ */
+.toggle{width:40px;height:22px;border-radius:11px;background:var(--border-default);cursor:pointer;position:relative;transition:background .25s var(--ease-out);display:inline-block}
+.toggle.on{background:var(--green)}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .25s var(--ease-out);box-shadow:0 1px 3px rgba(0,0,0,0.12)}
+.toggle.on::after{transform:translateX(18px)}
+
+/* ============================================================
+   TABS
+   ============================================================ */
+.tabs{display:flex;gap:0;margin-bottom:20px}
+.tab{padding:8px 16px;font-size:13px;font-weight:400;color:var(--text-muted);cursor:pointer;border-radius:var(--r-xs);transition:all .15s var(--ease-out);font-family:var(--font);display:flex;align-items:center;gap:6px}
+.tab i{width:14px;height:14px}
+.tab:hover{color:var(--text-primary);background:var(--bg-surface)}
+.tab.active{color:var(--ink);background:var(--ink-surface);font-weight:500}
+
+/* ============================================================
+   DETAIL PANEL & TIMELINE
+   ============================================================ */
+.detail-overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);display:flex;align-items:flex-start;justify-content:center;padding:40px 20px;opacity:0;pointer-events:none;transition:opacity .3s var(--ease-out)}
+.detail-overlay.open{opacity:1;pointer-events:auto}
+.detail-panel{background:var(--bg-card);border-radius:var(--r-md);width:100%;max-width:640px;max-height:85vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:modalIn .35s var(--ease-spring)}
+.detail-panel-header{padding:18px 24px;border-bottom:1px solid var(--border-subtle);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:1}
+.detail-panel-body{padding:24px}
+.detail-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.detail-info-item{font-size:12px}
+.detail-info-item .lbl{color:var(--text-muted);margin-bottom:3px;font-weight:500}
+.detail-info-item .val{color:var(--text-primary);font-weight:500;font-size:13px}
+/* Timeline */
+.tl{position:relative;padding-left:20px}
+.tl::before{content:'';position:absolute;left:5px;top:4px;bottom:4px;width:1.5px;background:var(--border-default)}
+.tl-item{position:relative;margin-bottom:18px}
+.tl-item::before{content:'';position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--green);border:2px solid #fff;box-shadow:0 0 0 2px var(--green)}
+.tl-item.system::before{background:var(--text-muted);box-shadow:0 0 0 2px var(--text-muted)}
+.tl-time{font-size:10px;color:var(--text-muted);margin-bottom:2px}
+.tl-content{font-size:13px;color:var(--text-secondary);line-height:1.6}
+.tl-meta{font-size:11px;color:var(--text-muted);margin-top:2px}
+/* Empty state */
+.empty{padding:40px;text-align:center;color:var(--text-muted);font-size:13px}
+
+/* ============================================================
+   BAR CHART — Refined
+   ============================================================ */
+.bar-col{flex:1;text-align:center;transition:transform .2s var(--ease-out)}
+.bar-col:hover{transform:translateY(-4px)}
+
+/* ============================================================
+   SORTABLE LIST — PC drag-drop reorder
+   ============================================================ */
+.sortable-wrap{display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start}
+.sortable-panel{background:var(--bg-card);border-radius:var(--r-md);border:1px solid var(--border-subtle);box-shadow:var(--shadow-sm);overflow:hidden}
+.sortable-panel-header{padding:14px 20px;border-bottom:1px solid var(--border-subtle);font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:space-between;color:var(--text-primary)}
+.sortable-panel-body{padding:12px}
+.sortable-list{display:flex;flex-direction:column;gap:4px}
+.sortable-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--r-sm);transition:all .2s var(--ease-out);cursor:default;position:relative}
+.sortable-item:hover{background:var(--bg-card-hover);border-color:var(--border-default);box-shadow:var(--shadow-sm)}
+.sortable-item.sort-hidden{opacity:.45}
+.sortable-item.sort-hidden .sort-content{text-decoration:line-through;text-decoration-color:var(--text-dim)}
+.sortable-item.dragging{opacity:.45;border-color:var(--ink);box-shadow:0 0 0 3px var(--ink-glow);background:var(--ink-surface)}
+.sortable-item.drag-over{border-top:2px solid var(--ink);border-radius:0}
+.drag-handle{flex-shrink:0;width:20px;height:26px;display:flex;align-items:center;justify-content:center;cursor:grab;color:var(--text-dim);font-size:16px;line-height:1;user-select:none;border-radius:3px;transition:all .15s}
+.drag-handle:hover{color:var(--text-primary);background:var(--bg-surface)}
+.drag-handle:active,.sortable-item.dragging .drag-handle{cursor:grabbing;color:var(--ink)}
+.sort-order{flex-shrink:0;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;font-family:var(--font-mono);background:var(--bg-surface);color:var(--text-muted);transition:all .2s}
+.sortable-item:hover .sort-order,.sortable-item.dragging .sort-order{background:var(--ink);color:#fff}
+.sort-content{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.sort-content .sort-name{font-size:13px;font-weight:600;color:var(--text-primary);letter-spacing:-0.01em;line-height:1.3}
+.sort-content .sort-desc{font-size:11px;color:var(--text-muted);line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sort-actions{flex-shrink:0;display:flex;gap:2px}
+.sort-btn-up,.sort-btn-down{width:26px;height:26px;border-radius:var(--r-xs);border:1px solid var(--border-subtle);background:transparent;color:var(--text-muted);cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;transition:all .15s;font-family:var(--font);line-height:1}
+.sort-btn-up:hover,.sort-btn-down:hover{background:var(--bg-surface);border-color:var(--border-default);color:var(--text-primary)}
+.sort-btn-up:active,.sort-btn-down:active{background:var(--ink-surface);border-color:var(--ink);color:var(--ink)}
+.sort-btn-up:disabled,.sort-btn-down:disabled{opacity:.25;pointer-events:none;cursor:default}
+/* toggle in sortable */
+.sort-toggle-btn{flex-shrink:0;width:32px;height:22px;border-radius:11px;border:none;cursor:pointer;position:relative;transition:background .25s var(--ease-out);background:var(--green)}
+.sort-toggle-btn::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .25s var(--ease-out);box-shadow:0 1px 3px rgba(0,0,0,0.12)}
+.sort-toggle-btn.off{background:var(--border-default)}
+.sort-toggle-btn.off::after{transform:translateX(10px)}
+/* Preview panel */
+.preview-panel{background:var(--bg-card);border-radius:var(--r-md);border:1px solid var(--border-subtle);box-shadow:var(--shadow-sm);position:sticky;top:60px}
+.preview-panel-header{padding:14px 20px;border-bottom:1px solid var(--border-subtle);font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;color:var(--text-primary)}
+.preview-panel-header i{width:15px;height:15px;color:var(--ink)}
+.preview-panel-body{padding:14px}
+.preview-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--r-sm);transition:all .2s;margin-bottom:4px}
+.preview-item:last-child{margin-bottom:0}
+.preview-item .preview-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;background:var(--ink-surface);color:var(--ink)}
+.preview-item.preview-hidden{opacity:.35}
+.preview-item.preview-hidden .preview-name{text-decoration:line-through}
+.preview-item .preview-name{font-size:12px;font-weight:600;color:var(--text-primary);flex:1}
+/* Drop zone indicator */
+.sortable-list.drop-active .sortable-item.drag-over::before{display:none}
+@media(max-width:900px){
+  .sortable-wrap{grid-template-columns:1fr}
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media(max-width:900px){
+  .sidebar{width:200px}
+  .page-content{padding:20px}
+  .topbar{padding:0 20px}
+  .stat-grid{grid-template-columns:repeat(2,1fr)}
+  .form-row{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+  .sidebar{display:none}
+  .stat-grid{grid-template-columns:1fr}
+  .detail-info-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ SIDEBAR ============ -->
+<aside class="sidebar">
+  <div class="sidebar-brand"><span class="sidebar-brand-dot">昇</span> 昇腾AI 管理后台</div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">概览</div>
+      <div class="sidebar-item active" data-page="dashboard" onclick="switchPage('dashboard',this)"><i data-lucide="layout-dashboard"></i> 仪表盘</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">门户管理</div>
+      <div class="sidebar-item" data-page="portal-courses" onclick="switchPage('portal-courses',this)"><i data-lucide="book-open"></i> 课程体系</div>
+      <div class="sidebar-item" data-page="portal-recommend" onclick="switchPage('portal-recommend',this)"><i data-lucide="star"></i> 课程推荐</div>
+      <div class="sidebar-item" data-page="portal-path" onclick="switchPage('portal-path',this)"><i data-lucide="award"></i> 学员成果</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">内容管理</div>
+      <div class="sidebar-item" data-page="courses-manage" onclick="switchPage('courses-manage',this)"><i data-lucide="book-marked"></i> 课程管理</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">预约管理</div>
+      <div class="sidebar-item" data-page="bookings-mine" onclick="switchPage('bookings-mine',this)"><i data-lucide="user-check"></i> 客户列表 <span class="badge" style="background:var(--red-surface);color:var(--red)">3</span></div>
+      <div class="sidebar-item" data-page="bookings-archive" onclick="switchPage('bookings-archive',this)"><i data-lucide="archive"></i> 已归档</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">智能客服管理</div>
+      <div class="sidebar-item" data-page="cs-config" onclick="switchPage('cs-config',this)"><i data-lucide="settings"></i> 参数配置</div>
+      <div class="sidebar-item" data-page="cs-records" onclick="switchPage('cs-records',this)"><i data-lucide="message-square"></i> 沟通记录</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">系统管理</div>
+      <div class="sidebar-item" data-page="users" onclick="switchPage('users',this)"><i data-lucide="users"></i> 用户管理</div>
+      <div class="sidebar-item" data-page="logs" onclick="switchPage('logs',this)"><i data-lucide="clipboard-list"></i> 操作日志</div>
+    </div>
+  </nav>
+</aside>
+
+<!-- ============ MAIN ============ -->
+<div class="main">
+  <div class="topbar">
+    <span class="topbar-title" id="topbarTitle"><i data-lucide="layout-dashboard"></i> 仪表盘</span>
+    <div class="topbar-right"><i data-lucide="circle-user" style="width:16px;height:16px;color:var(--text-muted)"></i> 管理员 <span>admin@shengteng-ai.com</span></div>
+  </div>
+  <div class="page-content">
+
+    <!-- ========== DASHBOARD ========== -->
+    <div class="page active dashboard-page" id="page-dashboard">
+      <!-- Stat cards: 2 groups — 课程 / 预约 -->
+      <div class="stat-grid" style="grid-template-columns:1fr 1fr 1fr 1fr;margin-bottom:0;flex-shrink:0">
+        <div class="stat-card">
+          <div class="stat-icon blue"><i data-lucide="calendar-check"></i></div>
+          <div class="stat-info"><div class="num">24<div class="stat-scale">实时</div></div><div class="label">今日预约</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon purple"><i data-lucide="trending-up"></i></div>
+          <div class="stat-info"><div class="num">186<div class="stat-scale">总量</div></div><div class="label">累计学员</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green"><i data-lucide="book-open"></i></div>
+          <div class="stat-info"><div class="num">4<div class="stat-scale">总量</div></div><div class="label">已发布课程</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon orange"><i data-lucide="grid"></i></div>
+          <div class="stat-info"><div class="num">6<div class="stat-scale">总量</div></div><div class="label">课程方向</div></div>
+        </div>
+      </div>
+
+      <!-- Charts row — 预约趋势 + 课程分布 -->
+      <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:16px;flex:1;min-height:0">
+        <div class="panel" style="margin-bottom:0;display:flex;flex-direction:column">
+          <div class="panel-header" style="flex-shrink:0"><div class="panel-header-left"><i data-lucide="bar-chart-3"></i> 预约趋势 · 近7天</div><span style="font-size:11px;color:var(--text-muted)">今日 +8 ↑</span></div>
+          <div class="panel-body" style="flex:1;display:flex;align-items:flex-end;padding:8px 14px 14px">
+            <div style="display:flex;align-items:flex-end;gap:10px;height:100%;width:100%">
+              <div class="bar-col"><div style="height:35%;background:linear-gradient(180deg,var(--ink),var(--ink-soft));border-radius:4px 4px 0 0;min-width:24px"></div><div style="font-size:10px;color:var(--text-muted);margin-top:4px">6/16</div><div style="font-size:10px;font-weight:600;color:var(--text-secondary)">2</div></div>
+              <div class="bar-col"><div style="height:50%;background:linear-gradient(180deg,var(--ink),var(--ink-soft));border-radius:4px 4px 0 0;min-width:24px"></div><div style="font-size:10px;color:var(--text-muted);margin-top:4px">6/17</div><div style="font-size:10px;font-weight:600;color:var(--text-secondary)">3</div></div>
+              <div class="bar-col"><div style="height:42%;background:linear-gradient(180deg,var(--ink),var(--ink-soft));border-radius:4px 4px 0 0;min-width:24px"></div><div style="font-size:10px;color:var(--text-muted);margin-top:4px">6/18</div><div style="font-size:10px;font-weight:600;color:var(--text-secondary)">2</div></div>
+              <div class="bar-col"><div style="height:68%;background:linear-gradient(180deg,var(--ink),var(--ink-soft));border-radius:4px 4px 0 0;min-width:24px"></div><div style="font-size:10px;color:var(--text-muted);margin-top:4px">6/19</div><div style="font-size:10px;font-weight:600;color:var(--text-secondary)">5</div></div>
+              <div class="bar-col"><div style="height:60%;background:linear-gradient(180deg,var(--ink),var(--ink-soft));border-radius:4px 4px 0 0;min-width:24px"></div><div style="font-size:10px;color:var(--text-muted);margin-top:4px">6/20</div><div style="font-size:10px;font-weight:600;color:var(--text-secondary)">4</div></div>
+              <div class="bar-col"><div style="height:75%;background:linear-gradient(180deg,var(--ink),var(--ink-soft));border-radius:4px 4px 0 0;min-width:24px"></div><div style="font-size:10px;color:var(--text-muted);margin-top:4px">6/21</div><div style="font-size:10px;font-weight:600;color:var(--text-secondary)">6</div></div>
+              <div class="bar-col"><div style="height:92%;background:linear-gradient(180deg,var(--purple),#d4bff0);border-radius:4px 4px 0 0;min-width:24px;position:relative"></div><div style="font-size:10px;color:var(--text-muted);margin-top:4px">6/22</div><div style="font-size:10px;font-weight:600;color:var(--purple)">8</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel" style="margin-bottom:0;display:flex;flex-direction:column">
+          <div class="panel-header" style="flex-shrink:0"><div class="panel-header-left"><i data-lucide="pie-chart"></i> 课程预约分布</div></div>
+          <div class="panel-body" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 14px 14px">
+            <svg viewBox="0 0 120 120" width="110" height="110">
+              <circle cx="60" cy="60" r="44" fill="none" stroke="#f5f5f7" stroke-width="18"/>
+              <circle cx="60" cy="60" r="44" fill="none" stroke="#0071e3" stroke-width="18" stroke-dasharray="110.6 165.9" stroke-dashoffset="0" transform="rotate(-90 60 60)"/>
+              <circle cx="60" cy="60" r="44" fill="none" stroke="#af52de" stroke-width="18" stroke-dasharray="55.3 221.2" stroke-dashoffset="-110.6" transform="rotate(-90 60 60)"/>
+              <circle cx="60" cy="60" r="44" fill="none" stroke="#34c759" stroke-width="18" stroke-dasharray="41.5 235.0" stroke-dashoffset="-165.9" transform="rotate(-90 60 60)"/>
+              <circle cx="60" cy="60" r="44" fill="none" stroke="#2997ff" stroke-width="18" stroke-dasharray="69.1 207.4" stroke-dashoffset="-207.4" transform="rotate(-90 60 60)"/>
+              <text x="60" y="56" text-anchor="middle" font-size="18" font-weight="600" fill="#1d1d1f" font-family="var(--font-display)">36</text>
+              <text x="60" y="70" text-anchor="middle" font-size="9" fill="#86868b">总预约</text>
+            </svg>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;font-size:10px">
+              <span style="cursor:pointer"><span style="display:inline-block;width:7px;height:7px;border-radius:2px;background:#0071e3;margin-right:3px;vertical-align:middle"></span>Agent 40%</span>
+              <span style="cursor:pointer"><span style="display:inline-block;width:7px;height:7px;border-radius:2px;background:#af52de;margin-right:3px;vertical-align:middle"></span>RAG 20%</span>
+              <span style="cursor:pointer"><span style="display:inline-block;width:7px;height:7px;border-radius:2px;background:#34c759;margin-right:3px;vertical-align:middle"></span>端侧AI 15%</span>
+              <span style="cursor:pointer"><span style="display:inline-block;width:7px;height:7px;border-radius:2px;background:#2997ff;margin-right:3px;vertical-align:middle"></span>金融AI 25%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom row: 3-column compact -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1.6fr;gap:16px;flex-shrink:0">
+        <div class="panel" style="margin-bottom:0">
+          <div class="panel-header"><div class="panel-header-left"><i data-lucide="book-marked"></i> 课程概况</div></div>
+          <div class="panel-body" style="padding:14px">
+            <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px"><span style="display:flex;justify-content:space-between"><span>Agent 进阶之道</span><span class="tag tag-purple" style="font-size:9px">6章·已发布</span></span></div>
+            <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px"><span style="display:flex;justify-content:space-between"><span>RAG 进阶之道</span><span class="tag tag-green" style="font-size:9px">4章·已发布</span></span></div>
+            <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px"><span style="display:flex;justify-content:space-between"><span>端侧 AI 开发实践</span><span class="tag tag-green" style="font-size:9px">5章·已发布</span></span></div>
+            <div style="font-size:12px;color:var(--text-secondary)"><span style="display:flex;justify-content:space-between"><span>金融 AI 实验室</span><span class="tag tag-green" style="font-size:9px">5章·已发布</span></span></div>
+          </div>
+        </div>
+        <div class="panel" style="margin-bottom:0">
+          <div class="panel-header"><div class="panel-header-left"><i data-lucide="share-2"></i> 学员来源</div></div>
+          <div class="panel-body" style="padding:14px">
+            <div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>朋友推荐</span><span style="font-weight:600">35%</span></div><div style="height:4px;background:var(--bg-surface);border-radius:2px"><div style="width:35%;height:100%;background:var(--ink);border-radius:2px"></div></div></div>
+            <div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>微信公众号</span><span style="font-weight:600">25%</span></div><div style="height:4px;background:var(--bg-surface);border-radius:2px"><div style="width:25%;height:100%;background:var(--purple);border-radius:2px"></div></div></div>
+            <div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>知乎 / B站</span><span style="font-weight:600">20%</span></div><div style="height:4px;background:var(--bg-surface);border-radius:2px"><div style="width:20%;height:100%;background:var(--green);border-radius:2px"></div></div></div>
+            <div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>搜索引擎</span><span style="font-weight:600">12%</span></div><div style="height:4px;background:var(--bg-surface);border-radius:2px"><div style="width:12%;height:100%;background:var(--orange);border-radius:2px"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>其他</span><span style="font-weight:600">8%</span></div><div style="height:4px;background:var(--bg-surface);border-radius:2px"><div style="width:8%;height:100%;background:var(--text-dim);border-radius:2px"></div></div></div>
+          </div>
+        </div>
+        <div class="panel" style="margin-bottom:0;cursor:pointer" onclick="switchPage('bookings-mine',document.querySelector('[data-page=bookings-mine]'))" title="点击查看客户列表">
+          <div class="panel-header"><div class="panel-header-left"><i data-lucide="clock"></i> 最近预约</div> <span style="font-size:11px;color:var(--link);cursor:pointer">查看全部 →</span></div>
+          <div class="panel-body" style="padding:0">
+            <table>
+              <thead><tr><th>学员</th><th>课程</th><th>日期</th><th>状态</th></tr></thead>
+              <tbody>
+                <tr><td><strong>张三</strong></td><td>Agent 进阶之道</td><td>06-20</td><td><span class="tag tag-green"><i data-lucide="check-circle"></i></span></td></tr>
+                <tr><td><strong>李四</strong></td><td>端侧 AI 开发</td><td>06-18</td><td><span class="tag tag-green"><i data-lucide="check-circle"></i></span></td></tr>
+                <tr><td><strong>王五</strong></td><td>RAG 进阶之道</td><td>06-22</td><td><span class="tag tag-green"><i data-lucide="check-circle"></i></span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== PORTAL: 课程体系 ========== -->
+    <div class="page" id="page-portal-courses">
+      <div class="sortable-wrap">
+        <div class="sortable-panel">
+          <div class="sortable-panel-header">
+            <span style="display:flex;align-items:center;gap:8px"><i data-lucide="book-open" style="width:16px;height:16px;color:var(--ink)"></i> 课程体系（首页方向卡片）</span>
+            <div style="display:flex;gap:8px"><button class="btn btn-outline btn-sm" onclick="addSortEditableItem('portalDirList')"><i data-lucide="plus"></i> 新增</button><button class="btn btn-primary btn-sm" onclick="saveSortList('portalDirList')"><i data-lucide="save"></i> 保存</button></div>
+          </div>
+          <div class="sortable-panel-body">
+            <div class="sortable-list" id="portalDirList" data-preview="portalDirPreview">
+              <div class="sortable-item" draggable="true" data-id="d1" data-icon="brain">
+                <div class="drag-handle" title="拖拽排序">≡</div>
+                <div class="sort-order">01</div>
+                <div class="sort-content" style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+                  <input class="sort-name-input" value="基础大模型" style="font-size:13px;font-weight:600;color:var(--text-primary);border:1px solid transparent;background:transparent;padding:2px 4px;border-radius:4px;outline:none;width:100%;font-family:var(--font)" onfocus="this.style.borderColor='var(--ink)';this.style.background='var(--bg-card)'" onblur="this.style.borderColor='transparent';this.style.background='transparent'">
+                  <input class="sort-desc-input" value="Transformer 架构、Token/Embedding，建立模型底层认知" style="font-size:11px;color:var(--text-muted);border:1px solid transparent;background:transparent;padding:2px 4px;border-radius:4px;outline:none;width:100%;font-family:var(--font)" onfocus="this.style.borderColor='var(--ink)';this.style.background='var(--bg-card)'" onblur="this.style.borderColor='transparent';this.style.background='transparent'">
+                </div>
+                <button class="sort-toggle-btn on" onclick="toggleSortItem(this)" title="显示/隐藏"></button>
+                <div class="sort-actions">
+                  <button class="sort-btn-up" onclick="moveSortItem(this,'up')" title="上移">▲</button>
+                  <button class="sort-btn-down" onclick="moveSortItem(this,'down')" title="下移">▼</button>
+                </div>
+              </div>
+              <div class="sortable-item" draggable="true" data-id="d2" data-icon="pen-tool">
+                <div class="drag-handle" title="拖拽排序">≡</div>
+                <div class="sort-order">02</div>
+                <div class="sort-content" style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+                  <input class="sort-name-input" value="Prompt Engineering" style="font-size:13px;font-weight:600;color:var(--text-primary);border:1px solid transparent;background:transparent;padding:2px 4px;border-radius:4px;outline:none;width:100%;font-family:var(--font)" onfocus="this.style.borderColor='var(--ink)';this.style.background='var(--bg-card)'" onblur="this.style.borderColor='transparent';this.style.background='transparent'">
+                  <input class="sort-desc-input" value="BROKE/COAST/ROSES 框架、CoT 思维链、上下文工程" style="font-size:11px;color:var(--text-muted);border:1px solid transparent;background:transparent;padding:2px 4px;border-radius:4px;outline:none;width:100%;font-family:var(--font)" onfocus="this.style.borderColor='var(--ink)';this.style.background='var(--bg-card)'" onblur="this.style.borderColor='transparent';this.style.background='transparent'">
+                </div>
+                <button class="sort-toggle-btn on" onclick="toggleSortItem(this)" title="显示/隐藏"></button>
+                <div class="sort-actions">
+                  <button class="sort-btn-up" onclick="moveSortItem(this,'up')" title="上移">▲</button>
+                  <button class="sort-btn-down" onclick="moveSortItem(this,'down')" title="下移">▼</button>
+                </div>
+              </div>
+              <div class="sortable-item" draggable="true" data-id="d3" data-icon="wrench">
+                <div class="drag-handle" title="拖拽排序">≡</div>
+                <div class="sort-order">03</div>
+                <div class="sort-content" style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+                  <input class="sort-name-input" value="模型微调" style="font-size:13px;font-weight:600;color:var(--text-primary);border:1px solid transparent;background:transparent;padding:2px 4px;border-radius:4px;outline:none;width:100%;font-family:var(--font)" onfocus="this.style.borderColor='var(--ink)';this.style.background='var(--bg-card)'" onblur="this.style.borderColor='transparent';this.style.background='transparent'">
+                  <input class="sort-desc-input" value="LoRA/QLoRA 微调、知识蒸馏、模型量化与剪枝" style="font-size:11px;color:var(--text-muted);border:1px solid transparent;background:transparent;padding:2px 4px;border-radius:4px;outline:none;width:100%;font-family:var(--font)" onfocus="this.style.borderColor='var(--ink)';this.style.background='var(--bg-card)'" onblur="this.style.borderColor='transparent';this.style.background='transparent'">
+                </div>
+                <button class="sort-toggle-btn on" onclick="toggleSortItem(this)" title="显示/隐藏"></button>
+                <div class="sort-actions">
+                  <button class="sort-btn-up" onclick="moveSortItem(this,'up')" title="上移">▲</button>
+                  <button class="sort-btn-down" onclick="moveSortItem(this,'down')" title="下移">▼</button>
+                </div>
+              </div>
+              <div class="sortable-item" draggable="true" data-id="d4" data-icon="bot">
+                <div class="drag-handle" title="拖拽排序">≡</div>
+                <div class="sort-order">04</div>
+                <div class="sort-content" style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+                  <input class="sort-name-input" value="RAG & Agent" style="font-size:13px;font-weight:600;color:var(--text-primary);border:1px solid transparent;background:transparent;padding:2px 4px;border-radius:4px;outline:none;width:100%;font-family:var(--font)" onfocus="this.style.borderColor='var(--ink)';this.style.background='var(--bg-card)'" onblur="this.style.borderColor='transparent';this.style.background='transparent'">
+                  <input class="sort-desc-input" value="检索增强生成、向量数据库、MCP 协议与智能体构建" style="font-size:11px;color:var(--text-muted);border:1px solid transparent;background:transparent;padding:2px 4px;border-radius:4px;outline:none;width:100%;font-family:var(--font)" onfocus="this.style.borderColor='var(--ink)';this.style.background='var(--bg-card)'" onblur="this.style.borderColor='transparent';this.style.background='transparent'">
+                </div>
+                <button class="sort-toggle-btn on" onclick="toggleSortItem(this)" title="显示/隐藏"></button>
+                <div class="sort-actions">
+                  <button class="sort-btn-up" onclick="moveSortItem(this,'up')" title="上移">▲</button>
+                  <button class="sort-btn-down" onclick="moveSortItem(this,'down')" title="下移">▼</button>
+                </div>
+              </div>
+              <div class="sortable-item" draggable="true" data-id="d5" data-icon="eye">
+                <div class="drag-handle" title="拖拽排序">≡</div>
+                <div class="sort-order">05</div>
+                <div class="sort-content" style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+                  <input class="sort-name-input" value="多模态" style="font-size:13px;font-weight:600;color:var(--text-primary);border:1px solid transparent;background:transparent;padding:2px 4px;border-radius:4px;outline:none;width:100%;font-family:var(--font)" onfocus="this.style.borderColor='var(--ink)';this.style.background='var(--bg-card)'" onblur="this.style.borderColor='transparent';this.style.background='transparent'">
+                  <input class="sort-desc-input" value="视觉语言模型、YOLOv8-Pose、ONNX 跨平台推理" style="font-size:11px;color:var(--text-muted);border:1px solid transparent;background:transparent;padding:2px 4px;border-radius:4px;outline:none;width:100%;font-family:var(--font)" onfocus="this.style.borderColor='var(--ink)';this.style.background='var(--bg-card)'" onblur="this.style.borderColor='transparent';this.style.background='transparent'">
+                </div>
+                <button class="sort-toggle-btn on" onclick="toggleSortItem(this)" title="显示/隐藏"></button>
+                <div class="sort-actions">
+                  <button class="sort-btn-up" onclick="moveSortItem(this,'up')" title="上移">▲</button>
+                  <button class="sort-btn-down" onclick="moveSortItem(this,'down')" title="下移">▼</button>
+                </div>
+              </div>
+              <div class="sortable-item" draggable="true" data-id="d6" data-icon="rocket">
+                <div class="drag-handle" title="拖拽排序">≡</div>
+                <div class="sort-order">06</div>
+                <div class="sort-content" style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+                  <input class="sort-name-input" value="LLM 工程化" style="font-size:13px;font-weight:600;color:var(--text-primary);border:1px solid transparent;background:transparent;padding:2px 4px;border-radius:4px;outline:none;width:100%;font-family:var(--font)" onfocus="this.style.borderColor='var(--ink)';this.style.background='var(--bg-card)'" onblur="this.style.borderColor='transparent';this.style.background='transparent'">
+                  <input class="sort-desc-input" value="FastAPI/Next.js 全栈集成、RESTful API 封装与 Web 交付" style="font-size:11px;color:var(--text-muted);border:1px solid transparent;background:transparent;padding:2px 4px;border-radius:4px;outline:none;width:100%;font-family:var(--font)" onfocus="this.style.borderColor='var(--ink)';this.style.background='var(--bg-card)'" onblur="this.style.borderColor='transparent';this.style.background='transparent'">
+                </div>
+                <button class="sort-toggle-btn on" onclick="toggleSortItem(this)" title="显示/隐藏"></button>
+                <div class="sort-actions">
+                  <button class="sort-btn-up" onclick="moveSortItem(this,'up')" title="上移">▲</button>
+                  <button class="sort-btn-down" onclick="moveSortItem(this,'down')" title="下移">▼</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="preview-panel" id="portalDirPreview">
+          <div class="preview-panel-header"><i data-lucide="eye"></i> 首页预览</div>
+          <div class="preview-panel-body" id="portalDirPreviewBody"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== PORTAL: 课程推荐 ========== -->
+    <div class="page" id="page-portal-recommend">
+      <div class="sortable-wrap">
+        <div class="sortable-panel">
+          <div class="sortable-panel-header">
+            <span style="display:flex;align-items:center;gap:8px"><i data-lucide="star" style="width:16px;height:16px;color:var(--ink)"></i> 课程推荐（首页热门课程）</span>
+            <div style="display:flex;gap:8px"><button class="btn btn-primary btn-sm" onclick="saveSortList('portalRecList')"><i data-lucide="save"></i> 保存</button></div>
+          </div>
+          <div class="sortable-panel-body">
+            <div class="sortable-list" id="portalRecList" data-preview="portalRecPreview">
+              <div class="sortable-item" draggable="true" data-id="r1" data-icon="bot">
+                <div class="drag-handle" title="拖拽排序">≡</div>
+                <div class="sort-order">01</div>
+                <div class="sort-content"><span class="sort-name">Agent 进阶之道</span><span class="sort-desc">产业级闭环与科研演进 · 10周线下</span></div>
+                <button class="sort-toggle-btn on" onclick="toggleSortItem(this)" title="显示/隐藏"></button>
+                <div class="sort-actions">
+                  <button class="sort-btn-up" onclick="moveSortItem(this,'up')" title="上移">▲</button>
+                  <button class="sort-btn-down" onclick="moveSortItem(this,'down')" title="下移">▼</button>
+                </div>
+              </div>
+              <div class="sortable-item" draggable="true" data-id="r2" data-icon="search">
+                <div class="drag-handle" title="拖拽排序">≡</div>
+                <div class="sort-order">02</div>
+                <div class="sort-content"><span class="sort-name">RAG 进阶之道</span><span class="sort-desc">产业级闭环与科研演进 · 10周线下</span></div>
+                <button class="sort-toggle-btn on" onclick="toggleSortItem(this)" title="显示/隐藏"></button>
+                <div class="sort-actions">
+                  <button class="sort-btn-up" onclick="moveSortItem(this,'up')" title="上移">▲</button>
+                  <button class="sort-btn-down" onclick="moveSortItem(this,'down')" title="下移">▼</button>
+                </div>
+              </div>
+              <div class="sortable-item" draggable="true" data-id="r3" data-icon="cpu">
+                <div class="drag-handle" title="拖拽排序">≡</div>
+                <div class="sort-order">03</div>
+                <div class="sort-content"><span class="sort-name">端侧 AI 开发实践</span><span class="sort-desc">香橙派 AIpro · 5周实训营</span></div>
+                <button class="sort-toggle-btn on" onclick="toggleSortItem(this)" title="显示/隐藏"></button>
+                <div class="sort-actions">
+                  <button class="sort-btn-up" onclick="moveSortItem(this,'up')" title="上移">▲</button>
+                  <button class="sort-btn-down" onclick="moveSortItem(this,'down')" title="下移">▼</button>
+                </div>
+              </div>
+              <div class="sortable-item" draggable="true" data-id="r4" data-icon="landmark">
+                <div class="drag-handle" title="拖拽排序">≡</div>
+                <div class="sort-order">04</div>
+                <div class="sort-content"><span class="sort-name">金融 AI 实验室</span><span class="sort-desc">自然语言重塑金融研究 · 10天密集实训</span></div>
+                <button class="sort-toggle-btn on" onclick="toggleSortItem(this)" title="显示/隐藏"></button>
+                <div class="sort-actions">
+                  <button class="sort-btn-up" onclick="moveSortItem(this,'up')" title="上移">▲</button>
+                  <button class="sort-btn-down" onclick="moveSortItem(this,'down')" title="下移">▼</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="preview-panel" id="portalRecPreview">
+          <div class="preview-panel-header"><i data-lucide="eye"></i> 首页预览</div>
+          <div class="preview-panel-body" id="portalRecPreviewBody"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== PORTAL: 学员成果 ========== -->
+    <div class="page" id="page-portal-path">
+      <div class="sortable-wrap">
+        <div class="sortable-panel" style="flex:1">
+          <div class="sortable-panel-header">
+            <span style="display:flex;align-items:center;gap:8px"><i data-lucide="award" style="width:16px;height:16px;color:var(--ink)"></i> 学员成果展示</span>
+            <div style="display:flex;gap:8px"><button class="btn btn-outline btn-sm" onclick="addAchievementItem('portalPathList')"><i data-lucide="plus"></i> 新增</button><button class="btn btn-primary btn-sm" onclick="saveSortList('portalPathList')"><i data-lucide="save"></i> 保存</button></div>
+          </div>
+          <div class="sortable-panel-body">
+            <div class="sortable-list" id="portalPathList" data-preview="portalPathPreview" style="gap:8px">
+              <div class="sortable-item achievement-item" draggable="true" data-id="a1" style="flex-wrap:wrap;padding:12px">
+                <div class="drag-handle" title="拖拽排序">≡</div>
+                <div class="sort-order">01</div>
+                <div style="width:80px;height:56px;border-radius:var(--r-xs);border:1px dashed var(--border-default);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;overflow:hidden;background:var(--bg-surface);transition:border .2s" onclick="this.querySelector('input').click()" onmouseover="this.style.borderColor='var(--ink)'" onmouseout="this.style.borderColor=''">
+                  <span style="font-size:10px;color:var(--text-dim);text-align:center">点击<br>配图</span>
+                  <input type="file" accept="image/*" style="display:none" onchange="handleAchievementImg(this)">
+                </div>
+                <div class="sort-content" style="flex:1;min-width:140px;display:flex;flex-direction:column;gap:4px">
+                  <input class="sort-name-input" value="李同学 — Agent 智能体项目" style="font-size:13px;font-weight:600;color:var(--text-primary);border:1px solid transparent;background:transparent;padding:2px 4px;border-radius:4px;outline:none;width:100%;font-family:var(--font)" onfocus="this.style.borderColor='var(--ink)';this.style.background='var(--bg-card)'" onblur="this.style.borderColor='transparent';this.style.background='transparent'">
+                  <input class="sort-desc-input" value="基于MCP协议构建学术文献检索助手，实现智能引用推荐与论文摘要生成" style="font-size:11px;color:var(--text-muted);border:1px solid transparent;background:transparent;padding:2px 4px;border-radius:4px;outline:none;width:100%;font-family:var(--font)" onfocus="this.style.borderColor='var(--ink)';this.style.background='var(--bg-card)'" onblur="this.style.borderColor='transparent';this.style.background='transparent'">
+                </div>
+                <button class="sort-toggle-btn on" onclick="toggleSortItem(this)" title="显示/隐藏"></button>
+                <div class="sort-actions">
+                  <button class="sort-btn-up" onclick="moveSortItem(this,'up')" title="上移">▲</button>
+                  <button class="sort-btn-down" onclick="moveSortItem(this,'down')" title="下移">▼</button>
+                </div>
+              </div>
+              <div class="sortable-item achievement-item" draggable="true" data-id="a2" style="flex-wrap:wrap;padding:12px">
+                <div class="drag-handle" title="拖拽排序">≡</div>
+                <div class="sort-order">02</div>
+                <div style="width:80px;height:56px;border-radius:var(--r-xs);border:1px dashed var(--border-default);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;overflow:hidden;background:var(--bg-surface);transition:border .2s" onclick="this.querySelector('input').click()" onmouseover="this.style.borderColor='var(--ink)'" onmouseout="this.style.borderColor=''">
+                  <span style="font-size:10px;color:var(--text-dim);text-align:center">点击<br>配图</span>
+                  <input type="file" accept="image/*" style="display:none" onchange="handleAchievementImg(this)">
+                </div>
+                <div class="sort-content" style="flex:1;min-width:140px;display:flex;flex-direction:column;gap:4px">
+                  <input class="sort-name-input" value="王同学 — RAG金融分析系统" style="font-size:13px;font-weight:600;color:var(--text-primary);border:1px solid transparent;background:transparent;padding:2px 4px;border-radius:4px;outline:none;width:100%;font-family:var(--font)" onfocus="this.style.borderColor='var(--ink)';this.style.background='var(--bg-card)'" onblur="this.style.borderColor='transparent';this.style.background='transparent'">
+                  <input class="sort-desc-input" value="结合RAG技术实现金融研报智能分析，自动生成投资建议摘要" style="font-size:11px;color:var(--text-muted);border:1px solid transparent;background:transparent;padding:2px 4px;border-radius:4px;outline:none;width:100%;font-family:var(--font)" onfocus="this.style.borderColor='var(--ink)';this.style.background='var(--bg-card)'" onblur="this.style.borderColor='transparent';this.style.background='transparent'">
+                </div>
+                <button class="sort-toggle-btn on" onclick="toggleSortItem(this)" title="显示/隐藏"></button>
+                <div class="sort-actions">
+                  <button class="sort-btn-up" onclick="moveSortItem(this,'up')" title="上移">▲</button>
+                  <button class="sort-btn-down" onclick="moveSortItem(this,'down')" title="下移">▼</button>
+                </div>
+              </div>
+              <div class="sortable-item achievement-item" draggable="true" data-id="a3" style="flex-wrap:wrap;padding:12px">
+                <div class="drag-handle" title="拖拽排序">≡</div>
+                <div class="sort-order">03</div>
+                <div style="width:80px;height:56px;border-radius:var(--r-xs);border:1px dashed var(--border-default);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;overflow:hidden;background:var(--bg-surface);transition:border .2s" onclick="this.querySelector('input').click()" onmouseover="this.style.borderColor='var(--ink)'" onmouseout="this.style.borderColor=''">
+                  <span style="font-size:10px;color:var(--text-dim);text-align:center">点击<br>配图</span>
+                  <input type="file" accept="image/*" style="display:none" onchange="handleAchievementImg(this)">
+                </div>
+                <div class="sort-content" style="flex:1;min-width:140px;display:flex;flex-direction:column;gap:4px">
+                  <input class="sort-name-input" value="张同学 — 端侧AI姿态检测" style="font-size:13px;font-weight:600;color:var(--text-primary);border:1px solid transparent;background:transparent;padding:2px 4px;border-radius:4px;outline:none;width:100%;font-family:var(--font)" onfocus="this.style.borderColor='var(--ink)';this.style.background='var(--bg-card)'" onblur="this.style.borderColor='transparent';this.style.background='transparent'">
+                  <input class="sort-desc-input" value="在香橙派AIpro上部署YOLOv8-Pose，实现实时人体姿态检测应用" style="font-size:11px;color:var(--text-muted);border:1px solid transparent;background:transparent;padding:2px 4px;border-radius:4px;outline:none;width:100%;font-family:var(--font)" onfocus="this.style.borderColor='var(--ink)';this.style.background='var(--bg-card)'" onblur="this.style.borderColor='transparent';this.style.background='transparent'">
+                </div>
+                <button class="sort-toggle-btn on" onclick="toggleSortItem(this)" title="显示/隐藏"></button>
+                <div class="sort-actions">
+                  <button class="sort-btn-up" onclick="moveSortItem(this,'up')" title="上移">▲</button>
+                  <button class="sort-btn-down" onclick="moveSortItem(this,'down')" title="下移">▼</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="preview-panel" id="portalPathPreview">
+          <div class="preview-panel-header"><i data-lucide="eye"></i> 首页预览</div>
+          <div class="preview-panel-body" id="portalPathPreviewBody"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== COURSES: 课程列表 ========== -->
+    <div class="page" id="page-courses-manage">
+      <div class="panel">
+        <div class="panel-header"><div class="panel-header-left"><i data-lucide="book-marked"></i> 课程列表</div> <button class="btn btn-primary btn-sm" onclick="switchSubPage('courses-add')"><i data-lucide="plus"></i> 新增课程</button></div>
+        <div class="panel-body" style="padding:0;overflow-x:auto">
+          <table>
+            <thead><tr><th>课程名称</th><th>时长</th><th>难度</th><th>章节数</th><th>状态</th><th>操作</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Agent 进阶之道</strong></td><td>10 周</td><td><span class="tag tag-purple"><i data-lucide="sparkles"></i> 进阶</span></td><td>6</td><td><span class="tag tag-green"><i data-lucide="check-circle"></i> 已发布</span></td><td><button class="btn btn-outline btn-sm" onclick="switchSubPage('courses-add')"><i data-lucide="pencil"></i> 编辑</button> <button class="btn btn-danger btn-sm"><i data-lucide="trash-2"></i> 删除</button></td></tr>
+              <tr><td><strong>RAG 进阶之道</strong></td><td>10 周</td><td><span class="tag tag-purple"><i data-lucide="sparkles"></i> 进阶</span></td><td>4</td><td><span class="tag tag-green"><i data-lucide="check-circle"></i> 已发布</span></td><td><button class="btn btn-outline btn-sm"><i data-lucide="pencil"></i> 编辑</button> <button class="btn btn-danger btn-sm"><i data-lucide="trash-2"></i> 删除</button></td></tr>
+              <tr><td><strong>端侧 AI 开发实践</strong></td><td>5 周</td><td><span class="tag tag-blue"><i data-lucide="trending-up"></i> 入门到进阶</span></td><td>5</td><td><span class="tag tag-green"><i data-lucide="check-circle"></i> 已发布</span></td><td><button class="btn btn-outline btn-sm"><i data-lucide="pencil"></i> 编辑</button> <button class="btn btn-danger btn-sm"><i data-lucide="trash-2"></i> 删除</button></td></tr>
+              <tr><td><strong>金融 AI 实验室</strong></td><td>10 天</td><td><span class="tag tag-blue"><i data-lucide="trending-up"></i> 入门到进阶</span></td><td>5</td><td><span class="tag tag-green"><i data-lucide="check-circle"></i> 已发布</span></td><td><button class="btn btn-outline btn-sm"><i data-lucide="pencil"></i> 编辑</button> <button class="btn btn-danger btn-sm"><i data-lucide="trash-2"></i> 删除</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== COURSES: 新增/编辑课程 ========== -->
+    <div class="page" id="page-courses-add">
+      <div style="max-width:680px;margin:0 auto">
+        <a href="javascript:void(0)" onclick="switchPage('courses-manage',document.querySelector('[data-page=courses-manage]'))" style="display:inline-flex;align-items:center;gap:4px;margin-bottom:28px;font-size:13px;color:var(--link);text-decoration:none"><i data-lucide="arrow-left" style="width:14px;height:14px"></i> 返回课程列表</a>
+
+        <!-- Progress indicator — minimal dots + line -->
+        <div id="courseSteps" style="display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:36px">
+          <div class="step-dot" data-step="1" onclick="goStep(1)" style="display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer">
+            <div class="step-circle active" style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;transition:all .3s var(--ease-out);background:var(--ink);color:#fff"><i data-lucide="file-text" style="width:15px;height:15px"></i></div>
+            <span style="font-size:12px;font-weight:500;color:var(--text-primary)">基本信息</span>
+          </div>
+          <div class="step-line" style="width:80px;height:1.5px;background:var(--border-default);margin:0 4px 26px;transition:background .3s"></div>
+          <div class="step-dot" data-step="2" onclick="goStep(2)" style="display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer">
+            <div class="step-circle" style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;transition:all .3s var(--ease-out);background:var(--bg-surface);color:var(--text-muted)"><i data-lucide="list" style="width:15px;height:15px"></i></div>
+            <span style="font-size:12px;font-weight:500;color:var(--text-muted)">章节设置</span>
+          </div>
+          <div class="step-line" style="width:80px;height:1.5px;background:var(--border-default);margin:0 4px 26px;transition:background .3s"></div>
+          <div class="step-dot" data-step="3" onclick="goStep(3)" style="display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer">
+            <div class="step-circle" style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;transition:all .3s var(--ease-out);background:var(--bg-surface);color:var(--text-muted)"><i data-lucide="rocket" style="width:15px;height:15px"></i></div>
+            <span style="font-size:12px;font-weight:500;color:var(--text-muted)">发布</span>
+          </div>
+        </div>
+
+        <!-- Step 1: 基本信息 -->
+        <div class="panel step-panel" id="stepPanel1" style="box-shadow:none;border:none;background:transparent">
+          <div class="panel-body" style="padding:0">
+            <div style="font-size:24px;font-weight:600;font-family:var(--font-display);color:var(--text-primary);margin-bottom:6px;letter-spacing:-0.02em">基本信息</div>
+            <p style="font-size:14px;color:var(--text-muted);margin-bottom:32px">填写课程的核心信息，带 * 为必填项</p>
+            <div class="form-group"><label>课程名称 <span class="req">*</span></label><input id="cName" placeholder="如：Agent 进阶之道"></div>
+            <div class="form-group"><label>课程封面</label>
+              <div id="coverUpload" style="display:flex;align-items:center;gap:16px">
+                <div id="coverPreview" style="width:160px;height:100px;border-radius:var(--r-sm);border:1.5px dashed var(--border-default);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s var(--ease-out);background:var(--bg-surface);flex-shrink:0;overflow:hidden" onclick="document.getElementById('coverInput').click()" onmouseover="this.style.borderColor='var(--ink)';this.style.background='var(--ink-surface)'" onmouseout="this.style.borderColor='';this.style.background=''">
+                  <div id="coverPlaceholder" style="text-align:center;color:var(--text-muted)"><i data-lucide="image" style="width:22px;height:22px;display:block;margin:0 auto 4px"></i><span style="font-size:11px">点击上传封面</span></div>
+                  <img id="coverImg" src="" style="display:none;width:100%;height:100%;object-fit:cover">
+                </div>
+                <div style="font-size:11px;color:var(--text-dim);line-height:1.6">建议尺寸 1200×630px<br>支持 JPG / PNG / WebP<br>将在课程卡片中展示</div>
+              </div>
+              <input type="file" id="coverInput" accept="image/*" style="display:none" onchange="handleCoverUpload(this)">
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>课程时长 <span class="req">*</span></label><select id="cDuration"><option>10 周</option><option>5 周</option><option>10 天</option><option>自定义</option></select></div>
+              <div class="form-group"><label>难度等级 <span class="req">*</span></label><select id="cLevel"><option>入门</option><option>入门到进阶</option><option>进阶</option></select></div>
+            </div>
+            <div class="form-group"><label>课程标签</label><input id="cTags" placeholder="Agent, MCP, Transformer（逗号分隔）"></div>
+            <div class="form-group"><label>课程目标</label><textarea id="cGoal" placeholder="简要描述本课程的教学目标与预期成果…" style="min-height:90px"></textarea></div>
+            <div class="form-group"><label>课程特色</label>
+              <div id="competitivenessList" style="display:flex;flex-direction:column;gap:8px">
+                <div class="dyn-item"><input placeholder="项目" class="comp-name"><input placeholder="具体描述" class="comp-desc"><button class="btn btn-outline btn-sm" onclick="this.parentElement.remove()"><i data-lucide="x"></i></button></div>
+              </div>
+              <button class="btn btn-outline btn-sm" style="margin-top:8px" onclick="addCompItem()"><i data-lucide="plus"></i> 添加课程特色</button>
+            </div>
+            <div style="margin-top:36px;text-align:right">
+              <button class="btn btn-primary btn-lg" onclick="goStep(2)">继续：章节设置 <i data-lucide="arrow-right"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: 章节 -->
+        <div class="panel step-panel" id="stepPanel2" style="display:none;box-shadow:none;border:none;background:transparent">
+          <div class="panel-body" style="padding:0">
+            <div style="font-size:24px;font-weight:600;font-family:var(--font-display);color:var(--text-primary);margin-bottom:6px;letter-spacing:-0.02em">章节设置</div>
+            <p style="font-size:14px;color:var(--text-muted);margin-bottom:32px">拖拽调整章节顺序，点击右侧按钮可编辑或删除</p>
+            <div id="chapterList" style="display:flex;flex-direction:column;gap:6px">
+              <div class="chapter-card" draggable="true" data-ch="1" style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--r-sm);transition:all .2s var(--ease-out)">
+                <div class="drag-handle" style="cursor:grab;color:var(--text-dim);padding-top:6px" title="拖拽排序">≡</div>
+                <div style="width:28px;height:28px;border-radius:50%;background:var(--bg-surface);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--text-muted);flex-shrink:0;margin-top:4px">01</div>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px">
+                  <input placeholder="章节名称" class="ch-name" value="Transformer 架构入门" style="width:100%;border:none;background:transparent;font-size:14px;font-weight:500;color:var(--text-primary);padding:4px 0;outline:none">
+                  <textarea placeholder="章节内容描述…" class="ch-content" style="width:100%;border:none;background:transparent;font-size:12px;color:var(--text-secondary);padding:4px 0;outline:none;resize:none;min-height:36px;font-family:var(--font)">从 Attention 机制出发，理解 Transformer 的核心架构设计</textarea>
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="this.closest('.chapter-card').remove();renumberChapters()"><i data-lucide="trash-2"></i></button>
+              </div>
+            </div>
+            <button class="btn btn-outline btn-sm" style="margin-top:10px" onclick="addChapter()"><i data-lucide="plus"></i> 添加章节</button>
+            <div style="margin-top:36px;display:flex;justify-content:space-between">
+              <button class="btn btn-outline btn-lg" onclick="goStep(1)"><i data-lucide="arrow-left"></i> 上一步</button>
+              <button class="btn btn-primary btn-lg" onclick="goStep(3)">继续：发布 <i data-lucide="arrow-right"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: 发布/保存 -->
+        <div class="panel step-panel" id="stepPanel3" style="display:none;box-shadow:none;border:none;background:transparent">
+          <div class="panel-body" style="padding:0">
+            <div style="font-size:24px;font-weight:600;font-family:var(--font-display);color:var(--text-primary);margin-bottom:6px;letter-spacing:-0.02em">确认发布</div>
+            <p style="font-size:14px;color:var(--text-muted);margin-bottom:32px">确认无误后即可发布，或先保存为草稿稍后继续编辑</p>
+            <div style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--r-md);padding:28px 32px;margin-bottom:32px">
+              <div style="font-size:18px;font-weight:600;color:var(--text-primary);margin-bottom:16px" id="reviewTitle">未命名课程</div>
+              <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--text-secondary)">
+                <div style="display:flex;gap:8px"><span style="color:var(--text-muted);width:60px;flex-shrink:0">时长</span><span id="reviewDuration">-</span></div>
+                <div style="display:flex;gap:8px"><span style="color:var(--text-muted);width:60px;flex-shrink:0">难度</span><span id="reviewLevel">-</span></div>
+                <div style="display:flex;gap:8px"><span style="color:var(--text-muted);width:60px;flex-shrink:0">标签</span><span id="reviewTags">-</span></div>
+                <div style="display:flex;gap:8px"><span style="color:var(--text-muted);width:60px;flex-shrink:0">章节数</span><span id="reviewChapters">-</span></div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;justify-content:flex-end">
+              <button class="btn btn-outline btn-lg" onclick="goStep(2)"><i data-lucide="arrow-left"></i> 返回修改</button>
+              <button class="btn btn-outline btn-lg" onclick="alert('已保存为草稿')"><i data-lucide="save"></i> 保存草稿</button>
+              <button class="btn btn-primary btn-lg" onclick="alert('课程已发布！');switchPage('courses-manage',document.querySelector('[data-page=courses-manage]'))"><i data-lucide="rocket"></i> 发布课程</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 我的客户 ========== -->
+    <div class="page" id="page-bookings-mine">
+      <div class="panel">
+        <div class="panel-header" style="flex-wrap:wrap;gap:12px">
+          <div style="display:flex;align-items:center;gap:16px">
+            <div class="panel-header-left" style="margin:0"><i data-lucide="user-check"></i> 客户列表</div>
+            <div class="tabs" style="margin-bottom:0">
+              <div class="tab active" onclick="switchMineTab(this,'all')"><i data-lucide="list"></i> 全部 <span style="background:var(--bg-surface);color:var(--text-secondary);font-size:10px;padding:1px 6px;border-radius:var(--r-pill)">12</span></div>
+              <div class="tab" onclick="switchMineTab(this,'pending')"><i data-lucide="clock"></i> 未回访 <span style="background:var(--red-surface);color:var(--red);font-size:10px;padding:1px 6px;border-radius:var(--r-pill)">3</span></div>
+              <div class="tab" onclick="switchMineTab(this,'following')"><i data-lucide="message-circle"></i> 跟进中 <span style="background:var(--ink-surface);color:var(--ink);font-size:10px;padding:1px 6px;border-radius:var(--r-pill)">9</span></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <select style="padding:6px 12px;border-radius:var(--r-xs);border:1px solid var(--border-default);font-size:12px;background:var(--bg-base);font-family:var(--font)"><option>全部课程</option><option>Agent 进阶之道</option><option>RAG 进阶之道</option><option>端侧 AI 开发实践</option><option>金融 AI 实验室</option></select>
+            <input placeholder="搜索姓名/电话" style="padding:6px 12px;border-radius:var(--r-xs);border:1px solid var(--border-default);font-size:12px;width:140px;font-family:var(--font)">
+            <button class="btn btn-outline btn-sm"><i data-lucide="download"></i> 导出</button>
+          </div>
+        </div>
+        <div class="panel-body" style="padding:0;overflow-x:auto">
+          <table>
+            <thead><tr><th>姓名</th><th>电话</th><th>课程</th><th>提交时间</th><th>最后回访</th><th>状态</th><th>操作</th></tr></thead>
+            <tbody id="mineTableBody">
+              <tr class="mine-row" data-status="pending"><td><strong>王建国</strong></td><td>138****1256</td><td>Agent 进阶之道</td><td>06-15 14:22</td><td><span style="color:var(--red)">- 未回访</span></td><td><span class="tag tag-red"><i data-lucide="alert-circle"></i> 待回访</span></td><td><button class="btn btn-sm" style="background:var(--red-surface);color:var(--red);border:1px solid rgba(255,59,48,0.2);margin-right:4px" onclick="openFollowupModal('王建国','Agent 进阶之道')"><i data-lucide="phone"></i> 回访</button><button class="btn btn-outline btn-sm" onclick="openClientDetail('王建国','138****1256','Agent 进阶之道','06-15 14:22','希望安排在6月下旬','跟进中')"><i data-lucide="eye"></i> 详情</button></td></tr>
+              <tr class="mine-row" data-status="pending"><td><strong>李明</strong></td><td>139****5678</td><td>端侧 AI 开发实践</td><td>06-16 09:15</td><td><span style="color:var(--red)">- 未回访</span></td><td><span class="tag tag-red"><i data-lucide="alert-circle"></i> 待回访</span></td><td><button class="btn btn-sm" style="background:var(--red-surface);color:var(--red);border:1px solid rgba(255,59,48,0.2);margin-right:4px" onclick="openFollowupModal('李明','端侧 AI 开发实践')"><i data-lucide="phone"></i> 回访</button><button class="btn btn-outline btn-sm" onclick="openClientDetail('李明','139****5678','端侧 AI 开发实践','06-16 09:15','对硬件部署感兴趣','跟进中')"><i data-lucide="eye"></i> 详情</button></td></tr>
+              <tr class="mine-row" data-status="pending"><td><strong>张三</strong></td><td>137****9012</td><td>RAG 进阶之道</td><td>06-17 09:00</td><td><span style="color:var(--red)">- 未回访</span></td><td><span class="tag tag-red"><i data-lucide="alert-circle"></i> 待回访</span></td><td><button class="btn btn-sm" style="background:var(--red-surface);color:var(--red);border:1px solid rgba(255,59,48,0.2);margin-right:4px" onclick="openFollowupModal('张三','RAG 进阶之道')"><i data-lucide="phone"></i> 回访</button><button class="btn btn-outline btn-sm" onclick="openClientDetail('张三','137****9012','RAG 进阶之道','06-17 09:00','-','跟进中')"><i data-lucide="eye"></i> 详情</button></td></tr>
+              <tr class="mine-row" data-status="following"><td><strong>赵六</strong></td><td>136****8934</td><td>金融 AI 实验室</td><td>06-14 14:20</td><td>06-17 15:30</td><td><span class="tag tag-blue"><i data-lucide="message-circle"></i> 跟进中</span></td><td><button class="btn btn-sm" style="background:var(--ink-surface);color:var(--ink);border:1px solid rgba(0,113,227,0.15);margin-right:4px" onclick="openFollowupModal('赵六','金融 AI 实验室')"><i data-lucide="phone"></i> 回访</button><button class="btn btn-outline btn-sm" onclick="openClientDetail('赵六','136****8934','金融 AI 实验室','06-14 14:20','零基础，需预习资料','跟进中')"><i data-lucide="eye"></i> 详情</button></td></tr>
+              <tr class="mine-row" data-status="following"><td><strong>孙五</strong></td><td>137****3412</td><td>Agent 进阶之道</td><td>06-13 11:00</td><td>06-16 10:00</td><td><span class="tag tag-blue"><i data-lucide="message-circle"></i> 跟进中</span></td><td><button class="btn btn-sm" style="background:var(--ink-surface);color:var(--ink);border:1px solid rgba(0,113,227,0.15);margin-right:4px" onclick="openFollowupModal('孙五','Agent 进阶之道')"><i data-lucide="phone"></i> 回访</button><button class="btn btn-outline btn-sm" onclick="openClientDetail('孙五','137****3412','Agent 进阶之道','06-13 11:00','-','跟进中')"><i data-lucide="eye"></i> 详情</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 客户详情弹窗 ========== -->
+    <div class="detail-overlay" id="clientDetailOverlay" onclick="if(event.target===this)closeClientDetail()">
+      <div class="detail-panel">
+        <div class="detail-panel-header">
+          <span style="font-weight:600;display:flex;align-items:center;gap:8px"><i data-lucide="user" style="width:18px;height:18px;color:var(--ink)"></i> 客户详情</span>
+          <button class="modal-close" onclick="closeClientDetail()"><i data-lucide="x" style="width:14px;height:14px"></i></button>
+        </div>
+        <div class="detail-panel-body" id="clientDetailBody"></div>
+      </div>
+    </div>
+
+    <!-- ========== 回访弹窗 ========== -->
+    <div class="detail-overlay" id="followupOverlay" onclick="if(event.target===this)closeFollowupModal()">
+      <div class="detail-panel">
+        <div class="detail-panel-header">
+          <span style="font-weight:600;display:flex;align-items:center;gap:8px" id="followupTitle"><i data-lucide="phone" style="width:18px;height:18px;color:var(--ink)"></i> 添加回访记录</span>
+          <button class="modal-close" onclick="closeFollowupModal()"><i data-lucide="x" style="width:14px;height:14px"></i></button>
+        </div>
+        <div class="detail-panel-body">
+          <div class="tl" id="followupTimeline"></div>
+          <div style="margin-top:20px;padding:16px;background:var(--bg-surface);border-radius:var(--r-sm)">
+            <div style="font-size:12px;font-weight:600;margin-bottom:10px;color:var(--text-primary);display:flex;align-items:center;gap:6px"><i data-lucide="plus-circle" style="width:14px;height:14px;color:var(--ink)"></i> 添加回访记录</div>
+            <div style="display:flex;gap:6px;margin-bottom:10px" id="followupMethods">
+              <button class="btn btn-outline btn-sm followup-method active" onclick="selectMethod(this)"><i data-lucide="phone-call"></i> 已接通</button>
+              <button class="btn btn-outline btn-sm followup-method" onclick="selectMethod(this)"><i data-lucide="phone-off"></i> 未接通</button>
+              <button class="btn btn-outline btn-sm followup-method" onclick="selectMethod(this)"><i data-lucide="message-circle"></i> 微信</button>
+              <button class="btn btn-outline btn-sm followup-method" onclick="selectMethod(this)"><i data-lucide="mail"></i> 邮件</button>
+            </div>
+            <textarea placeholder="回访内容..." style="width:100%;padding:10px;border:1px solid var(--border-default);border-radius:var(--r-xs);font-size:12px;margin-bottom:8px;font-family:var(--font);resize:vertical;min-height:60px;outline:none;transition:border .2s" onfocus="this.style.borderColor='var(--ink)'" onblur="this.style.borderColor=''"></textarea>
+            <div style="display:flex;gap:8px;align-items:center">
+              <span style="font-size:11px;color:var(--text-muted);white-space:nowrap"><i data-lucide="calendar" style="width:12px;height:12px"></i> 下次跟进</span>
+              <input type="date" style="padding:6px 10px;border:1px solid var(--border-default);border-radius:var(--r-xs);font-size:11px">
+              <input type="time" style="padding:6px 10px;border:1px solid var(--border-default);border-radius:var(--r-xs);font-size:11px">
+              <button class="btn btn-outline btn-sm" style="color:var(--red);border-color:rgba(255,59,48,0.25)" onclick="if(confirm('确定归档该客户吗？归档后可在已归档客户列表中查看。')){alert('已归档');closeFollowupModal()}"><i data-lucide="archive"></i> 归档</button>
+              <button class="btn btn-primary btn-sm" style="margin-left:auto" onclick="alert('回访记录已保存');closeFollowupModal()"><i data-lucide="check"></i> 保存</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 已归档客户 ========== -->
+    <div class="page" id="page-bookings-archive">
+      <div class="panel">
+        <div class="panel-header" style="flex-wrap:wrap;gap:12px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="panel-header-left" style="margin:0"><i data-lucide="archive"></i> 已归档客户</div>
+            <span style="font-size:12px;color:var(--text-muted);font-weight:400">· 终止跟进的客户档案</span>
+          </div>
+          <div style="display:flex;gap:8px">
+            <input placeholder="搜索姓名/电话" style="padding:6px 12px;border-radius:var(--r-xs);border:1px solid var(--border-default);font-size:12px;width:140px;font-family:var(--font)">
+            <button class="btn btn-outline btn-sm"><i data-lucide="download"></i> 导出</button>
+          </div>
+        </div>
+        <div class="panel-body" style="padding:0;overflow-x:auto">
+          <table>
+            <thead><tr><th>姓名</th><th>电话</th><th>课程</th><th>提交时间</th><th>归档时间</th><th>归档原因</th><th>操作</th></tr></thead>
+            <tbody>
+              <tr><td><strong>周七</strong></td><td>135****6745</td><td>端侧 AI 开发实践</td><td>06-10 08:30</td><td>06-15 16:00</td><td>已报名其他课程</td><td><button class="btn btn-outline btn-sm" onclick="openClientDetail('周七','135****6745','端侧 AI 开发实践','06-10 08:30','已报名其他课程','已归档')"><i data-lucide="eye"></i> 详情</button></td></tr>
+              <tr><td><strong>钱八</strong></td><td>132****2109</td><td>金融 AI 实验室</td><td>06-08 14:00</td><td>06-14 10:30</td><td>明确表示不感兴趣</td><td><button class="btn btn-outline btn-sm" onclick="openClientDetail('钱八','132****2109','金融 AI 实验室','06-08 14:00','明确表示不感兴趣','已归档')"><i data-lucide="eye"></i> 详情</button></td></tr>
+              <tr><td><strong>郑十</strong></td><td>131****5432</td><td>Agent 进阶之道</td><td>06-05 09:15</td><td>06-12 11:00</td><td>电话始终无法接通</td><td><button class="btn btn-outline btn-sm" onclick="openClientDetail('郑十','131****5432','Agent 进阶之道','06-05 09:15','电话始终无法接通','已归档')"><i data-lucide="eye"></i> 详情</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 智能客服 · 参数配置 ========== -->
+    <div class="page" id="page-cs-config">
+      <div class="panel">
+        <div class="panel-header"><div class="panel-header-left"><i data-lucide="settings"></i> 智能客服参数配置</div> <button class="btn btn-primary btn-sm" onclick="alert('配置已保存')"><i data-lucide="save"></i> 保存配置</button></div>
+        <div class="panel-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div class="form-group"><label>客服名称</label><input value="昇腾AI 智能客服助手"></div>
+            <div class="form-group"><label>欢迎语</label><input value="您好！我是昇腾AI课程的智能助手，请问有什么可以帮您的？"></div>
+            <div class="form-group"><label>模型选择</label><select><option>DeepSeek-V3</option><option>Qwen-Max</option><option>GPT-4o</option></select></div>
+            <div class="form-group"><label>温度参数 (Temperature)</label><input type="text" value="0.7" placeholder="0-2"></div>
+            <div class="form-group"><label>最大Token数</label><input type="text" value="2048"></div>
+            <div class="form-group"><label>Top-P</label><input type="text" value="0.9"></div>
+            <div class="form-group"><label>上下文记忆轮数</label><input type="text" value="10"></div>
+            <div class="form-group"><label>响应超时 (秒)</label><input type="text" value="30"></div>
+            <div class="form-group"><label>客服头像</label>
+              <div style="display:flex;align-items:center;gap:12px">
+                <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--ink),var(--ink-soft));display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px">🤖</div>
+                <button class="btn btn-outline btn-sm"><i data-lucide="upload"></i> 上传头像</button>
+              </div>
+            </div>
+            <div class="form-group"><label>工作时间</label><select><option>7×24 小时</option><option>工作日 9:00-18:00</option><option>自定义</option></select></div>
+          </div>
+          <div class="form-group" style="margin-top:16px"><label>系统 Prompt</label>
+            <textarea style="width:100%;min-height:120px;font-family:var(--font-mono);font-size:12px">你是一个专业的AI课程咨询助手，服务于昇腾AI学院。你需要：
+1. 友好、专业地解答用户关于课程的问题
+2. 推荐适合用户需求的课程方向
+3. 引导用户完成预约试听流程
+4. 对于无法回答的问题，引导用户联系人工客服
+请用中文回复，保持积极热情的态度。</textarea>
+          </div>
+          <div class="form-group"><label>快捷提问预设（每行一个）</label>
+            <textarea style="width:100%;min-height:80px;font-family:var(--font-mono);font-size:12px">课程有哪些方向？
+如何预约试听？
+课程适合零基础吗？
+上课时间和地点？
+课程费用是多少？
+完成课程后有证书吗？</textarea>
+          </div>
+          <div style="margin-top:16px;padding:16px;background:var(--bg-surface);border-radius:var(--r-sm)">
+            <div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:8px;display:flex;align-items:center;gap:6px"><i data-lucide="toggle-left" style="width:16px;height:16px;color:var(--ink)"></i> 功能开关</div>
+            <div style="display:flex;gap:24px;flex-wrap:wrap">
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><span class="toggle on" onclick="this.classList.toggle('on')"></span> 启用智能客服</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><span class="toggle on" onclick="this.classList.toggle('on')"></span> 显示快捷提问</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><span class="toggle on" onclick="this.classList.toggle('on')"></span> 启用知识库检索</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><span class="toggle" onclick="this.classList.toggle('on')"></span> 转人工客服</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 智能客服 · 沟通记录 ========== -->
+    <div class="page" id="page-cs-records">
+      <div class="panel">
+        <div class="panel-header" style="flex-wrap:wrap;gap:12px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="panel-header-left" style="margin:0"><i data-lucide="message-square"></i> 沟通记录</div>
+            <div class="tabs" style="margin-bottom:0">
+              <div class="tab active" onclick="switchCSRecordTab(this,'all')"><i data-lucide="list"></i> 全部 <span style="background:var(--bg-surface);color:var(--text-secondary);font-size:10px;padding:1px 6px;border-radius:var(--r-pill)">28</span></div>
+              <div class="tab" onclick="switchCSRecordTab(this,'today')"><i data-lucide="calendar"></i> 今日 <span style="background:var(--ink-surface);color:var(--ink);font-size:10px;padding:1px 6px;border-radius:var(--r-pill)">5</span></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <input placeholder="搜索对话关键词" style="padding:6px 12px;border-radius:var(--r-xs);border:1px solid var(--border-default);font-size:12px;width:160px;font-family:var(--font)">
+            <button class="btn btn-outline btn-sm"><i data-lucide="download"></i> 导出</button>
+          </div>
+        </div>
+        <div class="panel-body" style="padding:0;overflow-x:auto">
+          <table>
+            <thead><tr><th>会话ID</th><th>游客标识</th><th>首次消息</th><th>消息数</th><th>开始时间</th><th>时长</th><th>状态</th><th>操作</th></tr></thead>
+            <tbody>
+              <tr class="cs-record-row" data-date="today">
+                <td style="font-family:var(--font-mono);font-size:11px">#CS-20260622-001</td>
+                <td>游客_8a3f2b</td>
+                <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">您好，我想了解一下课程方向</td>
+                <td>12</td>
+                <td>06-22 14:30</td>
+                <td>8min</td>
+                <td><span class="tag tag-green"><i data-lucide="check-circle"></i> 已解决</span></td>
+                <td><button class="btn btn-outline btn-sm" onclick="openCSRecordDetail('CS-20260622-001')"><i data-lucide="eye"></i> 查看</button></td>
+              </tr>
+              <tr class="cs-record-row" data-date="today">
+                <td style="font-family:var(--font-mono);font-size:11px">#CS-20260622-002</td>
+                <td>游客_2d9e1c</td>
+                <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">怎么预约试听课程？</td>
+                <td>6</td>
+                <td>06-22 15:10</td>
+                <td>3min</td>
+                <td><span class="tag tag-green"><i data-lucide="check-circle"></i> 已解决</span></td>
+                <td><button class="btn btn-outline btn-sm" onclick="openCSRecordDetail('CS-20260622-002')"><i data-lucide="eye"></i> 查看</button></td>
+              </tr>
+              <tr class="cs-record-row" data-date="today">
+                <td style="font-family:var(--font-mono);font-size:11px">#CS-20260622-003</td>
+                <td>游客_7f4a3d</td>
+                <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">零基础可以学吗？</td>
+                <td>8</td>
+                <td>06-22 16:45</td>
+                <td>5min</td>
+                <td><span class="tag tag-green"><i data-lucide="check-circle"></i> 已解决</span></td>
+                <td><button class="btn btn-outline btn-sm" onclick="openCSRecordDetail('CS-20260622-003')"><i data-lucide="eye"></i> 查看</button></td>
+              </tr>
+              <tr class="cs-record-row" data-date="yesterday">
+                <td style="font-family:var(--font-mono);font-size:11px">#CS-20260621-004</td>
+                <td>游客_1b5c9e</td>
+                <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">课程费用大概是多少？</td>
+                <td>14</td>
+                <td>06-21 10:20</td>
+                <td>12min</td>
+                <td><span class="tag tag-orange"><i data-lucide="alert-circle"></i> 待跟进</span></td>
+                <td><button class="btn btn-outline btn-sm" onclick="openCSRecordDetail('CS-20260621-004')"><i data-lucide="eye"></i> 查看</button></td>
+              </tr>
+              <tr class="cs-record-row" data-date="yesterday">
+                <td style="font-family:var(--font-mono);font-size:11px">#CS-20260621-005</td>
+                <td>游客_3e8d4a</td>
+                <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">有没有适合金融专业的课程？</td>
+                <td>10</td>
+                <td>06-21 14:00</td>
+                <td>7min</td>
+                <td><span class="tag tag-green"><i data-lucide="check-circle"></i> 已解决</span></td>
+                <td><button class="btn btn-outline btn-sm" onclick="openCSRecordDetail('CS-20260621-005')"><i data-lucide="eye"></i> 查看</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 沟通记录详情弹窗 ========== -->
+    <div class="detail-overlay" id="csRecordDetailOverlay" onclick="if(event.target===this)closeCSRecordDetail()">
+      <div class="detail-panel" style="max-width:560px">
+        <div class="detail-panel-header">
+          <span style="font-weight:600;display:flex;align-items:center;gap:8px" id="csRecordDetailTitle"><i data-lucide="message-square" style="width:18px;height:18px;color:var(--ink)"></i> 会话详情</span>
+          <button class="modal-close" onclick="closeCSRecordDetail()"><i data-lucide="x" style="width:14px;height:14px"></i></button>
+        </div>
+        <div class="detail-panel-body">
+          <div class="detail-info-grid">
+            <div class="detail-info-item"><div class="lbl"><i data-lucide="hash" style="width:12px;height:12px"></i> 会话ID</div><div class="val" id="csrId">-</div></div>
+            <div class="detail-info-item"><div class="lbl"><i data-lucide="user" style="width:12px;height:12px"></i> 游客标识</div><div class="val" id="csrVisitor">-</div></div>
+            <div class="detail-info-item"><div class="lbl"><i data-lucide="clock" style="width:12px;height:12px"></i> 开始时间</div><div class="val" id="csrTime">-</div></div>
+            <div class="detail-info-item"><div class="lbl"><i data-lucide="message-circle" style="width:12px;height:12px"></i> 消息数</div><div class="val" id="csrMsgCount">-</div></div>
+          </div>
+          <div style="font-size:12px;font-weight:600;margin-bottom:10px;color:var(--text-primary);display:flex;align-items:center;gap:6px"><i data-lucide="messages-square" style="width:14px;height:14px;color:var(--ink)"></i> 对话记录</div>
+          <div style="background:var(--bg-surface);border-radius:var(--r-sm);padding:14px;max-height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:8px" id="csrMessages">
+            <div style="align-self:flex-start;background:var(--bg-card);border:1px solid var(--border-subtle);padding:8px 12px;border-radius:12px 12px 12px 4px;max-width:80%;font-size:12px;color:var(--text-primary)">您好，我想了解一下课程方向</div>
+            <div style="align-self:flex-end;background:var(--ink);color:#fff;padding:8px 12px;border-radius:12px 12px 4px 12px;max-width:80%;font-size:12px">您好！我们目前开设六大核心方向：基础大模型、Prompt Engineering、模型微调、RAG & Agent、多模态、LLM 工程化</div>
+            <div style="align-self:flex-start;background:var(--bg-card);border:1px solid var(--border-subtle);padding:8px 12px;border-radius:12px 12px 12px 4px;max-width:80%;font-size:12px;color:var(--text-primary)">我是计算机专业的学生，哪个方向比较适合我？</div>
+            <div style="align-self:flex-end;background:var(--ink);color:#fff;padding:8px 12px;border-radius:12px 12px 4px 12px;max-width:80%;font-size:12px">推荐从 Agent 进阶之道开始，这门课覆盖从模型原理到全栈交付的完整链路，非常适合有编程基础的学生 🎓</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 用户管理 ========== -->
+    <div class="page" id="page-users">
+      <div class="panel">
+        <div class="panel-header"><div class="panel-header-left"><i data-lucide="users"></i> 用户管理（管理员账号）</div> <button class="btn btn-outline btn-sm"><i data-lucide="user-plus"></i> 新增管理员</button></div>
+        <div class="panel-body" style="padding:0;overflow-x:auto">
+          <table>
+            <thead><tr><th>账号</th><th>角色</th><th>创建时间</th><th>最后登录</th><th>操作</th></tr></thead>
+            <tbody>
+              <tr><td>admin@shengteng-ai.com</td><td><span class="tag tag-purple"><i data-lucide="shield"></i> 超级管理员</span></td><td>2026-01-01</td><td>2026-06-22 14:30</td><td><button class="btn btn-outline btn-sm"><i data-lucide="pencil"></i> 编辑</button> <button class="btn btn-danger btn-sm"><i data-lucide="ban"></i> 禁用</button></td></tr>
+              <tr><td>editor@shengteng-ai.com</td><td><span class="tag tag-blue"><i data-lucide="edit"></i> 内容编辑</span></td><td>2026-03-15</td><td>2026-06-21 10:00</td><td><button class="btn btn-outline btn-sm"><i data-lucide="pencil"></i> 编辑</button> <button class="btn btn-danger btn-sm"><i data-lucide="ban"></i> 禁用</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 操作日志 ========== -->
+    <div class="page" id="page-logs">
+      <div class="panel">
+        <div class="panel-header"><div class="panel-header-left"><i data-lucide="clipboard-list"></i> 操作日志</div></div>
+        <div class="panel-body" style="padding:0;overflow-x:auto">
+          <table>
+            <thead><tr><th>时间</th><th>操作人</th><th>操作</th><th>详情</th><th>IP</th></tr></thead>
+            <tbody>
+              <tr><td>2026-06-22 14:30</td><td>admin</td><td><span class="tag tag-green"><i data-lucide="rocket"></i> 发布课程</span></td><td>Agent 进阶之道</td><td>192.168.1.100</td></tr>
+              <tr><td>2026-06-22 10:15</td><td>admin</td><td><span class="tag tag-blue"><i data-lucide="settings"></i> 修改门户</span></td><td>更新课程体系显示顺序</td><td>192.168.1.100</td></tr>
+              <tr><td>2026-06-21 16:00</td><td>editor</td><td><span class="tag tag-blue"><i data-lucide="pencil"></i> 编辑课程</span></td><td>更新 RAG 进阶之道章节</td><td>192.168.1.101</td></tr>
+              <tr><td>2026-06-21 09:00</td><td>admin</td><td><span class="tag tag-purple"><i data-lucide="log-in"></i> 系统登录</span></td><td>登录成功</td><td>192.168.1.100</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ============ PAGE SWITCHING ============
+var pageTitles = {
+  'dashboard':'仪表盘',
+  'portal-courses':'课程体系',
+  'portal-recommend':'课程推荐',
+  'portal-path':'学员成果',
+  'courses-manage':'课程管理',
+  'courses-add':'新增/编辑课程',
+  'bookings-mine':'客户列表',
+  'bookings-archive':'已归档客户',
+  'cs-config':'智能客服 · 参数配置',
+  'cs-records':'智能客服 · 沟通记录',
+  'users':'用户管理',
+  'logs':'操作日志'
+};
+var pageIcons = {
+  'dashboard':'layout-dashboard',
+  'portal-courses':'book-open',
+  'portal-recommend':'star',
+  'portal-path':'award',
+  'courses-manage':'book-marked',
+  'courses-add':'plus-circle',
+  'bookings-mine':'user-check',
+  'bookings-archive':'archive',
+  'cs-config':'settings',
+  'cs-records':'message-square',
+  'users':'users',
+  'logs':'clipboard-list'
+};
+var currentStep = 1;
+
+function switchPage(pageId, el) {
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  var page = document.getElementById('page-'+pageId);
+  if (page) page.classList.add('active');
+  document.querySelectorAll('.sidebar-item').forEach(function(i){ i.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  var icon = pageIcons[pageId] || 'layout-dashboard';
+  document.getElementById('topbarTitle').innerHTML = '<i data-lucide=\"'+icon+'\"></i> '+(pageTitles[pageId] || '');
+  lucide.createIcons();
+}
+function switchSubPage(pageId) {
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  var page = document.getElementById('page-'+pageId);
+  if (page) page.classList.add('active');
+  var icon = pageIcons[pageId] || 'layout-dashboard';
+  document.getElementById('topbarTitle').innerHTML = '<i data-lucide=\"'+icon+'\"></i> '+(pageTitles[pageId] || '');
+  lucide.createIcons();
+}
+
+// ============ STEP WIZARD ============
+function goStep(n) {
+  currentStep = n;
+  for (var i = 1; i <= 3; i++) {
+    var panel = document.getElementById('stepPanel'+i);
+    panel.style.display = (i === n) ? '' : 'none';
+    var dot = document.querySelector('#courseSteps .step-dot[data-step="'+i+'"] .step-circle');
+    var label = document.querySelector('#courseSteps .step-dot[data-step="'+i+'"] span');
+    dot.style.background = (i === n) ? 'var(--ink)' : (i < n ? 'var(--green)' : 'var(--bg-surface)');
+    dot.style.color = (i <= n) ? '#fff' : 'var(--text-muted)';
+    label.style.color = (i === n) ? 'var(--text-primary)' : (i < n ? 'var(--green)' : 'var(--text-muted)');
+    label.style.fontWeight = (i === n) ? '600' : '400';
+  }
+  // Update connecting lines
+  var lines = document.querySelectorAll('#courseSteps .step-line');
+  lines.forEach(function(line, idx){
+    line.style.background = (idx < n-1) ? 'var(--green)' : 'var(--border-default)';
+  });
+  if (n === 3) {
+    document.getElementById('reviewTitle').textContent = document.getElementById('cName').value || '未命名课程';
+    document.getElementById('reviewDuration').textContent = document.getElementById('cDuration').value || '-';
+    document.getElementById('reviewLevel').textContent = document.getElementById('cLevel').value || '-';
+    document.getElementById('reviewTags').textContent = document.getElementById('cTags').value || '-';
+    document.getElementById('reviewChapters').textContent = document.getElementById('chapterList').children.length + ' 章';
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ============ COVER UPLOAD ============
+function handleCoverUpload(input) {
+  var file = input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('coverPlaceholder').style.display = 'none';
+    var img = document.getElementById('coverImg');
+    img.src = e.target.result;
+    img.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+// ============ DYNAMIC FORM ITEMS ============
+function addCompItem() {
+  var div = document.createElement('div');
+  div.className = 'dyn-item';
+  div.innerHTML = '<input placeholder="项目" class="comp-name"><input placeholder="具体描述" class="comp-desc"><button class="btn btn-outline btn-sm" onclick="this.parentElement.remove()"><i data-lucide="x"></i></button>';
+  document.getElementById('competitivenessList').appendChild(div);
+  lucide.createIcons();
+}
+
+function addChapter() {
+  var list = document.getElementById('chapterList');
+  var n = list.children.length + 1;
+  var pad = String(n).padStart(2,'0');
+  var div = document.createElement('div');
+  div.className = 'chapter-card';
+  div.draggable = true;
+  div.setAttribute('data-ch', n);
+  div.style.cssText = 'display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--r-sm);transition:all .2s var(--ease-out)';
+  div.innerHTML = '<div class="drag-handle" style="cursor:grab;color:var(--text-dim);padding-top:6px" title="拖拽排序">≡</div><div class="ch-num" style="width:28px;height:28px;border-radius:50%;background:var(--bg-surface);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--text-muted);flex-shrink:0;margin-top:4px">'+pad+'</div><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px"><input placeholder="章节名称" class="ch-name" style="width:100%;border:none;background:transparent;font-size:14px;font-weight:500;color:var(--text-primary);padding:4px 0;outline:none"><textarea placeholder="章节内容描述…" class="ch-content" style="width:100%;border:none;background:transparent;font-size:12px;color:var(--text-secondary);padding:4px 0;outline:none;resize:none;min-height:36px;font-family:var(--font)"></textarea></div><button class="btn btn-outline btn-sm" onclick="this.closest(\'.chapter-card\').remove();renumberChapters()"><i data-lucide="trash-2"></i></button>';
+  list.appendChild(div);
+  initChapterDrag(div);
+  lucide.createIcons();
+}
+
+function renumberChapters() {
+  var list = document.getElementById('chapterList');
+  var items = list.querySelectorAll('.chapter-card');
+  items.forEach(function(item, i){
+    item.setAttribute('data-ch', i+1);
+    item.querySelector('.ch-num').textContent = String(i+1).padStart(2,'0');
+  });
+}
+
+// --- Chapter drag sort ---
+var chDragSrc = null;
+function initChapterDrag(item) {
+  item.addEventListener('dragstart', function(e){
+    chDragSrc = this;
+    this.style.opacity = '.4';
+    this.style.borderColor = 'var(--ink)';
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  item.addEventListener('dragenter', function(e){ e.preventDefault(); if(this!==chDragSrc) this.style.borderTop='2px solid var(--ink)'; });
+  item.addEventListener('dragleave', function(){ this.style.borderTop=''; });
+  item.addEventListener('dragover', function(e){ e.preventDefault(); e.dataTransfer.dropEffect = 'move'; });
+  item.addEventListener('drop', function(e){
+    e.preventDefault();
+    if (chDragSrc !== this) {
+      var parent = this.parentNode;
+      var items = Array.from(parent.children);
+      var fromIdx = items.indexOf(chDragSrc);
+      var toIdx = items.indexOf(this);
+      if (fromIdx < toIdx) { parent.insertBefore(chDragSrc, this.nextSibling); }
+      else { parent.insertBefore(chDragSrc, this); }
+      renumberChapters();
+    }
+  });
+  item.addEventListener('dragend', function(){
+    this.style.opacity = ''; this.style.borderColor = ''; this.style.borderTop = '';
+    document.querySelectorAll('.chapter-card').forEach(function(el){ el.style.borderTop = ''; });
+    chDragSrc = null;
+  });
+}
+(function(){
+  document.querySelectorAll('.chapter-card').forEach(function(c){ initChapterDrag(c); });
+})();
+
+// ============ DRAG-SORT SYSTEM ============
+var dragSrc = null;
+
+function initSortableList(listEl) {
+  var items = listEl.querySelectorAll('.sortable-item');
+  items.forEach(function(item){
+    item.addEventListener('dragstart', function(e){
+      dragSrc = this;
+      this.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', '');
+    });
+    item.addEventListener('dragenter', function(e){
+      e.preventDefault();
+      if (this !== dragSrc) this.classList.add('drag-over');
+    });
+    item.addEventListener('dragleave', function(){
+      this.classList.remove('drag-over');
+    });
+    item.addEventListener('dragover', function(e){ e.preventDefault(); e.dataTransfer.dropEffect = 'move'; });
+    item.addEventListener('drop', function(e){
+      e.preventDefault();
+      if (dragSrc !== this) {
+        var parent = this.parentNode;
+        var items = Array.from(parent.children);
+        var fromIdx = items.indexOf(dragSrc);
+        var toIdx = items.indexOf(this);
+        if (fromIdx < toIdx) {
+          parent.insertBefore(dragSrc, this.nextSibling);
+        } else {
+          parent.insertBefore(dragSrc, this);
+        }
+        renumberList(parent);
+      }
+    });
+    item.addEventListener('dragend', function(){
+      this.classList.remove('dragging');
+      document.querySelectorAll('.sortable-item').forEach(function(el){ el.classList.remove('drag-over'); });
+      dragSrc = null;
+    });
+  });
+}
+
+function renumberList(listEl) {
+  var items = listEl.querySelectorAll('.sortable-item');
+  items.forEach(function(item, i){
+    var n = String(i+1).padStart(2,'0');
+    item.querySelector('.sort-order').textContent = n;
+  });
+  updateMoveButtons(listEl);
+  syncPreview(listEl);
+}
+
+function updateMoveButtons(listEl) {
+  var items = listEl.querySelectorAll('.sortable-item');
+  items.forEach(function(item, i){
+    item.querySelector('.sort-btn-up').disabled = (i === 0);
+    item.querySelector('.sort-btn-down').disabled = (i === items.length - 1);
+  });
+}
+
+function moveSortItem(btn, dir) {
+  var item = btn.closest('.sortable-item');
+  var list = item.parentNode;
+  if (dir === 'up' && item.previousElementSibling) {
+    list.insertBefore(item, item.previousElementSibling);
+  } else if (dir === 'down' && item.nextElementSibling) {
+    list.insertBefore(item.nextElementSibling, item);
+  }
+  renumberList(list);
+}
+
+function toggleSortItem(btn) {
+  btn.classList.toggle('on');
+  btn.classList.toggle('off');
+  var item = btn.closest('.sortable-item');
+  item.classList.toggle('sort-hidden', !btn.classList.contains('on'));
+  syncPreview(item.closest('.sortable-list'));
+}
+
+function addSortItem(listId) {
+  var list = document.getElementById(listId);
+  var n = list.children.length + 1;
+  var pad = String(n).padStart(2,'0');
+  var div = document.createElement('div');
+  div.className = 'sortable-item';
+  div.draggable = true;
+  div.setAttribute('data-id', 'new_'+Date.now());
+  div.setAttribute('data-icon', 'pin');
+  div.innerHTML = '<div class="drag-handle" title="拖拽排序">≡</div><div class="sort-order">'+pad+'</div><div class="sort-content"><span class="sort-name">新项目</span><span class="sort-desc">请输入描述</span></div><button class="sort-toggle-btn on" onclick="toggleSortItem(this)" title="显示/隐藏"></button><div class="sort-actions"><button class="sort-btn-up" onclick="moveSortItem(this,\'up\')" title="上移">▲</button><button class="sort-btn-down" onclick="moveSortItem(this,\'down\')" title="下移">▼</button></div>';
+  list.appendChild(div);
+  initSortableList(list);
+  updateMoveButtons(list);
+  syncPreview(list);
+  lucide.createIcons();
+}
+
+function saveSortList(listId) {
+  alert('排序已保存');
+}
+
+// --- Preview Sync ---
+function syncPreview(listEl) {
+  var previewId = listEl.getAttribute('data-preview');
+  if (!previewId) return;
+  var body = document.getElementById(previewId + 'Body');
+  if (!body) return;
+  var items = listEl.querySelectorAll('.sortable-item');
+  var html = '';
+  items.forEach(function(item, i){
+    var nameEl = item.querySelector('.sort-name') || item.querySelector('.sort-name-input');
+    var name = nameEl ? (nameEl.tagName === 'INPUT' ? nameEl.value : nameEl.textContent) : '';
+    var icon = item.getAttribute('data-icon') || 'circle';
+    var hidden = item.classList.contains('sort-hidden');
+    html += '<div class="preview-item'+(hidden?' preview-hidden':'')+'"><div class="preview-dot">'+(i+1)+'</div><span class="preview-name">'+name+'</span></div>';
+  });
+  body.innerHTML = html;
+}
+
+function addSortEditableItem(listId) {
+  var list = document.getElementById(listId);
+  var n = list.children.length + 1;
+  var pad = String(n).padStart(2,'0');
+  var div = document.createElement('div');
+  div.className = 'sortable-item';
+  div.draggable = true;
+  div.setAttribute('data-id', 'new_'+Date.now());
+  div.setAttribute('data-icon', 'pin');
+  div.innerHTML = '<div class="drag-handle" title="拖拽排序">≡</div><div class="sort-order">'+pad+'</div><div class="sort-content" style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px"><input class="sort-name-input" value="新项目" style="font-size:13px;font-weight:600;color:var(--text-primary);border:1px solid transparent;background:transparent;padding:2px 4px;border-radius:4px;outline:none;width:100%;font-family:var(--font)" onfocus="this.style.borderColor=\'var(--ink)\';this.style.background=\'var(--bg-card)\'" onblur="this.style.borderColor=\'transparent\';this.style.background=\'transparent\'"><input class="sort-desc-input" value="请输入描述" style="font-size:11px;color:var(--text-muted);border:1px solid transparent;background:transparent;padding:2px 4px;border-radius:4px;outline:none;width:100%;font-family:var(--font)" onfocus="this.style.borderColor=\'var(--ink)\';this.style.background=\'var(--bg-card)\'" onblur="this.style.borderColor=\'transparent\';this.style.background=\'transparent\'"></div><button class="sort-toggle-btn on" onclick="toggleSortItem(this)" title="显示/隐藏"></button><div class="sort-actions"><button class="sort-btn-up" onclick="moveSortItem(this,\'up\')" title="上移">▲</button><button class="sort-btn-down" onclick="moveSortItem(this,\'down\')" title="下移">▼</button></div>';
+  list.appendChild(div);
+  initSortableList(list);
+  updateMoveButtons(list);
+  syncPreview(list);
+  lucide.createIcons();
+}
+
+function initAllSortables() {
+  document.querySelectorAll('.sortable-list').forEach(function(list){
+    initSortableList(list);
+    updateMoveButtons(list);
+    syncPreview(list);
+  });
+}
+
+// ============ ACHIEVEMENT ITEMS (学员成果) ============
+function addAchievementItem(listId) {
+  var list = document.getElementById(listId);
+  var n = list.children.length + 1;
+  var pad = String(n).padStart(2,'0');
+  var div = document.createElement('div');
+  div.className = 'sortable-item achievement-item';
+  div.draggable = true;
+  div.setAttribute('data-id', 'ach_'+Date.now());
+  div.style.cssText = 'flex-wrap:wrap;padding:12px';
+  div.innerHTML = '<div class="drag-handle" title="拖拽排序">≡</div><div class="sort-order">'+pad+'</div><div style="width:80px;height:56px;border-radius:var(--r-xs);border:1px dashed var(--border-default);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;overflow:hidden;background:var(--bg-surface);transition:border .2s" onclick="this.querySelector(\'input\').click()" onmouseover="this.style.borderColor=\'var(--ink)\'" onmouseout="this.style.borderColor=\'\'"><span style="font-size:10px;color:var(--text-dim);text-align:center">点击<br>配图</span><input type="file" accept="image/*" style="display:none" onchange="handleAchievementImg(this)"></div><div class="sort-content" style="flex:1;min-width:140px;display:flex;flex-direction:column;gap:4px"><input class="sort-name-input" value="新学员成果" style="font-size:13px;font-weight:600;color:var(--text-primary);border:1px solid transparent;background:transparent;padding:2px 4px;border-radius:4px;outline:none;width:100%;font-family:var(--font)" onfocus="this.style.borderColor=\'var(--ink)\';this.style.background=\'var(--bg-card)\'" onblur="this.style.borderColor=\'transparent\';this.style.background=\'transparent\'"><input class="sort-desc-input" value="请输入成果描述" style="font-size:11px;color:var(--text-muted);border:1px solid transparent;background:transparent;padding:2px 4px;border-radius:4px;outline:none;width:100%;font-family:var(--font)" onfocus="this.style.borderColor=\'var(--ink)\';this.style.background=\'var(--bg-card)\'" onblur="this.style.borderColor=\'transparent\';this.style.background=\'transparent\'"></div><button class="sort-toggle-btn on" onclick="toggleSortItem(this)" title="显示/隐藏"></button><div class="sort-actions"><button class="sort-btn-up" onclick="moveSortItem(this,\'up\')" title="上移">▲</button><button class="sort-btn-down" onclick="moveSortItem(this,\'down\')" title="下移">▼</button></div>';
+  list.appendChild(div);
+  initSortableList(list);
+  updateMoveButtons(list);
+  syncPreview(list);
+  lucide.createIcons();
+}
+
+function handleAchievementImg(input) {
+  var file = input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  var container = input.parentElement;
+  reader.onload = function(e) {
+    container.innerHTML = '<img src="'+e.target.result+'" style="width:100%;height:100%;object-fit:cover;border-radius:var(--r-xs)">';
+  };
+  reader.readAsDataURL(file);
+}
+
+// ============ MY CLIENTS TAB SWITCH ============
+function switchMineTab(el, status) {
+  document.querySelectorAll('#page-bookings-mine .tabs .tab').forEach(function(t){ t.classList.remove('active'); });
+  el.classList.add('active');
+  document.querySelectorAll('.mine-row').forEach(function(r){
+    if (status === 'all') { r.style.display = ''; }
+    else { r.style.display = r.getAttribute('data-status') === status ? '' : 'none'; }
+  });
+}
+
+// ============ CLIENT DETAIL MODAL ============
+function openClientDetail(name, phone, course, time, note, status) {
+  var body = document.getElementById('clientDetailBody');
+  var statusTag = status === '公海' ? '<span class="tag tag-green"><i data-lucide="globe"></i> 公海</span>' :
+                  status === '跟进中' ? '<span class="tag tag-blue"><i data-lucide="message-circle"></i> 跟进中</span>' :
+                  status === '已完成' ? '<span class="tag tag-green"><i data-lucide="check-circle"></i> 已完成</span>' :
+                  status === '已归档' ? '<span class="tag tag-purple"><i data-lucide="archive"></i> 已归档</span>' : '';
+  body.innerHTML =
+    '<div class="detail-info-grid">'+
+      '<div class="detail-info-item"><div class="lbl"><i data-lucide="user" style="width:12px;height:12px"></i> 姓名</div><div class="val">'+name+'</div></div>'+
+      '<div class="detail-info-item"><div class="lbl"><i data-lucide="phone" style="width:12px;height:12px"></i> 电话</div><div class="val">'+phone+'</div></div>'+
+      '<div class="detail-info-item"><div class="lbl"><i data-lucide="book-open" style="width:12px;height:12px"></i> 课程</div><div class="val">'+course+'</div></div>'+
+      '<div class="detail-info-item"><div class="lbl"><i data-lucide="clock" style="width:12px;height:12px"></i> 提交时间</div><div class="val">'+time+'</div></div>'+
+      '<div class="detail-info-item"><div class="lbl"><i data-lucide="tag" style="width:12px;height:12px"></i> 状态</div><div class="val">'+statusTag+'</div></div>'+
+      '<div class="detail-info-item"><div class="lbl"><i data-lucide="sticky-note" style="width:12px;height:12px"></i> 备注</div><div class="val">'+(note||'-')+'</div></div>'+
+    '</div>'+
+    '<div style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--text-primary);display:flex;align-items:center;gap:6px"><i data-lucide="clock" style="width:14px;height:14px;color:var(--ink)"></i> 回访记录</div>'+
+    '<div class="tl">'+
+      '<div class="tl-item"><div class="tl-time"><i data-lucide="phone-call" style="width:10px;height:10px"></i> 2026-06-17 10:00 · 电话已接通</div><div class="tl-content">联系客户，对方对课程表示兴趣，需要和部门确认时间，约定后天再联系</div><div class="tl-meta"><i data-lucide="calendar" style="width:10px;height:10px"></i> 下次跟进：06-19 10:00</div></div>'+
+      '<div class="tl-item system"><div class="tl-time"><i data-lucide="bot" style="width:10px;height:10px"></i> 2026-06-15 16:30 · 系统</div><div class="tl-content">客户提交</div></div>'+
+      '<div class="tl-item system"><div class="tl-time"><i data-lucide="bot" style="width:10px;height:10px"></i> 2026-06-15 14:22 · 系统</div><div class="tl-content">预约提交 · 留言：'+(note||'无')+'</div></div>'+
+    '</div>';
+  document.getElementById('clientDetailOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  lucide.createIcons();
+}
+function closeClientDetail() {
+  document.getElementById('clientDetailOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ============ FOLLOWUP MODAL ============
+function openFollowupModal(name, course) {
+  document.getElementById('followupTitle').innerHTML = '<i data-lucide="phone" style="width:18px;height:18px;color:var(--ink)"></i> 回访 - '+name+' · '+course;
+  document.getElementById('followupTimeline').innerHTML =
+    '<div class="tl-item"><div class="tl-time"><i data-lucide="phone-call" style="width:10px;height:10px"></i> 2026-06-17 10:00 · 电话已接通</div><div class="tl-content">联系客户，对方表示对课程感兴趣，需要和部门确认时间</div></div>'+
+    '<div class="tl-item system"><div class="tl-time"><i data-lucide="bot" style="width:10px;height:10px"></i> 2026-06-15 16:30 · 系统</div><div class="tl-content">客户提交</div></div>';
+  document.getElementById('followupOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  lucide.createIcons();
+}
+function closeFollowupModal() {
+  document.getElementById('followupOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function selectMethod(el) {
+  document.querySelectorAll('.followup-method').forEach(function(b){ b.classList.remove('active'); });
+  el.classList.add('active');
+}
+
+// ============ CS RECORD TABS & DETAIL ============
+function switchCSRecordTab(el, filter) {
+  document.querySelectorAll('#page-cs-records .tabs .tab').forEach(function(t){ t.classList.remove('active'); });
+  el.classList.add('active');
+  document.querySelectorAll('.cs-record-row').forEach(function(r){
+    if (filter === 'all') { r.style.display = ''; }
+    else { r.style.display = r.getAttribute('data-date') === filter ? '' : 'none'; }
+  });
+}
+
+var csRecordData = {
+  'CS-20260622-001': { id:'CS-20260622-001', visitor:'游客_8a3f2b', time:'06-22 14:30', count:'12', msgs: [
+    {role:'visitor',text:'您好，我想了解一下课程方向'},
+    {role:'bot',text:'您好！我们目前开设六大核心方向：基础大模型、Prompt Engineering、模型微调、RAG & Agent、多模态、LLM 工程化。需要了解更多哪个方向呢？'},
+    {role:'visitor',text:'我对Agent方向比较感兴趣'},
+    {role:'bot',text:'Agent 进阶之道是一门10周的进阶课程，从Transformer基础讲到MCP协议与全栈交付，由一线工程师主讲。课程包含6个章节，最终交付一个Web可用的专业智能体。您可以预约试听体验一下。'},
+    {role:'visitor',text:'好的，怎么预约？'},
+    {role:'bot',text:'您可以在网站首页点击"预约试听"按钮，选择Agent方向课程和期望日期，填写信息后我们的课程顾问会在24小时内联系您。需要我帮您进一步了解课程大纲吗？'}
+  ]},
+  'CS-20260622-002': { id:'CS-20260622-002', visitor:'游客_2d9e1c', time:'06-22 15:10', count:'6', msgs: [
+    {role:'visitor',text:'怎么预约试听课程？'},
+    {role:'bot',text:'您可以通过页面上的"预约试听"按钮提交预约申请。选择课程、期望日期，填写姓名和手机号即可。课程顾问会在24小时内与您联系确认。'},
+    {role:'visitor',text:'需要提前准备什么吗？'},
+    {role:'bot',text:'不需要！带着您的学习热情来就可以。如果有笔记本电脑可以带上，实训环节会用到。试听课我们会提供必要的环境和材料。'}
+  ]},
+  'CS-20260622-003': { id:'CS-20260622-003', visitor:'游客_7f4a3d', time:'06-22 16:45', count:'8', msgs: [
+    {role:'visitor',text:'零基础可以学吗？'},
+    {role:'bot',text:'当然可以！我们的大部分课程都为零基础学员设计。特别是"基础大模型"方向，会从Transformer架构原理讲起，逐步深入。如果您对编程不熟悉，建议优先考虑"金融AI实验室"课程，门槛较低、实用性强。'},
+    {role:'visitor',text:'金融AI实验室需要多久？'},
+    {role:'bot',text:'金融AI实验室是10天密集实训课程，专为金融专业学生设计。通过低代码平台帮助您快速构建AI应用，无需深厚编程背景。非常适合作为入门课程！'}
+  ]}
+};
+
+function openCSRecordDetail(sessionId) {
+  var d = csRecordData[sessionId];
+  if (!d) d = { id:sessionId, visitor:'游客', time:'-', count:'-', msgs:[{role:'visitor',text:'对话记录加载中...'}] };
+  document.getElementById('csrId').textContent = d.id;
+  document.getElementById('csrVisitor').textContent = d.visitor;
+  document.getElementById('csrTime').textContent = d.time;
+  document.getElementById('csrMsgCount').textContent = d.count;
+  var msgsHtml = '';
+  d.msgs.forEach(function(m){
+    if (m.role === 'visitor') {
+      msgsHtml += '<div style="align-self:flex-start;background:var(--bg-card);border:1px solid var(--border-subtle);padding:8px 12px;border-radius:12px 12px 12px 4px;max-width:80%;font-size:12px;color:var(--text-primary)">'+m.text+'</div>';
+    } else {
+      msgsHtml += '<div style="align-self:flex-end;background:var(--ink);color:#fff;padding:8px 12px;border-radius:12px 12px 4px 12px;max-width:80%;font-size:12px">'+m.text+'</div>';
+    }
+  });
+  document.getElementById('csrMessages').innerHTML = msgsHtml;
+  document.getElementById('csRecordDetailOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCSRecordDetail() {
+  document.getElementById('csRecordDetailOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ============ INIT ============
+lucide.createIcons();
+initAllSortables();
+</script>
+</body>
+</html>
