@@ -943,47 +943,13 @@ textarea{resize:vertical;min-height:80px}
       <div class="panel">
         <div class="panel-header"><div class="panel-header-left"><i data-lucide="settings"></i> 智能客服参数配置</div> <button class="btn btn-primary btn-sm" onclick="alert('配置已保存')"><i data-lucide="save"></i> 保存配置</button></div>
         <div class="panel-body">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-            <div class="form-group"><label>客服名称</label><input value="昇腾AI 智能客服助手"></div>
-            <div class="form-group"><label>欢迎语</label><input value="您好！我是昇腾AI课程的智能助手，请问有什么可以帮您的？"></div>
-            <div class="form-group"><label>模型选择</label><select><option>DeepSeek-V3</option><option>Qwen-Max</option><option>GPT-4o</option></select></div>
-            <div class="form-group"><label>温度参数 (Temperature)</label><input type="text" value="0.7" placeholder="0-2"></div>
-            <div class="form-group"><label>最大Token数</label><input type="text" value="2048"></div>
-            <div class="form-group"><label>Top-P</label><input type="text" value="0.9"></div>
-            <div class="form-group"><label>上下文记忆轮数</label><input type="text" value="10"></div>
-            <div class="form-group"><label>响应超时 (秒)</label><input type="text" value="30"></div>
-            <div class="form-group"><label>客服头像</label>
-              <div style="display:flex;align-items:center;gap:12px">
-                <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--ink),var(--ink-soft));display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px">🤖</div>
-                <button class="btn btn-outline btn-sm"><i data-lucide="upload"></i> 上传头像</button>
-              </div>
-            </div>
-            <div class="form-group"><label>工作时间</label><select><option>7×24 小时</option><option>工作日 9:00-18:00</option><option>自定义</option></select></div>
-          </div>
-          <div class="form-group" style="margin-top:16px"><label>系统 Prompt</label>
-            <textarea style="width:100%;min-height:120px;font-family:var(--font-mono);font-size:12px">你是一个专业的AI课程咨询助手，服务于昇腾AI学院。你需要：
+          <div class="form-group"><label>提示词管理</label>
+            <textarea style="width:100%;min-height:200px;font-family:var(--font-mono);font-size:12px">你是一个专业的AI课程咨询助手，服务于昇腾AI学院。你需要：
 1. 友好、专业地解答用户关于课程的问题
 2. 推荐适合用户需求的课程方向
 3. 引导用户完成预约试听流程
 4. 对于无法回答的问题，引导用户联系人工客服
 请用中文回复，保持积极热情的态度。</textarea>
-          </div>
-          <div class="form-group"><label>快捷提问预设（每行一个）</label>
-            <textarea style="width:100%;min-height:80px;font-family:var(--font-mono);font-size:12px">课程有哪些方向？
-如何预约试听？
-课程适合零基础吗？
-上课时间和地点？
-课程费用是多少？
-完成课程后有证书吗？</textarea>
-          </div>
-          <div style="margin-top:16px;padding:16px;background:var(--bg-surface);border-radius:var(--r-sm)">
-            <div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:8px;display:flex;align-items:center;gap:6px"><i data-lucide="toggle-left" style="width:16px;height:16px;color:var(--ink)"></i> 功能开关</div>
-            <div style="display:flex;gap:24px;flex-wrap:wrap">
-              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><span class="toggle on" onclick="this.classList.toggle('on')"></span> 启用智能客服</label>
-              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><span class="toggle on" onclick="this.classList.toggle('on')"></span> 显示快捷提问</label>
-              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><span class="toggle on" onclick="this.classList.toggle('on')"></span> 启用知识库检索</label>
-              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><span class="toggle" onclick="this.classList.toggle('on')"></span> 转人工客服</label>
-            </div>
           </div>
         </div>
       </div>
