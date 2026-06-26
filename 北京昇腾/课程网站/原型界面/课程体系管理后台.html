@@ -371,7 +371,7 @@ textarea{resize:vertical;min-height:80px}
     <div class="sidebar-section">
       <div class="sidebar-section-title">智能客服管理</div>
       <div class="sidebar-item" data-page="cs-config" onclick="switchPage('cs-config',this)"><i data-lucide="settings"></i> 参数配置</div>
-      <div class="sidebar-item" data-page="cs-records" onclick="switchPage('cs-records',this)"><i data-lucide="message-square"></i> 沟通记录</div>
+      <div class="sidebar-item" data-page="cs-records" onclick="switchPage('cs-records',this)"><i data-lucide="message-square"></i> 问题日志</div>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-section-title">系统管理</div>
@@ -955,75 +955,65 @@ textarea{resize:vertical;min-height:80px}
       </div>
     </div>
 
-    <!-- ========== 智能客服 · 沟通记录 ========== -->
+    <!-- ========== 智能客服 · 问题日志 ========== -->
     <div class="page" id="page-cs-records">
       <div class="panel">
         <div class="panel-header" style="flex-wrap:wrap;gap:12px">
           <div style="display:flex;align-items:center;gap:12px">
-            <div class="panel-header-left" style="margin:0"><i data-lucide="message-square"></i> 沟通记录</div>
+            <div class="panel-header-left" style="margin:0"><i data-lucide="message-square"></i> 问题日志</div>
             <div class="tabs" style="margin-bottom:0">
-              <div class="tab active" onclick="switchCSRecordTab(this,'all')"><i data-lucide="list"></i> 全部 <span style="background:var(--bg-surface);color:var(--text-secondary);font-size:10px;padding:1px 6px;border-radius:var(--r-pill)">28</span></div>
+              <div class="tab active" onclick="switchCSRecordTab(this,'all')"><i data-lucide="list"></i> 全部 <span style="background:var(--bg-surface);color:var(--text-secondary);font-size:10px;padding:1px 6px;border-radius:var(--r-pill)">15</span></div>
               <div class="tab" onclick="switchCSRecordTab(this,'today')"><i data-lucide="calendar"></i> 今日 <span style="background:var(--ink-surface);color:var(--ink);font-size:10px;padding:1px 6px;border-radius:var(--r-pill)">5</span></div>
             </div>
           </div>
           <div style="display:flex;gap:8px">
-            <input placeholder="搜索对话关键词" style="padding:6px 12px;border-radius:var(--r-xs);border:1px solid var(--border-default);font-size:12px;width:160px;font-family:var(--font)">
+            <select style="padding:6px 12px;border-radius:var(--r-xs);border:1px solid var(--border-default);font-size:12px;background:var(--bg-base);font-family:var(--font)" onchange="switchCSRecordTab(document.querySelector('#page-cs-records .tab.active'), document.querySelector('#page-cs-records .tab.active').getAttribute('onclick')?.match(/'([^']+)'/)?.[1] || 'all'); filterCSRecordsByAnswerType(this.value)">
+              <option value="all">全部类型</option>
+              <option value="knowledge">命中知识库</option>
+              <option value="model">模型兜底</option>
+              <option value="unanswered">未回答</option>
+            </select>
             <button class="btn btn-outline btn-sm"><i data-lucide="download"></i> 导出</button>
           </div>
         </div>
         <div class="panel-body" style="padding:0;overflow-x:auto">
           <table>
-            <thead><tr><th>会话ID</th><th>游客标识</th><th>首次消息</th><th>消息数</th><th>开始时间</th><th>时长</th><th>状态</th><th>操作</th></tr></thead>
+            <thead><tr><th style="width:100px">会话ID</th><th>首条问题</th><th style="width:80px">消息数</th><th style="width:150px">开始时间</th><th style="width:80px">操作</th></tr></thead>
             <tbody>
-              <tr class="cs-record-row" data-date="today">
-                <td style="font-family:var(--font-mono);font-size:11px">#CS-20260622-001</td>
-                <td>游客_8a3f2b</td>
-                <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">您好，我想了解一下课程方向</td>
-                <td>12</td>
-                <td>06-22 14:30</td>
-                <td>8min</td>
-                <td><span class="tag tag-green"><i data-lucide="check-circle"></i> 已解决</span></td>
-                <td><button class="btn btn-outline btn-sm" onclick="openCSRecordDetail('CS-20260622-001')"><i data-lucide="eye"></i> 查看</button></td>
-              </tr>
-              <tr class="cs-record-row" data-date="today">
-                <td style="font-family:var(--font-mono);font-size:11px">#CS-20260622-002</td>
-                <td>游客_2d9e1c</td>
-                <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">怎么预约试听课程？</td>
-                <td>6</td>
-                <td>06-22 15:10</td>
-                <td>3min</td>
-                <td><span class="tag tag-green"><i data-lucide="check-circle"></i> 已解决</span></td>
-                <td><button class="btn btn-outline btn-sm" onclick="openCSRecordDetail('CS-20260622-002')"><i data-lucide="eye"></i> 查看</button></td>
-              </tr>
-              <tr class="cs-record-row" data-date="today">
-                <td style="font-family:var(--font-mono);font-size:11px">#CS-20260622-003</td>
-                <td>游客_7f4a3d</td>
-                <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">零基础可以学吗？</td>
+              <tr class="cs-record-row" data-date="today" data-answer="knowledge model" onclick="openCSRecordDetail('a3f8c2e1')" style="cursor:pointer">
+                <td style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted)">a3f8c2e1</td>
+                <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">课程有哪些方向？</td>
                 <td>8</td>
-                <td>06-22 16:45</td>
-                <td>5min</td>
-                <td><span class="tag tag-green"><i data-lucide="check-circle"></i> 已解决</span></td>
-                <td><button class="btn btn-outline btn-sm" onclick="openCSRecordDetail('CS-20260622-003')"><i data-lucide="eye"></i> 查看</button></td>
+                <td style="font-size:12px;color:var(--text-secondary)">06-26 14:30</td>
+                <td><button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openCSRecordDetail('a3f8c2e1')"><i data-lucide="eye"></i> 查看</button></td>
               </tr>
-              <tr class="cs-record-row" data-date="yesterday">
-                <td style="font-family:var(--font-mono);font-size:11px">#CS-20260621-004</td>
-                <td>游客_1b5c9e</td>
-                <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">课程费用大概是多少？</td>
-                <td>14</td>
-                <td>06-21 10:20</td>
-                <td>12min</td>
-                <td><span class="tag tag-orange"><i data-lucide="alert-circle"></i> 待跟进</span></td>
-                <td><button class="btn btn-outline btn-sm" onclick="openCSRecordDetail('CS-20260621-004')"><i data-lucide="eye"></i> 查看</button></td>
+              <tr class="cs-record-row" data-date="today" data-answer="knowledge" onclick="openCSRecordDetail('b7d1a4f6')" style="cursor:pointer">
+                <td style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted)">b7d1a4f6</td>
+                <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">如何预约试听？</td>
+                <td>4</td>
+                <td style="font-size:12px;color:var(--text-secondary)">06-26 13:15</td>
+                <td><button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openCSRecordDetail('b7d1a4f6')"><i data-lucide="eye"></i> 查看</button></td>
               </tr>
-              <tr class="cs-record-row" data-date="yesterday">
-                <td style="font-family:var(--font-mono);font-size:11px">#CS-20260621-005</td>
-                <td>游客_3e8d4a</td>
-                <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">有没有适合金融专业的课程？</td>
-                <td>10</td>
-                <td>06-21 14:00</td>
-                <td>7min</td>
-                <td><span class="tag tag-green"><i data-lucide="check-circle"></i> 已解决</span></td>
-                <td><button class="btn btn-outline btn-sm" onclick="openCSRecordDetail('CS-20260621-005')"><i data-lucide="eye"></i> 查看</button></td>
+              <tr class="cs-record-row" data-date="today" data-answer="knowledge model unanswered" onclick="openCSRecordDetail('c9e5b2d8')" style="cursor:pointer">
+                <td style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted)">c9e5b2d8</td>
+                <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">昇腾芯片和英伟达芯片在实际部署中有什么区别？</td>
+                <td>6</td>
+                <td style="font-size:12px;color:var(--text-secondary)">06-26 10:05</td>
+                <td><button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openCSRecordDetail('c9e5b2d8')"><i data-lucide="eye"></i> 查看</button></td>
+              </tr>
+              <tr class="cs-record-row" data-date="yesterday" data-answer="knowledge" onclick="openCSRecordDetail('d2f7a3e9')" style="cursor:pointer">
+                <td style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted)">d2f7a3e9</td>
+                <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">课程适合零基础吗？</td>
+                <td>5</td>
+                <td style="font-size:12px;color:var(--text-secondary)">06-25 16:30</td>
+                <td><button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openCSRecordDetail('d2f7a3e9')"><i data-lucide="eye"></i> 查看</button></td>
+              </tr>
+              <tr class="cs-record-row" data-date="yesterday" data-answer="model unanswered" onclick="openCSRecordDetail('e8b4c1f5')" style="cursor:pointer">
+                <td style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted)">e8b4c1f5</td>
+                <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">学完能拿到昇腾认证吗？</td>
+                <td>3</td>
+                <td style="font-size:12px;color:var(--text-secondary)">06-25 11:20</td>
+                <td><button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openCSRecordDetail('e8b4c1f5')"><i data-lucide="eye"></i> 查看</button></td>
               </tr>
             </tbody>
           </table>
@@ -1031,26 +1021,22 @@ textarea{resize:vertical;min-height:80px}
       </div>
     </div>
 
-    <!-- ========== 沟通记录详情弹窗 ========== -->
+    <!-- ========== 会话详情弹窗 ========== -->
     <div class="detail-overlay" id="csRecordDetailOverlay" onclick="if(event.target===this)closeCSRecordDetail()">
-      <div class="detail-panel" style="max-width:560px">
+      <div class="detail-panel" style="max-width:600px">
         <div class="detail-panel-header">
-          <span style="font-weight:600;display:flex;align-items:center;gap:8px" id="csRecordDetailTitle"><i data-lucide="message-square" style="width:18px;height:18px;color:var(--ink)"></i> 会话详情</span>
+          <span style="font-weight:600;display:flex;align-items:center;gap:8px" id="csRecordDetailTitle"><i data-lucide="paperclip" style="width:18px;height:18px;color:var(--ink)"></i> 会话详情</span>
           <button class="modal-close" onclick="closeCSRecordDetail()"><i data-lucide="x" style="width:14px;height:14px"></i></button>
         </div>
         <div class="detail-panel-body">
-          <div class="detail-info-grid">
-            <div class="detail-info-item"><div class="lbl"><i data-lucide="hash" style="width:12px;height:12px"></i> 会话ID</div><div class="val" id="csrId">-</div></div>
-            <div class="detail-info-item"><div class="lbl"><i data-lucide="user" style="width:12px;height:12px"></i> 游客标识</div><div class="val" id="csrVisitor">-</div></div>
+          <div class="detail-info-grid" style="margin-bottom:20px">
+            <div class="detail-info-item"><div class="lbl"><i data-lucide="hash" style="width:12px;height:12px"></i> 会话ID</div><div class="val" id="csrId" style="font-family:var(--font-mono);font-size:12px">-</div></div>
             <div class="detail-info-item"><div class="lbl"><i data-lucide="clock" style="width:12px;height:12px"></i> 开始时间</div><div class="val" id="csrTime">-</div></div>
             <div class="detail-info-item"><div class="lbl"><i data-lucide="message-circle" style="width:12px;height:12px"></i> 消息数</div><div class="val" id="csrMsgCount">-</div></div>
+            <div class="detail-info-item"><div class="lbl"><i data-lucide="layers" style="width:12px;height:12px"></i> 回答覆盖</div><div class="val" id="csrAnswerTypes">-</div></div>
           </div>
-          <div style="font-size:12px;font-weight:600;margin-bottom:10px;color:var(--text-primary);display:flex;align-items:center;gap:6px"><i data-lucide="messages-square" style="width:14px;height:14px;color:var(--ink)"></i> 对话记录</div>
-          <div style="background:var(--bg-surface);border-radius:var(--r-sm);padding:14px;max-height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:8px" id="csrMessages">
-            <div style="align-self:flex-start;background:var(--bg-card);border:1px solid var(--border-subtle);padding:8px 12px;border-radius:12px 12px 12px 4px;max-width:80%;font-size:12px;color:var(--text-primary)">您好，我想了解一下课程方向</div>
-            <div style="align-self:flex-end;background:var(--ink);color:#fff;padding:8px 12px;border-radius:12px 12px 4px 12px;max-width:80%;font-size:12px">您好！我们目前开设六大核心方向：基础大模型、Prompt Engineering、模型微调、RAG & Agent、多模态、LLM 工程化</div>
-            <div style="align-self:flex-start;background:var(--bg-card);border:1px solid var(--border-subtle);padding:8px 12px;border-radius:12px 12px 12px 4px;max-width:80%;font-size:12px;color:var(--text-primary)">我是计算机专业的学生，哪个方向比较适合我？</div>
-            <div style="align-self:flex-end;background:var(--ink);color:#fff;padding:8px 12px;border-radius:12px 12px 4px 12px;max-width:80%;font-size:12px">推荐从 Agent 进阶之道开始，这门课覆盖从模型原理到全栈交付的完整链路，非常适合有编程基础的学生 🎓</div>
+          <div style="font-size:12px;font-weight:600;margin-bottom:10px;color:var(--text-primary);display:flex;align-items:center;gap:6px"><i data-lucide="messages-square" style="width:14px;height:14px;color:var(--ink)"></i> 完整对话</div>
+          <div style="background:var(--bg-surface);border-radius:var(--r-sm);padding:16px;max-height:400px;overflow-y:auto;display:flex;flex-direction:column;gap:10px" id="csrMessages">
           </div>
         </div>
       </div>
@@ -1105,7 +1091,7 @@ var pageTitles = {
   'bookings-mine':'客户列表',
   'bookings-archive':'已归档客户',
   'cs-config':'智能客服 · 参数配置',
-  'cs-records':'智能客服 · 沟通记录',
+  'cs-records':'智能客服 · 问题日志',
   'users':'用户管理',
   'logs':'操作日志'
 };
@@ -1486,55 +1472,123 @@ function selectMethod(el) {
   el.classList.add('active');
 }
 
-// ============ CS RECORD TABS & DETAIL ============
+// ============ CS SESSION DATA ============
+var sessionData = {
+  'a3f8c2e1': {
+    session_id: 'a3f8c2e1', started_at: '06-26 14:30', message_count: 8,
+    answer_types: ['命中知识库', '模型兜底'],
+    messages: [
+      { role: 'user', content: '课程有哪些方向？', created_at: '06-26 14:30:12' },
+      { role: 'assistant', content: '您好！我们目前开设六大核心方向：基础大模型、Prompt Engineering、模型微调、RAG & Agent、多模态、LLM 工程化。需要了解更多哪个方向呢？', answer_type: '命中知识库', created_at: '06-26 14:30:15' },
+      { role: 'user', content: '我对Agent方向比较感兴趣', created_at: '06-26 14:31:02' },
+      { role: 'assistant', content: 'Agent 进阶之道是一门10周的进阶课程，从Transformer基础讲到MCP协议与全栈交付，由一线工程师主讲。课程包含6个章节，最终交付一个Web可用的专业智能体。', answer_type: '命中知识库', created_at: '06-26 14:31:05' },
+      { role: 'user', content: '这门课需要什么编程基础？', created_at: '06-26 14:32:18' },
+      { role: 'assistant', content: '建议具备Python基础，了解基本的命令行操作。如果您是零基础，可以先从基础大模型方向开始。', answer_type: '模型兜底', created_at: '06-26 14:32:22' },
+      { role: 'user', content: '好的，怎么预约？', created_at: '06-26 14:33:40' },
+      { role: 'assistant', content: '您可以在网站首页点击"预约试听"按钮，选择Agent方向课程和期望日期，填写信息后我们的课程顾问会在24小时内联系您。', answer_type: '命中知识库', created_at: '06-26 14:33:43' }
+    ]
+  },
+  'b7d1a4f6': {
+    session_id: 'b7d1a4f6', started_at: '06-26 13:15', message_count: 4,
+    answer_types: ['命中知识库'],
+    messages: [
+      { role: 'user', content: '如何预约试听？', created_at: '06-26 13:15:05' },
+      { role: 'assistant', content: '您可以通过页面上的"预约试听"按钮提交预约申请。选择课程、期望日期，填写姓名和手机号即可。课程顾问会在24小时内与您联系确认。', answer_type: '命中知识库', created_at: '06-26 13:15:08' },
+      { role: 'user', content: '需要提前准备什么吗？', created_at: '06-26 13:16:22' },
+      { role: 'assistant', content: '不需要！带着您的学习热情来就可以。如果有笔记本电脑可以带上，实训环节会用到。', answer_type: '命中知识库', created_at: '06-26 13:16:25' }
+    ]
+  },
+  'c9e5b2d8': {
+    session_id: 'c9e5b2d8', started_at: '06-26 10:05', message_count: 6,
+    answer_types: ['命中知识库', '模型兜底', '未回答'],
+    messages: [
+      { role: 'user', content: '昇腾芯片和英伟达芯片在实际部署中有什么区别？', created_at: '06-26 10:05:30' },
+      { role: 'assistant', content: '昇腾芯片基于达芬奇架构，在AI推理场景下有较好的能效比，尤其适合国产化部署需求。英伟达GPU生态更成熟，开发者工具链更完善。', answer_type: '模型兜底', created_at: '06-26 10:05:35' },
+      { role: 'user', content: '那课程里用的是昇腾还是英伟达？', created_at: '06-26 10:06:10' },
+      { role: 'assistant', content: '我们的实训课程主要使用昇腾AI处理器，配合香橙派AIpro开发板进行端侧部署实践。部分课程也会涉及GPU环境的对比实验。', answer_type: '命中知识库', created_at: '06-26 10:06:13' },
+      { role: 'user', content: '能不能帮我写一段Python代码做数据清洗？', created_at: '06-26 10:07:45' },
+      { role: 'assistant', content: '抱歉，我是课程咨询助手，无法帮您编写代码。建议您关注我们的课程，里面会有完整的实战项目教学！', answer_type: '未回答', created_at: '06-26 10:07:47' }
+    ]
+  },
+  'd2f7a3e9': {
+    session_id: 'd2f7a3e9', started_at: '06-25 16:30', message_count: 5,
+    answer_types: ['命中知识库'],
+    messages: [
+      { role: 'user', content: '课程适合零基础吗？', created_at: '06-25 16:30:08' },
+      { role: 'assistant', content: '当然可以！我们的大部分课程都为零基础学员设计。特别是"基础大模型"方向，会从Transformer架构原理讲起。如果您对编程不熟悉，建议优先考虑"金融AI实验室"课程，门槛较低、实用性强。', answer_type: '命中知识库', created_at: '06-25 16:30:11' },
+      { role: 'user', content: '金融AI实验室需要多久？', created_at: '06-25 16:31:00' },
+      { role: 'assistant', content: '金融AI实验室是10天密集实训课程，专为金融专业学生设计。通过低代码平台帮助您快速构建AI应用，无需深厚编程背景。', answer_type: '命中知识库', created_at: '06-25 16:31:03' },
+      { role: 'user', content: '好的谢谢', created_at: '06-25 16:31:20' }
+    ]
+  },
+  'e8b4c1f5': {
+    session_id: 'e8b4c1f5', started_at: '06-25 11:20', message_count: 3,
+    answer_types: ['模型兜底', '未回答'],
+    messages: [
+      { role: 'user', content: '学完能拿到昇腾认证吗？', created_at: '06-25 11:20:15' },
+      { role: 'assistant', content: '目前我们正在与华为昇腾认证体系对接，预计下半年会推出官方认证通道。完成课程后您可以获得结业证书，认证开放后我们会优先通知毕业学员。', answer_type: '模型兜底', created_at: '06-25 11:20:19' },
+      { role: 'user', content: '你们公司地址在哪里？我想上门咨询', created_at: '06-25 11:21:02' }
+    ]
+  }
+};
+
+// ============ CS RECORD TABS & FILTER ============
 function switchCSRecordTab(el, filter) {
   document.querySelectorAll('#page-cs-records .tabs .tab').forEach(function(t){ t.classList.remove('active'); });
   el.classList.add('active');
+  var answerFilter = document.querySelector('#page-cs-records select').value;
   document.querySelectorAll('.cs-record-row').forEach(function(r){
-    if (filter === 'all') { r.style.display = ''; }
-    else { r.style.display = r.getAttribute('data-date') === filter ? '' : 'none'; }
+    var dateMatch = (filter === 'all') || (r.getAttribute('data-date') === filter);
+    var answerMatch = (answerFilter === 'all') || (r.getAttribute('data-answer') || '').indexOf(answerFilter) !== -1;
+    r.style.display = (dateMatch && answerMatch) ? '' : 'none';
   });
 }
 
-var csRecordData = {
-  'CS-20260622-001': { id:'CS-20260622-001', visitor:'游客_8a3f2b', time:'06-22 14:30', count:'12', msgs: [
-    {role:'visitor',text:'您好，我想了解一下课程方向'},
-    {role:'bot',text:'您好！我们目前开设六大核心方向：基础大模型、Prompt Engineering、模型微调、RAG & Agent、多模态、LLM 工程化。需要了解更多哪个方向呢？'},
-    {role:'visitor',text:'我对Agent方向比较感兴趣'},
-    {role:'bot',text:'Agent 进阶之道是一门10周的进阶课程，从Transformer基础讲到MCP协议与全栈交付，由一线工程师主讲。课程包含6个章节，最终交付一个Web可用的专业智能体。您可以预约试听体验一下。'},
-    {role:'visitor',text:'好的，怎么预约？'},
-    {role:'bot',text:'您可以在网站首页点击"预约试听"按钮，选择Agent方向课程和期望日期，填写信息后我们的课程顾问会在24小时内联系您。需要我帮您进一步了解课程大纲吗？'}
-  ]},
-  'CS-20260622-002': { id:'CS-20260622-002', visitor:'游客_2d9e1c', time:'06-22 15:10', count:'6', msgs: [
-    {role:'visitor',text:'怎么预约试听课程？'},
-    {role:'bot',text:'您可以通过页面上的"预约试听"按钮提交预约申请。选择课程、期望日期，填写姓名和手机号即可。课程顾问会在24小时内与您联系确认。'},
-    {role:'visitor',text:'需要提前准备什么吗？'},
-    {role:'bot',text:'不需要！带着您的学习热情来就可以。如果有笔记本电脑可以带上，实训环节会用到。试听课我们会提供必要的环境和材料。'}
-  ]},
-  'CS-20260622-003': { id:'CS-20260622-003', visitor:'游客_7f4a3d', time:'06-22 16:45', count:'8', msgs: [
-    {role:'visitor',text:'零基础可以学吗？'},
-    {role:'bot',text:'当然可以！我们的大部分课程都为零基础学员设计。特别是"基础大模型"方向，会从Transformer架构原理讲起，逐步深入。如果您对编程不熟悉，建议优先考虑"金融AI实验室"课程，门槛较低、实用性强。'},
-    {role:'visitor',text:'金融AI实验室需要多久？'},
-    {role:'bot',text:'金融AI实验室是10天密集实训课程，专为金融专业学生设计。通过低代码平台帮助您快速构建AI应用，无需深厚编程背景。非常适合作为入门课程！'}
-  ]}
-};
-
-function openCSRecordDetail(sessionId) {
-  var d = csRecordData[sessionId];
-  if (!d) d = { id:sessionId, visitor:'游客', time:'-', count:'-', msgs:[{role:'visitor',text:'对话记录加载中...'}] };
-  document.getElementById('csrId').textContent = d.id;
-  document.getElementById('csrVisitor').textContent = d.visitor;
-  document.getElementById('csrTime').textContent = d.time;
-  document.getElementById('csrMsgCount').textContent = d.count;
-  var msgsHtml = '';
-  d.msgs.forEach(function(m){
-    if (m.role === 'visitor') {
-      msgsHtml += '<div style="align-self:flex-start;background:var(--bg-card);border:1px solid var(--border-subtle);padding:8px 12px;border-radius:12px 12px 12px 4px;max-width:80%;font-size:12px;color:var(--text-primary)">'+m.text+'</div>';
-    } else {
-      msgsHtml += '<div style="align-self:flex-end;background:var(--ink);color:#fff;padding:8px 12px;border-radius:12px 12px 4px 12px;max-width:80%;font-size:12px">'+m.text+'</div>';
-    }
+function filterCSRecordsByAnswerType(type) {
+  var activeTab = document.querySelector('#page-cs-records .tab.active');
+  var dateFilter = activeTab ? (activeTab.getAttribute('onclick') || '').match(/'([^']+)'/)?.[1] : 'all';
+  if (!dateFilter) dateFilter = 'all';
+  document.querySelectorAll('.cs-record-row').forEach(function(r){
+    var dateMatch = (dateFilter === 'all') || (r.getAttribute('data-date') === dateFilter);
+    var answerMatch = (type === 'all') || (r.getAttribute('data-answer') || '').indexOf(type) !== -1;
+    r.style.display = (dateMatch && answerMatch) ? '' : 'none';
   });
-  document.getElementById('csrMessages').innerHTML = msgsHtml;
+}
+
+// ============ CS SESSION DETAIL ============
+function openCSRecordDetail(sessionId) {
+  var d = sessionData[sessionId];
+  if (!d) {
+    document.getElementById('csrId').textContent = sessionId;
+    document.getElementById('csrTime').textContent = '-';
+    document.getElementById('csrMsgCount').textContent = '-';
+    document.getElementById('csrAnswerTypes').textContent = '-';
+    document.getElementById('csrMessages').innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px">会话数据未找到</div>';
+  } else {
+    document.getElementById('csrId').textContent = d.session_id;
+    document.getElementById('csrTime').textContent = d.started_at;
+    document.getElementById('csrMsgCount').textContent = d.message_count;
+    document.getElementById('csrAnswerTypes').textContent = d.answer_types.join(' / ');
+    var msgsHtml = '';
+    d.messages.forEach(function(m){
+      var timeHtml = '<div style="font-size:9px;color:var(--text-dim);margin-bottom:2px">' + m.created_at + '</div>';
+      if (m.role === 'user') {
+        msgsHtml += '<div style="align-self:flex-start;max-width:80%">' + timeHtml + '<div style="background:var(--bg-card);border:1px solid var(--border-subtle);padding:10px 14px;border-radius:14px 14px 14px 4px;font-size:13px;color:var(--text-primary)">' + m.content + '</div></div>';
+      } else {
+        var answerTag = '';
+        if (m.answer_type === '命中知识库') {
+          answerTag = ' <span class="tag tag-green" style="font-size:9px;padding:1px 6px;margin-left:4px"><i data-lucide="database" style="width:9px;height:9px"></i> 命中知识库</span>';
+        } else if (m.answer_type === '模型兜底') {
+          answerTag = ' <span class="tag tag-blue" style="font-size:9px;padding:1px 6px;margin-left:4px"><i data-lucide="brain" style="width:9px;height:9px"></i> 模型兜底</span>';
+        } else if (m.answer_type === '未回答') {
+          answerTag = ' <span class="tag tag-red" style="font-size:9px;padding:1px 6px;margin-left:4px"><i data-lucide="x-circle" style="width:9px;height:9px"></i> 未回答</span>';
+        }
+        msgsHtml += '<div style="align-self:flex-end;max-width:80%">' + timeHtml + '<div style="background:var(--ink);color:#fff;padding:10px 14px;border-radius:14px 14px 4px 14px;font-size:13px;display:inline">' + m.content + answerTag + '</div></div>';
+      }
+    });
+    document.getElementById('csrMessages').innerHTML = msgsHtml;
+    lucide.createIcons();
+  }
   document.getElementById('csRecordDetailOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
