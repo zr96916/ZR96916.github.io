@@ -111,6 +111,10 @@
   .scroll-area::-webkit-scrollbar { width: 0; display: none; }
   .scrollbar-hide::-webkit-scrollbar { display: none; }
   .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  /* Hide number input spinners */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type="number"] { -moz-appearance: textfield; }
   /* Hide all scrollbars globally */
   *::-webkit-scrollbar { display: none; }
   * { -ms-overflow-style: none; scrollbar-width: none; }
@@ -458,6 +462,32 @@
     </div>
   </div>
 
+  <!-- ===== ITEM DETAIL OVERLAY ===== -->
+  <div class="overlay-panel" id="itemDetailOverlay">
+    <div class="flex items-center gap-3 px-5 py-4 border-b border-slate-200 bg-white shrink-0">
+      <button onclick="closeItemDetail()" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-slate-100 transition-colors">
+        <i data-lucide="arrow-left" class="w-5 h-5 text-slate-700"></i>
+      </button>
+      <span class="text-base font-semibold text-slate-900 flex-1" id="itemDetailTitle">详情</span>
+      <button id="itemDetailSaveBtn" class="hidden text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors" onclick="closeItemDetail()">保存</button>
+    </div>
+    <div class="flex-1 overflow-y-auto px-5 pt-5 pb-8">
+      <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100">
+        <div class="text-sm font-semibold text-blue-600 bg-blue-50 inline-block px-2.5 py-1 rounded-full mb-4" id="itemDetailMeta"></div>
+        <div id="itemDetailFields" class="space-y-4"></div>
+        <div id="itemDetailImages" class="hidden mt-5 pt-5 border-t border-slate-100">
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wide">证照图片</h4>
+            <button id="itemImageAddBtn" class="hidden text-xs font-medium text-blue-600 hover:text-blue-800 transition-colors" onclick="addItemImage()">
+              <i data-lucide="plus" class="w-3.5 h-3.5 mr-0.5 inline"></i>上传
+            </button>
+          </div>
+          <div class="grid grid-cols-2 gap-3" id="itemImageGrid"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ===== ENTERPRISE EDIT OVERLAY ===== -->
   <div class="overlay-panel" id="enterpriseEditOverlay">
     <div class="flex items-center gap-3 px-5 py-4 border-b border-slate-200 bg-white shrink-0">
@@ -483,38 +513,38 @@
           class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
       </div>
 
-      <!-- 许可证号 + 主体业态 -->
-      <div class="grid grid-cols-2 gap-3">
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1.5">许可证号</label>
-          <input type="text" id="entLicense" placeholder="如 JY2123456789012345" value="JY111050XXXXXX"
-            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1.5">主体业态</label>
-          <select id="entBizType"
-            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all appearance-none">
-            <option value="">请选择</option>
-            <option value="餐饮服务经营者" selected>餐饮服务经营者</option>
-            <option value="食品销售经营者">食品销售经营者</option>
-            <option value="单位食堂">单位食堂</option>
-            <option value="食品生产加工小作坊">食品生产加工小作坊</option>
-          </select>
-        </div>
+      <!-- 许可证号 -->
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">许可证号</label>
+        <input type="text" id="entLicense" placeholder="如 JY2123456789012345" value="JY111050XXXXXX"
+          class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
       </div>
 
-      <!-- 法人姓名 + 联系电话 -->
-      <div class="grid grid-cols-2 gap-3">
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1.5">法人姓名</label>
-          <input type="text" id="entLegalPerson" placeholder="请输入法人姓名" value="张三"
-            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1.5">联系电话</label>
-          <input type="tel" id="entPhone" placeholder="请输入联系电话" value="138xxxx6789"
-            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
-        </div>
+      <!-- 主体业态 -->
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">主体业态</label>
+        <select id="entBizType"
+          class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all appearance-none">
+          <option value="">请选择</option>
+          <option value="餐饮服务经营者" selected>餐饮服务经营者</option>
+          <option value="食品销售经营者">食品销售经营者</option>
+          <option value="单位食堂">单位食堂</option>
+          <option value="食品生产加工小作坊">食品生产加工小作坊</option>
+        </select>
+      </div>
+
+      <!-- 法人姓名 -->
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">法人姓名</label>
+        <input type="text" id="entLegalPerson" placeholder="请输入法人姓名" value="张三"
+          class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+      </div>
+
+      <!-- 联系电话 -->
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">联系电话</label>
+        <input type="tel" id="entPhone" placeholder="请输入联系电话" value="138xxxx6789"
+          class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
       </div>
 
       <!-- 招牌名称 -->
@@ -556,36 +586,36 @@
           class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all resize-none">北京市海淀区中关村大街1号</textarea>
       </div>
 
-      <!-- 所属镇 + 所属市场所 -->
-      <div class="grid grid-cols-2 gap-3">
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1.5">所属镇</label>
-          <input type="text" id="entTown" placeholder="请输入所属镇" value="中关村街道"
-            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1.5">所属市场所</label>
-          <input type="text" id="entMarketOffice" placeholder="请输入所属市场所" value="海淀区市场监督管理局中关村所"
-            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
-        </div>
+      <!-- 所属镇 -->
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">所属镇</label>
+        <input type="text" id="entTown" placeholder="请输入所属镇" value="中关村街道"
+          class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
       </div>
 
-      <!-- 连锁品牌 + 营业状态 -->
-      <div class="grid grid-cols-2 gap-3">
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1.5">连锁品牌</label>
-          <input type="text" id="entChainBrand" placeholder="请输入连锁品牌"
-            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1.5">营业状态</label>
-          <select id="entBizStatus"
-            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all appearance-none">
-            <option value="营业" selected>营业</option>
-            <option value="停业">停业</option>
-            <option value="注销">注销</option>
-          </select>
-        </div>
+      <!-- 所属市场所 -->
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">所属市场所</label>
+        <input type="text" id="entMarketOffice" placeholder="请输入所属市场所" value="海淀区市场监督管理局中关村所"
+          class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+      </div>
+
+      <!-- 连锁品牌 -->
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">连锁品牌</label>
+        <input type="text" id="entChainBrand" placeholder="请输入连锁品牌"
+          class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+      </div>
+
+      <!-- 营业状态 -->
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">营业状态</label>
+        <select id="entBizStatus"
+          class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all appearance-none">
+          <option value="营业" selected>营业</option>
+          <option value="停业">停业</option>
+          <option value="注销">注销</option>
+        </select>
       </div>
 
       <!-- 扩展备注 -->
@@ -600,23 +630,30 @@
   <!-- ===== MAIN APP ===== -->
   <div class="flex flex-col flex-1 min-h-0" id="mainApp">
     <!-- Header -->
-    <header class="px-5 pt-[max(22px,env(safe-area-inset-top))] pb-3 flex items-center shrink-0 bg-blue-600" id="mainHeader">
-      <div class="flex-1 min-w-0 flex items-baseline gap-2">
-        <h1 class="text-xl font-bold text-white tracking-tight truncate" id="headerTitle">智慧食安</h1>
-        <span id="headerSub" class="text-xs text-white/60 shrink-0">好味道餐饮管理有限公司</span>
-        <span id="headerBadge" class="hidden shrink-0 text-xs font-normal text-white/60">· 已生效</span>
+    <header class="px-5 pt-[max(22px,env(safe-area-inset-top))] pb-3 shrink-0 bg-blue-600" id="mainHeader">
+      <div class="flex items-start justify-between">
+        <div class="flex-1 min-w-0 flex items-baseline gap-2 pt-1">
+          <h1 class="text-xl font-bold text-white tracking-tight truncate" id="headerTitle">智慧食安</h1>
+          <span id="headerSub" class="text-xs text-white/60 shrink-0">好味道餐饮管理有限公司</span>
+          <span id="headerBadge" class="hidden shrink-0 text-xs font-normal text-white/60 cursor-pointer" onclick="cycleEntState()">· 已生效</span>
+        </div>
+        <!-- WeChat capsule placeholder -->
+        <div class="shrink-0 flex items-center gap-1.5 ml-3">
+          <div class="flex items-center bg-black/20 rounded-full px-3 py-1.5 gap-3">
+            <span class="text-white/80 text-sm font-bold leading-none">···</span>
+            <div class="w-px h-4 bg-white/20"></div>
+            <div class="w-4 h-4 rounded-full border-2 border-white/70"></div>
+          </div>
+        </div>
       </div>
-      <button id="headerEditBtn" class="hidden shrink-0 ml-3 px-3 py-1.5 text-[12px] font-semibold text-white bg-white/20 rounded-lg hover:bg-white/30 active:bg-white/40 transition-colors" onclick="enterEditMode()">编辑</button>
-      <button id="headerCancelBtn" class="hidden shrink-0 ml-3 px-3 py-1.5 text-[12px] font-medium text-white/70 hover:text-white transition-colors" onclick="cancelEditMode()">取消</button>
-      <button id="headerSubmitBtn" class="hidden shrink-0 ml-2 px-3 py-1.5 text-[12px] font-semibold text-blue-600 bg-white rounded-lg hover:bg-white/90 active:bg-white/80 transition-colors" onclick="submitForApproval()">提交</button>
     </header>
 
     <!-- Tab content area -->
-    <div class="flex-1 overflow-y-auto scroll-area pt-4" id="tabContent">
+    <div class="flex-1 overflow-y-auto scroll-area" id="tabContent">
       <!-- ========== TAB: HOME ========== -->
       <div id="tab-home" class="anim-stagger reveal">
         <!-- Business Overview Card -->
-        <div class="px-5 mb-5">
+        <div class="px-5 mb-5 pt-4">
           <div class="relative overflow-hidden bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-6 shadow-elevated">
             <!-- Decorative circles -->
             <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/5"></div>
@@ -660,23 +697,19 @@
           </div>
         </div>
 
-        <!-- Quick Actions -->
-        <div class="px-5 mb-6">
-          <div class="grid grid-cols-2 gap-3">
-            <button onclick="openQuickResponse('correction')" class="group relative bg-white rounded-2xl p-5 shadow-card border border-slate-100 text-left hover:shadow-elevated hover:border-blue-200 active:bg-blue-50/30 transition-all duration-200">
-              <div class="w-11 h-11 rounded-2xl bg-blue-50 flex items-center justify-center mb-3.5 group-hover:bg-blue-100 transition-colors">
-                <i data-lucide="file-edit" class="w-5 h-5 text-blue-600"></i>
+        <!-- Enterprise Approval Status -->
+        <div class="px-5 mb-5">
+          <div onclick="switchTab('enterprise')" class="bg-white rounded-2xl p-4 shadow-card border border-slate-100 flex items-center justify-between active:bg-slate-50 cursor-pointer">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+                <i data-lucide="building-2" class="w-5 h-5 text-blue-600"></i>
               </div>
-              <span class="text-[15px] font-semibold text-slate-800 block">提交整改</span>
-              <span class="text-[13px] text-slate-400 mt-1 block leading-tight">上传文字及照片反馈</span>
-            </button>
-            <button onclick="openQuickResponse('appeal')" class="group relative bg-white rounded-2xl p-5 shadow-card border border-slate-100 text-left hover:shadow-elevated hover:border-orange-200 active:bg-orange-50/30 transition-all duration-200">
-              <div class="w-11 h-11 rounded-2xl bg-orange-50 flex items-center justify-center mb-3.5 group-hover:bg-orange-100 transition-colors">
-                <i data-lucide="message-square-warning" class="w-5 h-5 text-orange-600"></i>
+              <div>
+                <p class="text-sm font-semibold text-slate-800">企业信息审批状态</p>
+                <p class="text-xs text-slate-400 mt-0.5" id="homeApprovalStatus">暂无审批</p>
               </div>
-              <span class="text-[15px] font-semibold text-slate-800 block">发起申诉</span>
-              <span class="text-[13px] text-slate-400 mt-1 block leading-tight">上传文字及照片佐证</span>
-            </button>
+            </div>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300"></i>
           </div>
         </div>
 
@@ -756,33 +789,40 @@
 
       <!-- ========== TAB: ORDERS ========== -->
       <div id="tab-orders" class="hidden">
-        <!-- Filter tabs -->
-        <div class="px-5 mb-3">
-          <div class="flex gap-2 overflow-x-auto scrollbar-hide" id="orderFilterBar">
+        <!-- Filter bar (fixed) -->
+        <div class="sticky top-0 z-10 bg-slate-50 px-5 pt-3 pb-3 -mx-0">
+          <!-- Filter tabs -->
+          <div class="flex gap-2 overflow-x-auto scrollbar-hide mb-3" id="orderFilterBar">
             <button onclick="filterOrders('pending', this)" class="shrink-0 px-4 py-2 text-[13px] font-semibold rounded-xl bg-blue-600 text-white transition-all">待处理 <span class="opacity-70 ml-0.5">2</span></button>
             <button onclick="filterOrders('processing', this)" class="shrink-0 px-4 py-2 text-[13px] font-medium rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all">处理中 <span class="opacity-50 ml-0.5">1</span></button>
             <button onclick="filterOrders('rejected', this)" class="shrink-0 px-4 py-2 text-[13px] font-medium rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all">已驳回 <span class="opacity-50 ml-0.5">1</span></button>
             <button onclick="filterOrders('archived', this)" class="shrink-0 px-4 py-2 text-[13px] font-medium rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all">已归档 <span class="opacity-50 ml-0.5">4</span></button>
           </div>
-        </div>
 
-        <!-- Search & Time filters -->
-        <div class="px-5 mb-4 space-y-3">
-          <div class="relative">
-            <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-            <input
-              type="text"
-              id="orderSearch"
-              placeholder="搜索工单标题、编号..."
-              oninput="applyAllFilters()"
-              class="w-full pl-10 pr-4 py-2.5 text-[13px] text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all"
-            />
-          </div>
-          <div class="flex gap-2 overflow-x-auto scrollbar-hide" id="timeFilterBar">
-            <button onclick="setTimeFilter('all', this)" class="time-filter-btn shrink-0 px-3 py-1.5 text-[12px] font-semibold rounded-lg bg-blue-600 text-white transition-all">全部时间</button>
-            <button onclick="setTimeFilter('week', this)" class="time-filter-btn shrink-0 px-3 py-1.5 text-[12px] font-medium rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all">近一周</button>
-            <button onclick="setTimeFilter('month', this)" class="time-filter-btn shrink-0 px-3 py-1.5 text-[12px] font-medium rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all">近一月</button>
-            <button onclick="setTimeFilter('quarter', this)" class="time-filter-btn shrink-0 px-3 py-1.5 text-[12px] font-medium rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all">近三月</button>
+          <!-- Search & Time filter -->
+          <div class="flex gap-2">
+            <div class="relative flex-1">
+              <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+              <input
+                type="text"
+                id="orderSearch"
+                placeholder="搜索工单标题、编号..."
+                oninput="applyAllFilters()"
+                class="w-full pl-10 pr-4 py-2.5 text-[13px] text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all"
+              />
+            </div>
+            <div class="relative shrink-0">
+              <button onclick="toggleTimeDropdown()" id="timeDropdownBtn" class="flex items-center gap-1 px-3 py-2.5 text-[13px] font-medium text-slate-600 bg-slate-50 rounded-xl border border-slate-200 hover:bg-slate-100 transition-colors">
+                <span id="timeDropdownLabel">全部时间</span>
+                <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
+              </button>
+              <div id="timeDropdown" class="hidden absolute right-0 top-full mt-1 w-36 bg-white rounded-xl shadow-elevated border border-slate-200 overflow-hidden z-20">
+                <button onclick="selectTimeFilter('all', '全部时间')" class="w-full px-4 py-2.5 text-[13px] font-semibold text-left text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors">全部时间</button>
+                <button onclick="selectTimeFilter('week', '近一周')" class="w-full px-4 py-2.5 text-[13px] text-left text-slate-600 hover:bg-slate-50 transition-colors">近一周</button>
+                <button onclick="selectTimeFilter('month', '近一月')" class="w-full px-4 py-2.5 text-[13px] text-left text-slate-600 hover:bg-slate-50 transition-colors">近一月</button>
+                <button onclick="selectTimeFilter('quarter', '近三月')" class="w-full px-4 py-2.5 text-[13px] text-left text-slate-600 hover:bg-slate-50 transition-colors">近三月</button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -977,12 +1017,23 @@
 
       <!-- ========== TAB: ENTERPRISE ========== -->
       <div id="tab-enterprise" class="hidden flex flex-col min-h-full">
+        <!-- Enterprise action bar -->
+        <div class="sticky top-0 z-10 bg-slate-50 px-5 pt-2 pb-3" id="entActionBar">
+          <div id="entEditBtn" class="hidden">
+            <button onclick="enterEditMode()" id="entEditBtnInner" class="w-full py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 transition-all disabled:opacity-40 disabled:cursor-not-allowed">编辑</button>
+          </div>
+          <div id="entEditActions" class="hidden flex gap-3">
+            <button onclick="cancelEditMode()" class="flex-1 py-2.5 bg-slate-100 text-slate-600 text-sm font-medium rounded-xl hover:bg-slate-200 transition-all">取消</button>
+            <button onclick="submitForApproval()" class="flex-1 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 transition-all">提交</button>
+          </div>
+        </div>
+
         <!-- Approval notice banner (hidden by default) -->
-        <div id="approvalNotice" class="hidden mx-5 mb-4 bg-blue-50 border border-blue-200 rounded-2xl p-4 flex items-start gap-3">
-          <i data-lucide="info" class="w-5 h-5 text-blue-600 shrink-0 mt-0.5"></i>
+        <div id="approvalNotice" class="hidden mx-5 mt-4 mb-4 rounded-2xl p-4 flex items-start gap-3">
+          <i data-lucide="info" class="w-5 h-5 shrink-0 mt-0.5" id="approvalNoticeIcon"></i>
           <div>
-            <p class="text-sm font-semibold text-blue-800">审批期间信息只读，通过后自动生效</p>
-            <p class="text-xs text-blue-600 mt-0.5">监管人员将在 1-3 个工作日内完成审核</p>
+            <p class="text-sm font-semibold" id="approvalNoticeTitle">审批期间信息只读，通过后自动生效</p>
+            <p class="text-xs mt-0.5" id="approvalNoticeSub">监管人员将在 1-3 个工作日内完成审核</p>
           </div>
         </div>
 
@@ -1015,26 +1066,26 @@
         </div>
 
         <!-- Enterprise Info Section -->
-        <div class="px-5 mb-4">
-          <button onclick="toggleSection('enterpriseInfo')" class="w-full flex items-center justify-between mb-3">
-                        <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide">基础信息</h2>
+        <div class="px-5 mb-2 pt-2">
+          <button onclick="toggleSection('enterpriseInfo')" class="w-full flex items-center justify-between mb-2">
+            <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide">基础信息</h2>
             <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform" id="enterpriseInfoChevron"></i>
           </button>
           <div id="enterpriseInfoContent" class="bg-white rounded-2xl p-5 shadow-card border border-slate-100 space-y-4">
             <div class="flex justify-between items-center ent-row">
               <span class="text-sm text-slate-400 shrink-0">主体名称</span>
               <span class="text-sm font-medium text-slate-800 text-right ent-field-value">好味道餐饮管理有限公司</span>
-              <input type="text" class="hidden ent-field-input w-40 px-3 py-1.5 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="好味道餐饮管理有限公司" />
+              <input type="text" class="hidden ent-field-input flex-1 min-w-0 px-3 py-1.5 text-sm text-left text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="好味道餐饮管理有限公司" />
             </div>
             <div class="flex justify-between items-center ent-row">
               <span class="text-sm text-slate-400 shrink-0">统一社会信用代码</span>
               <span class="text-sm font-medium text-slate-800 text-right ent-field-value">91110108MA01XXXXX</span>
-              <input type="text" class="hidden ent-field-input w-40 px-3 py-1.5 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="91110108MA01XXXXX" />
+              <input type="text" class="hidden ent-field-input flex-1 min-w-0 px-3 py-1.5 text-sm text-left text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="91110108MA01XXXXX" />
             </div>
             <div class="flex justify-between items-center ent-row">
               <span class="text-sm text-slate-400 shrink-0">许可证号</span>
               <span class="text-sm font-medium text-slate-800 text-right ent-field-value">JY111050XXXXXX</span>
-              <input type="text" class="hidden ent-field-input w-40 px-3 py-1.5 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="JY111050XXXXXX" />
+              <input type="text" class="hidden ent-field-input flex-1 min-w-0 px-3 py-1.5 text-sm text-left text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="JY111050XXXXXX" />
             </div>
             <div class="flex justify-between items-center ent-row">
               <span class="text-sm text-slate-400 shrink-0">主体业态</span>
@@ -1048,56 +1099,52 @@
             <div class="flex justify-between items-center ent-row">
               <span class="text-sm text-slate-400 shrink-0">法人姓名</span>
               <span class="text-sm font-medium text-slate-800 text-right ent-field-value">张三</span>
-              <input type="text" class="hidden ent-field-input w-40 px-3 py-1.5 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="张三" />
+              <input type="text" class="hidden ent-field-input flex-1 min-w-0 px-3 py-1.5 text-sm text-left text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="张三" />
             </div>
             <div class="flex justify-between items-center ent-row">
               <span class="text-sm text-slate-400 shrink-0">联系电话</span>
               <span class="text-sm font-medium text-slate-800 text-right ent-field-value">138****6789</span>
-              <input type="tel" class="hidden ent-field-input w-40 px-3 py-1.5 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="138****6789" />
+              <input type="tel" class="hidden ent-field-input flex-1 min-w-0 px-3 py-1.5 text-sm text-left text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="138****6789" />
             </div>
             <div class="flex justify-between items-center ent-row">
               <span class="text-sm text-slate-400 shrink-0">招牌名称</span>
               <span class="text-sm font-medium text-slate-800 text-right ent-field-value">好味道</span>
-              <input type="text" class="hidden ent-field-input w-40 px-3 py-1.5 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="好味道" />
+              <input type="text" class="hidden ent-field-input flex-1 min-w-0 px-3 py-1.5 text-sm text-left text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="好味道" />
             </div>
             <div class="flex justify-between items-center ent-row">
               <span class="text-sm text-slate-400 shrink-0">经营项目</span>
               <span class="text-sm font-medium text-slate-800 text-right ent-field-value">热食类食品制售、冷食类食品制售</span>
-              <input type="text" class="hidden ent-field-input w-40 px-3 py-1.5 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="热食类食品制售、冷食类食品制售" />
+              <input type="text" class="hidden ent-field-input flex-1 min-w-0 px-3 py-1.5 text-sm text-left text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="热食类食品制售、冷食类食品制售" />
             </div>
             <div class="flex justify-between items-center ent-row">
               <span class="text-sm text-slate-400 shrink-0">经营面积(㎡)</span>
               <span class="text-sm font-medium text-slate-800 text-right ent-field-value">120</span>
-              <div class="hidden ent-field-input flex items-center gap-2">
-                <button onclick="stepArea(-1)" class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 active:bg-slate-200 transition-colors text-lg font-semibold select-none">−</button>
-                <input type="number" id="entAreaField" class="w-16 px-2 py-1.5 text-sm text-center text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="120" min="0" />
-                <button onclick="stepArea(1)" class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 active:bg-slate-200 transition-colors text-lg font-semibold select-none">+</button>
-              </div>
+              <input type="number" inputmode="numeric" pattern="[0-9]*" class="hidden ent-field-input w-40 px-3 py-1.5 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="120" min="0" />
             </div>
             <div class="flex justify-between items-center ent-row">
               <span class="text-sm text-slate-400 shrink-0">住所</span>
               <span class="text-sm font-medium text-slate-800 text-right ent-field-value">北京市海淀区</span>
-              <input type="text" class="hidden ent-field-input w-40 px-3 py-1.5 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="北京市海淀区" />
+              <input type="text" class="hidden ent-field-input flex-1 min-w-0 px-3 py-1.5 text-sm text-left text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="北京市海淀区" />
             </div>
             <div class="flex justify-between items-center ent-row">
               <span class="text-sm text-slate-400 shrink-0">经营场所</span>
               <span class="text-sm font-medium text-slate-800 text-right ent-field-value">北京市海淀区中关村大街1号</span>
-              <input type="text" class="hidden ent-field-input w-40 px-3 py-1.5 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="北京市海淀区中关村大街1号" />
+              <input type="text" class="hidden ent-field-input flex-1 min-w-0 px-3 py-1.5 text-sm text-left text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="北京市海淀区中关村大街1号" />
             </div>
             <div class="flex justify-between items-center ent-row">
               <span class="text-sm text-slate-400 shrink-0">所属镇</span>
               <span class="text-sm font-medium text-slate-800 text-right ent-field-value">中关村街道</span>
-              <input type="text" class="hidden ent-field-input w-40 px-3 py-1.5 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="中关村街道" />
+              <input type="text" class="hidden ent-field-input flex-1 min-w-0 px-3 py-1.5 text-sm text-left text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="中关村街道" />
             </div>
             <div class="flex justify-between items-center ent-row">
               <span class="text-sm text-slate-400 shrink-0">所属市场所</span>
               <span class="text-sm font-medium text-slate-800 text-right ent-field-value">海淀区市场监督管理局中关村所</span>
-              <input type="text" class="hidden ent-field-input w-40 px-3 py-1.5 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="海淀区市场监督管理局中关村所" />
+              <input type="text" class="hidden ent-field-input flex-1 min-w-0 px-3 py-1.5 text-sm text-left text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="海淀区市场监督管理局中关村所" />
             </div>
             <div class="flex justify-between items-center ent-row">
               <span class="text-sm text-slate-400 shrink-0">连锁品牌</span>
               <span class="text-sm font-medium text-slate-300 text-right ent-field-value">—</span>
-              <input type="text" class="hidden ent-field-input w-40 px-3 py-1.5 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="" placeholder="—" />
+              <input type="text" class="hidden ent-field-input flex-1 min-w-0 px-3 py-1.5 text-sm text-left text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="" placeholder="—" />
             </div>
             <div class="flex justify-between items-center ent-row">
               <span class="text-sm text-slate-400 shrink-0">营业状态</span>
@@ -1111,14 +1158,16 @@
             <div class="flex justify-between items-start ent-row">
               <span class="text-sm text-slate-400 shrink-0 mr-3">扩展备注</span>
               <span class="text-sm font-medium text-slate-300 text-right ent-field-value">—</span>
-              <textarea class="hidden ent-field-input w-40 px-3 py-1.5 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all resize-none" rows="2"></textarea>
+              <textarea class="hidden ent-field-input flex-1 min-w-0 px-3 py-1.5 text-sm text-left text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all resize-none" rows="2"></textarea>
             </div>
           </div>
         </div>
 
         <!-- Employees Section -->
         <div class="px-5 mb-4">
-          <button onclick="toggleSection('employees')" class="w-full flex items-center justify-between mb-3">
+        </div>
+        <div class="px-5 mb-2 pt-2">
+          <button onclick="toggleSection('employees')" class="w-full flex items-center justify-between mb-2">
             <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide">从业人员</h2>
             <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform" id="employeesChevron"></i>
           </button>
@@ -1153,7 +1202,7 @@
               </div>
               <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
             </div>
-            <button class="ent-editable-show hidden w-full py-3 text-sm font-medium text-blue-600 bg-blue-50/50 hover:bg-blue-50 active:bg-blue-100 transition-colors flex items-center justify-center gap-1.5">
+            <button onclick="showItemDetail('empNew')" class="ent-editable-show hidden w-full py-3 text-sm font-medium text-blue-600 bg-blue-50/50 hover:bg-blue-50 active:bg-blue-100 transition-colors flex items-center justify-center gap-1.5">
               <i data-lucide="plus" class="w-4 h-4"></i> 添加从业人员
             </button>
           </div>
@@ -1161,7 +1210,9 @@
 
         <!-- Licenses Section -->
         <div class="px-5">
-          <button onclick="toggleSection('licenses')" class="w-full flex items-center justify-between mb-3">
+        </div>
+        <div class="px-5 mb-2 pt-2">
+          <button onclick="toggleSection('licenses')" class="w-full flex items-center justify-between mb-2">
             <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide">企业证照</h2>
             <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform" id="licensesChevron"></i>
           </button>
@@ -1186,17 +1237,37 @@
               </div>
               <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
             </div>
-            <div onclick="showItemDetail('license3')" class="p-4 flex items-center justify-between active:bg-slate-50 cursor-pointer">
+            <div onclick="showItemDetail('license3a')" class="p-4 flex items-center justify-between border-b border-slate-100 active:bg-slate-50 cursor-pointer">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 font-semibold text-sm shrink-0">健</div>
+                <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 font-semibold text-sm shrink-0">张</div>
                 <div>
-                  <p class="text-sm font-semibold text-slate-800">从业人员健康证</p>
-                  <p class="text-xs text-slate-400">3人持有有效证件 · 有效期内</p>
+                  <p class="text-sm font-semibold text-slate-800">张三 · 健康证</p>
+                  <p class="text-xs text-slate-400">JK2023**** · 有效期至 2025-03-15</p>
                 </div>
               </div>
               <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
             </div>
-            <div class="ent-editable-show hidden w-full py-3 text-sm font-medium text-blue-600 bg-blue-50/50 hover:bg-blue-50 active:bg-blue-100 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+            <div onclick="showItemDetail('license3b')" class="p-4 flex items-center justify-between border-b border-slate-100 active:bg-slate-50 cursor-pointer">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 font-semibold text-sm shrink-0">李</div>
+                <div>
+                  <p class="text-sm font-semibold text-slate-800">李丽 · 健康证</p>
+                  <p class="text-xs text-slate-400">JK2023**** · 有效期至 2024-08-20</p>
+                </div>
+              </div>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
+            </div>
+            <div onclick="showItemDetail('license3c')" class="p-4 flex items-center justify-between active:bg-slate-50 cursor-pointer">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 font-semibold text-sm shrink-0">王</div>
+                <div>
+                  <p class="text-sm font-semibold text-slate-800">王芳 · 健康证</p>
+                  <p class="text-xs text-slate-400">JK2024**** · 有效期至 2025-01-10</p>
+                </div>
+              </div>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
+            </div>
+            <div onclick="showItemDetail('licenseNew')" class="ent-editable-show hidden w-full py-3 text-sm font-medium text-blue-600 bg-blue-50/50 hover:bg-blue-50 active:bg-blue-100 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
               <i data-lucide="plus" class="w-4 h-4"></i> 上传证照
             </div>
           </div>
@@ -1204,97 +1275,21 @@
 
         <!-- Change Log -->
         <div class="mt-auto px-5 pt-4 pb-8">
-          <div class="bg-white rounded-2xl p-4 shadow-card border border-slate-100">
-            <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">变更记录</h3>
-            <div class="flex items-center justify-between text-sm">
-              <span class="text-slate-400">最近更新时间</span>
-              <span class="text-slate-700 font-medium" id="entLastUpdate">2024-06-15 14:30</span>
+          <div onclick="showItemDetail('changeLogList')" class="bg-white rounded-2xl p-4 shadow-card border border-slate-100 active:bg-slate-50 cursor-pointer flex items-center justify-between">
+            <div>
+              <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wide">变更记录</h3>
+              <p class="text-sm text-slate-700 font-medium mt-1">查看全部变更</p>
             </div>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
           </div>
         </div>
       </div>
 
       <!-- ========== TAB: MY ========== -->
-      <div id="tab-my" class="hidden">
-        <!-- Profile card (compact) -->
-        <div class="px-5 mb-5">
-          <div class="bg-white rounded-2xl p-4 shadow-card border border-slate-100 flex items-center gap-4">
-            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-800 flex items-center justify-center text-white text-lg font-bold shadow-sm shrink-0">
-              食
-            </div>
-            <div class="flex-1 min-w-0">
-              <h2 class="text-sm font-semibold text-slate-900">好味道餐饮管理有限公司</h2>
-              <p class="text-xs text-slate-400 truncate">管理员 · 138****6789</p>
-            </div>
-            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
-          </div>
-        </div>
-
-        <!-- Settings list -->
-        <div class="px-5 mb-4">
-          <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3 px-0.5">通知设置</h2>
+      <div id="tab-my" class="hidden flex flex-col min-h-full">
+        <!-- Menu items -->
+        <div class="px-5 pt-4">
           <div class="bg-white rounded-2xl shadow-card border border-slate-100 overflow-hidden">
-            <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
-              <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center">
-                  <i data-lucide="bell" class="w-4 h-4 text-blue-600"></i>
-                </div>
-                <div>
-                  <p class="text-sm font-medium text-slate-800">消息推送通知</p>
-                  <p class="text-xs text-slate-400">工单状态变更、换证提醒等消息</p>
-                </div>
-              </div>
-              <button onclick="toggleSwitch(this)" class="w-11 h-6 rounded-full bg-blue-400 relative transition-colors duration-200" aria-label="消息通知开关">
-                <span class="absolute top-0.5 right-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200"></span>
-              </button>
-            </div>
-            <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
-              <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-orange-50 flex items-center justify-center">
-                  <i data-lucide="vibrate" class="w-4 h-4 text-orange-600"></i>
-                </div>
-                <div>
-                  <p class="text-sm font-medium text-slate-800">震动提醒</p>
-                  <p class="text-xs text-slate-400">紧急工单到达时手机震动</p>
-                </div>
-              </div>
-              <button onclick="toggleSwitch(this)" class="w-11 h-6 rounded-full bg-blue-400 relative transition-colors duration-200" aria-label="震动提醒开关">
-                <span class="absolute top-0.5 right-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200"></span>
-              </button>
-            </div>
-            <div class="flex items-center justify-between px-5 py-4">
-              <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-green-50 flex items-center justify-center">
-                  <i data-lucide="volume-2" class="w-4 h-4 text-green-600"></i>
-                </div>
-                <div>
-                  <p class="text-sm font-medium text-slate-800">声音提醒</p>
-                  <p class="text-xs text-slate-400">收到新工单时播放提示音</p>
-                </div>
-              </div>
-              <button onclick="toggleSwitch(this)" class="w-11 h-6 rounded-full bg-slate-300 relative transition-colors duration-200" aria-label="声音提醒开关">
-                <span class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200"></span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Account & General -->
-        <div class="px-5 mb-4">
-          <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3 px-0.5">通用</h2>
-          <div class="bg-white rounded-2xl shadow-card border border-slate-100 overflow-hidden">
-            <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 cursor-pointer active:bg-slate-50 transition-colors">
-              <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-purple-50 flex items-center justify-center">
-                  <i data-lucide="shield" class="w-4 h-4 text-purple-600"></i>
-                </div>
-                <div>
-                  <p class="text-sm font-medium text-slate-800">账号安全</p>
-                  <p class="text-xs text-slate-400">修改密码、绑定手机</p>
-                </div>
-              </div>
-              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300"></i>
-            </div>
             <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 cursor-pointer active:bg-slate-50 transition-colors">
               <div class="flex items-center gap-3">
                 <div class="w-9 h-9 rounded-xl bg-orange-50 flex items-center justify-center">
@@ -1322,8 +1317,8 @@
           </div>
         </div>
 
-        <!-- Logout -->
-        <div class="px-5 pb-24">
+        <!-- Logout (fixed to bottom) -->
+        <div class="mt-auto px-5 pt-8 pb-8">
           <button onclick="handleLogout()" class="w-full py-3.5 bg-white text-red-500 text-sm font-semibold rounded-2xl border border-red-200 hover:bg-red-50 active:bg-red-100 active:scale-[0.98] transition-all shadow-card">
             退出登录
           </button>
@@ -1434,16 +1429,20 @@ function updateHeader(tab) {
   const title = document.getElementById('headerTitle');
   const sub = document.getElementById('headerSub');
   const badge = document.getElementById('headerBadge');
-  const editBtn = document.getElementById('headerEditBtn');
+  const entEditBtn = document.getElementById('entEditBtn');
+  const entEditActions = document.getElementById('entEditActions');
+  const entActionBar = document.getElementById('entActionBar');
 
   // Hide enterprise elements by default
   badge.classList.add('hidden');
-  editBtn.classList.add('hidden');
+  if (entEditBtn) entEditBtn.classList.add('hidden');
+  if (entEditActions) entEditActions.classList.add('hidden');
 
   if (tab === 'home') {
     title.textContent = '智慧食安';
     sub.textContent = '好味道餐饮管理有限公司';
     sub.style.display = '';
+    updateHomeApprovalStatus();
   } else if (tab === 'orders') {
     title.textContent = '工单中心';
     sub.style.display = 'none';
@@ -1454,11 +1453,23 @@ function updateHeader(tab) {
       badge.textContent = '· 已生效';
       badge.className = 'shrink-0 text-xs font-normal text-white/60';
       badge.classList.remove('hidden');
-      editBtn.classList.remove('hidden');
+      const editBtnInner = document.getElementById('entEditBtnInner');
+      if (entEditBtn) { entEditBtn.classList.remove('hidden'); entEditActions.classList.add('hidden'); }
+      if (editBtnInner) editBtnInner.disabled = false;
     } else if (entApprovalState === 'pending') {
       badge.textContent = '· 审批中';
       badge.className = 'shrink-0 text-xs font-normal text-white/60';
       badge.classList.remove('hidden');
+      const editBtnInner = document.getElementById('entEditBtnInner');
+      if (entEditBtn) { entEditBtn.classList.remove('hidden'); entEditActions.classList.add('hidden'); }
+      if (editBtnInner) editBtnInner.disabled = true;
+    } else if (entApprovalState === 'rejected') {
+      badge.textContent = '· 已驳回';
+      badge.className = 'shrink-0 text-xs font-normal text-white/60';
+      badge.classList.remove('hidden');
+      const editBtnInner = document.getElementById('entEditBtnInner');
+      if (entEditBtn) { entEditBtn.classList.remove('hidden'); entEditActions.classList.add('hidden'); }
+      if (editBtnInner) editBtnInner.disabled = false;
     }
   } else if (tab === 'my') {
     title.textContent = '我的';
@@ -1467,7 +1478,35 @@ function updateHeader(tab) {
 }
 
 // ===== ENTERPRISE STATE =====
-let entApprovalState = 'approved'; // 'approved' | 'editing' | 'pending'
+let entApprovalState = 'approved'; // 'approved' | 'editing' | 'pending' | 'rejected'
+
+function updateHomeApprovalStatus() {
+  const el = document.getElementById('homeApprovalStatus');
+  if (!el) return;
+  if (entApprovalState === 'approved') {
+    el.textContent = '暂无审批'; el.className = 'text-xs text-slate-400 mt-0.5';
+  } else if (entApprovalState === 'pending') {
+    el.textContent = '审批中'; el.className = 'text-xs text-blue-600 font-medium mt-0.5';
+  } else if (entApprovalState === 'rejected') {
+    el.textContent = '已驳回'; el.className = 'text-xs text-orange-600 font-medium mt-0.5';
+  }
+}
+
+function cycleEntState() {
+  if (entApprovalState === 'approved') {
+    entApprovalState = 'pending'; setApprovalNotice('pending');
+    document.getElementById('approvalProgress').classList.remove('hidden');
+  } else if (entApprovalState === 'pending') {
+    entApprovalState = 'rejected'; setApprovalNotice('rejected');
+    document.getElementById('approvalProgress').classList.remove('hidden');
+  } else if (entApprovalState === 'rejected') {
+    entApprovalState = 'approved';
+    document.getElementById('approvalNotice').classList.add('hidden');
+    document.getElementById('approvalProgress').classList.add('hidden');
+  }
+  updateHeader('enterprise');
+  updateHomeApprovalStatus();
+}
 
 function enterEditMode() {
   entApprovalState = 'editing';
@@ -1475,10 +1514,10 @@ function enterEditMode() {
   document.querySelectorAll('.ent-field-input').forEach(el => el.classList.remove('hidden'));
   document.querySelectorAll('.ent-editable-show').forEach(el => el.classList.remove('hidden'));
   // Toggle header buttons
-  document.getElementById('headerEditBtn').classList.add('hidden');
-  document.getElementById('headerBadge').classList.add('hidden');
-  document.getElementById('headerCancelBtn').classList.remove('hidden');
-  document.getElementById('headerSubmitBtn').classList.remove('hidden');
+  document.getElementById('entEditBtn').classList.add('hidden');
+  document.getElementById('entEditActions').classList.remove('hidden');
+  document.getElementById('headerBadge').classList.remove('hidden');
+  document.getElementById('headerBadge').textContent = '· 编辑中';
 }
 
 function cancelEditMode() {
@@ -1488,21 +1527,13 @@ function cancelEditMode() {
   document.querySelectorAll('.ent-editable-show').forEach(el => el.classList.add('hidden'));
   document.getElementById('approvalNotice').classList.add('hidden');
   document.getElementById('approvalProgress').classList.add('hidden');
-  // Restore header
+  // Restore action bar
   const badge = document.getElementById('headerBadge');
   badge.textContent = '· 已生效';
   badge.className = 'shrink-0 text-xs font-normal text-white/60';
   badge.classList.remove('hidden');
-  document.getElementById('headerEditBtn').classList.remove('hidden');
-  document.getElementById('headerCancelBtn').classList.add('hidden');
-  document.getElementById('headerSubmitBtn').classList.add('hidden');
-}
-
-function stepArea(delta) {
-  const input = document.getElementById('entAreaField');
-  let val = parseInt(input.value) || 0;
-  val = Math.max(0, val + delta);
-  input.value = val;
+  document.getElementById('entEditBtn').classList.remove('hidden');
+  document.getElementById('entEditActions').classList.add('hidden');
 }
 
 function selectChip(btn, group) {
@@ -1516,26 +1547,41 @@ function selectChip(btn, group) {
   btn.classList.add('bg-blue-600', 'text-white');
 }
 
+function setApprovalNotice(type) {
+  const notice = document.getElementById('approvalNotice');
+  const icon = document.getElementById('approvalNoticeIcon');
+  const title = document.getElementById('approvalNoticeTitle');
+  const sub = document.getElementById('approvalNoticeSub');
+  notice.classList.remove('hidden');
+  if (type === 'pending') {
+    notice.className = 'mx-5 mt-4 mb-4 bg-blue-50 border border-blue-200 rounded-2xl p-4 flex items-start gap-3';
+    icon.className = 'w-5 h-5 text-blue-600 shrink-0 mt-0.5';
+    title.textContent = '审批期间信息只读，通过后自动生效'; title.className = 'text-sm font-semibold text-blue-800';
+    sub.textContent = '监管人员将在 1-3 个工作日内完成审核'; sub.className = 'text-xs text-blue-600 mt-0.5';
+  } else if (type === 'rejected') {
+    notice.className = 'mx-5 mt-4 mb-4 bg-orange-50 border border-orange-200 rounded-2xl p-4 flex items-start gap-3';
+    icon.className = 'w-5 h-5 text-orange-600 shrink-0 mt-0.5';
+    title.textContent = '内容被驳回'; title.className = 'text-sm font-semibold text-orange-800';
+    sub.textContent = '请根据驳回意见修改后重新提交'; sub.className = 'text-xs text-orange-600 mt-0.5';
+  }
+}
+
 function submitForApproval() {
+  if (!confirm('确认提交修改？提交后将进入审批流程，期间信息只读。')) return;
   entApprovalState = 'pending';
   document.querySelectorAll('.ent-field-value').forEach(el => el.classList.remove('hidden'));
   document.querySelectorAll('.ent-field-input').forEach(el => el.classList.add('hidden'));
   document.querySelectorAll('.ent-editable-show').forEach(el => el.classList.add('hidden'));
   // Show approval UI
-  document.getElementById('approvalNotice').classList.remove('hidden');
+  setApprovalNotice('pending');
   document.getElementById('approvalProgress').classList.remove('hidden');
   // Update header
   const badge = document.getElementById('headerBadge');
   badge.textContent = '· 审批中';
   badge.className = 'shrink-0 text-xs font-normal text-white/60';
   badge.classList.remove('hidden');
-  document.getElementById('headerEditBtn').classList.add('hidden');
-  document.getElementById('headerCancelBtn').classList.add('hidden');
-  document.getElementById('headerSubmitBtn').classList.add('hidden');
-  // Update time
-  const now = new Date();
-  document.getElementById('entLastUpdate').textContent = now.toISOString().slice(0, 16).replace('T', ' ');
-
+  document.getElementById('entEditBtn').classList.add('hidden');
+  document.getElementById('entEditActions').classList.add('hidden');
   showToast('已提交审批，请等待监管审核', 'success');
 }
 
@@ -1557,6 +1603,24 @@ function filterOrders(filter, btn) {
 
   applyAllFilters();
 }
+
+function toggleTimeDropdown() {
+  document.getElementById('timeDropdown').classList.toggle('hidden');
+}
+function selectTimeFilter(filter, label) {
+  currentTimeFilter = filter;
+  document.getElementById('timeDropdownLabel').textContent = label;
+  document.getElementById('timeDropdown').classList.add('hidden');
+  applyAllFilters();
+}
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+  const dd = document.getElementById('timeDropdown');
+  const btn = document.getElementById('timeDropdownBtn');
+  if (dd && btn && !btn.contains(e.target) && !dd.contains(e.target)) {
+    dd.classList.add('hidden');
+  }
+});
 
 function setTimeFilter(filter, btn) {
   currentTimeFilter = filter;
@@ -2149,15 +2213,207 @@ function toggleSwitch(btn) {
 // ===== LOGOUT =====
 // ===== ENTERPRISE EDIT =====
 function showItemDetail(key) {
-  const data = {
-    emp1: '张三 · 法定代表人\n身份证：110108****1234\n电话：138****6789\n健康证：JK2023**** 至 2025-03-15\n入职：2020-03-01',
-    emp2: '李丽 · 厨师长\n身份证：110108****5678\n电话：139****8901\n健康证：JK2023**** 至 2024-08-20\n入职：2021-06-15',
-    emp3: '王芳 · 食品安全员\n身份证：110108****9012\n电话：137****3456\n健康证：JK2024**** 至 2025-01-10\n入职：2022-09-01',
-    license1: '食品经营许可证\n编号：JY111050XXXXXX\n发证：北京市海淀区市场监督管理局\n有效期：2019-07-20 至 2024-07-20\n项目：热食类、冷食类食品制售',
-    license2: '食品安全管理体系认证\n标准：ISO 22000:2018\n机构：中国质量认证中心\n有效期：2022-03-10 至 2025-03-09',
-    license3: '从业人员健康证\n3人持有，均有效\n张三至2025-03-15 | 李丽至2024-08-20 | 王芳至2025-01-10\n发证：海淀区疾控中心',
-  }[key];
-  if (data) showToast(data, 'success');
+  const items = {
+    emp1: { title: '张三', meta: '法定代表人', fields: [
+      { label: '姓名', value: '张三' }, { label: '职位', value: '法定代表人' }, { label: '身份证号', value: '110108****1234' },
+      { label: '联系电话', value: '138****6789' }, { label: '健康证编号', value: 'JK2023****' },
+      { label: '健康证有效期', value: '2024-03-15 至 2025-03-15' }, { label: '入职日期', value: '2020-03-01' }
+    ]},
+    emp2: { title: '李丽', meta: '厨师长', fields: [
+      { label: '姓名', value: '李丽' }, { label: '职位', value: '厨师长' }, { label: '身份证号', value: '110108****5678' },
+      { label: '联系电话', value: '139****8901' }, { label: '健康证编号', value: 'JK2023****' },
+      { label: '健康证有效期', value: '2023-08-20 至 2024-08-20' }, { label: '入职日期', value: '2021-06-15' }
+    ]},
+    emp3: { title: '王芳', meta: '食品安全员', fields: [
+      { label: '姓名', value: '王芳' }, { label: '职位', value: '食品安全员' }, { label: '身份证号', value: '110108****9012' },
+      { label: '联系电话', value: '137****3456' }, { label: '健康证编号', value: 'JK2024****' },
+      { label: '健康证有效期', value: '2024-01-10 至 2025-01-10' }, { label: '入职日期', value: '2022-09-01' }
+    ]},
+    license1: { title: '食品经营许可证', meta: 'JY111050XXXXXX', fields: [
+      { label: '许可证编号', value: 'JY111050XXXXXX' }, { label: '发证机关', value: '北京市海淀区市场监督管理局' },
+      { label: '发证日期', value: '2019-07-20' }, { label: '有效期至', value: '2024-07-20' },
+      { label: '经营项目', value: '热食类食品制售、冷食类食品制售' }, { label: '经营场所', value: '北京市海淀区中关村大街1号' }
+    ], images: ['食品经营许可证-正本', '食品经营许可证-副本']},
+    license2: { title: '食品安全管理体系认证', meta: 'ISO 22000:2018', fields: [
+      { label: '认证标准', value: 'ISO 22000:2018' }, { label: '认证机构', value: '中国质量认证中心' },
+      { label: '发证日期', value: '2022-03-10' }, { label: '有效期至', value: '2025-03-09' },
+      { label: '认证范围', value: '餐饮服务全过程食品安全管理' }
+    ], images: ['ISO22000认证证书']},
+    empNew: { title: '新增从业人员', meta: '请填写信息', fields: [
+      { label: '姓名', value: '' }, { label: '职位', value: '' }, { label: '身份证号', value: '' },
+      { label: '联系电话', value: '' }, { label: '健康证编号', value: '' },
+      { label: '健康证有效期', value: '' }, { label: '入职日期', value: '' }
+    ]},
+    change1: { title: '变更详情', meta: '2024-06-15 14:30 · 审批通过', fields: [
+      { label: '提交时间', value: '2024-06-15 14:30' }, { label: '提交人', value: '张三' },
+      { label: '变更类型', value: '商户自主修改' }, { label: '状态', value: '审批通过' },
+      { label: '', value: '' },
+      { label: '变更内容', value: '' },
+      { label: '经营面积', value: '100㎡ → 120㎡' }, { label: '联系电话', value: '138xxxx6789（不变）' },
+      { label: '', value: '' },
+      { label: '审批流程', value: '' },
+      { label: '商户提交', value: '2024-06-15 14:30 ✓' }, { label: '监管审核', value: '2024-06-15 15:00 ✓' },
+      { label: '已生效', value: '2024-06-15 15:00' },
+    ]},
+    change2: { title: '变更详情', meta: '2024-05-20 10:00 · 监管下推', fields: [
+      { label: '生效时间', value: '2024-05-20 10:00' }, { label: '来源', value: '监管端下推' },
+      { label: '变更类型', value: '监管数据同步' }, { label: '状态', value: '自动生效' },
+      { label: '', value: '' },
+      { label: '变更内容', value: '' },
+      { label: '许可证号', value: 'JY111050XXXXXX（更新）' }, { label: '有效期', value: '延至 2024-07-20' },
+    ]},
+    change3: { title: '变更详情', meta: '2024-03-08 16:00 · 审批通过', fields: [
+      { label: '提交时间', value: '2024-03-08 16:00' }, { label: '提交人', value: '张三' },
+      { label: '变更类型', value: '商户自主修改' }, { label: '状态', value: '审批通过' },
+      { label: '', value: '' },
+      { label: '变更内容', value: '' },
+      { label: '从业人员', value: '新增王芳（食品安全员）' }, { label: '健康证', value: '王芳 JK2024****' },
+      { label: '', value: '' },
+      { label: '审批流程', value: '' },
+      { label: '商户提交', value: '2024-03-08 16:00 ✓' }, { label: '监管审核', value: '2024-03-09 09:00 ✓' },
+      { label: '已生效', value: '2024-03-09 09:00' },
+    ]},
+    change4: { title: '变更详情', meta: '2024-01-15 09:30 · 已归档', fields: [
+      { label: '登记时间', value: '2024-01-15 09:30' }, { label: '来源', value: '监管端录入' },
+      { label: '类型', value: '初始登记' }, { label: '状态', value: '已归档' },
+      { label: '', value: '' },
+      { label: '登记内容', value: '企业主体信息、许可证、从业人员全部初始录入' },
+    ]},
+    licenseNew: { title: '新增证照', meta: '请填写信息', fields: [
+      { label: '证照名称', value: '' }, { label: '证照编号', value: '' }, { label: '发证机关', value: '' },
+      { label: '发证日期', value: '' }, { label: '有效期至', value: '' }, { label: '备注', value: '' }
+    ]},
+    license3a: { title: '张三 · 健康证', meta: 'JK2023****', fields: [
+      { label: '姓名', value: '张三' }, { label: '健康证编号', value: 'JK2023****' },
+      { label: '发证机构', value: '北京市海淀区疾病预防控制中心' }, { label: '有效期', value: '2024-03-15 至 2025-03-15' }
+    ], images: ['张三-健康证']},
+    license3b: { title: '李丽 · 健康证', meta: 'JK2023****', fields: [
+      { label: '姓名', value: '李丽' }, { label: '健康证编号', value: 'JK2023****' },
+      { label: '发证机构', value: '北京市海淀区疾病预防控制中心' }, { label: '有效期', value: '2023-08-20 至 2024-08-20' }
+    ], images: ['李丽-健康证']},
+    license3c: { title: '王芳 · 健康证', meta: 'JK2024****', fields: [
+      { label: '姓名', value: '王芳' }, { label: '健康证编号', value: 'JK2024****' },
+      { label: '发证机构', value: '北京市海淀区疾病预防控制中心' }, { label: '有效期', value: '2024-01-10 至 2025-01-10' }
+    ], images: ['王芳-健康证']},
+  };
+  // Handle change log list view
+  if (key === 'changeLogList') {
+    document.getElementById('itemDetailTitle').textContent = '变更记录';
+    document.getElementById('itemDetailMeta').textContent = '共 4 条记录';
+    document.getElementById('itemDetailSaveBtn').classList.add('hidden');
+    document.getElementById('itemDetailImages').classList.add('hidden');
+    const container = document.getElementById('itemDetailFields');
+    const records = [
+      { key: 'change1', title: '更新经营面积、联系电话', desc: '2024-06-15 14:30 · 审批通过' },
+      { key: 'change2', title: '更新许可证信息', desc: '2024-05-20 10:00 · 监管下推' },
+      { key: 'change3', title: '更新从业人员信息', desc: '2024-03-08 16:00 · 审批通过' },
+      { key: 'change4', title: '企业信息初始登记', desc: '2024-01-15 09:30 · 已归档' },
+    ];
+    container.innerHTML = records.map(r => `
+      <div onclick="showItemDetail('${r.key}')" class="flex items-center justify-between active:bg-slate-50 cursor-pointer py-3 border-b border-slate-50 last:border-0">
+        <div>
+          <p class="text-sm font-medium text-slate-800">${r.title}</p>
+          <p class="text-xs text-slate-400 mt-0.5">${r.desc}</p>
+        </div>
+        <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
+      </div>
+    `).join('');
+    document.getElementById('itemDetailOverlay').classList.add('open');
+    setTimeout(() => lucide.createIcons(), 100);
+    return;
+  }
+
+  const data = items[key];
+  if (!data) return;
+  document.getElementById('itemDetailTitle').textContent = data.title;
+  document.getElementById('itemDetailMeta').textContent = data.meta;
+
+  const isNew = key === 'empNew' || key === 'licenseNew';
+  const isEditing = isNew || entApprovalState === 'editing';
+  document.getElementById('itemDetailSaveBtn').classList.toggle('hidden', !isEditing);
+
+  // Build field rows
+  const container = document.getElementById('itemDetailFields');
+  container.innerHTML = data.fields.map((f, i) => {
+    if (isEditing) {
+      return `<div class="flex justify-between items-center">
+        <span class="text-sm text-slate-400 shrink-0 mr-3">${f.label}</span>
+        <input type="text" class="flex-1 px-3 py-2 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="${f.value.replace(/"/g, '&quot;')}" data-field="${i}" />
+      </div>`;
+    } else {
+      return `<div class="flex justify-between items-center">
+        <span class="text-sm text-slate-400">${f.label}</span>
+        <span class="text-sm font-medium text-slate-800 text-right">${f.value}</span>
+      </div>`;
+    }
+  }).join('');
+
+  // Images
+  const imgSection = document.getElementById('itemDetailImages');
+  const imgGrid = document.getElementById('itemImageGrid');
+  const imgAddBtn = document.getElementById('itemImageAddBtn');
+  const hasImages = data.images && data.images.length > 0;
+  imgSection.classList.toggle('hidden', !hasImages && !isEditing);
+  imgAddBtn.classList.toggle('hidden', !isEditing);
+
+  if (hasImages || isEditing) {
+    let html = '';
+    if (data.images) {
+      const colors = ['#DBEAFE','#D1FAE5','#FEF3C7','#FCE7F3','#E0E7FF','#FEE2E2'];
+      html += data.images.map((name, i) => {
+        const bg = colors[i % colors.length];
+        const delBtn = isEditing ? `<button onclick="removeItemImage(this, ${i})" class="absolute top-1.5 right-1.5 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center"><i data-lucide="x" class="w-3 h-3 text-white"></i></button>` : '';
+        return `<div class="relative bg-white rounded-xl border border-slate-200 overflow-hidden">
+          ${delBtn}
+          <div class="aspect-[3/4] flex items-center justify-center" style="background:${bg}">
+            <div class="text-center">
+              <i data-lucide="image" class="w-8 h-8 text-slate-300 mx-auto mb-1"></i>
+              <span class="text-[11px] text-slate-400">${name}</span>
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-500 px-3 py-2 bg-slate-50 text-center truncate">${name}</p>
+        </div>`;
+      }).join('');
+    }
+    if (isEditing) {
+      html += `<div onclick="addItemImage()" class="border-2 border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center gap-1 aspect-[3/4] cursor-pointer hover:border-blue-300 hover:bg-blue-50/30 active:bg-blue-50 transition-all">
+        <i data-lucide="plus" class="w-6 h-6 text-slate-300"></i>
+        <span class="text-[11px] text-slate-400">上传图片</span>
+      </div>`;
+    }
+    imgGrid.innerHTML = html;
+  } else {
+    imgSection.classList.add('hidden');
+  }
+
+  document.getElementById('itemDetailOverlay').classList.add('open');
+  setTimeout(() => lucide.createIcons(), 100);
+}
+
+function addItemImage() {
+  const imgGrid = document.getElementById('itemImageGrid');
+  const count = imgGrid.querySelectorAll('.border-slate-200.overflow-hidden').length + 1;
+  const colors = ['#DBEAFE','#D1FAE5','#FEF3C7','#FCE7F3','#E0E7FF','#FEE2E2'];
+  const bg = colors[(count - 1) % colors.length];
+  const name = '新增图片 ' + count;
+  const div = document.createElement('div');
+  div.className = 'relative bg-white rounded-xl border border-slate-200 overflow-hidden';
+  div.innerHTML = `<button onclick="removeItemImage(this, ${count - 1})" class="absolute top-1.5 right-1.5 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center"><i data-lucide="x" class="w-3 h-3 text-white"></i></button>
+    <div class="aspect-[3/4] flex items-center justify-center" style="background:${bg}">
+      <div class="text-center"><i data-lucide="image" class="w-8 h-8 text-slate-300 mx-auto mb-1"></i><span class="text-[11px] text-slate-400">${name}</span></div>
+    </div>
+    <p class="text-[11px] text-slate-500 px-3 py-2 bg-slate-50 text-center truncate">${name}</p>`;
+  const uploadZone = imgGrid.querySelector('.border-dashed');
+  imgGrid.insertBefore(div, uploadZone);
+  setTimeout(() => lucide.createIcons(), 50);
+}
+
+function removeItemImage(btn, idx) {
+  btn.closest('.relative').remove();
+}
+
+function closeItemDetail() {
+  document.getElementById('itemDetailOverlay').classList.remove('open');
 }
 
 function openEnterpriseEdit() {
