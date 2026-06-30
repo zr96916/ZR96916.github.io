@@ -1,0 +1,2196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<title>智慧食安 · 商户端</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['"DM Sans"', '"PingFang SC"', '"Microsoft YaHei"', 'system-ui', 'sans-serif'],
+        },
+        colors: {
+          slate: {
+            50: '#F8FAFC',
+            100: '#F1F5F9',
+            200: '#E2E8F0',
+            300: '#CBD5E1',
+            400: '#94A3B8',
+            500: '#64748B',
+            600: '#475569',
+            700: '#334155',
+            800: '#1E293B',
+            900: '#0F172A',
+          },
+          blue: {
+            50: '#E6F1FB',
+            100: '#B5D4F4',
+            200: '#85B7EB',
+            400: '#378ADD',
+            600: '#185FA5',
+            800: '#0C447C',
+            900: '#042C53',
+          },
+        },
+      },
+    },
+  }
+</script>
+<style>
+  :root {
+    --accent: #185FA5;
+    --accent-light: #B5D4F4;
+    --accent-subtle: #E6F1FB;
+    --warning: #EA580C;
+    --warning-light: #FFF7ED;
+    --danger: #DC2626;
+    --danger-light: #FEF2F2;
+    --success: #16A34A;
+    --success-light: #F0FDF4;
+    --border: #E2E8F0;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --shadow-card: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
+    --shadow-elevated: 0 4px 16px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
+    --shadow-overlay: 0 -4px 24px rgba(0,0,0,0.12);
+  }
+
+  * { -webkit-tap-highlight-color: transparent; }
+  html { height: 100%; overflow: hidden; }
+  body {
+    font-family: 'DM Sans', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+    background: #CBD5E1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100dvh;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Phone frame */
+  .phone-frame {
+    width: 100%;
+    max-width: 430px;
+    height: 100dvh;
+    max-height: 932px;
+    background: #F8FAFC;
+    border-radius: 0;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 20px 60px rgba(0,0,0,0.15);
+    isolation: isolate;
+  }
+  @media (min-width: 431px) {
+    .phone-frame {
+      border-radius: 28px;
+      height: min(100dvh - 40px, 880px);
+    }
+  }
+
+  /* Scroll area */
+  .scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  .scroll-area::-webkit-scrollbar { width: 0; display: none; }
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  /* Hide all scrollbars globally */
+  *::-webkit-scrollbar { display: none; }
+  * { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* Animations */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(234, 88, 12, 0.3); }
+    50% { box-shadow: 0 0 0 12px rgba(234, 88, 12, 0); }
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.92); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  .anim-fade-up {
+    animation: fadeInUp 0.5s ease-out both;
+  }
+  .anim-stagger > * { opacity: 0; }
+  .anim-stagger.reveal > *:nth-child(1) { animation: fadeInUp 0.4s ease-out 0.05s both; }
+  .anim-stagger.reveal > *:nth-child(2) { animation: fadeInUp 0.4s ease-out 0.10s both; }
+  .anim-stagger.reveal > *:nth-child(3) { animation: fadeInUp 0.4s ease-out 0.15s both; }
+  .anim-stagger.reveal > *:nth-child(4) { animation: fadeInUp 0.4s ease-out 0.20s both; }
+  .anim-stagger.reveal > *:nth-child(5) { animation: fadeInUp 0.4s ease-out 0.25s both; }
+  .anim-stagger.reveal > *:nth-child(6) { animation: fadeInUp 0.4s ease-out 0.30s both; }
+  .anim-stagger.reveal > *:nth-child(7) { animation: fadeInUp 0.4s ease-out 0.35s both; }
+  .anim-stagger.reveal > *:nth-child(8) { animation: fadeInUp 0.4s ease-out 0.40s both; }
+  .anim-stagger.reveal > *:nth-child(n+9) { animation: fadeInUp 0.4s ease-out 0.42s both; }
+
+  .pulse-glow {
+    animation: pulseGlow 2.5s ease-in-out infinite;
+  }
+
+  /* Skeleton shimmer */
+  .skeleton {
+    background: linear-gradient(90deg, #F1F5F9 25%, #E2E8F0 50%, #F1F5F9 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+    border-radius: 8px;
+  }
+
+  /* Overlay */
+  .overlay-panel {
+    position: absolute;
+    inset: 0;
+    background: #F8FAFC;
+    z-index: 50;
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+    display: flex;
+    flex-direction: column;
+  }
+  .overlay-panel.open {
+    transform: translateY(0);
+  }
+
+  /* Photo upload grid */
+  .photo-upload-zone {
+    border: 2px dashed #CBD5E1;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+  .photo-upload-zone:active {
+    border-color: #185FA5;
+    background: #E6F1FB;
+  }
+  .photo-thumb {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    aspect-ratio: 1;
+  }
+  .photo-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Segmented control */
+  .segment-active {
+    background: white !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    color: #1E293B !important;
+    font-weight: 600 !important;
+  }
+
+  /* Toast */
+  .toast {
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%) translateY(24px);
+    background: #1E293B;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+    z-index: 100;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  .toast.success { background: #185FA5; }
+
+  /* Active tab icon */
+  .tab-item {
+    transition: color 0.2s ease;
+  }
+  .tab-item.active {
+    color: #FFFFFF;
+  }
+  .tab-item svg {
+    transition: all 0.2s ease;
+  }
+  .tab-item.active svg {
+    stroke-width: 2.5;
+  }
+
+  /* Badge dot */
+  .badge-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+</style>
+</head>
+<body>
+<div class="phone-frame" id="app">
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ===== ORDER DETAIL OVERLAY ===== -->
+  <div class="overlay-panel" id="orderDetailOverlay">
+    <div class="flex items-center gap-3 px-5 py-4 border-b border-slate-200 bg-white">
+      <button onclick="closeOrderDetail()" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-slate-100 transition-colors">
+        <i data-lucide="arrow-left" class="w-5 h-5 text-slate-700"></i>
+      </button>
+      <span class="text-base font-semibold text-slate-900 flex-1">工单详情</span>
+      <span class="text-xs font-medium px-2.5 py-1 rounded-full" id="detailStatusBadge">待处理</span>
+    </div>
+
+    <div class="flex-1 overflow-y-auto">
+      <!-- Order info -->
+      <div class="p-5">
+        <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full uppercase tracking-wide" id="detailType">报警记录</span>
+              <h2 class="text-lg font-semibold text-slate-900 mt-2" id="detailTitle">后厨卫生整改通知</h2>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex justify-between text-sm">
+              <span class="text-slate-400">工单编号</span>
+              <span class="text-slate-700 font-medium" id="detailId">#WO20240601001</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-slate-400">发起时间</span>
+              <span class="text-slate-700 font-medium" id="detailDate">2024-06-01 09:30</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-slate-400">要求完成时间</span>
+              <span class="text-slate-700 font-medium" id="detailDeadline">2024-06-15</span>
+            </div>
+          </div>
+          <div class="mt-4 pt-4 border-t border-slate-100">
+            <p class="text-sm text-slate-500 leading-relaxed" id="detailDesc">
+              根据近期检查，你单位后厨存在卫生不达标情况，请于6月15日前完成整改并提交整改报告及相关照片。
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress stepper -->
+      <div class="px-5 mb-4">
+        <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100">
+          <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">处理进度</h3>
+          <div class="flex items-start justify-between relative">
+            <!-- Connector line -->
+            <div class="absolute top-5 left-5 right-5 h-0.5 bg-slate-200" id="progressLine" style="top: 20px;"></div>
+            <!-- Step 1 -->
+            <div class="relative z-10 flex flex-col items-center" id="step1">
+              <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all" id="step1Circle">
+                <i data-lucide="file-edit" class="w-5 h-5"></i>
+              </div>
+              <span class="text-[11px] font-medium mt-2 text-center whitespace-nowrap" id="step1Label">商户提交</span>
+            </div>
+            <!-- Step 2 -->
+            <div class="relative z-10 flex flex-col items-center" id="step2">
+              <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all" id="step2Circle">
+                <i data-lucide="search-check" class="w-5 h-5"></i>
+              </div>
+              <span class="text-[11px] font-medium mt-2 text-center whitespace-nowrap" id="step2Label">监管审核</span>
+            </div>
+            <!-- Step 3 -->
+            <div class="relative z-10 flex flex-col items-center" id="step3">
+              <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all" id="step3Circle">
+                <i data-lucide="archive" class="w-5 h-5"></i>
+              </div>
+              <span class="text-[11px] font-medium mt-2 text-center whitespace-nowrap" id="step3Label">已归档</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submitted content (read-only, for processing/archived/rejected) -->
+      <div class="px-5 mb-4 hidden" id="submittedContentSection">
+        <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100">
+          <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">已提交内容</h3>
+          <div class="bg-slate-50 rounded-xl p-4">
+            <p class="text-sm text-slate-700 leading-relaxed" id="submittedText"></p>
+          </div>
+          <div class="grid grid-cols-3 gap-3 mt-4" id="submittedPhotos">
+            <div class="photo-thumb bg-amber-50 flex items-center justify-center">
+              <div class="text-center">
+                <i data-lucide="image" class="w-5 h-5 text-slate-300 mx-auto mb-1"></i>
+                <span class="text-[10px] text-slate-400">照片 1</span>
+              </div>
+            </div>
+            <div class="photo-thumb bg-blue-50 flex items-center justify-center">
+              <div class="text-center">
+                <i data-lucide="image" class="w-5 h-5 text-slate-300 mx-auto mb-1"></i>
+                <span class="text-[10px] text-slate-400">照片 2</span>
+              </div>
+            </div>
+            <div class="photo-thumb bg-green-50 flex items-center justify-center">
+              <div class="text-center">
+                <i data-lucide="image" class="w-5 h-5 text-slate-300 mx-auto mb-1"></i>
+                <span class="text-[10px] text-slate-400">照片 3</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Response form -->
+      <div class="px-5 pb-24" id="responseFormSection">
+        <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100">
+          <h3 class="text-base font-semibold text-slate-900 mb-4" id="responseFormTitle">提交整改反馈</h3>
+
+          <!-- Text area -->
+          <label class="block text-sm font-medium text-slate-600 mb-1.5">整改说明</label>
+          <textarea
+            id="responseText"
+            rows="4"
+            placeholder="请描述您已完成的整改措施..."
+            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all resize-none"
+          ></textarea>
+
+          <!-- Photo upload -->
+          <label class="block text-sm font-medium text-slate-600 mt-5 mb-1.5">整改照片</label>
+          <div class="grid grid-cols-3 gap-3" id="photoGrid">
+            <div class="photo-upload-zone flex flex-col items-center justify-center gap-1.5 py-7" onclick="addPhoto()">
+              <i data-lucide="camera" class="w-6 h-6 text-slate-300"></i>
+              <span class="text-xs text-slate-300">上传照片</span>
+            </div>
+          </div>
+
+          <!-- Submit button -->
+          <button
+            onclick="submitResponse()"
+            id="submitResponseBtn"
+            class="w-full mt-6 py-3.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all"
+          >
+            提交反馈
+          </button>
+
+          <!-- Appeal button -->
+          <button
+            onclick="submitAppeal()"
+            id="appealBtn"
+            class="w-full mt-3 py-3.5 bg-white text-slate-600 text-sm font-medium rounded-xl border border-slate-200 hover:bg-slate-50 active:bg-slate-100 active:scale-[0.98] transition-all"
+          >
+            发起申诉
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== APPEAL OVERLAY ===== -->
+  <div class="overlay-panel" id="appealOverlay">
+    <div class="flex items-center gap-3 px-5 py-4 border-b border-slate-200 bg-white">
+      <button onclick="closeAppeal()" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-slate-100 transition-colors">
+        <i data-lucide="arrow-left" class="w-5 h-5 text-slate-700"></i>
+      </button>
+      <span class="text-base font-semibold text-slate-900 flex-1">发起申诉</span>
+    </div>
+
+    <div class="flex-1 overflow-y-auto px-5 pt-5 pb-8">
+      <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100">
+        <label class="block text-sm font-medium text-slate-600 mb-1.5">申诉工单</label>
+        <div class="bg-slate-50 rounded-xl px-4 py-3 text-sm text-slate-700 mb-5" id="appealOrderRef">#WO20240601001 — 后厨卫生整改通知</div>
+
+        <label class="block text-sm font-medium text-slate-600 mb-1.5">申诉理由</label>
+        <textarea
+          id="appealText"
+          rows="4"
+          placeholder="请详细说明您的申诉理由..."
+          class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all resize-none mb-5"
+        ></textarea>
+
+        <label class="block text-sm font-medium text-slate-600 mb-1.5">佐证材料</label>
+        <div class="grid grid-cols-3 gap-3" id="appealPhotoGrid">
+          <div class="photo-upload-zone flex flex-col items-center justify-center gap-1.5 py-7" onclick="addAppealPhoto()">
+            <i data-lucide="image" class="w-6 h-6 text-slate-300"></i>
+            <span class="text-xs text-slate-300">上传材料</span>
+          </div>
+        </div>
+
+        <button
+          onclick="submitAppealForm()"
+          class="w-full mt-6 py-3.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all"
+        >
+          提交申诉
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ENTERPRISE EDIT OVERLAY ===== -->
+  <div class="overlay-panel" id="enterpriseEditOverlay">
+    <div class="flex items-center gap-3 px-5 py-4 border-b border-slate-200 bg-white shrink-0">
+      <button onclick="closeEnterpriseEdit()" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-slate-100 transition-colors">
+        <i data-lucide="arrow-left" class="w-5 h-5 text-slate-700"></i>
+      </button>
+      <span class="text-base font-semibold text-slate-900 flex-1">编辑企业信息</span>
+      <button onclick="saveEnterpriseInfo()" class="text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors">保存</button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto px-5 pt-5 pb-8 space-y-5">
+      <!-- 主体名称 -->
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">主体名称 <span class="text-red-500">*</span></label>
+        <input type="text" id="entName" placeholder="请输入主体名称" value="好味道餐饮管理有限公司"
+          class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+      </div>
+
+      <!-- 统一社会信用代码 -->
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">统一社会信用代码 <span class="text-red-500">*</span></label>
+        <input type="text" id="entCreditCode" placeholder="18位信用代码" value="91110108MA01XXXXX" maxlength="18"
+          class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+      </div>
+
+      <!-- 许可证号 + 主体业态 -->
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">许可证号</label>
+          <input type="text" id="entLicense" placeholder="如 JY2123456789012345" value="JY111050XXXXXX"
+            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">主体业态</label>
+          <select id="entBizType"
+            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all appearance-none">
+            <option value="">请选择</option>
+            <option value="餐饮服务经营者" selected>餐饮服务经营者</option>
+            <option value="食品销售经营者">食品销售经营者</option>
+            <option value="单位食堂">单位食堂</option>
+            <option value="食品生产加工小作坊">食品生产加工小作坊</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 法人姓名 + 联系电话 -->
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">法人姓名</label>
+          <input type="text" id="entLegalPerson" placeholder="请输入法人姓名" value="张三"
+            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">联系电话</label>
+          <input type="tel" id="entPhone" placeholder="请输入联系电话" value="138xxxx6789"
+            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+        </div>
+      </div>
+
+      <!-- 招牌名称 -->
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">招牌名称</label>
+        <input type="text" id="entSignName" placeholder="请输入招牌名称" value="好味道"
+          class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+      </div>
+
+      <!-- 经营项目 -->
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">经营项目</label>
+        <input type="text" id="entBizScope" placeholder="请输入经营项目" value="热食类食品制售、冷食类食品制售"
+          class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+      </div>
+
+      <!-- 经营面积 -->
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">经营面积(㎡)</label>
+        <div class="flex items-center gap-3">
+          <button onclick="adjustArea(-1)" class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 active:bg-slate-300 transition-colors text-lg font-semibold">−</button>
+          <input type="number" id="entArea" value="120" min="0"
+            class="flex-1 px-4 py-3 text-sm text-center text-slate-800 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+          <button onclick="adjustArea(1)" class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 active:bg-slate-300 transition-colors text-lg font-semibold">+</button>
+        </div>
+      </div>
+
+      <!-- 住所 -->
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">住所</label>
+        <input type="text" id="entDomicile" placeholder="请输入住所" value="北京市海淀区"
+          class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+      </div>
+
+      <!-- 经营场所 -->
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">经营场所</label>
+        <textarea id="entPremises" rows="2" placeholder="请输入经营场所"
+          class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all resize-none">北京市海淀区中关村大街1号</textarea>
+      </div>
+
+      <!-- 所属镇 + 所属市场所 -->
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">所属镇</label>
+          <input type="text" id="entTown" placeholder="请输入所属镇" value="中关村街道"
+            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">所属市场所</label>
+          <input type="text" id="entMarketOffice" placeholder="请输入所属市场所" value="海淀区市场监督管理局中关村所"
+            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+        </div>
+      </div>
+
+      <!-- 连锁品牌 + 营业状态 -->
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">连锁品牌</label>
+          <input type="text" id="entChainBrand" placeholder="请输入连锁品牌"
+            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">营业状态</label>
+          <select id="entBizStatus"
+            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all appearance-none">
+            <option value="营业" selected>营业</option>
+            <option value="停业">停业</option>
+            <option value="注销">注销</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 扩展备注 -->
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1.5">扩展备注</label>
+        <textarea id="entRemark" rows="3" placeholder="备注"
+          class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all resize-none"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MAIN APP ===== -->
+  <div class="flex flex-col flex-1 min-h-0" id="mainApp">
+    <!-- Header -->
+    <header class="px-5 pt-[max(22px,env(safe-area-inset-top))] pb-3 flex items-center shrink-0 bg-blue-600" id="mainHeader">
+      <div class="flex-1 min-w-0 flex items-baseline gap-2">
+        <h1 class="text-xl font-bold text-white tracking-tight truncate" id="headerTitle">智慧食安</h1>
+        <span id="headerSub" class="text-xs text-white/60 shrink-0">好味道餐饮管理有限公司</span>
+        <span id="headerBadge" class="hidden shrink-0 text-xs font-normal text-white/60">· 已生效</span>
+      </div>
+      <button id="headerEditBtn" class="hidden shrink-0 ml-3 px-3 py-1.5 text-[12px] font-semibold text-white bg-white/20 rounded-lg hover:bg-white/30 active:bg-white/40 transition-colors" onclick="enterEditMode()">编辑</button>
+      <button id="headerCancelBtn" class="hidden shrink-0 ml-3 px-3 py-1.5 text-[12px] font-medium text-white/70 hover:text-white transition-colors" onclick="cancelEditMode()">取消</button>
+      <button id="headerSubmitBtn" class="hidden shrink-0 ml-2 px-3 py-1.5 text-[12px] font-semibold text-blue-600 bg-white rounded-lg hover:bg-white/90 active:bg-white/80 transition-colors" onclick="submitForApproval()">提交</button>
+    </header>
+
+    <!-- Tab content area -->
+    <div class="flex-1 overflow-y-auto scroll-area pt-4" id="tabContent">
+      <!-- ========== TAB: HOME ========== -->
+      <div id="tab-home" class="anim-stagger reveal">
+        <!-- Business Overview Card -->
+        <div class="px-5 mb-5">
+          <div class="relative overflow-hidden bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-6 shadow-elevated">
+            <!-- Decorative circles -->
+            <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/5"></div>
+            <div class="absolute -bottom-6 -left-6 w-28 h-28 rounded-full bg-white/5"></div>
+            <div class="relative">
+              <div class="flex items-center gap-2 mb-4">
+                <span class="text-[11px] font-semibold text-white/70 uppercase tracking-widest">经营概况</span>
+              </div>
+              <div class="flex items-end gap-4">
+                <span class="text-7xl font-bold text-white leading-none tabular-nums" style="font-size: 5rem;">5</span>
+                <div class="pb-2">
+                  <span class="text-base text-white/80 font-medium">条待处理工单</span>
+                  <div class="flex items-center gap-2 mt-1.5">
+                    <span class="w-2 h-2 rounded-full bg-orange-400 animate-pulse"></span>
+                    <span class="text-sm text-orange-300 font-medium">需要关注</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Mini stat row -->
+              <div class="flex gap-8 mt-5 pt-5 border-t border-white/15">
+                <div class="flex items-center gap-2">
+                  <div class="w-8 h-8 rounded-lg bg-white/15 flex items-center justify-center">
+                    <i data-lucide="alert-triangle" class="w-4 h-4 text-white"></i>
+                  </div>
+                  <div>
+                    <span class="text-xl font-bold text-white">3</span>
+                    <span class="text-xs text-white/60 ml-1">报警工单</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="w-8 h-8 rounded-lg bg-white/15 flex items-center justify-center">
+                    <i data-lucide="refresh-cw" class="w-4 h-4 text-white"></i>
+                  </div>
+                  <div>
+                    <span class="text-xl font-bold text-white">2</span>
+                    <span class="text-xs text-white/60 ml-1">换证提醒</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="px-5 mb-6">
+          <div class="grid grid-cols-2 gap-3">
+            <button onclick="openQuickResponse('correction')" class="group relative bg-white rounded-2xl p-5 shadow-card border border-slate-100 text-left hover:shadow-elevated hover:border-blue-200 active:bg-blue-50/30 transition-all duration-200">
+              <div class="w-11 h-11 rounded-2xl bg-blue-50 flex items-center justify-center mb-3.5 group-hover:bg-blue-100 transition-colors">
+                <i data-lucide="file-edit" class="w-5 h-5 text-blue-600"></i>
+              </div>
+              <span class="text-[15px] font-semibold text-slate-800 block">提交整改</span>
+              <span class="text-[13px] text-slate-400 mt-1 block leading-tight">上传文字及照片反馈</span>
+            </button>
+            <button onclick="openQuickResponse('appeal')" class="group relative bg-white rounded-2xl p-5 shadow-card border border-slate-100 text-left hover:shadow-elevated hover:border-orange-200 active:bg-orange-50/30 transition-all duration-200">
+              <div class="w-11 h-11 rounded-2xl bg-orange-50 flex items-center justify-center mb-3.5 group-hover:bg-orange-100 transition-colors">
+                <i data-lucide="message-square-warning" class="w-5 h-5 text-orange-600"></i>
+              </div>
+              <span class="text-[15px] font-semibold text-slate-800 block">发起申诉</span>
+              <span class="text-[13px] text-slate-400 mt-1 block leading-tight">上传文字及照片佐证</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Recent Work Orders -->
+        <div class="px-5 pb-24">
+          <div class="flex items-center justify-between mb-3.5">
+            <h2 class="text-[13px] font-semibold text-slate-400 uppercase tracking-wider">最近工单动态</h2>
+            <button onclick="switchTab('orders')" class="text-[13px] text-blue-600 font-semibold hover:text-blue-800 transition-colors">查看全部 →</button>
+          </div>
+          <div class="space-y-3">
+            <!-- Order 1 -->
+            <div onclick="openOrderDetail('order1')" class="group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated">
+              <div class="flex items-start gap-3">
+                <div class="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center shrink-0 mt-0.5">
+                  <i data-lucide="alert-circle" class="w-5 h-5 text-red-500"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5">
+                    <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-md bg-red-50 text-red-600">报警</span>
+                    <span class="text-[11px] text-slate-400">#WO240601</span>
+                  </div>
+                  <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">后厨卫生整改通知</h3>
+                  <p class="text-[13px] text-slate-400 mt-1 flex items-center gap-1.5">
+                    <i data-lucide="clock" class="w-3 h-3"></i> 要求完成：2024-06-15
+                  </p>
+                </div>
+                <div class="flex flex-col items-end gap-1.5 shrink-0">
+                  <span class="text-[11px] font-semibold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-full whitespace-nowrap">待处理</span>
+                </div>
+              </div>
+            </div>
+            <!-- Order 2 -->
+            <div onclick="openOrderDetail('order2')" class="group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated">
+              <div class="flex items-start gap-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0 mt-0.5">
+                  <i data-lucide="file-text" class="w-5 h-5 text-blue-500"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5">
+                    <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600">换证</span>
+                    <span class="text-[11px] text-slate-400">#LC240528</span>
+                  </div>
+                  <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">食品经营许可证即将到期</h3>
+                  <p class="text-[13px] text-slate-400 mt-1 flex items-center gap-1.5">
+                    <i data-lucide="calendar" class="w-3 h-3"></i> 到期日期：2024-07-20
+                  </p>
+                </div>
+                <div class="flex flex-col items-end gap-1.5 shrink-0">
+                  <span class="text-[11px] font-semibold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-full whitespace-nowrap">待处理</span>
+                </div>
+              </div>
+            </div>
+            <!-- Order 3 -->
+            <div onclick="openOrderDetail('order3')" class="group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated">
+              <div class="flex items-start gap-3">
+                <div class="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center shrink-0 mt-0.5">
+                  <i data-lucide="thermometer" class="w-5 h-5 text-red-500"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5">
+                    <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-md bg-red-50 text-red-600">报警</span>
+                    <span class="text-[11px] text-slate-400">#WO240610</span>
+                  </div>
+                  <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">食材存储温度异常告警</h3>
+                  <p class="text-[13px] text-slate-400 mt-1 flex items-center gap-1.5">
+                    <i data-lucide="clock" class="w-3 h-3"></i> 告警时间：2024-06-10 14:30
+                  </p>
+                </div>
+                <div class="flex flex-col items-end gap-1.5 shrink-0">
+                  <span class="text-[11px] font-semibold text-red-600 bg-red-50 px-2.5 py-1 rounded-full whitespace-nowrap">紧急</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== TAB: ORDERS ========== -->
+      <div id="tab-orders" class="hidden">
+        <!-- Filter tabs -->
+        <div class="px-5 mb-3">
+          <div class="flex gap-2 overflow-x-auto scrollbar-hide" id="orderFilterBar">
+            <button onclick="filterOrders('pending', this)" class="shrink-0 px-4 py-2 text-[13px] font-semibold rounded-xl bg-blue-600 text-white transition-all">待处理 <span class="opacity-70 ml-0.5">2</span></button>
+            <button onclick="filterOrders('processing', this)" class="shrink-0 px-4 py-2 text-[13px] font-medium rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all">处理中 <span class="opacity-50 ml-0.5">1</span></button>
+            <button onclick="filterOrders('rejected', this)" class="shrink-0 px-4 py-2 text-[13px] font-medium rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all">已驳回 <span class="opacity-50 ml-0.5">1</span></button>
+            <button onclick="filterOrders('archived', this)" class="shrink-0 px-4 py-2 text-[13px] font-medium rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all">已归档 <span class="opacity-50 ml-0.5">4</span></button>
+          </div>
+        </div>
+
+        <!-- Search & Time filters -->
+        <div class="px-5 mb-4 space-y-3">
+          <div class="relative">
+            <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+            <input
+              type="text"
+              id="orderSearch"
+              placeholder="搜索工单标题、编号..."
+              oninput="applyAllFilters()"
+              class="w-full pl-10 pr-4 py-2.5 text-[13px] text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all"
+            />
+          </div>
+          <div class="flex gap-2 overflow-x-auto scrollbar-hide" id="timeFilterBar">
+            <button onclick="setTimeFilter('all', this)" class="time-filter-btn shrink-0 px-3 py-1.5 text-[12px] font-semibold rounded-lg bg-blue-600 text-white transition-all">全部时间</button>
+            <button onclick="setTimeFilter('week', this)" class="time-filter-btn shrink-0 px-3 py-1.5 text-[12px] font-medium rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all">近一周</button>
+            <button onclick="setTimeFilter('month', this)" class="time-filter-btn shrink-0 px-3 py-1.5 text-[12px] font-medium rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all">近一月</button>
+            <button onclick="setTimeFilter('quarter', this)" class="time-filter-btn shrink-0 px-3 py-1.5 text-[12px] font-medium rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all">近三月</button>
+          </div>
+        </div>
+
+        <!-- Unified Order List -->
+        <div class="px-5 pb-24 space-y-3 anim-stagger reveal" id="orderList">
+          <!-- Order 1: 报警 - 未处理 -->
+          <div onclick="openOrderDetail('order1')" class="order-card group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated" data-status="pending" data-date="2024-06-01">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center shrink-0 mt-0.5">
+                <i data-lucide="alert-circle" class="w-5 h-5 text-red-500"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-0.5">
+                  <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-md bg-red-50 text-red-600">报警</span>
+                  <span class="text-[11px] text-slate-400">#WO240601</span>
+                </div>
+                <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">后厨卫生整改通知</h3>
+                <p class="text-[13px] text-slate-400 mt-1 flex items-center gap-1.5">
+                  <i data-lucide="clock" class="w-3 h-3"></i> 要求完成：2024-06-15
+                </p>
+              </div>
+              <div class="flex flex-col items-end gap-1.5 shrink-0">
+                <span class="text-[11px] font-semibold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-full whitespace-nowrap">未处理</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Order 2: 换证 - 未处理 -->
+          <div onclick="openOrderDetail('order2')" class="order-card group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated" data-status="pending" data-date="2024-05-28">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0 mt-0.5">
+                <i data-lucide="file-text" class="w-5 h-5 text-blue-500"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-0.5">
+                  <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600">换证</span>
+                  <span class="text-[11px] text-slate-400">#LC240528</span>
+                </div>
+                <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">食品经营许可证即将到期</h3>
+                <p class="text-[13px] text-slate-400 mt-1 flex items-center gap-1.5">
+                  <i data-lucide="calendar" class="w-3 h-3"></i> 到期日期：2024-07-20 · 剩余21天
+                </p>
+              </div>
+              <div class="flex flex-col items-end gap-1.5 shrink-0">
+                <span class="text-[11px] font-semibold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-full whitespace-nowrap">未处理</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Order 3: 报警 - 处理中 -->
+          <div onclick="openOrderDetail('order3')" class="order-card group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated" data-status="processing" data-date="2024-06-10">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center shrink-0 mt-0.5">
+                <i data-lucide="alert-circle" class="w-5 h-5 text-red-500"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-0.5">
+                  <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-md bg-red-50 text-red-600">报警</span>
+                  <span class="text-[11px] text-slate-400">#WO240610</span>
+                </div>
+                <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">食材存储温度异常告警</h3>
+                <p class="text-[13px] text-slate-400 mt-1 flex items-center gap-1.5">
+                  <i data-lucide="clock" class="w-3 h-3"></i> 告警时间：2024-06-10 14:30
+                </p>
+              </div>
+              <div class="flex flex-col items-end gap-1.5 shrink-0">
+                <span class="text-[11px] font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full whitespace-nowrap">处理中</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Order 4: 申诉 - 已归档 -->
+          <div onclick="openOrderDetail('order4')" class="order-card group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated" data-status="archived" data-date="2024-05-20">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 mt-0.5">
+                <i data-lucide="message-square-warning" class="w-5 h-5 text-slate-400"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-0.5">
+                  <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-md bg-orange-50 text-orange-600">申诉</span>
+                  <span class="text-[11px] text-slate-400">#AP240520</span>
+                </div>
+                <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">从业人员健康证过期 — 申诉已通过</h3>
+                <p class="text-[13px] text-slate-400 mt-1 flex items-center gap-1.5">
+                  <i data-lucide="clock" class="w-3 h-3"></i> 归档时间：2024-06-05
+                </p>
+              </div>
+              <div class="flex flex-col items-end gap-1.5 shrink-0">
+                <span class="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full whitespace-nowrap">已归档</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Order 5: 换证 - 已归档 -->
+          <div onclick="openOrderDetail('order5')" class="order-card group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated" data-status="archived" data-date="2024-06-12">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 mt-0.5">
+                <i data-lucide="file-text" class="w-5 h-5 text-slate-400"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-0.5">
+                  <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600">换证</span>
+                  <span class="text-[11px] text-slate-400">#LC240612</span>
+                </div>
+                <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">食品生产许可证年审提醒</h3>
+                <p class="text-[13px] text-slate-400 mt-1 flex items-center gap-1.5">
+                  <i data-lucide="clock" class="w-3 h-3"></i> 年审完成：2024-06-12
+                </p>
+              </div>
+              <div class="flex flex-col items-end gap-1.5 shrink-0">
+                <span class="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full whitespace-nowrap">已归档</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Order 6: 报警 - 已驳回 -->
+          <div onclick="openOrderDetail('order6')" class="order-card group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated" data-status="rejected" data-date="2024-06-08">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center shrink-0 mt-0.5">
+                <i data-lucide="alert-circle" class="w-5 h-5 text-red-500"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-0.5">
+                  <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-md bg-red-50 text-red-600">报警</span>
+                  <span class="text-[11px] text-slate-400">#WO240608</span>
+                </div>
+                <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">后厨卫生整改复查未通过</h3>
+                <p class="text-[13px] text-slate-400 mt-1 flex items-center gap-1.5">
+                  <i data-lucide="clock" class="w-3 h-3"></i> 驳回时间：2024-06-08
+                </p>
+              </div>
+              <div class="flex flex-col items-end gap-1.5 shrink-0">
+                <span class="text-[11px] font-semibold text-red-600 bg-red-50 px-2.5 py-1 rounded-full whitespace-nowrap">已驳回</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Order 7: 申诉 - 已归档 -->
+          <div onclick="openOrderDetail('order7')" class="order-card group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated" data-status="archived" data-date="2024-06-15">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 mt-0.5">
+                <i data-lucide="message-square-warning" class="w-5 h-5 text-slate-400"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-0.5">
+                  <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-md bg-orange-50 text-orange-600">申诉</span>
+                  <span class="text-[11px] text-slate-400">#AP240615</span>
+                </div>
+                <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">食材存储温度异常告警 — 申诉已通过</h3>
+                <p class="text-[13px] text-slate-400 mt-1 flex items-center gap-1.5">
+                  <i data-lucide="clock" class="w-3 h-3"></i> 归档时间：2024-06-15
+                </p>
+              </div>
+              <div class="flex flex-col items-end gap-1.5 shrink-0">
+                <span class="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full whitespace-nowrap">已归档</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Order 8: 驳回重提交 → 已归档 -->
+          <div onclick="openOrderDetail('order8')" class="order-card group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated" data-status="archived" data-date="2024-06-18">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 mt-0.5">
+                <i data-lucide="alert-circle" class="w-5 h-5 text-slate-400"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-0.5">
+                  <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-md bg-red-50 text-red-600">报警</span>
+                  <span class="text-[11px] text-slate-400">#WO240608</span>
+                </div>
+                <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">后厨卫生整改 — 驳回重提交已归档</h3>
+                <p class="text-[13px] text-slate-400 mt-1 flex items-center gap-1.5">
+                  <i data-lucide="clock" class="w-3 h-3"></i> 归档时间：2024-06-18
+                </p>
+              </div>
+              <div class="flex flex-col items-end gap-1.5 shrink-0">
+                <span class="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full whitespace-nowrap">已归档</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty state -->
+        <div id="orderEmpty" class="hidden flex flex-col items-center justify-center py-20 text-center">
+          <div class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-4">
+            <i data-lucide="inbox" class="w-8 h-8 text-slate-300"></i>
+          </div>
+          <p class="text-sm font-medium text-slate-500" id="orderEmptyText">暂无工单</p>
+          <p class="text-xs text-slate-300 mt-1">当前筛选条件下没有匹配的工单</p>
+        </div>
+      </div>
+
+      <!-- ========== TAB: ENTERPRISE ========== -->
+      <div id="tab-enterprise" class="hidden flex flex-col min-h-full">
+        <!-- Approval notice banner (hidden by default) -->
+        <div id="approvalNotice" class="hidden mx-5 mb-4 bg-blue-50 border border-blue-200 rounded-2xl p-4 flex items-start gap-3">
+          <i data-lucide="info" class="w-5 h-5 text-blue-600 shrink-0 mt-0.5"></i>
+          <div>
+            <p class="text-sm font-semibold text-blue-800">审批期间信息只读，通过后自动生效</p>
+            <p class="text-xs text-blue-600 mt-0.5">监管人员将在 1-3 个工作日内完成审核</p>
+          </div>
+        </div>
+
+        <!-- Approval progress (hidden by default) -->
+        <div id="approvalProgress" class="hidden mx-5 mb-5">
+          <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100">
+            <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">审批进度</h3>
+            <div class="flex items-start justify-between relative">
+              <div class="absolute top-5 left-5 right-5 h-0.5 bg-slate-200" style="top: 20px;"></div>
+              <div class="relative z-10 flex flex-col items-center">
+                <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center" id="approveStep1Circle">
+                  <i data-lucide="check" class="w-5 h-5"></i>
+                </div>
+                <span class="text-[11px] font-semibold text-blue-600 mt-2 whitespace-nowrap">提交审批</span>
+              </div>
+              <div class="relative z-10 flex flex-col items-center">
+                <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center" id="approveStep2Circle">
+                  <i data-lucide="clock" class="w-5 h-5"></i>
+                </div>
+                <span class="text-[11px] font-semibold text-blue-600 mt-2 whitespace-nowrap">监管审核</span>
+              </div>
+              <div class="relative z-10 flex flex-col items-center">
+                <div class="w-10 h-10 rounded-full bg-slate-100 text-slate-300 flex items-center justify-center" id="approveStep3Circle">
+                  <i data-lucide="check-circle" class="w-5 h-5"></i>
+                </div>
+                <span class="text-[11px] font-medium text-slate-300 mt-2 whitespace-nowrap">已生效</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Enterprise Info Section -->
+        <div class="px-5 mb-4">
+          <button onclick="toggleSection('enterpriseInfo')" class="w-full flex items-center justify-between mb-3">
+                        <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide">基础信息</h2>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform" id="enterpriseInfoChevron"></i>
+          </button>
+          <div id="enterpriseInfoContent" class="bg-white rounded-2xl p-5 shadow-card border border-slate-100 space-y-4">
+            <div class="flex justify-between items-center ent-row">
+              <span class="text-sm text-slate-400 shrink-0">主体名称</span>
+              <span class="text-sm font-medium text-slate-800 text-right ent-field-value">好味道餐饮管理有限公司</span>
+              <input type="text" class="hidden ent-field-input w-40 px-3 py-1.5 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="好味道餐饮管理有限公司" />
+            </div>
+            <div class="flex justify-between items-center ent-row">
+              <span class="text-sm text-slate-400 shrink-0">统一社会信用代码</span>
+              <span class="text-sm font-medium text-slate-800 text-right ent-field-value">91110108MA01XXXXX</span>
+              <input type="text" class="hidden ent-field-input w-40 px-3 py-1.5 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="91110108MA01XXXXX" />
+            </div>
+            <div class="flex justify-between items-center ent-row">
+              <span class="text-sm text-slate-400 shrink-0">许可证号</span>
+              <span class="text-sm font-medium text-slate-800 text-right ent-field-value">JY111050XXXXXX</span>
+              <input type="text" class="hidden ent-field-input w-40 px-3 py-1.5 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="JY111050XXXXXX" />
+            </div>
+            <div class="flex justify-between items-center ent-row">
+              <span class="text-sm text-slate-400 shrink-0">主体业态</span>
+              <span class="text-sm font-medium text-slate-800 text-right ent-field-value">餐饮服务经营者</span>
+              <div class="hidden ent-field-input flex gap-2 flex-wrap justify-end">
+                <button onclick="selectChip(this, 'bizType')" class="chip-bizType px-3 py-1.5 text-[13px] font-medium rounded-lg bg-blue-600 text-white transition-all" data-value="餐饮服务经营者">餐饮服务经营者</button>
+                <button onclick="selectChip(this, 'bizType')" class="chip-bizType px-3 py-1.5 text-[13px] font-medium rounded-lg bg-slate-100 text-slate-500 transition-all" data-value="食品销售经营者">食品销售经营者</button>
+                <button onclick="selectChip(this, 'bizType')" class="chip-bizType px-3 py-1.5 text-[13px] font-medium rounded-lg bg-slate-100 text-slate-500 transition-all" data-value="单位食堂">单位食堂</button>
+              </div>
+            </div>
+            <div class="flex justify-between items-center ent-row">
+              <span class="text-sm text-slate-400 shrink-0">法人姓名</span>
+              <span class="text-sm font-medium text-slate-800 text-right ent-field-value">张三</span>
+              <input type="text" class="hidden ent-field-input w-40 px-3 py-1.5 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="张三" />
+            </div>
+            <div class="flex justify-between items-center ent-row">
+              <span class="text-sm text-slate-400 shrink-0">联系电话</span>
+              <span class="text-sm font-medium text-slate-800 text-right ent-field-value">138****6789</span>
+              <input type="tel" class="hidden ent-field-input w-40 px-3 py-1.5 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="138****6789" />
+            </div>
+            <div class="flex justify-between items-center ent-row">
+              <span class="text-sm text-slate-400 shrink-0">招牌名称</span>
+              <span class="text-sm font-medium text-slate-800 text-right ent-field-value">好味道</span>
+              <input type="text" class="hidden ent-field-input w-40 px-3 py-1.5 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="好味道" />
+            </div>
+            <div class="flex justify-between items-center ent-row">
+              <span class="text-sm text-slate-400 shrink-0">经营项目</span>
+              <span class="text-sm font-medium text-slate-800 text-right ent-field-value">热食类食品制售、冷食类食品制售</span>
+              <input type="text" class="hidden ent-field-input w-40 px-3 py-1.5 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="热食类食品制售、冷食类食品制售" />
+            </div>
+            <div class="flex justify-between items-center ent-row">
+              <span class="text-sm text-slate-400 shrink-0">经营面积(㎡)</span>
+              <span class="text-sm font-medium text-slate-800 text-right ent-field-value">120</span>
+              <div class="hidden ent-field-input flex items-center gap-2">
+                <button onclick="stepArea(-1)" class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 active:bg-slate-200 transition-colors text-lg font-semibold select-none">−</button>
+                <input type="number" id="entAreaField" class="w-16 px-2 py-1.5 text-sm text-center text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="120" min="0" />
+                <button onclick="stepArea(1)" class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 active:bg-slate-200 transition-colors text-lg font-semibold select-none">+</button>
+              </div>
+            </div>
+            <div class="flex justify-between items-center ent-row">
+              <span class="text-sm text-slate-400 shrink-0">住所</span>
+              <span class="text-sm font-medium text-slate-800 text-right ent-field-value">北京市海淀区</span>
+              <input type="text" class="hidden ent-field-input w-40 px-3 py-1.5 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="北京市海淀区" />
+            </div>
+            <div class="flex justify-between items-center ent-row">
+              <span class="text-sm text-slate-400 shrink-0">经营场所</span>
+              <span class="text-sm font-medium text-slate-800 text-right ent-field-value">北京市海淀区中关村大街1号</span>
+              <input type="text" class="hidden ent-field-input w-40 px-3 py-1.5 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="北京市海淀区中关村大街1号" />
+            </div>
+            <div class="flex justify-between items-center ent-row">
+              <span class="text-sm text-slate-400 shrink-0">所属镇</span>
+              <span class="text-sm font-medium text-slate-800 text-right ent-field-value">中关村街道</span>
+              <input type="text" class="hidden ent-field-input w-40 px-3 py-1.5 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="中关村街道" />
+            </div>
+            <div class="flex justify-between items-center ent-row">
+              <span class="text-sm text-slate-400 shrink-0">所属市场所</span>
+              <span class="text-sm font-medium text-slate-800 text-right ent-field-value">海淀区市场监督管理局中关村所</span>
+              <input type="text" class="hidden ent-field-input w-40 px-3 py-1.5 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="海淀区市场监督管理局中关村所" />
+            </div>
+            <div class="flex justify-between items-center ent-row">
+              <span class="text-sm text-slate-400 shrink-0">连锁品牌</span>
+              <span class="text-sm font-medium text-slate-300 text-right ent-field-value">—</span>
+              <input type="text" class="hidden ent-field-input w-40 px-3 py-1.5 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="" placeholder="—" />
+            </div>
+            <div class="flex justify-between items-center ent-row">
+              <span class="text-sm text-slate-400 shrink-0">营业状态</span>
+              <span class="text-sm font-medium text-green-600 text-right ent-field-value">营业</span>
+              <div class="hidden ent-field-input flex gap-2 flex-wrap justify-end">
+                <button onclick="selectChip(this, 'bizStatus')" class="chip-bizStatus px-3 py-1.5 text-[13px] font-medium rounded-lg bg-blue-600 text-white transition-all" data-value="营业">营业</button>
+                <button onclick="selectChip(this, 'bizStatus')" class="chip-bizStatus px-3 py-1.5 text-[13px] font-medium rounded-lg bg-slate-100 text-slate-500 transition-all" data-value="停业">停业</button>
+                <button onclick="selectChip(this, 'bizStatus')" class="chip-bizStatus px-3 py-1.5 text-[13px] font-medium rounded-lg bg-slate-100 text-slate-500 transition-all" data-value="注销">注销</button>
+              </div>
+            </div>
+            <div class="flex justify-between items-start ent-row">
+              <span class="text-sm text-slate-400 shrink-0 mr-3">扩展备注</span>
+              <span class="text-sm font-medium text-slate-300 text-right ent-field-value">—</span>
+              <textarea class="hidden ent-field-input w-40 px-3 py-1.5 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all resize-none" rows="2"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Employees Section -->
+        <div class="px-5 mb-4">
+          <button onclick="toggleSection('employees')" class="w-full flex items-center justify-between mb-3">
+            <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide">从业人员</h2>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform" id="employeesChevron"></i>
+          </button>
+          <div id="employeesContent" class="bg-white rounded-2xl shadow-card border border-slate-100 overflow-hidden">
+            <div onclick="showItemDetail('emp1')" class="p-4 flex items-center justify-between border-b border-slate-100 active:bg-slate-50 cursor-pointer">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-800 font-semibold text-sm">张</div>
+                <div>
+                  <p class="text-sm font-semibold text-slate-800">张三</p>
+                  <p class="text-xs text-slate-400">法定代表人 · 健康证有效期至 2025-03-15</p>
+                </div>
+              </div>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
+            </div>
+            <div onclick="showItemDetail('emp2')" class="p-4 flex items-center justify-between border-b border-slate-100 active:bg-slate-50 cursor-pointer">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-semibold text-sm">李</div>
+                <div>
+                  <p class="text-sm font-semibold text-slate-800">李丽</p>
+                  <p class="text-xs text-slate-400">厨师长 · 健康证有效期至 2024-08-20</p>
+                </div>
+              </div>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
+            </div>
+            <div onclick="showItemDetail('emp3')" class="p-4 flex items-center justify-between active:bg-slate-50 cursor-pointer">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold text-sm">王</div>
+                <div>
+                  <p class="text-sm font-semibold text-slate-800">王芳</p>
+                  <p class="text-xs text-slate-400">食品安全员 · 健康证有效期至 2025-01-10</p>
+                </div>
+              </div>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
+            </div>
+            <button class="ent-editable-show hidden w-full py-3 text-sm font-medium text-blue-600 bg-blue-50/50 hover:bg-blue-50 active:bg-blue-100 transition-colors flex items-center justify-center gap-1.5">
+              <i data-lucide="plus" class="w-4 h-4"></i> 添加从业人员
+            </button>
+          </div>
+        </div>
+
+        <!-- Licenses Section -->
+        <div class="px-5">
+          <button onclick="toggleSection('licenses')" class="w-full flex items-center justify-between mb-3">
+            <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide">企业证照</h2>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform" id="licensesChevron"></i>
+          </button>
+          <div id="licensesContent" class="bg-white rounded-2xl shadow-card border border-slate-100 overflow-hidden">
+            <div onclick="showItemDetail('license1')" class="p-4 flex items-center justify-between border-b border-slate-100 active:bg-slate-50 cursor-pointer">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 font-semibold text-sm shrink-0">食</div>
+                <div>
+                  <p class="text-sm font-semibold text-slate-800">食品经营许可证</p>
+                  <p class="text-xs text-slate-400">JY111050XXXXXX · 2024-07-20 到期</p>
+                </div>
+              </div>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
+            </div>
+            <div onclick="showItemDetail('license2')" class="p-4 flex items-center justify-between border-b border-slate-100 active:bg-slate-50 cursor-pointer">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center text-green-600 font-semibold text-sm shrink-0">安</div>
+                <div>
+                  <p class="text-sm font-semibold text-slate-800">食品安全管理体系认证</p>
+                  <p class="text-xs text-slate-400">ISO 22000:2018 · 有效期内</p>
+                </div>
+              </div>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
+            </div>
+            <div onclick="showItemDetail('license3')" class="p-4 flex items-center justify-between active:bg-slate-50 cursor-pointer">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 font-semibold text-sm shrink-0">健</div>
+                <div>
+                  <p class="text-sm font-semibold text-slate-800">从业人员健康证</p>
+                  <p class="text-xs text-slate-400">3人持有有效证件 · 有效期内</p>
+                </div>
+              </div>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
+            </div>
+            <div class="ent-editable-show hidden w-full py-3 text-sm font-medium text-blue-600 bg-blue-50/50 hover:bg-blue-50 active:bg-blue-100 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+              <i data-lucide="plus" class="w-4 h-4"></i> 上传证照
+            </div>
+          </div>
+        </div>
+
+        <!-- Change Log -->
+        <div class="mt-auto px-5 pt-4 pb-8">
+          <div class="bg-white rounded-2xl p-4 shadow-card border border-slate-100">
+            <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">变更记录</h3>
+            <div class="flex items-center justify-between text-sm">
+              <span class="text-slate-400">最近更新时间</span>
+              <span class="text-slate-700 font-medium" id="entLastUpdate">2024-06-15 14:30</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== TAB: MY ========== -->
+      <div id="tab-my" class="hidden">
+        <!-- Profile card (compact) -->
+        <div class="px-5 mb-5">
+          <div class="bg-white rounded-2xl p-4 shadow-card border border-slate-100 flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-800 flex items-center justify-center text-white text-lg font-bold shadow-sm shrink-0">
+              食
+            </div>
+            <div class="flex-1 min-w-0">
+              <h2 class="text-sm font-semibold text-slate-900">好味道餐饮管理有限公司</h2>
+              <p class="text-xs text-slate-400 truncate">管理员 · 138****6789</p>
+            </div>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
+          </div>
+        </div>
+
+        <!-- Settings list -->
+        <div class="px-5 mb-4">
+          <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3 px-0.5">通知设置</h2>
+          <div class="bg-white rounded-2xl shadow-card border border-slate-100 overflow-hidden">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center">
+                  <i data-lucide="bell" class="w-4 h-4 text-blue-600"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-slate-800">消息推送通知</p>
+                  <p class="text-xs text-slate-400">工单状态变更、换证提醒等消息</p>
+                </div>
+              </div>
+              <button onclick="toggleSwitch(this)" class="w-11 h-6 rounded-full bg-blue-400 relative transition-colors duration-200" aria-label="消息通知开关">
+                <span class="absolute top-0.5 right-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200"></span>
+              </button>
+            </div>
+            <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-orange-50 flex items-center justify-center">
+                  <i data-lucide="vibrate" class="w-4 h-4 text-orange-600"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-slate-800">震动提醒</p>
+                  <p class="text-xs text-slate-400">紧急工单到达时手机震动</p>
+                </div>
+              </div>
+              <button onclick="toggleSwitch(this)" class="w-11 h-6 rounded-full bg-blue-400 relative transition-colors duration-200" aria-label="震动提醒开关">
+                <span class="absolute top-0.5 right-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200"></span>
+              </button>
+            </div>
+            <div class="flex items-center justify-between px-5 py-4">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-green-50 flex items-center justify-center">
+                  <i data-lucide="volume-2" class="w-4 h-4 text-green-600"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-slate-800">声音提醒</p>
+                  <p class="text-xs text-slate-400">收到新工单时播放提示音</p>
+                </div>
+              </div>
+              <button onclick="toggleSwitch(this)" class="w-11 h-6 rounded-full bg-slate-300 relative transition-colors duration-200" aria-label="声音提醒开关">
+                <span class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Account & General -->
+        <div class="px-5 mb-4">
+          <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3 px-0.5">通用</h2>
+          <div class="bg-white rounded-2xl shadow-card border border-slate-100 overflow-hidden">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 cursor-pointer active:bg-slate-50 transition-colors">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-purple-50 flex items-center justify-center">
+                  <i data-lucide="shield" class="w-4 h-4 text-purple-600"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-slate-800">账号安全</p>
+                  <p class="text-xs text-slate-400">修改密码、绑定手机</p>
+                </div>
+              </div>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300"></i>
+            </div>
+            <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 cursor-pointer active:bg-slate-50 transition-colors">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-orange-50 flex items-center justify-center">
+                  <i data-lucide="help-circle" class="w-4 h-4 text-orange-600"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-slate-800">帮助与反馈</p>
+                  <p class="text-xs text-slate-400">常见问题、意见反馈</p>
+                </div>
+              </div>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300"></i>
+            </div>
+            <div class="flex items-center justify-between px-5 py-4 cursor-pointer active:bg-slate-50 transition-colors">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center">
+                  <i data-lucide="info" class="w-4 h-4 text-slate-600"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-slate-800">关于</p>
+                  <p class="text-xs text-slate-400">版本 1.2.3 · 隐私政策 · 用户协议</p>
+                </div>
+              </div>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Logout -->
+        <div class="px-5 pb-24">
+          <button onclick="handleLogout()" class="w-full py-3.5 bg-white text-red-500 text-sm font-semibold rounded-2xl border border-red-200 hover:bg-red-50 active:bg-red-100 active:scale-[0.98] transition-all shadow-card">
+            退出登录
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== BOTTOM TAB BAR ===== -->
+    <nav class="shrink-0 bg-blue-600 px-2 pt-2 pb-[max(16px,env(safe-area-inset-bottom))] flex items-center justify-around" id="bottomTabBar">
+      <button onclick="switchTab('home')" class="tab-item active flex flex-col items-center gap-1 py-1 px-2 text-white" id="tabBtnHome">
+        <i data-lucide="home" class="w-5 h-5"></i>
+        <span class="text-[10px] font-semibold">首页</span>
+      </button>
+      <button onclick="switchTab('orders')" class="tab-item flex flex-col items-center gap-1 py-1 px-2 text-white/60" id="tabBtnOrders">
+        <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+        <span class="text-[10px] font-medium">工单</span>
+      </button>
+      <button onclick="switchTab('enterprise')" class="tab-item flex flex-col items-center gap-1 py-1 px-2 text-white/60" id="tabBtnEnterprise">
+        <i data-lucide="building-2" class="w-5 h-5"></i>
+        <span class="text-[10px] font-medium">企业</span>
+      </button>
+      <button onclick="switchTab('my')" class="tab-item flex flex-col items-center gap-1 py-1 px-2 text-white/60" id="tabBtnMy">
+        <i data-lucide="user" class="w-5 h-5"></i>
+        <span class="text-[10px] font-medium">我的</span>
+      </button>
+    </nav>
+  </div>
+</div>
+
+<script>
+// ===== STATE =====
+let currentTab = 'home';
+let currentOrderId = null;
+let photoCount = 0;
+let appealPhotoCount = 0;
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  lucide.createIcons();
+  // Trigger staggered animation on visible content
+  document.querySelectorAll('.anim-stagger.reveal').forEach(el => el.classList.add('reveal'));
+});
+
+// ===== TAB SWITCHING =====
+function switchTab(tab) {
+  // Close any open overlays first
+  const orderOverlay = document.getElementById('orderDetailOverlay');
+  const appealOverlay = document.getElementById('appealOverlay');
+  if (orderOverlay.classList.contains('open')) {
+    orderOverlay.classList.remove('open');
+  }
+  if (appealOverlay.classList.contains('open')) {
+    appealOverlay.classList.remove('open');
+  }
+  document.getElementById('bottomTabBar').style.display = '';
+
+  currentTab = tab;
+
+  // Hide all tabs
+  document.getElementById('tab-home').classList.add('hidden');
+  document.getElementById('tab-orders').classList.add('hidden');
+  document.getElementById('tab-enterprise').classList.add('hidden');
+  document.getElementById('tab-my').classList.add('hidden');
+
+  // Show selected tab
+  document.getElementById('tab-' + tab).classList.remove('hidden');
+
+  // Re-trigger stagger animation
+  const visibleContent = document.getElementById('tab-' + tab);
+  const staggerEls = visibleContent.querySelectorAll('.anim-stagger');
+  staggerEls.forEach(el => {
+    el.classList.remove('reveal');
+    void el.offsetWidth; // force reflow
+    el.classList.add('reveal');
+  });
+
+  // Update tab buttons
+  document.querySelectorAll('.tab-item').forEach(btn => {
+    btn.classList.remove('active');
+    btn.classList.remove('text-white');
+    btn.classList.add('text-white/60');
+  });
+  document.querySelectorAll('.tab-item span').forEach(s => {
+    s.classList.remove('font-semibold');
+    s.classList.add('font-medium');
+  });
+
+  const activeBtn = document.getElementById('tabBtn' + tab.charAt(0).toUpperCase() + tab.slice(1));
+  if (activeBtn) {
+    activeBtn.classList.add('active');
+    activeBtn.classList.remove('text-white/60');
+    activeBtn.classList.add('text-white');
+    activeBtn.querySelector('span').classList.remove('font-medium');
+    activeBtn.querySelector('span').classList.add('font-semibold');
+  }
+
+  // Update header
+  updateHeader(tab);
+
+  // Re-render icons
+  setTimeout(() => lucide.createIcons(), 50);
+
+  // Scroll to top
+  document.getElementById('tabContent').scrollTop = 0;
+}
+
+function updateHeader(tab) {
+  const title = document.getElementById('headerTitle');
+  const sub = document.getElementById('headerSub');
+  const badge = document.getElementById('headerBadge');
+  const editBtn = document.getElementById('headerEditBtn');
+
+  // Hide enterprise elements by default
+  badge.classList.add('hidden');
+  editBtn.classList.add('hidden');
+
+  if (tab === 'home') {
+    title.textContent = '智慧食安';
+    sub.textContent = '好味道餐饮管理有限公司';
+    sub.style.display = '';
+  } else if (tab === 'orders') {
+    title.textContent = '工单中心';
+    sub.style.display = 'none';
+  } else if (tab === 'enterprise') {
+    title.textContent = '企业信息';
+    sub.style.display = 'none';
+    if (entApprovalState === 'approved') {
+      badge.textContent = '· 已生效';
+      badge.className = 'shrink-0 text-xs font-normal text-white/60';
+      badge.classList.remove('hidden');
+      editBtn.classList.remove('hidden');
+    } else if (entApprovalState === 'pending') {
+      badge.textContent = '· 审批中';
+      badge.className = 'shrink-0 text-xs font-normal text-white/60';
+      badge.classList.remove('hidden');
+    }
+  } else if (tab === 'my') {
+    title.textContent = '我的';
+    sub.style.display = 'none';
+  }
+}
+
+// ===== ENTERPRISE STATE =====
+let entApprovalState = 'approved'; // 'approved' | 'editing' | 'pending'
+
+function enterEditMode() {
+  entApprovalState = 'editing';
+  document.querySelectorAll('.ent-field-value').forEach(el => el.classList.add('hidden'));
+  document.querySelectorAll('.ent-field-input').forEach(el => el.classList.remove('hidden'));
+  document.querySelectorAll('.ent-editable-show').forEach(el => el.classList.remove('hidden'));
+  // Toggle header buttons
+  document.getElementById('headerEditBtn').classList.add('hidden');
+  document.getElementById('headerBadge').classList.add('hidden');
+  document.getElementById('headerCancelBtn').classList.remove('hidden');
+  document.getElementById('headerSubmitBtn').classList.remove('hidden');
+}
+
+function cancelEditMode() {
+  entApprovalState = 'approved';
+  document.querySelectorAll('.ent-field-value').forEach(el => el.classList.remove('hidden'));
+  document.querySelectorAll('.ent-field-input').forEach(el => el.classList.add('hidden'));
+  document.querySelectorAll('.ent-editable-show').forEach(el => el.classList.add('hidden'));
+  document.getElementById('approvalNotice').classList.add('hidden');
+  document.getElementById('approvalProgress').classList.add('hidden');
+  // Restore header
+  const badge = document.getElementById('headerBadge');
+  badge.textContent = '· 已生效';
+  badge.className = 'shrink-0 text-xs font-normal text-white/60';
+  badge.classList.remove('hidden');
+  document.getElementById('headerEditBtn').classList.remove('hidden');
+  document.getElementById('headerCancelBtn').classList.add('hidden');
+  document.getElementById('headerSubmitBtn').classList.add('hidden');
+}
+
+function stepArea(delta) {
+  const input = document.getElementById('entAreaField');
+  let val = parseInt(input.value) || 0;
+  val = Math.max(0, val + delta);
+  input.value = val;
+}
+
+function selectChip(btn, group) {
+  // Deselect all chips in group
+  document.querySelectorAll(`.chip-${group}`).forEach(b => {
+    b.classList.remove('bg-blue-600', 'text-white');
+    b.classList.add('bg-slate-100', 'text-slate-500');
+  });
+  // Select clicked chip
+  btn.classList.remove('bg-slate-100', 'text-slate-500');
+  btn.classList.add('bg-blue-600', 'text-white');
+}
+
+function submitForApproval() {
+  entApprovalState = 'pending';
+  document.querySelectorAll('.ent-field-value').forEach(el => el.classList.remove('hidden'));
+  document.querySelectorAll('.ent-field-input').forEach(el => el.classList.add('hidden'));
+  document.querySelectorAll('.ent-editable-show').forEach(el => el.classList.add('hidden'));
+  // Show approval UI
+  document.getElementById('approvalNotice').classList.remove('hidden');
+  document.getElementById('approvalProgress').classList.remove('hidden');
+  // Update header
+  const badge = document.getElementById('headerBadge');
+  badge.textContent = '· 审批中';
+  badge.className = 'shrink-0 text-xs font-normal text-white/60';
+  badge.classList.remove('hidden');
+  document.getElementById('headerEditBtn').classList.add('hidden');
+  document.getElementById('headerCancelBtn').classList.add('hidden');
+  document.getElementById('headerSubmitBtn').classList.add('hidden');
+  // Update time
+  const now = new Date();
+  document.getElementById('entLastUpdate').textContent = now.toISOString().slice(0, 16).replace('T', ' ');
+
+  showToast('已提交审批，请等待监管审核', 'success');
+}
+
+// ===== ORDER FILTER =====
+let currentOrderFilter = 'pending';
+let currentTimeFilter = 'all';
+let currentKeyword = '';
+
+function filterOrders(filter, btn) {
+  currentOrderFilter = filter;
+
+  // Update filter button styles
+  document.querySelectorAll('#orderFilterBar button').forEach(b => {
+    b.classList.remove('bg-blue-600', 'text-white', 'font-semibold');
+    b.classList.add('bg-slate-100', 'text-slate-500', 'font-medium');
+  });
+  btn.classList.remove('bg-slate-100', 'text-slate-500', 'font-medium');
+  btn.classList.add('bg-blue-600', 'text-white', 'font-semibold');
+
+  applyAllFilters();
+}
+
+function setTimeFilter(filter, btn) {
+  currentTimeFilter = filter;
+
+  // Update time filter button styles
+  document.querySelectorAll('#timeFilterBar button').forEach(b => {
+    b.classList.remove('bg-blue-600', 'text-white', 'font-semibold');
+    b.classList.add('bg-slate-100', 'text-slate-500', 'font-medium');
+  });
+  btn.classList.remove('bg-slate-100', 'text-slate-500', 'font-medium');
+  btn.classList.add('bg-blue-600', 'text-white', 'font-semibold');
+
+  applyAllFilters();
+}
+
+function applyAllFilters() {
+  const keyword = document.getElementById('orderSearch').value.trim().toLowerCase();
+  currentKeyword = keyword;
+
+  const now = new Date();
+  const cards = document.querySelectorAll('.order-card');
+  const emptyState = document.getElementById('orderEmpty');
+  let visibleCount = 0;
+
+  cards.forEach(card => {
+    const status = card.getAttribute('data-status');
+    const dateStr = card.getAttribute('data-date');
+
+    // Status filter
+    const statusMatch = currentOrderFilter === 'all' || status === currentOrderFilter;
+
+    // Time filter
+    let timeMatch = true;
+    if (currentTimeFilter !== 'all' && dateStr) {
+      const cardDate = new Date(dateStr);
+      const diffMs = now - cardDate;
+      const diffDays = diffMs / (1000 * 60 * 60 * 24);
+      if (currentTimeFilter === 'week') timeMatch = diffDays <= 7;
+      else if (currentTimeFilter === 'month') timeMatch = diffDays <= 30;
+      else if (currentTimeFilter === 'quarter') timeMatch = diffDays <= 90;
+    }
+
+    // Keyword filter
+    let keywordMatch = true;
+    if (keyword) {
+      const cardText = card.textContent.toLowerCase();
+      keywordMatch = cardText.includes(keyword);
+    }
+
+    if (statusMatch && timeMatch && keywordMatch) {
+      card.style.display = '';
+      visibleCount++;
+    } else {
+      card.style.display = 'none';
+    }
+  });
+
+  // Toggle empty state
+  if (visibleCount === 0) {
+    emptyState.classList.remove('hidden');
+    let reason = '';
+    if (keyword) reason = '关键词无匹配';
+    else if (currentTimeFilter !== 'all') reason = '该时间段内无工单';
+    else if (currentOrderFilter !== 'all') {
+      const textMap = { pending: '暂无待处理工单', processing: '暂无处理中工单', rejected: '暂无已驳回工单', archived: '暂无已归档工单' };
+      reason = textMap[currentOrderFilter];
+    }
+    document.getElementById('orderEmptyText').textContent = reason || '暂无工单';
+  } else {
+    emptyState.classList.add('hidden');
+  }
+
+  // Re-trigger stagger
+  const list = document.getElementById('orderList');
+  list.classList.remove('reveal');
+  void list.offsetWidth;
+  list.classList.add('reveal');
+
+  setTimeout(() => lucide.createIcons(), 50);
+}
+
+// ===== ORDER DETAIL OVERLAY =====
+const orderData = {
+  order1: {
+    type: '报警记录', typeClass: 'bg-red-50 text-red-600',
+    title: '后厨卫生整改通知', id: '#WO240601', date: '2024-06-01 09:30',
+    deadline: '2024-06-15',
+    desc: '根据近期检查，你单位后厨存在卫生不达标情况（操作台面清洁不彻底、垃圾桶未加盖、地面有积水和油污），请于6月15日前完成整改并提交整改报告及现场照片。',
+    status: '未处理', statusClass: 'bg-orange-50 text-orange-600'
+  },
+  order2: {
+    type: '换证提醒', typeClass: 'bg-blue-50 text-blue-600',
+    title: '食品经营许可证即将到期', id: '#LC240528', date: '2024-05-28 08:00',
+    deadline: '2024-07-20',
+    desc: '你单位的食品经营许可证（编号：JY111050XXXXXX）将于2024年7月20日到期。请在有效期届满前30个工作日内向原发证机关申请延续，并按要求提交相关材料。',
+    status: '未处理', statusClass: 'bg-orange-50 text-orange-600'
+  },
+  order3: {
+    type: '报警记录', typeClass: 'bg-red-50 text-red-600',
+    title: '食材存储温度异常告警', id: '#WO240610', date: '2024-06-10 14:30',
+    deadline: '2024-06-11',
+    desc: '系统监测到冷链仓库温度在14:30-14:45期间持续超过4℃，可能影响食材品质安全。请立即检查冷链设备运行状态，确认食材安全后提交设备检查和食材状态报告。',
+    status: '处理中', statusClass: 'bg-blue-50 text-blue-600'
+  },
+  order4: {
+    type: '申诉记录', typeClass: 'bg-orange-50 text-orange-600',
+    title: '从业人员健康证过期 — 申诉已通过', id: '#AP240520', date: '2024-05-20 10:00',
+    deadline: '2024-06-05',
+    desc: '你单位就"从业人员健康证过期"工单发起的申诉已通过监管审核。经核查，相关人员已在规定期限内完成体检，新健康证已生效。该工单自动归档。',
+    status: '已归档', statusClass: 'bg-slate-100 text-slate-500',
+    isAppeal: true
+  },
+  order5: {
+    type: '换证提醒', typeClass: 'bg-blue-50 text-blue-600',
+    title: '食品生产许可证年审提醒', id: '#LC240612', date: '2024-06-12 08:00',
+    deadline: '2024-08-15',
+    desc: '你单位的食品生产许可证需在2024年8月15日前完成年度审核。请准备年度自查报告、产品检测报告等材料，按时提交年审申请。',
+    status: '已归档', statusClass: 'bg-slate-100 text-slate-500'
+  },
+  order6: {
+    type: '报警记录', typeClass: 'bg-red-50 text-red-600',
+    title: '后厨卫生整改复查未通过', id: '#WO240608', date: '2024-06-08 11:00',
+    deadline: '2024-06-20',
+    desc: '你单位提交的整改材料经复审未通过。主要问题：操作台面清洁仍不达标、未提供垃圾桶加盖的整改照片。请根据驳回意见重新整改并提交材料。',
+    status: '已驳回', statusClass: 'bg-red-50 text-red-600',
+    submittedText: '已完成操作台面深度清洁，更换了新的不锈钢垃圾桶并加盖，重新粉刷了后厨墙面。详见照片。',
+    submittedPhotos: true
+  },
+  order7: {
+    type: '申诉记录', typeClass: 'bg-orange-50 text-orange-600',
+    title: '食材存储温度异常告警 — 申诉已通过', id: '#AP240615', date: '2024-06-15 14:00',
+    deadline: '2024-06-20',
+    desc: '你单位就"食材存储温度异常告警"工单发起的申诉已通过监管审核。经核实，温度异常系冷链设备传感器故障所致，实际食材存储温度正常。设备已修复，该工单自动归档。',
+    status: '已归档', statusClass: 'bg-slate-100 text-slate-500',
+    isAppeal: true,
+    submittedText: '经检查，冷链仓库温度异常系传感器故障导致，实际食材存储温度一直维持在2-3℃，符合标准。已更换新的温度传感器，附设备维修单据和食材温度记录。',
+    submittedPhotos: true
+  },
+  order8: {
+    type: '报警记录', typeClass: 'bg-red-50 text-red-600',
+    title: '后厨卫生整改 — 驳回重提交已归档', id: '#WO240608', date: '2024-06-08 11:00',
+    deadline: '2024-06-18',
+    desc: '你单位就"后厨卫生整改复查未通过"工单重新提交了整改材料。经监管复审，操作台面清洁、垃圾桶加盖、后厨墙面均已达标。审核通过，工单归档。',
+    status: '已归档', statusClass: 'bg-slate-100 text-slate-500',
+    submittedText: '已按驳回意见完成以下整改：1. 操作台面深度清洁并消毒；2. 更换不锈钢加盖垃圾桶并拍摄加盖状态照片；3. 后厨墙面重新粉刷防水涂料。附整改前后对比照片。',
+    submittedPhotos: true
+  }
+};
+
+function openOrderDetail(orderId) {
+  currentOrderId = orderId;
+  const data = orderData[orderId];
+  if (!data) return;
+
+  // Populate detail view
+  document.getElementById('detailType').textContent = data.type;
+  document.getElementById('detailType').className = 'text-xs font-semibold px-2.5 py-1 rounded-full uppercase tracking-wide ' + data.typeClass;
+  document.getElementById('detailTitle').textContent = data.title;
+  document.getElementById('detailId').textContent = data.id;
+  document.getElementById('detailDate').textContent = data.date;
+  document.getElementById('detailDeadline').textContent = data.deadline;
+  document.getElementById('detailDesc').textContent = data.desc;
+  const badge = document.getElementById('detailStatusBadge');
+  badge.textContent = data.status;
+  badge.className = 'text-xs font-medium px-2.5 py-1 rounded-full ' + data.statusClass;
+
+  // Set progress stepper
+  const statusText = data.status;
+  const isAppeal = data.isAppeal === true;
+  const step1Text = isAppeal ? '商户申诉' : '商户提交';
+
+  const steps = [
+    { circle: document.getElementById('step1Circle'), label: document.getElementById('step1Label'), text: step1Text },
+    { circle: document.getElementById('step2Circle'), label: document.getElementById('step2Label'), text: '监管审核' },
+    { circle: document.getElementById('step3Circle'), label: document.getElementById('step3Label'), text: '已归档' },
+  ];
+
+  // Update step labels and reset icons
+  const step1Icon = isAppeal ? 'message-square-warning' : 'file-edit';
+  document.getElementById('step1Circle').innerHTML = `<i data-lucide="${step1Icon}" class="w-5 h-5"></i>`;
+  document.getElementById('step2Circle').innerHTML = '<i data-lucide="search-check" class="w-5 h-5"></i>';
+  document.getElementById('step3Circle').innerHTML = '<i data-lucide="archive" class="w-5 h-5"></i>';
+  steps.forEach(s => { s.label.textContent = s.text; });
+
+  if (statusText === '未处理') {
+    setStepState(steps[0], 'active');
+    setStepState(steps[1], 'pending');
+    setStepState(steps[2], 'pending');
+  } else if (statusText === '处理中') {
+    setStepState(steps[0], 'completed');
+    setStepState(steps[1], 'active');
+    setStepState(steps[2], 'pending');
+  } else if (statusText === '已驳回') {
+    setStepState(steps[0], 'completed');
+    setStepState(steps[1], 'rejected');
+    setStepState(steps[2], 'pending');
+  } else if (statusText === '已归档') {
+    setStepState(steps[0], 'completed');
+    setStepState(steps[1], 'completed');
+    setStepState(steps[2], 'completed');
+  }
+
+  // Show/hide submitted content and form based on status
+  const submittedSection = document.getElementById('submittedContentSection');
+  const formSection = document.getElementById('responseFormSection');
+  const responseTitle = document.getElementById('responseFormTitle');
+  const submitBtn = document.getElementById('submitResponseBtn');
+  const appealBtn = document.getElementById('appealBtn');
+
+  const hasSubmitted = data.submittedText;
+
+  if (statusText === '未处理') {
+    submittedSection.classList.add('hidden');
+    formSection.style.display = '';
+    responseTitle.textContent = '提交整改反馈';
+    submitBtn.textContent = '提交反馈';
+    submitBtn.style.display = '';
+    appealBtn.style.display = '';
+    document.getElementById('responseText').readOnly = false;
+    document.getElementById('responseText').value = '';
+    resetPhotos();
+    showUploadZone(true);
+  } else if (statusText === '处理中') {
+    if (hasSubmitted) {
+      submittedSection.classList.remove('hidden');
+      document.getElementById('submittedText').textContent = data.submittedText;
+    } else {
+      submittedSection.classList.add('hidden');
+    }
+    formSection.style.display = 'none';
+  } else if (statusText === '已驳回') {
+    if (hasSubmitted) {
+      submittedSection.classList.remove('hidden');
+      document.getElementById('submittedText').textContent = data.submittedText;
+    } else {
+      submittedSection.classList.add('hidden');
+    }
+    formSection.style.display = '';
+    responseTitle.textContent = '重新提交整改';
+    submitBtn.textContent = '重新提交';
+    submitBtn.style.display = '';
+    appealBtn.style.display = 'none';
+    document.getElementById('responseText').readOnly = false;
+    document.getElementById('responseText').value = '';
+    resetPhotos();
+    showUploadZone(true);
+  } else if (statusText === '已归档') {
+    if (hasSubmitted) {
+      submittedSection.classList.remove('hidden');
+      document.getElementById('submittedText').textContent = data.submittedText;
+    } else {
+      submittedSection.classList.add('hidden');
+    }
+    formSection.style.display = 'none';
+  }
+
+  // Reset form
+  if (statusText === '未处理' || statusText === '已驳回') {
+    document.getElementById('responseText').value = '';
+    resetPhotos();
+  }
+
+  // Open overlay
+  document.getElementById('orderDetailOverlay').classList.add('open');
+  document.getElementById('bottomTabBar').style.display = 'none';
+
+  setTimeout(() => lucide.createIcons(), 100);
+}
+
+function showUploadZone(show) {
+  const zones = document.querySelectorAll('#photoGrid .photo-upload-zone');
+  zones.forEach(z => { z.style.display = show ? '' : 'none'; });
+}
+
+function setStepState(step, state) {
+  const { circle, label } = step;
+  // Reset
+  circle.className = 'w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all';
+  label.className = 'text-[11px] font-medium mt-2 text-center whitespace-nowrap';
+
+  if (state === 'completed') {
+    circle.classList.add('bg-green-500', 'text-white');
+    circle.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i>';
+    label.classList.add('text-green-600');
+  } else if (state === 'rejected') {
+    circle.classList.add('bg-red-500', 'text-white');
+    circle.innerHTML = '<i data-lucide="x" class="w-5 h-5"></i>';
+    label.classList.add('text-red-500', 'font-semibold');
+  } else if (state === 'active') {
+    circle.classList.add('bg-blue-600', 'text-white');
+    label.classList.add('text-blue-600', 'font-semibold');
+  } else {
+    circle.classList.add('bg-slate-100', 'text-slate-300');
+    label.classList.add('text-slate-300');
+  }
+}
+
+function closeOrderDetail() {
+  document.getElementById('orderDetailOverlay').classList.remove('open');
+  document.getElementById('bottomTabBar').style.display = '';
+}
+
+// ===== QUICK RESPONSE =====
+function openQuickResponse(type) {
+  if (type === 'correction') {
+    // Find first pending alarm order
+    openOrderDetail('order1');
+  } else if (type === 'appeal') {
+    // Open appeal overlay for first pending order
+    currentOrderId = 'order1';
+    document.getElementById('appealOrderRef').textContent = '#WO240601 — 后厨卫生整改通知';
+    document.getElementById('appealText').value = '';
+    resetAppealPhotos();
+    document.getElementById('appealOverlay').classList.add('open');
+    document.getElementById('bottomTabBar').style.display = 'none';
+    setTimeout(() => lucide.createIcons(), 100);
+  }
+}
+
+function closeAppeal() {
+  document.getElementById('appealOverlay').classList.remove('open');
+  document.getElementById('bottomTabBar').style.display = '';
+}
+
+// ===== PHOTO UPLOAD =====
+function addPhoto() {
+  if (photoCount >= 6) {
+    showToast('最多上传6张照片');
+    return;
+  }
+  // Simulate adding a photo
+  photoCount++;
+  const grid = document.getElementById('photoGrid');
+  const colors = ['#FEF3C7', '#DBEAFE', '#D1FAE5', '#FCE7F3', '#E0E7FF', '#FEE2E2'];
+  const color = colors[(photoCount - 1) % colors.length];
+  const thumb = document.createElement('div');
+  thumb.className = 'photo-thumb bg-slate-100 flex items-center justify-center';
+  thumb.style.backgroundColor = color;
+  thumb.innerHTML = `
+    <div class="text-center">
+      <i data-lucide="image" class="w-5 h-5 text-slate-400 mx-auto mb-1"></i>
+      <span class="text-[10px] text-slate-400">照片 ${photoCount}</span>
+    </div>
+    <button onclick="removePhoto(this)" class="absolute top-1.5 right-1.5 w-5 h-5 bg-black/40 rounded-full flex items-center justify-center">
+      <i data-lucide="x" class="w-3 h-3 text-white"></i>
+    </button>
+  `;
+
+  // Insert before the upload zone
+  const uploadZone = grid.querySelector('.photo-upload-zone');
+  grid.insertBefore(thumb, uploadZone);
+
+  if (photoCount >= 6) {
+    uploadZone.style.display = 'none';
+  }
+
+  setTimeout(() => lucide.createIcons(), 50);
+}
+
+function removePhoto(btn) {
+  const thumb = btn.parentElement;
+  thumb.remove();
+  photoCount--;
+  const grid = document.getElementById('photoGrid');
+  const uploadZone = grid.querySelector('.photo-upload-zone');
+  uploadZone.style.display = '';
+  // Update remaining photo labels
+  updatePhotoLabels(grid);
+}
+
+function updatePhotoLabels(grid) {
+  const thumbs = grid.querySelectorAll('.photo-thumb');
+  thumbs.forEach((thumb, i) => {
+    const label = thumb.querySelector('span');
+    if (label) label.textContent = `照片 ${i + 1}`;
+  });
+}
+
+function resetPhotos() {
+  photoCount = 0;
+  const grid = document.getElementById('photoGrid');
+  const thumbs = grid.querySelectorAll('.photo-thumb');
+  thumbs.forEach(t => t.remove());
+  const uploadZone = grid.querySelector('.photo-upload-zone');
+  if (uploadZone) uploadZone.style.display = '';
+}
+
+// Appeal photo upload
+function addAppealPhoto() {
+  if (appealPhotoCount >= 6) {
+    showToast('最多上传6张材料');
+    return;
+  }
+  appealPhotoCount++;
+  const grid = document.getElementById('appealPhotoGrid');
+  const colors = ['#FEF3C7', '#DBEAFE', '#D1FAE5', '#FCE7F3', '#E0E7FF', '#FEE2E2'];
+  const color = colors[(appealPhotoCount - 1) % colors.length];
+  const thumb = document.createElement('div');
+  thumb.className = 'photo-thumb bg-slate-100 flex items-center justify-center';
+  thumb.style.backgroundColor = color;
+  thumb.innerHTML = `
+    <div class="text-center">
+      <i data-lucide="file-text" class="w-5 h-5 text-slate-400 mx-auto mb-1"></i>
+      <span class="text-[10px] text-slate-400">材料 ${appealPhotoCount}</span>
+    </div>
+    <button onclick="removeAppealPhoto(this)" class="absolute top-1.5 right-1.5 w-5 h-5 bg-black/40 rounded-full flex items-center justify-center">
+      <i data-lucide="x" class="w-3 h-3 text-white"></i>
+    </button>
+  `;
+  const uploadZone = grid.querySelector('.photo-upload-zone');
+  grid.insertBefore(thumb, uploadZone);
+  if (appealPhotoCount >= 6) uploadZone.style.display = 'none';
+  setTimeout(() => lucide.createIcons(), 50);
+}
+
+function removeAppealPhoto(btn) {
+  btn.parentElement.remove();
+  appealPhotoCount--;
+  const grid = document.getElementById('appealPhotoGrid');
+  const uploadZone = grid.querySelector('.photo-upload-zone');
+  if (uploadZone) uploadZone.style.display = '';
+}
+
+function resetAppealPhotos() {
+  appealPhotoCount = 0;
+  const grid = document.getElementById('appealPhotoGrid');
+  const thumbs = grid.querySelectorAll('.photo-thumb');
+  thumbs.forEach(t => t.remove());
+  const uploadZone = grid.querySelector('.photo-upload-zone');
+  if (uploadZone) uploadZone.style.display = '';
+}
+
+// ===== SUBMISSIONS =====
+function submitResponse() {
+  const text = document.getElementById('responseText').value.trim();
+  if (!text && photoCount === 0) {
+    showToast('请填写整改说明或上传整改照片');
+    return;
+  }
+
+  const data = orderData[currentOrderId];
+  if (!data) return;
+
+  // If rejected order being re-submitted, transition to 处理中
+  if (data.status === '已驳回') {
+    data.status = '处理中';
+    data.statusClass = 'bg-blue-50 text-blue-600';
+    data.submittedText = text || data.submittedText;
+
+    // Update the card in the list
+    const card = document.querySelector(`[onclick="openOrderDetail('${currentOrderId}')"]`);
+    if (card) {
+      card.setAttribute('data-status', 'processing');
+      const badge = card.querySelector('.rounded-full.whitespace-nowrap');
+      if (badge) {
+        badge.textContent = '处理中';
+        badge.className = 'text-[11px] font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full whitespace-nowrap';
+      }
+    }
+
+    // Update the detail overlay badge and stepper
+    const detailBadge = document.getElementById('detailStatusBadge');
+    detailBadge.textContent = '处理中';
+    detailBadge.className = 'text-xs font-medium px-2.5 py-1 rounded-full bg-blue-50 text-blue-600';
+
+    const steps = [
+      { circle: document.getElementById('step1Circle'), label: document.getElementById('step1Label') },
+      { circle: document.getElementById('step2Circle'), label: document.getElementById('step2Label') },
+      { circle: document.getElementById('step3Circle'), label: document.getElementById('step3Label') },
+    ];
+    setStepState(steps[0], 'completed');
+    setStepState(steps[1], 'active');
+    setStepState(steps[2], 'pending');
+
+    // Update submitted content visibility
+    const submittedSection = document.getElementById('submittedContentSection');
+    submittedSection.classList.remove('hidden');
+    document.getElementById('submittedText').textContent = text || data.submittedText;
+
+    // Hide form
+    document.getElementById('responseFormSection').style.display = 'none';
+
+    showToast('已重新提交，状态更新为处理中', 'success');
+    setTimeout(() => lucide.createIcons(), 50);
+    return;
+  }
+
+  showToast('整改反馈提交成功', 'success');
+  setTimeout(() => {
+    closeOrderDetail();
+  }, 1200);
+}
+
+function submitAppeal() {
+  closeOrderDetail();
+  currentOrderId = currentOrderId || 'order1';
+  const data = orderData[currentOrderId];
+  document.getElementById('appealOrderRef').textContent = (data ? data.id + ' — ' + data.title : '#WO240601 — 后厨卫生整改通知');
+  document.getElementById('appealText').value = '';
+  resetAppealPhotos();
+  setTimeout(() => {
+    document.getElementById('appealOverlay').classList.add('open');
+    document.getElementById('bottomTabBar').style.display = 'none';
+    lucide.createIcons();
+  }, 350);
+}
+
+function submitAppealForm() {
+  const text = document.getElementById('appealText').value.trim();
+  if (!text) {
+    showToast('请填写申诉理由');
+    return;
+  }
+  showToast('申诉提交成功', 'success');
+  setTimeout(() => {
+    closeAppeal();
+  }, 1200);
+}
+
+// ===== TOAST =====
+function showToast(message, type = '') {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.className = 'toast ' + type + ' show';
+  clearTimeout(toast._timeout);
+  toast._timeout = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 2000);
+}
+
+// ===== SECTION TOGGLE (ENTERPRISE TAB) =====
+function toggleSection(section) {
+  const content = document.getElementById(section + 'Content');
+  const chevron = document.getElementById(section + 'Chevron');
+
+  if (content.style.display === 'none') {
+    content.style.display = '';
+    chevron.style.transform = 'rotate(0deg)';
+  } else {
+    content.style.display = 'none';
+    chevron.style.transform = 'rotate(-90deg)';
+  }
+}
+
+// ===== CLOSE OVERLAYS ON BACK BUTTON (Android) =====
+window.addEventListener('popstate', (e) => {
+  if (document.getElementById('appealOverlay').classList.contains('open')) {
+    closeAppeal();
+    e.preventDefault();
+  } else if (document.getElementById('orderDetailOverlay').classList.contains('open')) {
+    closeOrderDetail();
+    e.preventDefault();
+  }
+});
+
+// Push initial state for back-button handling
+if (window.history && window.history.pushState) {
+  window.history.pushState('forward', null, '');
+}
+
+// ===== KEYBOARD ESC TO CLOSE OVERLAYS =====
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    if (document.getElementById('appealOverlay').classList.contains('open')) {
+      closeAppeal();
+    } else if (document.getElementById('orderDetailOverlay').classList.contains('open')) {
+      closeOrderDetail();
+    }
+  }
+});
+
+// ===== TOGGLE SWITCH =====
+function toggleSwitch(btn) {
+  const knob = btn.querySelector('span');
+  if (btn.classList.contains('bg-blue-400')) {
+    // Turn off
+    btn.classList.remove('bg-blue-400');
+    btn.classList.add('bg-slate-300');
+    knob.style.left = '0.125rem';
+    knob.style.right = 'auto';
+  } else {
+    // Turn on
+    btn.classList.remove('bg-slate-300');
+    btn.classList.add('bg-blue-400');
+    knob.style.left = 'auto';
+    knob.style.right = '0.125rem';
+  }
+}
+
+// ===== LOGOUT =====
+// ===== ENTERPRISE EDIT =====
+function showItemDetail(key) {
+  const data = {
+    emp1: '张三 · 法定代表人\n身份证：110108****1234\n电话：138****6789\n健康证：JK2023**** 至 2025-03-15\n入职：2020-03-01',
+    emp2: '李丽 · 厨师长\n身份证：110108****5678\n电话：139****8901\n健康证：JK2023**** 至 2024-08-20\n入职：2021-06-15',
+    emp3: '王芳 · 食品安全员\n身份证：110108****9012\n电话：137****3456\n健康证：JK2024**** 至 2025-01-10\n入职：2022-09-01',
+    license1: '食品经营许可证\n编号：JY111050XXXXXX\n发证：北京市海淀区市场监督管理局\n有效期：2019-07-20 至 2024-07-20\n项目：热食类、冷食类食品制售',
+    license2: '食品安全管理体系认证\n标准：ISO 22000:2018\n机构：中国质量认证中心\n有效期：2022-03-10 至 2025-03-09',
+    license3: '从业人员健康证\n3人持有，均有效\n张三至2025-03-15 | 李丽至2024-08-20 | 王芳至2025-01-10\n发证：海淀区疾控中心',
+  }[key];
+  if (data) showToast(data, 'success');
+}
+
+function openEnterpriseEdit() {
+  document.getElementById('enterpriseEditOverlay').classList.add('open');
+  document.getElementById('bottomTabBar').style.display = 'none';
+  setTimeout(() => lucide.createIcons(), 100);
+}
+
+function closeEnterpriseEdit() {
+  document.getElementById('enterpriseEditOverlay').classList.remove('open');
+  document.getElementById('bottomTabBar').style.display = '';
+}
+
+function saveEnterpriseInfo() {
+  showToast('企业信息保存成功', 'success');
+  setTimeout(() => {
+    closeEnterpriseEdit();
+  }, 800);
+}
+
+function adjustArea(delta) {
+  const input = document.getElementById('entArea');
+  let val = parseInt(input.value) || 0;
+  val = Math.max(0, val + delta);
+  input.value = val;
+}
+
+// ===== LOGOUT =====
+function handleLogout() {
+  if (confirm('确定要退出登录吗？')) {
+    showToast('已退出登录', 'success');
+  }
+}
+</script>
+</body>
+</html>
