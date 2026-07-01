@@ -362,6 +362,7 @@ textarea{resize:vertical;min-height:80px}
     <div class="sidebar-section">
       <div class="sidebar-section-title">内容管理</div>
       <div class="sidebar-item" data-page="courses-manage" onclick="switchPage('courses-manage',this)"><i data-lucide="book-marked"></i> 课程管理</div>
+      <div class="sidebar-item" data-page="partners-manage" onclick="switchPage('partners-manage',this)"><i data-lucide="building"></i> 合作院校</div>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-section-title">预约管理</div>
@@ -406,8 +407,8 @@ textarea{resize:vertical;min-height:80px}
           <div class="stat-info"><div class="num">4<div class="stat-scale">总量</div></div><div class="label">已发布课程</div></div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon orange"><i data-lucide="grid"></i></div>
-          <div class="stat-info"><div class="num">6<div class="stat-scale">总量</div></div><div class="label">课程方向</div></div>
+          <div class="stat-icon orange"><i data-lucide="building"></i></div>
+          <div class="stat-info"><div class="num">12<div class="stat-scale">总量</div></div><div class="label">合作院校</div></div>
         </div>
       </div>
 
@@ -838,6 +839,98 @@ textarea{resize:vertical;min-height:80px}
       </div>
     </div>
 
+    <!-- ========== 合作院校管理 ========== -->
+    <div class="page" id="page-partners-manage">
+      <div class="sortable-wrap" style="grid-template-columns:1fr">
+        <div class="sortable-panel">
+          <div class="sortable-panel-header">
+            <span style="display:flex;align-items:center;gap:8px"><i data-lucide="building" style="width:16px;height:16px;color:var(--ink)"></i> 合作院校列表（首页排序）</span>
+            <div style="display:flex;gap:8px"><button class="btn btn-outline btn-sm" onclick="openPartnerEdit()"><i data-lucide="plus"></i> 新增院校</button><button class="btn btn-primary btn-sm" onclick="savePartnerList()"><i data-lucide="save"></i> 保存</button></div>
+          </div>
+          <div class="sortable-panel-body">
+            <div class="sortable-list" id="partnerMgmtList">
+              <div class="sortable-item" draggable="true" data-id="pku" style="flex-wrap:wrap;padding:12px">
+                <div class="drag-handle" title="拖拽排序">≡</div>
+                <div class="sort-order">01</div>
+                <div class="sort-content" style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:4px">
+                  <span class="sort-name">北京大学</span>
+                  <span class="sort-desc">联合实验室 · 共建"大模型应用创新联合实验室"</span>
+                </div>
+                <div class="sort-content" style="flex:1;min-width:100px;display:flex;gap:4px;flex-wrap:wrap;align-items:center">
+                  <span class="tag tag-blue" style="font-size:9px">联合实验室</span><span class="tag tag-purple" style="font-size:9px">大模型应用开发</span>
+                </div>
+                <button class="sort-toggle-btn on" onclick="toggleSortItem(this)" title="首页显示/隐藏"></button>
+                <button class="btn btn-outline btn-sm" style="margin-left:8px" onclick="openPartnerEdit('pku')"><i data-lucide="pencil"></i></button>
+                <button class="btn btn-danger btn-sm" onclick="deletePartner('pku')"><i data-lucide="trash-2"></i></button>
+                <div class="sort-actions">
+                  <button class="sort-btn-up" onclick="moveSortItem(this,'up')" title="上移">▲</button>
+                  <button class="sort-btn-down" onclick="moveSortItem(this,'down')" title="下移">▼</button>
+                </div>
+              </div>
+              <div class="sortable-item" draggable="true" data-id="thu" style="flex-wrap:wrap;padding:12px">
+                <div class="drag-handle" title="拖拽排序">≡</div>
+                <div class="sort-order">02</div>
+                <div class="sort-content" style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:4px">
+                  <span class="sort-name">清华大学</span>
+                  <span class="sort-desc">产学研合作 · 大模型推理加速与端侧部署联合攻关</span>
+                </div>
+                <div class="sort-content" style="flex:1;min-width:100px;display:flex;gap:4px;flex-wrap:wrap;align-items:center">
+                  <span class="tag tag-purple" style="font-size:9px">产学研合作</span><span class="tag tag-green" style="font-size:9px">模型量化部署</span>
+                </div>
+                <button class="sort-toggle-btn on" onclick="toggleSortItem(this)" title="首页显示/隐藏"></button>
+                <button class="btn btn-outline btn-sm" style="margin-left:8px" onclick="openPartnerEdit('thu')"><i data-lucide="pencil"></i></button>
+                <button class="btn btn-danger btn-sm" onclick="deletePartner('thu')"><i data-lucide="trash-2"></i></button>
+                <div class="sort-actions">
+                  <button class="sort-btn-up" onclick="moveSortItem(this,'up')" title="上移">▲</button>
+                  <button class="sort-btn-down" onclick="moveSortItem(this,'down')" title="下移">▼</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 合作院校编辑弹窗 ========== -->
+    <div class="modal-overlay" id="partnerEditOverlay" onclick="if(event.target===this)closePartnerEdit()">
+      <div class="modal" style="max-width:720px;width:92%">
+        <div class="modal-header">
+          <span style="font-weight:600;display:flex;align-items:center;gap:8px"><i data-lucide="building" style="width:18px;height:18px;color:var(--ink)"></i> <span id="partnerEditTitle">编辑合作院校</span></span>
+          <button class="modal-close" onclick="closePartnerEdit()"><i data-lucide="x" style="width:14px;height:14px"></i></button>
+        </div>
+        <div class="modal-body">
+          <!-- 基础信息 -->
+          <div style="font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:14px;display:flex;align-items:center;gap:6px"><i data-lucide="info" style="width:15px;height:15px;color:var(--ink)"></i> 基础信息</div>
+          <div class="form-group"><label>名称 <span class="req">*</span></label><input id="peName" placeholder="如：北京大学"></div>
+          <div class="form-group"><label>标签（多个，逗号分隔）</label><input id="peTags" placeholder="如：联合实验室, 大模型应用开发"></div>
+          <div class="form-group"><label>概述</label><textarea id="peDesc" placeholder="简要描述合作内容与亮点…" style="min-height:80px"></textarea></div>
+          <div class="form-group"><label>卡片水印图片</label>
+            <div style="display:flex;align-items:center;gap:12px">
+              <div id="peImgPreview" style="width:80px;height:56px;border-radius:var(--r-xs);border:1px dashed var(--border-default);display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--bg-surface);flex-shrink:0;cursor:pointer" onclick="document.getElementById('peImgInput').click()">
+                <span style="font-size:10px;color:var(--text-dim);text-align:center">点击<br>上传</span>
+                <img id="peImg" src="" style="display:none;width:100%;height:100%;object-fit:contain">
+              </div>
+              <div style="font-size:11px;color:var(--text-dim)">建议透明 PNG，将作为<br>卡片水印显示在右下角</div>
+            </div>
+            <input type="file" id="peImgInput" accept="image/*" style="display:none" onchange="handlePartnerImgUpload(this)">
+          </div>
+          <div style="margin-top:14px;display:flex;align-items:center;gap:16px">
+            <div style="display:flex;align-items:center;gap:8px"><span class="toggle on" id="peVisible" onclick="this.classList.toggle('on')"></span><span style="font-size:13px;color:var(--text-secondary)">首页显示</span></div>
+          </div>
+          <!-- 合作成果 -->
+          <div style="font-size:14px;font-weight:600;color:var(--text-primary);margin:24px 0 14px;display:flex;align-items:center;gap:6px"><i data-lucide="trophy" style="width:15px;height:15px;color:var(--ink)"></i> 合作成果</div>
+          <div id="peAchieveList" style="display:flex;flex-direction:column;gap:14px">
+            <!-- dynamic -->
+          </div>
+          <button class="btn btn-outline btn-sm" style="margin-top:8px" onclick="addAchieveField()"><i data-lucide="plus"></i> 添加成果</button>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="closePartnerEdit()">取消</button>
+          <button class="btn btn-primary" onclick="savePartnerEdit()"><i data-lucide="save"></i> 保存</button>
+        </div>
+      </div>
+    </div>
+
     <!-- ========== 我的客户 ========== -->
     <div class="page" id="page-bookings-mine">
       <div class="panel">
@@ -1088,6 +1181,7 @@ var pageTitles = {
   'portal-path':'学员成果',
   'courses-manage':'课程管理',
   'courses-add':'新增/编辑课程',
+  'partners-manage':'合作院校管理',
   'bookings-mine':'客户列表',
   'bookings-archive':'已归档客户',
   'cs-config':'智能客服 · 参数配置',
@@ -1102,6 +1196,7 @@ var pageIcons = {
   'portal-path':'award',
   'courses-manage':'book-marked',
   'courses-add':'plus-circle',
+  'partners-manage':'building',
   'bookings-mine':'user-check',
   'bookings-archive':'archive',
   'cs-config':'settings',
@@ -1596,6 +1691,220 @@ function openCSRecordDetail(sessionId) {
 function closeCSRecordDetail() {
   document.getElementById('csRecordDetailOverlay').classList.remove('open');
   document.body.style.overflow = '';
+}
+
+// ============ PARTNER MANAGEMENT ============
+var partnerMgmtData = {
+  'pku': {
+    id:'pku', name:'北京大学', type:'联合实验室', tags:['联合实验室','大模型应用开发'],
+    desc:'共建"大模型应用创新联合实验室"，聚焦 Agent 架构与多模态交互前沿研究，推动学术成果向产业应用转化。',
+    achievements: [
+      { name:'联合培养学员', content:'累计培养 800+ 名学员完成大模型应用开发实训，结业项目在 ACM MM、EMNLP 等顶级学术会议展示', img:'' },
+      { name:'共建课程', content:'联合开发 12 门核心课程，覆盖 Prompt 设计、MCP 工具链到全栈交付的完整链路', img:'' },
+      { name:'联合科研项目', content:'8 项联合科研项目落地，涵盖 RAG 检索增强、端侧推理优化等前沿方向', img:'' },
+      { name:'发表论文/专利', content:'联合发表 15 篇高水平论文及发明专利，推动学术成果向产业应用高效转化', img:'' }
+    ],
+    img:'', visible:true
+  },
+  'thu': {
+    id:'thu', name:'清华大学', type:'产学研合作', tags:['产学研合作','模型量化部署'],
+    desc:'依托清华 AI 研究院，开展大模型推理加速与端侧部署联合攻关，科研成果直接转化为教学案例。',
+    achievements: [
+      { name:'联合培养学员', content:'累计培养 500+ 名学员，涵盖博士、硕士及本科三个层次，形成完整AI人才培养梯队', img:'' },
+      { name:'联合攻关项目', content:'基于昇腾 NPU 的大模型推理加速方案，推理延迟降低 40%，已进入规模化部署阶段', img:'' },
+      { name:'技术白皮书', content:'联合发布 10 份技术白皮书，覆盖模型量化、NPU 调度优化等核心领域', img:'' },
+      { name:'联合专利', content:'3 项发明专利联合申请，覆盖模型量化压缩与端侧 NPU 推理调度优化', img:'' }
+    ],
+    img:'', visible:true
+  }
+};
+var _peCurrentId = null;
+
+function openPartnerEdit(id) {
+  _peCurrentId = id || null;
+  document.getElementById('partnerEditOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('partnerEditTitle').textContent = id ? '编辑合作院校' : '新增合作院校';
+  if (id && partnerMgmtData[id]) {
+    var d = partnerMgmtData[id];
+    document.getElementById('peName').value = d.name;
+    document.getElementById('peTags').value = (d.tags || []).join(', ');
+    document.getElementById('peDesc').value = d.desc || '';
+    var visibleToggle = document.getElementById('peVisible');
+    if (d.visible) { visibleToggle.classList.add('on'); } else { visibleToggle.classList.remove('on'); }
+    if (d.img) {
+      document.getElementById('peImg').src = d.img;
+      document.getElementById('peImg').style.display = 'block';
+      document.getElementById('peImgPreview').querySelector('span').style.display = 'none';
+    } else {
+      document.getElementById('peImg').style.display = 'none';
+      document.getElementById('peImgPreview').querySelector('span').style.display = '';
+    }
+    renderAchieveFields(d.achievements || []);
+  } else {
+    document.getElementById('peName').value = '';
+    document.getElementById('peTags').value = '';
+    document.getElementById('peDesc').value = '';
+    document.getElementById('peVisible').classList.add('on');
+    document.getElementById('peImg').style.display = 'none';
+    document.getElementById('peImgPreview').querySelector('span').style.display = '';
+    renderAchieveFields([]);
+  }
+  setTimeout(function(){ lucide.createIcons(); }, 100);
+}
+
+function closePartnerEdit() {
+  document.getElementById('partnerEditOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function handlePartnerImgUpload(input) {
+  var file = input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('peImg').src = e.target.result;
+    document.getElementById('peImg').style.display = 'block';
+    document.getElementById('peImgPreview').querySelector('span').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function renderAchieveFields(achievements) {
+  var list = document.getElementById('peAchieveList');
+  if (!list) return;
+  if (!achievements.length) {
+    list.innerHTML = '<div style="font-size:12px;color:var(--text-dim);padding:12px;text-align:center">暂无合作成果，点击下方按钮添加</div>';
+    return;
+  }
+  list.innerHTML = achievements.map(function(a, idx) {
+    var imgPreview = a.img ? '<img src="' + a.img + '" style="width:100%;height:100%;object-fit:cover">' : '<span style="font-size:9px;color:var(--text-dim)">图片</span>';
+    return '<div class="achieve-field-item" style="display:flex;gap:10px;padding:12px;background:var(--bg-surface);border-radius:var(--r-sm);border:1px solid var(--border-subtle);align-items:flex-start">' +
+      '<div style="width:70px;height:48px;border-radius:var(--r-xs);border:1px dashed var(--border-default);display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--bg-card);flex-shrink:0;cursor:pointer;position:relative" onclick="this.querySelector(\'input\').click()">' +
+        imgPreview +
+        '<input type="file" accept="image/*" style="display:none" onchange="handleAchieveImg(this,' + idx + ')">' +
+      '</div>' +
+      '<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">' +
+        '<input class="achieve-name" placeholder="成果名称" value="' + (a.name || '') + '" style="padding:6px 10px;border:1px solid var(--border-default);border-radius:var(--r-xs);font-size:12px;font-family:var(--font);width:100%">' +
+        '<textarea class="achieve-content" placeholder="成果描述" style="padding:6px 10px;border:1px solid var(--border-default);border-radius:var(--r-xs);font-size:12px;font-family:var(--font);width:100%;resize:vertical;min-height:48px">' + (a.content || '') + '</textarea>' +
+      '</div>' +
+      '<button class="btn btn-outline btn-sm" style="flex-shrink:0;color:var(--red);border-color:rgba(255,59,48,0.2)" onclick="this.closest(\'.achieve-field-item\').remove()"><i data-lucide="x"></i></button>' +
+    '</div>';
+  }).join('');
+  setTimeout(function(){ lucide.createIcons(); }, 50);
+}
+
+function addAchieveField() {
+  var list = document.getElementById('peAchieveList');
+  var empty = list.querySelector('div[style]');
+  if (empty) empty.remove();
+  var idx = list.querySelectorAll('.achieve-field-item').length;
+  var div = document.createElement('div');
+  div.className = 'achieve-field-item';
+  div.style.cssText = 'display:flex;gap:10px;padding:12px;background:var(--bg-surface);border-radius:var(--r-sm);border:1px solid var(--border-subtle);align-items:flex-start';
+  div.innerHTML =
+    '<div style="width:70px;height:48px;border-radius:var(--r-xs);border:1px dashed var(--border-default);display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--bg-card);flex-shrink:0;cursor:pointer;position:relative" onclick="this.querySelector(\'input\').click()">' +
+      '<span style="font-size:9px;color:var(--text-dim)">图片</span>' +
+      '<input type="file" accept="image/*" style="display:none" onchange="handleAchieveImg(this,' + idx + ')">' +
+    '</div>' +
+    '<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">' +
+      '<input class="achieve-name" placeholder="成果名称" style="padding:6px 10px;border:1px solid var(--border-default);border-radius:var(--r-xs);font-size:12px;font-family:var(--font);width:100%">' +
+      '<textarea class="achieve-content" placeholder="成果描述" style="padding:6px 10px;border:1px solid var(--border-default);border-radius:var(--r-xs);font-size:12px;font-family:var(--font);width:100%;resize:vertical;min-height:48px"></textarea>' +
+    '</div>' +
+    '<button class="btn btn-outline btn-sm" style="flex-shrink:0;color:var(--red);border-color:rgba(255,59,48,0.2)" onclick="this.closest(\'.achieve-field-item\').remove()"><i data-lucide="x"></i></button>';
+  list.appendChild(div);
+  setTimeout(function(){ lucide.createIcons(); }, 50);
+}
+
+function handleAchieveImg(input, idx) {
+  var file = input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var container = input.parentElement;
+    container.innerHTML = '<img src="' + e.target.result + '" style="width:100%;height:100%;object-fit:cover">';
+  };
+  reader.readAsDataURL(file);
+}
+
+function savePartnerEdit() {
+  var name = document.getElementById('peName').value.trim();
+  if (!name) { alert('请输入院校名称'); return; }
+  var tagsStr = document.getElementById('peTags').value.trim();
+  var tags = tagsStr ? tagsStr.split(',').map(function(t){ return t.trim(); }).filter(Boolean) : [];
+  var desc = document.getElementById('peDesc').value.trim();
+  var visible = document.getElementById('peVisible').classList.contains('on');
+  var imgSrc = document.getElementById('peImg').src;
+  if (!imgSrc || imgSrc === window.location.href) imgSrc = '';
+
+  var achieveItems = document.querySelectorAll('#peAchieveList .achieve-field-item');
+  var achievements = [];
+  achieveItems.forEach(function(item) {
+    var aName = (item.querySelector('.achieve-name') || {}).value || '';
+    var aContent = (item.querySelector('.achieve-content') || {}).value || '';
+    var aImgEl = item.querySelector('img');
+    var aImg = aImgEl ? aImgEl.src : '';
+    if (aName || aContent) {
+      achievements.push({ name: aName.trim(), content: aContent.trim(), img: aImg });
+    }
+  });
+
+  var id = _peCurrentId || 'p_' + Date.now();
+  if (!partnerMgmtData[id]) {
+    partnerMgmtData[id] = { id: id };
+  }
+  partnerMgmtData[id].name = name;
+  partnerMgmtData[id].tags = tags;
+  partnerMgmtData[id].desc = desc;
+  partnerMgmtData[id].achievements = achievements;
+  partnerMgmtData[id].img = imgSrc;
+  partnerMgmtData[id].visible = visible;
+  partnerMgmtData[id].type = tags[0] || '';
+
+  refreshPartnerMgmtList();
+  closePartnerEdit();
+  alert('已保存');
+}
+
+function refreshPartnerMgmtList() {
+  var list = document.getElementById('partnerMgmtList');
+  if (!list) return;
+  var items = [];
+  for (var k in partnerMgmtData) { items.push(partnerMgmtData[k]); }
+  list.innerHTML = items.map(function(d, idx) {
+    var tagsHTML = (d.tags || []).map(function(t) {
+      return '<span class="tag tag-blue" style="font-size:9px">' + t + '</span>';
+    }).join('');
+    var visibleClass = d.visible !== false ? 'on' : '';
+    return '<div class="sortable-item" draggable="true" data-id="' + d.id + '" style="flex-wrap:wrap;padding:12px">' +
+      '<div class="drag-handle" title="拖拽排序">≡</div>' +
+      '<div class="sort-order">' + ('0' + (idx + 1)).slice(-2) + '</div>' +
+      '<div class="sort-content" style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:4px">' +
+        '<span class="sort-name">' + (d.name || '') + '</span>' +
+        '<span class="sort-desc">' + ((d.tags && d.tags[0]) || '') + ' · ' + (d.desc || '').substring(0, 40) + '…</span>' +
+      '</div>' +
+      '<div class="sort-content" style="flex:1;min-width:100px;display:flex;gap:4px;flex-wrap:wrap;align-items:center">' + tagsHTML + '</div>' +
+      '<button class="sort-toggle-btn ' + visibleClass + '" onclick="toggleSortItem(this)" title="首页显示/隐藏"></button>' +
+      '<button class="btn btn-outline btn-sm" style="margin-left:8px" onclick="openPartnerEdit(\'' + d.id + '\')"><i data-lucide="pencil"></i></button>' +
+      '<button class="btn btn-danger btn-sm" onclick="deletePartner(\'' + d.id + '\')"><i data-lucide="trash-2"></i></button>' +
+      '<div class="sort-actions">' +
+        '<button class="sort-btn-up" onclick="moveSortItem(this,\'up\')" title="上移">▲</button>' +
+        '<button class="sort-btn-down" onclick="moveSortItem(this,\'down\')" title="下移">▼</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+  setTimeout(function(){ lucide.createIcons(); }, 100);
+  if (typeof initAllSortables === 'function') initAllSortables();
+}
+
+function deletePartner(id) {
+  if (!confirm('确定要删除该合作院校吗？')) return;
+  delete partnerMgmtData[id];
+  refreshPartnerMgmtList();
+}
+
+function savePartnerList() {
+  alert('排序已保存');
 }
 
 // ============ INIT ============

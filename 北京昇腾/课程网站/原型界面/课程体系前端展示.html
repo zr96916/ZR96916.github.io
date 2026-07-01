@@ -535,10 +535,6 @@ body::after{content:none}
 .partner-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 .partner-card{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:0;padding:12px 14px;cursor:pointer;transition:all .4s cubic-bezier(0.16,1,0.3,1),box-shadow .4s cubic-bezier(0.16,1,0.3,1),border-color .35s ease;position:relative;overflow:hidden;display:flex;flex-direction:column}
 .partner-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:transparent}
-.partner-card-top{display:flex;align-items:flex-start;justify-content:flex-end;gap:8px;margin-bottom:4px}
-.partner-card-arrow{width:22px;height:22px;border-radius:50%;border:1px solid var(--border-default);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-muted);opacity:0;transform:translateX(-8px);transition:all .35s cubic-bezier(0.34,1.56,0.64,1)}
-.partner-card:hover .partner-card-arrow{opacity:1;transform:translateX(0)}
-.partner-card-arrow svg{width:11px;height:11px}
 .partner-card h4{font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:2px;letter-spacing:-0.01em;line-height:1.2}
 .partner-type-tag{display:inline-block;padding:2px 8px;border-radius:var(--r-pill);font-size:9px;font-weight:500;background:var(--ink-surface);color:var(--ink);margin-bottom:6px;width:fit-content}
 .partner-card-desc{font-size:11px;color:var(--text-secondary);line-height:1.45;flex:1}
@@ -557,20 +553,34 @@ body::after{content:none}
 .partner-list-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:40px;max-width:1200px;margin:0 auto}
 .pl-card{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:0;padding:24px 20px 20px;cursor:pointer;transition:all .35s cubic-bezier(0.16,1,0.3,1);position:relative;overflow:hidden;display:flex;flex-direction:column}
 .pl-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:transparent}
-.pl-card-watermark{position:absolute;right:-8px;bottom:-8px;width:100px;height:100px;opacity:.08;pointer-events:none;z-index:0;transition:opacity .35s ease}
-.pl-card:hover .pl-card-watermark{opacity:.14}
+.pl-card-watermark{position:absolute;right:-8px;bottom:-10px;width:90px;height:90px;opacity:.3;pointer-events:none;z-index:0;transition:opacity .35s ease}
+.pl-card:hover .pl-card-watermark{opacity:.36}
 .pl-card-watermark img{width:100%;height:100%;object-fit:contain}
 .pl-card h4{font-size:16px;font-weight:600;color:var(--text-primary);letter-spacing:-0.01em;position:relative;z-index:1;margin-bottom:4px}
 .pl-type-tag{display:inline-block;padding:3px 10px;border-radius:var(--r-pill);font-size:10px;font-weight:500;background:var(--ink-surface);color:var(--ink);margin-bottom:10px;width:fit-content}
 .pl-card p{font-size:13px;color:var(--text-secondary);line-height:1.5;position:relative;z-index:1;flex:1}
-.pl-card-arrow{position:absolute;top:24px;right:20px;width:26px;height:26px;border-radius:50%;border:1px solid var(--border-default);display:flex;align-items:center;justify-content:center;color:var(--text-muted);opacity:0;transform:translateX(-8px);transition:all .35s cubic-bezier(0.34,1.56,0.64,1);z-index:1}
-.pl-card:hover .pl-card-arrow{opacity:1;transform:translateX(0)}
-.pl-card-arrow svg{width:12px;height:12px}
 /* Partner detail page */
-.pd-achieve-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:36px}
-.pd-achieve-item{background:var(--bg-surface);border-radius:var(--r-md);padding:28px 20px;text-align:center;border:1px solid var(--border-subtle)}
-.pd-achieve-num{font-size:36px;font-weight:600;color:var(--ink);font-family:var(--font-display);line-height:1;letter-spacing:-0.03em}
-.pd-achieve-label{font-size:13px;color:var(--text-secondary);margin-top:8px}
+.pd-header{margin-bottom:28px}
+.pd-header h1{font-size:40px;font-weight:600;color:var(--text-primary);letter-spacing:-0.02em;line-height:1.15;margin-bottom:10px}
+.pd-header-tag{display:inline-flex;align-items:center;gap:5px;padding:5px 14px;border-radius:var(--r-pill);font-size:12px;font-weight:500;background:var(--ink-surface);color:var(--ink)}
+.pd-overview{font-size:16px;color:var(--text-secondary);line-height:1.65;margin-bottom:40px}
+.pd-section-title{font-size:22px;font-weight:600;color:var(--text-primary);margin-bottom:18px;letter-spacing:-0.01em}
+.pd-achieve-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:0}
+.pd-achieve-item{background:var(--bg-card);border-radius:var(--r-md);overflow:hidden;border:1px solid var(--border-subtle);cursor:pointer;transition:all .3s var(--ease-out)}
+.pd-achieve-item:hover{box-shadow:var(--shadow-md);border-color:var(--border-default);transform:translateY(-2px)}
+.pd-achieve-img{width:100%;height:140px;background:var(--bg-surface);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.pd-achieve-img img{width:100%;height:100%;object-fit:cover}
+.pd-achieve-img i{width:40px;height:40px;color:var(--text-dim)}
+.pd-achieve-body{padding:18px 20px 20px}
+.pd-achieve-label{font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:6px;letter-spacing:-0.01em}
+.pd-achieve-desc{font-size:13px;color:var(--text-secondary);line-height:1.55;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+/* Achievement detail overlay */
+.pd-detail-sticky{position:sticky;top:52px;z-index:19;display:flex;align-items:center;gap:10px;padding:12px 32px;background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-subtle);margin-bottom:0}
+.pd-detail-sticky .cc-back{color:var(--ink);margin-bottom:0}
+.pd-detail-img{width:100%;max-height:360px;border-radius:var(--r-md);overflow:hidden;margin-bottom:28px;background:var(--bg-surface)}
+.pd-detail-img img{width:100%;height:100%;object-fit:contain;max-height:360px}
+.pd-detail-desc{font-size:16px;color:var(--text-secondary);line-height:1.7}
+@media(max-width:700px){.pd-achieve-grid{grid-template-columns:1fr}}
 .pd-section{margin-bottom:32px}
 .pd-section h3{font-size:20px;font-weight:600;color:var(--text-primary);margin-bottom:12px;letter-spacing:-0.01em;display:flex;align-items:center;gap:8px}
 .pd-section h3 i{width:18px;height:18px;stroke-width:2;color:var(--ink)}
@@ -617,10 +627,10 @@ body::after{content:none}
     <ul class="nav-links">
       <li><span style="color:var(--text-secondary);font-size:13px;font-weight:500;padding:6px 14px;cursor:pointer;border-radius:6px;transition:all .15s" onmouseover="this.style.background='rgba(0,0,0,0.03)';this.style.color='var(--text-primary)'" onmouseout="this.style.background='transparent';this.style.color=''" onclick="window.goHome()">首页</span></li>
       <li><span style="color:var(--text-secondary);font-size:13px;font-weight:500;padding:6px 14px;cursor:pointer;border-radius:6px;transition:all .15s" onmouseover="this.style.background='rgba(0,0,0,0.03)';this.style.color='var(--text-primary)'" onmouseout="this.style.background='transparent';this.style.color=''" onclick="window.showCourseCenter()">课程中心</span></li>
-      <li><span style="color:var(--text-secondary);font-size:13px;font-weight:500;padding:6px 14px;cursor:pointer;border-radius:6px;transition:all .15s" onmouseover="this.style.background='rgba(0,0,0,0.03)';this.style.color='var(--text-primary)'" onmouseout="this.style.background='transparent';this.style.color=''" onclick="window.showLearningPath()">学习路径</span></li>
+      <li style="display:none"><span style="color:var(--text-secondary);font-size:13px;font-weight:500;padding:6px 14px;cursor:pointer;border-radius:6px;transition:all .15s" onmouseover="this.style.background='rgba(0,0,0,0.03)';this.style.color='var(--text-primary)'" onmouseout="this.style.background='transparent';this.style.color=''" onclick="window.showLearningPath()">学习路径</span></li>
       <li><span style="color:var(--text-secondary);font-size:13px;font-weight:500;padding:6px 14px;cursor:pointer;border-radius:6px;transition:all .15s" onmouseover="this.style.background='rgba(0,0,0,0.03)';this.style.color='var(--text-primary)'" onmouseout="this.style.background='transparent';this.style.color=''" onclick="window.showAbout()">关于我们</span></li>
       <li><span style="color:var(--text-secondary);font-size:13px;font-weight:500;padding:6px 14px;cursor:pointer;border-radius:6px;transition:all .15s" onmouseover="this.style.background='rgba(0,0,0,0.03)';this.style.color='var(--text-primary)'" onmouseout="this.style.background='transparent';this.style.color=''" onclick="window.showPartnerList()">合作院校</span></li>
-      <li><span style="color:var(--text-secondary);font-size:13px;font-weight:500;padding:6px 14px;cursor:pointer;border-radius:6px;transition:all .15s" onmouseover="this.style.background='rgba(0,0,0,0.03)';this.style.color='var(--text-primary)'" onmouseout="this.style.background='transparent';this.style.color=''" onclick="window.showFAQ()">FAQ</span></li>
+      <li style="display:none"><span style="color:var(--text-secondary);font-size:13px;font-weight:500;padding:6px 14px;cursor:pointer;border-radius:6px;transition:all .15s" onmouseover="this.style.background='rgba(0,0,0,0.03)';this.style.color='var(--text-primary)'" onmouseout="this.style.background='transparent';this.style.color=''" onclick="window.showFAQ()">FAQ</span></li>
     </ul>
   </div>
   <div class="nav-right">
@@ -946,7 +956,6 @@ body::after{content:none}
     <div class="section-label">合作院校</div>
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
       <h2 class="section-title" style="margin-bottom:0">合作院校与成果</h2>
-      <a class="partner-more-link" onclick="showPartnerList()">了解详情 <i data-lucide="arrow-right" style="width:12px;height:12px"></i></a>
     </div>
     <p class="section-desc">与多所高校深度合作，共建 AI 人才培养生态</p>
     <div class="partner-grid" id="partnerGrid">
@@ -1294,7 +1303,7 @@ body::after{content:none}
 <div class="page-view" id="partnerListView">
   <div class="cc-hero" style="padding-bottom:24px">
     <h1>合作院校</h1>
-    <p>与 12 所顶尖高校深度合作，共建 AI 人才培养生态</p>
+    <p>与多所高校深度合作，共建 AI 人才培养生态</p>
   </div>
   <div class="partner-list-grid" id="partnerListGrid">
     <!-- rendered by JS -->
@@ -1303,10 +1312,10 @@ body::after{content:none}
 
 <!-- Partner Detail Page -->
 <div class="page-view" id="partnerDetailView">
-  <div class="cc-hero" style="padding-bottom:24px">
-    <button class="cc-back" onclick="showPartnerList()"><i data-lucide="arrow-left" style="width:16px;height:16px"></i> 返回合作院校</button>
-    <h1 id="pdName">—</h1>
-    <p id="pdMeta">—</p>
+  <div style="position:sticky;top:0;z-index:20;min-height:52px;display:flex;align-items:center;gap:14px;padding:10px 28px;background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-subtle);flex-wrap:wrap">
+    <button class="cc-back" id="pdBackBtn" onclick="showPartnerList()" style="margin-bottom:0;flex-shrink:0"><i data-lucide="arrow-left" style="width:14px;height:14px"></i> 返回合作院校</button>
+    <span style="font-size:12px;color:var(--text-dim)">/</span>
+    <span style="font-size:15px;font-weight:600;color:var(--text-primary);letter-spacing:-0.01em" id="pdBreadcrumb">—</span>
   </div>
   <div style="max-width:800px;margin:0 auto;padding:40px 32px 80px" id="pdContent">
     <!-- rendered by JS -->
@@ -2102,21 +2111,10 @@ var partnerData = [
     period: '2023年至今',
     domains: ['大模型应用开发', 'Agent架构研究', '多模态交互'],
     achievements: [
-      { num: '800+', label: '联合培养学员' },
-      { num: '12',   label: '共建课程' },
-      { num: '8',    label: '联合科研项目' },
-      { num: '15',   label: '发表论文/专利' }
-    ],
-    highlights: [
-      '共建"大模型应用创新联合实验室"，获评校级重点实验室',
-      '联合开发《Agent进阶之道》核心课程，覆盖 Prompt 设计、MCP 工具链、全栈交付',
-      '8 项联合科研项目落地，涵盖 RAG 检索增强、端侧推理优化等方向',
-      '累计 800+ 名学员完成实训，学员项目在 ACM MM、EMNLP 等顶会展示'
-    ],
-    programs: [
-      '研究生联合培养计划：每年定向招收 20 名 AI 工程方向研究生',
-      '暑期实训营：面向本科生开设 6 周密集 AI 应用开发实训',
-      '企业导师制：昇腾工程师定期驻校授课，真实项目进课堂'
+      { num: '800+', label: '联合培养学员', desc: '累计培养 800+ 名学员完成大模型应用开发实训，结业项目在 ACM MM、EMNLP 等顶级学术会议展示，多名学员进入头部 AI 企业', icon: 'users', color: 'blue', img: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&h=400&fit=crop' },
+      { num: '12',   label: '共建课程', desc: '联合开发 12 门核心课程，覆盖 Prompt 设计、MCP 工具链到全栈交付的完整链路，获评校级精品课程 3 门', icon: 'book-open', color: 'green', img: 'https://images.unsplash.com/photo-1513258496099-48168024aec0?w=600&h=400&fit=crop' },
+      { num: '8',    label: '联合科研项目', desc: '8 项联合科研项目落地，涵盖 RAG 检索增强、端侧推理优化等前沿方向，其中 3 项获国家自然科学基金支持', icon: 'flask-conical', color: 'purple', img: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=600&h=400&fit=crop' },
+      { num: '15',   label: '发表论文/专利', desc: '联合发表 15 篇高水平论文及发明专利，推动学术成果向产业应用高效转化，含 3 项发明专利授权', icon: 'file-text', color: 'orange', img: 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=600&h=400&fit=crop' }
     ]
   },
   {
@@ -2131,10 +2129,10 @@ var partnerData = [
     period: '2022年至今',
     domains: ['大模型推理加速', '模型量化部署', '端侧AI芯片适配'],
     achievements: [
-      { num: '500+', label: '联合培养学员' },
-      { num: '6',    label: '联合攻关项目' },
-      { num: '10',   label: '技术白皮书' },
-      { num: '3',    label: '联合专利' }
+      { num: '500+', label: '联合培养学员', desc: '累计培养 500+ 名学员，涵盖博士、硕士及本科三个层次，形成完整AI人才培养梯队', icon: 'users', color: 'blue' },
+      { num: '6',    label: '联合攻关项目', desc: '基于昇腾 NPU 的大模型推理加速方案，推理延迟降低 40%，已进入规模化部署阶段', icon: 'zap', color: 'green' },
+      { num: '10',   label: '技术白皮书', desc: '联合发布 10 份技术白皮书，覆盖模型量化、NPU 调度优化等核心领域', icon: 'file-text', color: 'purple' },
+      { num: '3',    label: '联合专利', desc: '3 项发明专利联合申请，覆盖模型量化压缩与端侧 NPU 推理调度优化', icon: 'shield', color: 'orange' }
     ],
     highlights: [
       '基于昇腾 NPU 的大模型推理加速方案，推理延迟降低 40%',
@@ -2160,10 +2158,10 @@ var partnerData = [
     period: '2023年至今',
     domains: ['端侧推理', '视觉检测', '无人系统AI'],
     achievements: [
-      { num: '600+', label: '实训学员' },
-      { num: '10',   label: '创新项目' },
-      { num: '5',    label: '竞赛获奖' },
-      { num: '200+', label: '开发板发放' }
+      { num: '600+', label: '实训学员', desc: '累计 600+ 名学员通过端侧 AI 实训课程，掌握 YOLOv8/ONNX 模型部署全流程', icon: 'users', color: 'blue' },
+      { num: '10',   label: '创新项目', desc: '10 项创新项目落地，覆盖视觉检测、无人机自主导航等端侧 AI 应用场景', icon: 'lightbulb', color: 'green' },
+      { num: '5',    label: '竞赛获奖', desc: '学员团队获全国大学生嵌入式 AI 竞赛一等奖 2 次、二等奖 3 次', icon: 'trophy', color: 'purple' },
+      { num: '200+', label: '开发板发放', desc: '累计发放 200+ 香橙派 AIpro 开发板供学员课后练习，形成"课上学、课下练"闭环', icon: 'cpu', color: 'orange' }
     ],
     highlights: [
       '共建\"端侧 AI 联合创新中心\"，配备 50 台香橙派 AIpro 开发板',
@@ -2189,10 +2187,10 @@ var partnerData = [
     period: '2023年至今',
     domains: ['智能体开发', '低代码平台', '金融AI应用'],
     achievements: [
-      { num: '700+', label: '实训学员' },
-      { num: '8',    label: '共建实验室' },
-      { num: '15+',  label: '企业实训项目' },
-      { num: '95%',  label: '学员满意度' }
+      { num: '700+', label: '实训学员', desc: '累计 700+ 名学员完成智能体应用开发实训，覆盖经管、金融等非 CS 专业背景', icon: 'users', color: 'blue' },
+      { num: '8',    label: '共建实验室', desc: '8 个联合实验室覆盖 Agent 开发、RAG 检索、金融 AI 等核心方向', icon: 'building', color: 'green' },
+      { num: '15+',  label: '企业实训项目', desc: '15+ 企业真实需求实训项目：智能客服、合规审查、研报分析等场景落地', icon: 'briefcase', color: 'purple' },
+      { num: '95%',  label: '学员满意度', desc: '学员满意度达 95%，结业学员推荐率 88%，非 CS 专业学员占比超 60%', icon: 'heart', color: 'orange' }
     ],
     highlights: [
       '共建\"智能体应用开发实训基地\"，8 个联合实验室覆盖 Agent/RAG/金融 AI',
@@ -2218,21 +2216,10 @@ var partnerData = [
     period: '2022年至今',
     domains: ['RAG技术', '混合检索', '垂直领域推理'],
     achievements: [
-      { num: '300+', label: '联合培养研究生' },
-      { num: '5',    label: '联合课题' },
-      { num: '20+',  label: '学术论文' },
-      { num: '4',    label: '开源工具' }
-    ],
-    highlights: [
-      '联合开展 RAG 混合检索优化研究，稠密 + 稀疏检索准确率提升 18%',
-      '政务/法律垂直领域 RAG 推理引擎，已在 3 个政府单位试点应用',
-      '合作发表 20+ 篇学术论文，含 ACL/AAAI/CIKM 等顶会',
-      '开源 4 个 RAG 工具组件：文档解析器、向量索引优化、幻觉检测等'
-    ],
-    programs: [
-      '研究生联合培养：国科大计算所 + 昇腾联合指导硕士/博士',
-      '开源贡献计划：学员参与 RAG 工具链开源项目，积累 GitHub 贡献',
-      '学术夏令营：每年暑假 2 周，面向全国研究生开放 AI 工程实训'
+      { num: '300+', label: '联合培养研究生', desc: '国科大计算所 + 昇腾联合指导硕士/博士，累计培养 300+ 名研究生', icon: 'graduation-cap', color: 'blue' },
+      { num: '5',    label: '联合课题', desc: '5 项联合课题覆盖 RAG 混合检索、向量索引优化、幻觉检测等核心方向', icon: 'flask-conical', color: 'green' },
+      { num: '20+',  label: '学术论文', desc: '合作发表 20+ 篇学术论文，含 ACL/AAAI/CIKM 等顶级学术会议', icon: 'file-text', color: 'purple' },
+      { num: '4',    label: '开源工具', desc: '开源 4 个 RAG 工具组件：文档解析器、向量索引优化、幻觉检测等', icon: 'code', color: 'orange' }
     ]
   },
   {
@@ -2246,10 +2233,10 @@ var partnerData = [
     period: '2024年至今',
     domains: ['区域人才培养', '产业对接', '创业孵化'],
     achievements: [
-      { num: '1200+', label: '区域覆盖学员' },
-      { num: '6',     label: '联盟高校' },
-      { num: '30+',   label: '企业合作' },
-      { num: '10',    label: '创业项目孵化' }
+      { num: '1200+', label: '区域覆盖学员', desc: '覆盖门头沟区 6 所高校，建立"1 中心 + N 基地"分布式实训网络', icon: 'users', color: 'blue' },
+      { num: '6',     label: '联盟高校', desc: '门头沟区 6 所高校学分互认，降低跨校选课门槛，共享实训资源', icon: 'building', color: 'green' },
+      { num: '30+',   label: '企业合作', desc: '30+ 京西智谷入驻企业参与课程共建与人才定向输送', icon: 'briefcase', color: 'purple' },
+      { num: '10',    label: '创业项目孵化', desc: '孵化 10 个 AI 创业项目，其中 3 个获天使轮融资', icon: 'rocket', color: 'orange' }
     ],
     highlights: [
       '覆盖门头沟区 6 所高校，建立\"1 中心 + N 基地\"分布式实训网络',
@@ -2275,10 +2262,10 @@ var partnerData = [
     period: '2023年至今',
     domains: ['大模型训练优化', '分布式推理', 'AI+交叉学科'],
     achievements: [
-      { num: '400+', label: '联合培养学员' },
-      { num: '7',    label: '共建课程' },
-      { num: '5',    label: '科研项目' },
-      { num: '12',   label: '论文发表' }
+      { num: '400+', label: '联合培养学员', desc: '累计 400+ 学员完成实训，多名学员进入头部 AI 企业', icon: 'users', color: 'blue' },
+      { num: '7',    label: '共建课程', desc: '联合开发 7 门课程，含《大模型分布式训练》等前沿内容', icon: 'book-open', color: 'green' },
+      { num: '5',    label: '科研项目', desc: '5 项 AI+交叉学科项目落地（AI+医学、AI+材料等方向）', icon: 'flask-conical', color: 'purple' },
+      { num: '12',   label: '论文发表', desc: '合作发表 12 篇高水平论文，推动学术成果向产业应用转化', icon: 'file-text', color: 'orange' }
     ],
     highlights: [
       '共建"智能计算联合实验室"，获评省级重点实验室',
@@ -2304,10 +2291,10 @@ var partnerData = [
     period: '2023年至今',
     domains: ['AI芯片适配', '异构计算', 'NPU编程'],
     achievements: [
-      { num: '350+', label: '联合培养学员' },
-      { num: '4',    label: '芯片联合项目' },
-      { num: '8',    label: '技术报告' },
-      { num: '2',    label: '联合专利' }
+      { num: '350+', label: '联合培养学员', desc: '累计 350+ 名学员完成 AI 芯片编程实训，覆盖 CANN 算子开发', icon: 'users', color: 'blue' },
+      { num: '4',    label: '芯片联合项目', desc: '4 项芯片适配联合项目，覆盖视觉/语音/NLP 三大场景', icon: 'cpu', color: 'green' },
+      { num: '8',    label: '技术白皮书', desc: '联合发布 8 份技术白皮书，推动国产 AI 芯片生态建设', icon: 'file-text', color: 'purple' },
+      { num: '2',    label: '联合专利', desc: '2 项联合专利，覆盖 NPU 算子优化与异构计算调度', icon: 'shield', color: 'orange' }
     ],
     highlights: [
       '基于昇腾 NPU 的异构计算编程课程，覆盖 CANN 算子开发',
@@ -2333,10 +2320,10 @@ var partnerData = [
     period: '2024年至今',
     domains: ['具身智能', '机器人感知', '强化学习'],
     achievements: [
-      { num: '300+', label: '联合培养学员' },
-      { num: '6',    label: '机器人项目' },
-      { num: '3',    label: '竞赛获奖' },
-      { num: '100+', label: '机器人套件发放' }
+      { num: '300+', label: '联合培养学员', desc: '累计 300+ 名学员完成具身智能入门实训，覆盖 ROS2 + 仿真环境', icon: 'users', color: 'blue' },
+      { num: '6',    label: '机器人项目', desc: '6 项机器人 AI 项目落地，覆盖导航、抓取、人机交互等方向', icon: 'bot', color: 'green' },
+      { num: '3',    label: '竞赛获奖', desc: '学员团队获 RoboCup 等国际机器人赛事奖项 3 次', icon: 'trophy', color: 'purple' },
+      { num: '100+', label: '机器人套件发放', desc: '累计发放 100+ 机器人实训套件供学员课后实践', icon: 'cpu', color: 'orange' }
     ],
     highlights: [
       '联合开发《具身智能入门》课程，含 ROS2 + 仿真环境实训',
@@ -2362,10 +2349,10 @@ var partnerData = [
     period: '2023年至今',
     domains: ['嵌入式AI', '边缘计算', 'AI硬件'],
     achievements: [
-      { num: '450+', label: '实训学员' },
-      { num: '5',    label: '共建实验室' },
-      { num: '10+',  label: '产业项目' },
-      { num: '90%',  label: '就业率' }
+      { num: '450+', label: '实训学员', desc: '累计 450+ 名学员完成嵌入式 AI 实训，掌握边缘计算开发全流程', icon: 'users', color: 'blue' },
+      { num: '5',    label: '共建实验室', desc: '共建 5 个嵌入式 AI 实验室，配备边缘计算开发板 200 台', icon: 'building', color: 'green' },
+      { num: '10+',  label: '产业项目', desc: '10+ 产业项目落地：智慧安防、工业质检、智能家居等场景', icon: 'briefcase', color: 'purple' },
+      { num: '90%',  label: '就业率', desc: '结业学员 AI 行业就业率超 90%，多数进入头部科技企业', icon: 'trending-up', color: 'orange' }
     ],
     highlights: [
       '共建 5 个嵌入式 AI 实验室，配备边缘计算开发板 200 台',
@@ -2391,10 +2378,10 @@ var partnerData = [
     period: '2024年至今',
     domains: ['工业视觉', '缺陷检测', '光电AI'],
     achievements: [
-      { num: '380+', label: '联合培养学员' },
-      { num: '4',    label: '创新项目' },
-      { num: '6',    label: '产品原型' },
-      { num: '95%',  label: '学员满意度' }
+      { num: '380+', label: '联合培养学员', desc: '累计 380+ 名学员完成工业视觉 AI 实训，学员项目获省级创业大赛金奖', icon: 'users', color: 'blue' },
+      { num: '4',    label: '创新项目', desc: '4 项创新项目落地，工业视觉缺陷检测精度达 99.2%', icon: 'lightbulb', color: 'green' },
+      { num: '6',    label: '产品原型', desc: '6 款 AI 产品原型落地：AOI 检测、3D 测量、字符识别等', icon: 'package', color: 'purple' },
+      { num: '95%',  label: '学员满意度', desc: '学员满意度达 95%，多名学员进入光谷 AI 企业联盟', icon: 'heart', color: 'orange' }
     ],
     highlights: [
       '联合开展工业视觉缺陷检测研究，检测精度达 99.2%',
@@ -2420,10 +2407,10 @@ var partnerData = [
     period: '2024年至今',
     domains: ['通信AI', '信号处理', '智能频谱'],
     achievements: [
-      { num: '280+', label: '联合培养学员' },
-      { num: '3',    label: '通信AI项目' },
-      { num: '5',    label: '论文发表' },
-      { num: '2',    label: '原型系统' }
+      { num: '280+', label: '联合培养学员', desc: '累计 280+ 名学员完成通信 AI 实训，覆盖深度学习+信号处理交叉领域', icon: 'users', color: 'blue' },
+      { num: '3',    label: '通信AI项目', desc: '3 项通信 AI 科研项目：智能频谱感知、信道估计、信号识别', icon: 'radio', color: 'green' },
+      { num: '5',    label: '论文发表', desc: '合作发表 5 篇高水平论文，含 IEEE TSP/ICASSP 等顶刊顶会', icon: 'file-text', color: 'purple' },
+      { num: '2',    label: '原型系统', desc: '2 套原型系统在合作单位部署验证，性能指标达标', icon: 'server', color: 'orange' }
     ],
     highlights: [
       '联合开发《通信 AI 导论》课程，覆盖深度学习+信号处理交叉领域',
@@ -2449,10 +2436,7 @@ function renderPartnerCards() {
     return '';
   }
   grid.innerHTML = partnerData.map(function(p) {
-    return '<div class="partner-card" onclick="openPartnerModal(\'' + p.id + '\')">' +
-      '<div class="partner-card-top">' +
-        '<div class="partner-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>' +
-      '</div>' +
+    return '<div class="partner-card" onclick="showPartnerDetail(\'' + p.id + '\')">' +
       '<h4>' + p.name + '</h4>' +
       '<span class="partner-type-tag">' + p.type + '</span>' +
       '<p class="partner-card-desc">' + p.desc + '</p>' +
@@ -2544,7 +2528,6 @@ function renderPartnerList() {
     var wm = p.logoImg ? '<div class="pl-card-watermark"><img src="' + p.logoImg + '" alt="" onerror="this.remove()"></div>' : '';
     return '<div class="pl-card" onclick="showPartnerDetail(\'' + p.id + '\')">' +
       wm +
-      '<div class="pl-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>' +
       '<h4>' + p.name + '</h4>' +
       '<span class="pl-type-tag">' + p.type + '</span>' +
       '<p>' + p.desc + '</p>' +
@@ -2563,25 +2546,65 @@ function showPartnerDetail(id) {
   v.style.minHeight = '100vh';
   v.style.background = '#f5f5f7';
   currentPage = 'partnerDetail';
+  window._pdSchoolId = id;
 
-  document.getElementById('pdName').textContent = p.name;
-  document.getElementById('pdMeta').textContent = p.type + ' · 合作周期：' + p.period + ' · 方向：' + p.domains.join(' / ');
+  document.getElementById('pdBreadcrumb').textContent = p.name;
+  document.getElementById('pdBackBtn').onclick = showPartnerList;
+  document.getElementById('pdBackBtn').innerHTML = '<i data-lucide="arrow-left" style="width:14px;height:14px"></i> 返回合作院校';
 
-  var achieveHTML = p.achievements.map(function(a) {
-    return '<div class="pd-achieve-item"><div class="pd-achieve-num">' + a.num + '</div><div class="pd-achieve-label">' + a.label + '</div></div>';
+  var achieveHTML = p.achievements.map(function(a, idx) {
+    var imgHTML = a.img
+      ? '<img src="' + a.img + '" alt="' + a.label + '" onerror="this.parentElement.innerHTML=\'<i data-lucide=\\\'image\\\'></i>\'">'
+      : '<i data-lucide="' + (a.icon || 'award') + '"></i>';
+    var desc = a.desc || '';
+    return '<div class="pd-achieve-item" onclick="showAchieveDetail(' + idx + ')">' +
+      '<div class="pd-achieve-img">' + imgHTML + '</div>' +
+      '<div class="pd-achieve-body">' +
+        '<div class="pd-achieve-label">' + a.label + '</div>' +
+        '<div class="pd-achieve-desc">' + desc + '</div>' +
+      '</div>' +
+    '</div>';
   }).join('');
-  var highlightsHTML = p.highlights.map(function(h) { return '<li>' + h + '</li>'; }).join('');
-  var programsHTML = p.programs.map(function(pr) { return '<li>' + pr + '</li>'; }).join('');
 
   document.getElementById('pdContent').innerHTML =
-    '<div class="pd-achieve-grid">' + achieveHTML + '</div>' +
-    '<div class="pd-section"><h3><i data-lucide="star"></i> 合作亮点</h3><ul class="pd-list">' + highlightsHTML + '</ul></div>' +
-    '<div class="pd-section"><h3><i data-lucide="book-open"></i> 合作项目</h3><ul class="pd-list">' + programsHTML + '</ul></div>';
+    '<div class="pd-header">' +
+      '<h1>' + p.name + '</h1>' +
+      '<span class="pd-header-tag"><i data-lucide="building" style="width:12px;height:12px"></i> ' + p.type + '</span>' +
+    '</div>' +
+    '<div class="pd-overview">' + p.desc + '</div>' +
+    '<div class="pd-section-title">合作成果</div>' +
+    '<div class="pd-achieve-grid">' + achieveHTML + '</div>';
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
   setTimeout(function() { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 100);
 }
 window.showPartnerDetail = showPartnerDetail;
+
+function showAchieveDetail(idx) {
+  var p = partnerData.find(function(x) { return x.id === window._pdSchoolId; });
+  if (!p) return;
+  var a = p.achievements[idx];
+  if (!a) return;
+
+  var bc = document.getElementById('pdBreadcrumb');
+  bc.innerHTML = '<a href="javascript:void(0)" onclick="showPartnerDetail(\'' + p.id + '\')" style="color:var(--ink);text-decoration:none">' + p.name + '</a> <span style="color:var(--text-dim)">/</span> ' + a.label;
+  var backBtn = document.getElementById('pdBackBtn');
+  backBtn.onclick = function() { showPartnerDetail(p.id); };
+  backBtn.innerHTML = '<i data-lucide="arrow-left" style="width:14px;height:14px"></i> ' + p.name;
+
+  var imgHTML = a.img
+    ? '<img src="' + a.img + '" alt="' + a.label + '" onerror="this.parentElement.innerHTML=\'<div style=\\\'padding:80px;text-align:center;color:var(--text-dim)\\\'><i data-lucide=\\\'image\\\' style=\\\'width:48px;height:48px\\\'></i></div>\'">'
+    : '<div style="padding:80px;text-align:center;color:var(--text-dim)"><i data-lucide="' + (a.icon || 'image') + '" style="width:48px;height:48px"></i></div>';
+
+  document.getElementById('pdContent').innerHTML =
+    '<div class="pd-detail-img">' + imgHTML + '</div>' +
+    '<h2 style="font-size:28px;font-weight:600;color:var(--text-primary);margin-bottom:16px;letter-spacing:-0.01em">' + a.label + '</h2>' +
+    '<div class="pd-detail-desc">' + (a.desc || '暂无详细描述') + '</div>';
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  setTimeout(function() { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 100);
+}
+window.showAchieveDetail = showAchieveDetail;
 
 // ESC key closes partner modal
 document.addEventListener('keydown', function(e) {
