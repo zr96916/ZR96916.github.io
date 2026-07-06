@@ -217,6 +217,17 @@ const MOCK = {
     { id:'APR006', type:'申诉', typeColor:'orange', source:'商户申诉', title:'申诉：工单#WO20260701055', enterprise:'黄焖鸡米饭（学院店）', town:'南桥镇', submitTime:'2026-07-02 11:30', waitHours:27, severity:'中', summary:'视频画面中人员为设备检修人员，非后厨工作人员，申请撤销明火离人报警。' },
     { id:'APR007', type:'整改', typeColor:'blue', source:'AI报警', title:'垃圾桶未加盖整改', enterprise:'老乡鸡（北关店）', town:'北关镇', submitTime:'2026-07-02 10:08', waitHours:29, severity:'低', summary:'已更换带盖垃圾桶，建立每日检查台账。' },
     { id:'APR008', type:'整改', typeColor:'blue', source:'AI报警', title:'抽烟违规整改通知', enterprise:'海底捞（中心广场店）', town:'中心镇', submitTime:'2026-07-01 09:50', waitHours:53, severity:'高', summary:'已对当事人进行处罚，全店张贴禁烟标识，加强巡查力度。' },
+    { id:'APR009', type:'变更', typeColor:'green', source:'主体变更', title:'企业主体信息变更申请', enterprise:'永和豆浆（城东店）', town:'城东镇', submitTime:'2026-07-03 10:20', waitHours:4, severity:'中', summary:'申请变更法人代表为"李明华"（原"张明华"），联系电话变更为"13900001111"，经营面积变更为"280㎡"（原"250㎡"）。', changeFields:[{field:'法人代表',oldVal:'张明华',newVal:'李明华'},{field:'联系电话',oldVal:'13812345678',newVal:'13900001111'},{field:'经营面积',oldVal:'250㎡',newVal:'280㎡'}] },
+    { id:'APR010', type:'变更', typeColor:'green', source:'主体变更', title:'食品经营许可证信息变更', enterprise:'老重庆火锅（南桥店）', town:'南桥镇', submitTime:'2026-07-02 15:30', waitHours:22, severity:'高', summary:'申请变更经营项目，新增"冷食类食品制售"，变更经营场所地址为"南桥镇解放路168号"（原"南桥镇人民路56号"）。', changeFields:[{field:'经营项目',oldVal:'热食类食品制售',newVal:'热食类食品制售、冷食类食品制售'},{field:'经营场所',oldVal:'南桥镇人民路56号',newVal:'南桥镇解放路168号'}] },
+    { id:'APR011', type:'变更', typeColor:'green', source:'主体变更', title:'企业基础信息变更申请', enterprise:'味多美烘焙坊', town:'城东镇', submitTime:'2026-07-01 11:05', waitHours:47, severity:'低', summary:'申请变更企业名称为"味多美烘焙坊（城东旗舰店）"（原"味多美烘焙坊"），同步更新招牌名称。', changeFields:[{field:'企业名称',oldVal:'味多美烘焙坊',newVal:'味多美烘焙坊（城东旗舰店）'},{field:'招牌名称',oldVal:'味多美烘焙坊',newVal:'味多美烘焙坊（城东旗舰店）'}] },
+  ],
+  archivedApprovals: [
+    { id:'ARC001', type:'整改', typeColor:'blue', source:'AI报警', title:'后厨鼠患整改通知', enterprise:'沙县小吃（中心店）', town:'中心镇', submitTime:'2026-06-28 14:10', completeTime:'2026-06-30 09:15', severity:'高', result:'通过', reviewer:'李所长', reviewTime:'2026-06-30 09:15', reviewOpinion:'整改措施到位，现场核实确认无误，予以通过。', summary:'已按要求完成全面消杀，更换防鼠设施，清理后厨死角。附现场整改照片。' },
+    { id:'ARC002', type:'申诉', typeColor:'orange', source:'商户申诉', title:'申诉：工单#WO20260625018', enterprise:'肯德基（万达店）', town:'城东镇', submitTime:'2026-06-25 10:30', completeTime:'2026-06-27 16:20', severity:'中', result:'驳回', reviewer:'李所长', reviewTime:'2026-06-27 16:20', reviewOpinion:'视频证据显示该时段确有一名后厨人员未佩戴口罩超过3分钟，AI检测置信度0.93，不符合撤销条件，驳回申诉。', summary:'申诉理由：报警时段后厨人员刚从休息区返回，正在更换口罩过程中被拍摄，申请撤销处罚。' },
+    { id:'ARC003', type:'变更', typeColor:'green', source:'主体变更', title:'企业主体信息变更申请', enterprise:'老乡鸡（北关店）', town:'北关镇', submitTime:'2026-06-22 08:50', completeTime:'2026-06-24 11:30', severity:'中', result:'通过', reviewer:'赵所长', reviewTime:'2026-06-24 11:30', reviewOpinion:'变更材料齐全，营业执照变更已完成备案，予以通过。', summary:'申请变更法人代表为"刘伟强"（原"刘伟"），统一社会信用代码不变。', changeFields:[{field:'法人代表',oldVal:'刘伟',newVal:'刘伟强'}] },
+    { id:'ARC004', type:'整改', typeColor:'blue', source:'证照到期', title:'食品经营许可证到期换证', enterprise:'黄焖鸡米饭（学院店）', town:'南桥镇', submitTime:'2026-06-20 13:25', completeTime:'2026-06-22 15:40', severity:'高', result:'通过', reviewer:'王所长', reviewTime:'2026-06-22 15:40', reviewOpinion:'新证照已核验，编号JY20260622009，有效期至2031年6月，资料完整予以通过。', summary:'已获取新食品经营许可证，编号JY20260622009，有效期至2031年6月。' },
+    { id:'ARC005', type:'变更', typeColor:'green', source:'主体变更', title:'经营场所地址变更申请', enterprise:'海底捞（中心广场店）', town:'中心镇', submitTime:'2026-06-18 09:00', completeTime:'2026-06-21 14:10', severity:'高', result:'驳回', reviewer:'陈所长', reviewTime:'2026-06-21 14:10', reviewOpinion:'新地址的食品经营场所平面图与实际不符，请重新提交准确图纸后再次申请。', summary:'因店面扩租，申请变更经营场所为"中心广场B座2-3层"（原"中心广场B座2层"）。', changeFields:[{field:'经营场所',oldVal:'中心广场B座2层',newVal:'中心广场B座2-3层'},{field:'经营面积',oldVal:'800㎡',newVal:'1200㎡'}] },
+    { id:'ARC006', type:'申诉', typeColor:'orange', source:'商户申诉', title:'申诉：工单#WO20260615042', enterprise:'第一中学食堂', town:'北关镇', submitTime:'2026-06-15 16:40', completeTime:'2026-06-18 10:00', severity:'低', result:'通过', reviewer:'赵所长', reviewTime:'2026-06-18 10:00', reviewOpinion:'经核查，该时段为食堂设备维护时间，非供餐时段，AI报警属误报，同意撤销。', summary:'明火离人报警发生在食堂设备检修期间，非正常运营时段，申请撤销本次报警工单。' },
   ],
   enterprises: [
     { id:'ENT001', name:'永和豆浆（城东店）', creditCode:'91310115MA1K3XXXXX', town:'城东镇', entityType:'餐饮服务', riskLevel:'高', bizStatus:'营业', recentOrders:12, legalPerson:'张明华' },
@@ -797,7 +808,7 @@ function Dashboard({ loading, onNavigate, userRole, roleTown }) {
             <div className="flex-1 space-y-0.5 overflow-hidden">
               {MOCK.approvals.slice(0, 5).map((a, i) => (
                 <div key={a.id} className="flex items-center gap-2 px-2 py-1 rounded table-row cursor-pointer" onClick={() => onNavigate('approval')}>
-                  <Badge color={a.type === '整改' ? 'blue' : 'orange'}>{a.type}</Badge>
+                  <Badge color={a.type === '整改' ? 'blue' : a.type === '申诉' ? 'orange' : 'green'}>{a.type}</Badge>
                   <div className="flex-1 min-w-0">
                     <div className="text-[11px] text-ink truncate">{a.enterprise}</div>
                   </div>
@@ -918,7 +929,8 @@ function BuildIcon(){ return (<svg width="18" height="18" viewBox="0 0 24 24" fi
 
 function RiskWarning({ userRole, roleTown }) {
   const isDistrict = userRole === 'R01';
-  const [tab, setTab] = useState('alarm');
+  const [tab, setTab] = useState('待整改'); // 待整改 | 已确认 | 已撤销
+  const [riskSource, setRiskSource] = useState('alarm'); // alarm | cert
   const [filterType, setFilterType] = useState('all');
   const [filterSeverity, setFilterSeverity] = useState('all');
   const [filterTown, setFilterTown] = useState(isDistrict ? 'all' : roleTown);
@@ -928,8 +940,15 @@ function RiskWarning({ userRole, roleTown }) {
     if (filterType !== 'all' && a.detectType !== filterType) return false;
     if (filterSeverity !== 'all' && a.severity !== filterSeverity) return false;
     if (filterTown !== 'all' && a.town !== filterTown) return false;
+    if (tab !== 'all' && a.status !== tab) return false;
     return true;
   });
+
+  const statusCounts = {
+    '待整改': MOCK.alarms.filter(a => a.status === '待整改').length,
+    '已确认': MOCK.alarms.filter(a => a.status === '已确认').length,
+    '已撤销': MOCK.alarms.filter(a => a.status === '已撤销').length,
+  };
 
   const detectTypes = ['鼠患','未戴口罩','未戴帽子','垃圾桶未加盖','陌生人闯入','明火离人','抽烟'];
   const towns = ['城东镇','南桥镇','中心镇','北关镇'];
@@ -949,27 +968,30 @@ function RiskWarning({ userRole, roleTown }) {
       <div>
         <h1 className="text-xl font-bold text-ink tracking-tight">风险预警</h1>
         <p className="text-sm text-ink-secondary mt-0.5">
-          {isDistrict ? 'AI报警记录 + 证照到期预警，统一入口管理' : `${roleTown} · AI报警记录 + 证照到期预警`}
+          {isDistrict ? 'AI报警记录 + 证照到期预警，按状态分类管理' : `${roleTown} · AI报警记录 + 证照到期预警`}
         </p>
       </div>
 
-      {/* Tabs */}
+      {/* Tabs — status-based */}
       <div className="flex gap-0 border-b border-slate-200">
-        <button
-          className={`px-5 py-2.5 text-sm font-medium border-b-2 transition-colors ${tab === 'alarm' ? 'border-gov-600 text-gov-600' : 'border-transparent text-ink-secondary hover:text-ink'}`}
-          onClick={() => setTab('alarm')}
-        >AI报警记录 <span className="ml-1.5 text-[11px] bg-slate-100 px-1.5 py-0.5 rounded-full">{MOCK.alarms.length}</span></button>
-        <button
-          className={`px-5 py-2.5 text-sm font-medium border-b-2 transition-colors ${tab === 'cert' ? 'border-gov-600 text-gov-600' : 'border-transparent text-ink-secondary hover:text-ink'}`}
-          onClick={() => setTab('cert')}
-        >证照到期预警 <span className="ml-1.5 text-[11px] bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded-full">{certExpiryData.length}</span></button>
+        {['待整改','已确认','已撤销'].map(s => (
+          <button key={s}
+            className={`px-5 py-2.5 text-sm font-medium border-b-2 transition-colors ${tab === s ? 'border-gov-600 text-gov-600' : 'border-transparent text-ink-secondary hover:text-ink'}`}
+            onClick={() => setTab(s)}
+          >{s} <span className={`ml-1.5 text-[11px] px-1.5 py-0.5 rounded-full ${s === '待整改' ? 'bg-amber-50 text-amber-700' : s === '已确认' ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'}`}>{statusCounts[s]}</span></button>
+        ))}
       </div>
 
-      {tab === 'alarm' ? (
-        <>
-          {/* Filters */}
-          <div className="flex flex-wrap items-center gap-3 bg-white rounded-lg border border-slate-200 p-3 animate-fade-in-up">
-            <span className="text-[11px] text-ink-muted font-medium">筛选：</span>
+      {/* Filters */}
+      <div className="flex flex-wrap items-center gap-3 bg-white rounded-lg border border-slate-200 p-3 animate-fade-in-up">
+        <span className="text-[11px] text-ink-muted font-medium">筛选：</span>
+        <select value={riskSource} onChange={e => setRiskSource(e.target.value)}
+          className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
+          <option value="alarm">AI报警记录</option>
+          <option value="cert">证照到期预警</option>
+        </select>
+        {riskSource === 'alarm' ? (
+          <>
             <select value={filterSeverity} onChange={e => setFilterSeverity(e.target.value)}
               className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
               <option value="all">全部紧急程度</option>
@@ -988,86 +1010,92 @@ function RiskWarning({ userRole, roleTown }) {
               {towns.map(t => <option key={t} value={t}>{t}</option>)}
             </select>
             <span className="ml-auto text-[11px] text-ink-muted">共 {filteredAlarms.length} 条记录</span>
-          </div>
+          </>
+        ) : (
+          <>
+            <span className="ml-auto text-[11px] text-ink-muted">共 {certExpiryData.length} 条记录</span>
+          </>
+        )}
+      </div>
 
-          {/* Table */}
-          <div className="bg-white rounded-lg border border-slate-200 overflow-hidden animate-fade-in-up">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-slate-50 border-b border-slate-200">
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">报警时间</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">企业名称</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">所属镇</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">检测类型</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">置信度</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">紧急程度</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">状态</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">关联工单</th>
+      {/* Content */}
+      {riskSource === 'alarm' ? (
+        <div className="bg-white rounded-lg border border-slate-200 overflow-hidden animate-fade-in-up">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-slate-50 border-b border-slate-200">
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">报警时间</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">企业名称</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">所属镇</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">检测类型</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">置信度</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">紧急程度</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">状态</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">关联工单</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredAlarms.map((a, i) => (
+                <tr key={a.id} className="table-row border-b border-slate-100 last:border-0">
+                  <td className="px-4 py-3 text-xs font-mono text-ink-secondary">{a.time}</td>
+                  <td className="px-4 py-3 text-xs font-medium text-ink">{a.enterprise}</td>
+                  <td className="px-4 py-3 text-xs text-ink-secondary">{a.town}</td>
+                  <td className="px-4 py-3 text-xs">{a.detectType}</td>
+                  <td className="px-4 py-3">
+                    <span className="text-xs font-mono text-ink-secondary">{(a.confidence * 100).toFixed(0)}%</span>
+                  </td>
+                  <td className="px-4 py-3">
+                    <Badge color={a.severity==='高'?'red':a.severity==='中'?'yellow':'gray'}>{a.severity}</Badge>
+                  </td>
+                  <td className="px-4 py-3">
+                    <Badge color={a.status==='待整改'?'yellow':a.status==='已确认'?'green':'gray'} dot={a.status==='待整改'}>{a.status}</Badge>
+                  </td>
+                  <td className="px-4 py-3 text-xs font-mono text-gov-600 cursor-pointer hover:underline">{a.orderNo}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {filteredAlarms.map((a, i) => (
-                  <tr key={a.id} className="table-row border-b border-slate-100 last:border-0">
-                    <td className="px-4 py-3 text-xs font-mono text-ink-secondary">{a.time}</td>
-                    <td className="px-4 py-3 text-xs font-medium text-ink">{a.enterprise}</td>
-                    <td className="px-4 py-3 text-xs text-ink-secondary">{a.town}</td>
-                    <td className="px-4 py-3 text-xs">{a.detectType}</td>
-                    <td className="px-4 py-3">
-                      <span className="text-xs font-mono text-ink-secondary">{(a.confidence * 100).toFixed(0)}%</span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <Badge color={a.severity==='高'?'red':a.severity==='中'?'yellow':'gray'}>{a.severity}</Badge>
-                    </td>
-                    <td className="px-4 py-3">
-                      <Badge color={a.status==='待整改'?'yellow':a.status==='已确认'?'green':'gray'} dot={a.status==='待整改'}>{a.status}</Badge>
-                    </td>
-                    <td className="px-4 py-3 text-xs font-mono text-gov-600 cursor-pointer hover:underline">{a.orderNo}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </>
+              ))}
+              {filteredAlarms.length === 0 && (
+                <tr><td colSpan="8" className="text-center py-12 text-ink-muted text-xs">该状态下暂无报警记录</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       ) : (
-        <>
-          {/* Certificate Expiry */}
-          <div className="bg-white rounded-lg border border-slate-200 overflow-hidden animate-fade-in-up">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-slate-50 border-b border-slate-200">
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">企业名称</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">证照类型</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">证照编号</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">到期日期</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">剩余天数</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">预警级别</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">操作</th>
+        <div className="bg-white rounded-lg border border-slate-200 overflow-hidden animate-fade-in-up">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-slate-50 border-b border-slate-200">
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">企业名称</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">证照类型</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">证照编号</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">到期日期</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">剩余天数</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">预警级别</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              {certExpiryData.map(c => (
+                <tr key={c.id} className="table-row border-b border-slate-100 last:border-0">
+                  <td className="px-4 py-3 text-xs font-medium text-ink">{c.enterprise}</td>
+                  <td className="px-4 py-3 text-xs text-ink-secondary">{c.certType}</td>
+                  <td className="px-4 py-3 text-xs font-mono text-ink-secondary">{c.certNo}</td>
+                  <td className="px-4 py-3 text-xs text-ink-secondary">{c.expiryDate}</td>
+                  <td className="px-4 py-3">
+                    <span className={`text-xs font-bold ${c.daysLeft <= 7 ? 'text-red-600' : c.daysLeft <= 30 ? 'text-amber-600' : 'text-ink-secondary'}`}>
+                      {c.daysLeft}天
+                    </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    <Badge color={c.daysLeft <= 3 ? 'red' : c.daysLeft <= 7 ? 'orange' : c.daysLeft <= 30 ? 'yellow' : 'gray'}>{c.level}</Badge>
+                  </td>
+                  <td className="px-4 py-3">
+                    <button className="text-[11px] text-gov-600 hover:text-gov-700 font-medium">查看</button>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {certExpiryData.map(c => (
-                  <tr key={c.id} className="table-row border-b border-slate-100 last:border-0">
-                    <td className="px-4 py-3 text-xs font-medium text-ink">{c.enterprise}</td>
-                    <td className="px-4 py-3 text-xs text-ink-secondary">{c.certType}</td>
-                    <td className="px-4 py-3 text-xs font-mono text-ink-secondary">{c.certNo}</td>
-                    <td className="px-4 py-3 text-xs text-ink-secondary">{c.expiryDate}</td>
-                    <td className="px-4 py-3">
-                      <span className={`text-xs font-bold ${c.daysLeft <= 7 ? 'text-red-600' : c.daysLeft <= 30 ? 'text-amber-600' : 'text-ink-secondary'}`}>
-                        {c.daysLeft}天
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <Badge color={c.daysLeft <= 3 ? 'red' : c.daysLeft <= 7 ? 'orange' : c.daysLeft <= 30 ? 'yellow' : 'gray'}>{c.level}</Badge>
-                    </td>
-                    <td className="px-4 py-3">
-                      <button className="text-[11px] text-gov-600 hover:text-gov-700 font-medium">查看</button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
@@ -1083,15 +1111,22 @@ function ApprovalRecords({ showDetail, setShowDetail, userRole, roleTown }) {
   const [filterTown, setFilterTown] = useState(isDistrict ? 'all' : roleTown);
   const [filterUrgency, setFilterUrgency] = useState('all');
   const [filterDuration, setFilterDuration] = useState('all');
+  const [activeTab, setActiveTab] = useState('active'); // 'active' | 'archived'
+  const [searchQuery, setSearchQuery] = useState('');
+  const [archiveFilterResult, setArchiveFilterResult] = useState('all');
 
-  const filtered = MOCK.approvals.filter(a => {
+  const filtered = (activeTab === 'active' ? MOCK.approvals : MOCK.archivedApprovals).filter(a => {
     if (!isDistrict && a.town !== roleTown) return false;
     if (filterType !== 'all' && a.type !== filterType) return false;
     if (filterTown !== 'all' && a.town !== filterTown) return false;
     if (filterUrgency !== 'all' && a.severity !== filterUrgency) return false;
-    if (filterDuration === '24h' && a.waitHours < 24) return false;
-    if (filterDuration === '48h' && a.waitHours < 48) return false;
-    if (filterDuration === '72h' && a.waitHours < 72) return false;
+    if (searchQuery && !a.enterprise.includes(searchQuery) && !a.title.includes(searchQuery)) return false;
+    if (activeTab === 'archived' && archiveFilterResult !== 'all' && a.result !== archiveFilterResult) return false;
+    if (activeTab === 'active') {
+      if (filterDuration === '24h' && a.waitHours < 24) return false;
+      if (filterDuration === '48h' && a.waitHours < 48) return false;
+      if (filterDuration === '72h' && a.waitHours < 72) return false;
+    }
     return true;
   });
 
@@ -1102,15 +1137,34 @@ function ApprovalRecords({ showDetail, setShowDetail, userRole, roleTown }) {
           <h1 className="text-xl font-bold text-ink tracking-tight">审批记录</h1>
           <p className="text-sm text-ink-secondary mt-0.5">
             {isDistrict
-              ? '整改工单 + 申诉工单统一审批入口 · 区级仅查看，审核权全归镇级'
-              : `${roleTown} · 整改工单 + 申诉工单统一审批 · 您拥有审核权`
+              ? '整改工单 + 申诉工单 + 变更工单统一审批入口 · 区级仅查看，审核权全归镇级'
+              : `${roleTown} · 整改工单 + 申诉工单 + 变更工单统一审批 · 您拥有审核权`
             }
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-[11px] text-ink-muted">30秒自动刷新</span>
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 badge-dot"></span>
+          {activeTab === 'active' && (
+            <>
+              <span className="text-[11px] text-ink-muted">30秒自动刷新</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 badge-dot"></span>
+            </>
+          )}
+          {activeTab === 'archived' && (
+            <Badge color="gray">{MOCK.archivedApprovals.length} 条已归档</Badge>
+          )}
         </div>
+      </div>
+
+      {/* Tab bar */}
+      <div className="flex gap-0 border-b border-slate-200 -mt-2">
+        <button
+          className={`px-5 py-2.5 text-sm font-medium border-b-2 transition-colors ${activeTab === 'active' ? 'border-gov-600 text-gov-600' : 'border-transparent text-ink-secondary hover:text-ink'}`}
+          onClick={() => { setActiveTab('active'); setShowDetail(null); }}
+        >待审批 <span className="ml-1.5 text-[11px] bg-slate-100 px-1.5 py-0.5 rounded-full">{MOCK.approvals.length}</span></button>
+        <button
+          className={`px-5 py-2.5 text-sm font-medium border-b-2 transition-colors ${activeTab === 'archived' ? 'border-gov-600 text-gov-600' : 'border-transparent text-ink-secondary hover:text-ink'}`}
+          onClick={() => { setActiveTab('archived'); setShowDetail(null); }}
+        >已归档 <span className="ml-1.5 text-[11px] bg-slate-100 px-1.5 py-0.5 rounded-full">{MOCK.archivedApprovals.length}</span></button>
       </div>
 
       {/* Filters */}
@@ -1121,6 +1175,7 @@ function ApprovalRecords({ showDetail, setShowDetail, userRole, roleTown }) {
           <option value="all">全部类型</option>
           <option value="整改">整改工单</option>
           <option value="申诉">申诉工单</option>
+          <option value="变更">变更工单</option>
         </select>
         {isDistrict ? (
           <select value={filterTown} onChange={e => setFilterTown(e.target.value)}
@@ -1141,15 +1196,24 @@ function ApprovalRecords({ showDetail, setShowDetail, userRole, roleTown }) {
           <option value="中">中</option>
           <option value="低">低</option>
         </select>
-        <select value={filterDuration} onChange={e => setFilterDuration(e.target.value)}
-          className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
-          <option value="all">全部待审时长</option>
-          <option value="24h">超24小时</option>
-          <option value="48h">超48小时</option>
-          <option value="72h">超72小时</option>
-        </select>
+        {activeTab === 'active' ? (
+          <select value={filterDuration} onChange={e => setFilterDuration(e.target.value)}
+            className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
+            <option value="all">全部待审时长</option>
+            <option value="24h">超24小时</option>
+            <option value="48h">超48小时</option>
+            <option value="72h">超72小时</option>
+          </select>
+        ) : (
+          <select value={archiveFilterResult} onChange={e => setArchiveFilterResult(e.target.value)}
+            className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
+            <option value="all">全部审批结果</option>
+            <option value="通过">审批通过</option>
+            <option value="驳回">审批驳回</option>
+          </select>
+        )}
         <div className="flex-1"></div>
-        <input type="text" placeholder="搜索企业名称…" className="text-xs border border-slate-200 rounded-md px-3 py-1.5 w-48 outline-none focus:border-gov-400" />
+        <input type="text" placeholder="搜索企业名称…" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="text-xs border border-slate-200 rounded-md px-3 py-1.5 w-48 outline-none focus:border-gov-400" />
         <span className="text-[11px] text-ink-muted">共 {filtered.length} 条</span>
       </div>
 
@@ -1162,7 +1226,14 @@ function ApprovalRecords({ showDetail, setShowDetail, userRole, roleTown }) {
               <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">企业名称</th>
               <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">摘要信息</th>
               <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">提交时间</th>
-              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">等待时长</th>
+              {activeTab === 'active' ? (
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">等待时长</th>
+              ) : (
+                <>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">审批结果</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">完成时间</th>
+                </>
+              )}
               <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">紧急程度</th>
               <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">操作</th>
             </tr>
@@ -1172,7 +1243,7 @@ function ApprovalRecords({ showDetail, setShowDetail, userRole, roleTown }) {
               <tr key={a.id} className="table-row border-b border-slate-100 last:border-0">
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-1.5">
-                    <span className={`w-1.5 h-1.5 rounded-full ${a.typeColor === 'blue' ? 'bg-blue-500' : 'bg-orange-500'}`}></span>
+                    <span className={`w-1.5 h-1.5 rounded-full ${a.typeColor === 'blue' ? 'bg-blue-500' : a.typeColor === 'orange' ? 'bg-orange-500' : 'bg-emerald-500'}`}></span>
                     <Badge color={a.typeColor}>{a.type}</Badge>
                     <span className="text-[10px] text-ink-muted">{a.source}</span>
                   </div>
@@ -1180,17 +1251,31 @@ function ApprovalRecords({ showDetail, setShowDetail, userRole, roleTown }) {
                 <td className="px-4 py-3 text-xs font-medium text-ink cursor-pointer hover:text-gov-600">{a.enterprise}</td>
                 <td className="px-4 py-3 text-xs text-ink-secondary max-w-[280px] truncate">{a.summary}</td>
                 <td className="px-4 py-3 text-xs font-mono text-ink-secondary">{a.submitTime}</td>
-                <td className="px-4 py-3">
-                  <span className={`text-xs font-medium ${a.waitHours > 24 ? 'text-red-600' : 'text-ink-secondary'}`}>
-                    {a.waitHours > 24 ? '⚠ ' : ''}{a.waitHours}h
-                  </span>
-                </td>
+                {activeTab === 'active' ? (
+                  <td className="px-4 py-3">
+                    <span className={`text-xs font-medium ${a.waitHours > 24 ? 'text-red-600' : 'text-ink-secondary'}`}>
+                      {a.waitHours > 24 ? '⚠ ' : ''}{a.waitHours}h
+                    </span>
+                  </td>
+                ) : (
+                  <>
+                    <td className="px-4 py-3">
+                      <Badge color={a.result === '通过' ? 'green' : 'red'}>{a.result}</Badge>
+                    </td>
+                    <td className="px-4 py-3 text-xs font-mono text-ink-secondary">{a.completeTime}</td>
+                  </>
+                )}
                 <td className="px-4 py-3">
                   <Badge color={a.severity==='高'?'red':a.severity==='中'?'yellow':'gray'}>{a.severity}</Badge>
                 </td>
                 <td className="px-4 py-3">
-                  {isDistrict ? (
-                    <span className="text-[11px] text-ink-muted">仅查看</span>
+                  {activeTab === 'archived' ? (
+                    <button
+                      onClick={() => setShowDetail(a)}
+                      className="text-[11px] text-ink-secondary border border-slate-200 px-3 py-1.5 rounded-md hover:bg-slate-50 hover:text-ink transition-colors font-medium"
+                    >查看详情</button>
+                  ) : isDistrict ? (
+                    <span className="text-[11px] text-ink-muted cursor-pointer hover:text-ink" onClick={() => setShowDetail(a)}>查看详情</span>
                   ) : (
                     <button
                       onClick={() => setShowDetail(a)}
@@ -1213,6 +1298,7 @@ function ApprovalRecords({ showDetail, setShowDetail, userRole, roleTown }) {
                 <div className="flex items-center gap-2">
                   <Badge color={showDetail.typeColor}>{showDetail.type}工单</Badge>
                   <Badge color={showDetail.severity==='高'?'red':showDetail.severity==='中'?'yellow':'gray'}>{showDetail.severity}紧急</Badge>
+                  {activeTab === 'archived' && <Badge color="gray">已归档</Badge>}
                 </div>
                 <h2 className="text-base font-bold text-ink mt-1.5">{showDetail.title}</h2>
               </div>
@@ -1230,6 +1316,12 @@ function ApprovalRecords({ showDetail, setShowDetail, userRole, roleTown }) {
                   <div className="flex"><span className="text-ink-muted w-16 shrink-0">企业名称</span><span className="text-ink font-medium">{showDetail.enterprise}</span></div>
                   <div className="flex"><span className="text-ink-muted w-16 shrink-0">所属镇</span><span className="text-ink">{showDetail.town}</span></div>
                   <div className="flex"><span className="text-ink-muted w-16 shrink-0">提交时间</span><span className="font-mono text-ink">{showDetail.submitTime}</span></div>
+                  {activeTab === 'archived' && (
+                    <>
+                      <div className="flex"><span className="text-ink-muted w-16 shrink-0">审批人</span><span className="text-ink font-medium">{showDetail.reviewer}</span></div>
+                      <div className="flex"><span className="text-ink-muted w-16 shrink-0">审批时间</span><span className="font-mono text-ink">{showDetail.reviewTime}</span></div>
+                    </>
+                  )}
                 </div>
               </section>
 
@@ -1245,38 +1337,85 @@ function ApprovalRecords({ showDetail, setShowDetail, userRole, roleTown }) {
                 )}
               </section>
 
+              {/* 变更前后对比 — only for 变更 type */}
+              {showDetail.type === '变更' && showDetail.changeFields && (
+                <section className="bg-white rounded-lg border border-slate-200 p-4">
+                  <h4 className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-3">变更前后对比</h4>
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b border-slate-100 text-[10px] text-ink-muted uppercase tracking-wider">
+                        <th className="text-left py-2 pr-3 font-medium">变更字段</th>
+                        <th className="text-left py-2 pr-3 font-medium">变更前</th>
+                        <th className="text-center py-2 pr-3 font-medium w-8"></th>
+                        <th className="text-left py-2 font-medium">变更后</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {showDetail.changeFields.map((cf, i) => (
+                        <tr key={i} className="border-b border-slate-50 last:border-0">
+                          <td className="py-2.5 pr-3 text-ink font-medium">{cf.field}</td>
+                          <td className="py-2.5 pr-3 text-ink-muted line-through">{cf.oldVal}</td>
+                          <td className="py-2.5 pr-3 text-center text-ink-muted">→</td>
+                          <td className="py-2.5 text-gov-700 font-medium">{cf.newVal}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="mt-3 flex gap-2">
+                    <div className="w-20 h-20 bg-slate-100 rounded-md flex items-center justify-center text-[10px] text-ink-muted">变更佐证1</div>
+                    <div className="w-20 h-20 bg-slate-100 rounded-md flex items-center justify-center text-[10px] text-ink-muted">变更佐证2</div>
+                  </div>
+                </section>
+              )}
+
               {/* Progress */}
               <section className="bg-white rounded-lg border border-slate-200 p-4">
                 <h4 className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-3">处理进度</h4>
                 <div className="flex items-center gap-0">
-                  {['系统生成','商户提交','审核中'].map((label, i) => (
+                  {(activeTab === 'archived'
+                    ? (showDetail.type === '变更' ? ['商户提交变更','资料核验','审批完成'] : ['系统生成','商户提交','审批完成'])
+                    : (showDetail.type === '变更' ? ['商户提交变更','资料核验','审核中'] : ['系统生成','商户提交','审核中'])
+                  ).map((label, i) => (
                     <Fragment key={i}>
                       <div className="flex flex-col items-center">
-                        <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold ${i < 2 ? 'bg-gov-600 text-white' : 'bg-gov-100 text-gov-600 border-2 border-gov-400'}`}>
-                          {i < 2 ? '✓' : '3'}
+                        <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold ${activeTab === 'archived' ? 'bg-emerald-500 text-white' : i < 2 ? 'bg-gov-600 text-white' : 'bg-gov-100 text-gov-600 border-2 border-gov-400'}`}>
+                          {activeTab === 'archived' ? '✓' : i < 2 ? '✓' : '3'}
                         </div>
                         <span className="text-[10px] text-ink-muted mt-1">{label}</span>
                       </div>
-                      {i < 2 && <div className={`flex-1 h-0.5 mx-2 ${i < 1 ? 'bg-gov-600' : 'bg-slate-200'}`}></div>}
+                      {i < 2 && <div className={`flex-1 h-0.5 mx-2 ${activeTab === 'archived' ? 'bg-emerald-500' : i < 1 ? 'bg-gov-600' : 'bg-slate-200'}`}></div>}
                     </Fragment>
                   ))}
                 </div>
               </section>
 
-              {/* Action */}
-              <section className="bg-white rounded-lg border border-slate-200 p-4">
-                <h4 className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-3">审核操作</h4>
-                <div className="space-y-3">
-                  <textarea
-                    placeholder="输入审核意见（驳回时必填，限500字）…"
-                    className="w-full border border-slate-200 rounded-md px-3 py-2 text-xs text-ink outline-none focus:border-gov-400 resize-none h-20"
-                  ></textarea>
-                  <div className="flex gap-2">
-                    <button className="flex-1 py-2 bg-emerald-600 text-white text-sm font-medium rounded-md hover:bg-emerald-700 transition-colors">审核通过</button>
-                    <button className="flex-1 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 transition-colors">驳回（需填写原因）</button>
+              {/* Action — only for active tab */}
+              {activeTab === 'active' ? (
+                <section className="bg-white rounded-lg border border-slate-200 p-4">
+                  <h4 className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-3">审核操作</h4>
+                  <div className="space-y-3">
+                    <textarea
+                      placeholder="输入审核意见（驳回时必填，限500字）…"
+                      className="w-full border border-slate-200 rounded-md px-3 py-2 text-xs text-ink outline-none focus:border-gov-400 resize-none h-20"
+                    ></textarea>
+                    <div className="flex gap-2">
+                      <button className="flex-1 py-2 bg-emerald-600 text-white text-sm font-medium rounded-md hover:bg-emerald-700 transition-colors">审核通过</button>
+                      <button className="flex-1 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 transition-colors">驳回（需填写原因）</button>
+                    </div>
                   </div>
-                </div>
-              </section>
+                </section>
+              ) : (
+                <section className="bg-white rounded-lg border border-slate-200 p-4">
+                  <h4 className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-3">审批结果</h4>
+                  <div className={`p-4 rounded-lg ${showDetail.result === '通过' ? 'bg-emerald-50 border border-emerald-200' : 'bg-red-50 border border-red-200'}`}>
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge color={showDetail.result === '通过' ? 'green' : 'red'}>{showDetail.result === '通过' ? '✓ 审核通过' : '✕ 审核驳回'}</Badge>
+                      <span className="text-[11px] text-ink-muted">{showDetail.reviewer} · {showDetail.reviewTime}</span>
+                    </div>
+                    <p className="text-xs text-ink leading-relaxed">{showDetail.reviewOpinion}</p>
+                  </div>
+                </section>
+              )}
             </div>
           </div>
         </div>
