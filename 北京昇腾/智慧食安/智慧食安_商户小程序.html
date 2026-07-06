@@ -148,6 +148,16 @@
     0% { background-position: -200% 0; }
     100% { background-position: 200% 0; }
   }
+  @keyframes scanLine {
+    0% { top: 10%; opacity: 0; }
+    20% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { top: 85%; opacity: 0; }
+  }
+  @keyframes scanPulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
 
   .anim-fade-up {
     animation: fadeInUp 0.5s ease-out both;
@@ -272,6 +282,11 @@
 <div class="phone-frame" id="app">
   <!-- Toast -->
   <div class="toast" id="toast"></div>
+
+  <!-- Demo toggle: switch between unbound/bound user -->
+  <button onclick="toggleOnboardingDemo()" id="demoToggleBtn" class="absolute top-[max(28px,env(safe-area-inset-top))] left-1/2 -translate-x-1/2 z-[70] px-3 py-1.5 rounded-full text-[11px] font-semibold shadow-lg border transition-all active:scale-95 bg-orange-50 text-orange-700 border-orange-200">
+    未绑用户
+  </button>
 
   <!-- ===== ORDER DETAIL OVERLAY ===== -->
   <div class="overlay-panel" id="orderDetailOverlay">
@@ -475,17 +490,32 @@
       <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100">
         <div class="text-sm font-semibold text-blue-600 bg-blue-50 inline-block px-2.5 py-1 rounded-full mb-4" id="itemDetailMeta"></div>
         <div id="itemDetailFields" class="space-y-4"></div>
-        <div id="itemDetailImages" class="hidden mt-5 pt-5 border-t border-slate-100">
-          <div class="flex items-center justify-between mb-3">
-            <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wide">证照图片</h4>
-            <button id="itemImageAddBtn" class="hidden text-xs font-medium text-blue-600 hover:text-blue-800 transition-colors" onclick="addItemImage()">
-              <i data-lucide="plus" class="w-3.5 h-3.5 mr-0.5 inline"></i>上传
-            </button>
-          </div>
-          <div class="grid grid-cols-2 gap-3" id="itemImageGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== OCR SCAN OVERLAY ===== -->
+  <div id="ocrScanOverlay" class="hidden absolute inset-0 z-[55] bg-black/90 flex flex-col items-center justify-center">
+    <div class="relative w-56 h-80 mb-8">
+      <!-- Scan frame corners -->
+      <div class="absolute top-0 left-0 w-10 h-10 border-t-2 border-l-2 border-blue-400 rounded-tl-xl"></div>
+      <div class="absolute top-0 right-0 w-10 h-10 border-t-2 border-r-2 border-blue-400 rounded-tr-xl"></div>
+      <div class="absolute bottom-0 left-0 w-10 h-10 border-b-2 border-l-2 border-blue-400 rounded-bl-xl"></div>
+      <div class="absolute bottom-0 right-0 w-10 h-10 border-b-2 border-r-2 border-blue-400 rounded-br-xl"></div>
+      <!-- Scan line -->
+      <div id="ocrScanLine" class="absolute left-3 right-3 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent" style="top:20%; animation: scanLine 1.8s ease-in-out infinite;"></div>
+      <!-- Mock document -->
+      <div class="absolute inset-4 flex items-center justify-center opacity-20">
+        <div class="w-full h-full bg-white rounded-lg p-3 flex flex-col gap-2">
+          <div class="h-3 bg-slate-300 rounded w-2/3 mx-auto"></div>
+          <div class="h-2 bg-slate-200 rounded w-1/2 mx-auto"></div>
+          <div class="h-2 bg-slate-200 rounded w-3/4 mx-auto mt-2"></div>
+          <div class="h-2 bg-slate-200 rounded w-1/2 mx-auto"></div>
         </div>
       </div>
     </div>
+    <p class="text-white font-semibold text-base animate-pulse">正在识别健康证信息...</p>
+    <p class="text-white/50 text-sm mt-2">请保持照片清晰、光线充足</p>
   </div>
 
   <!-- ===== ENTERPRISE EDIT OVERLAY ===== -->
@@ -627,25 +657,229 @@
     </div>
   </div>
 
-  <!-- ===== MAIN APP ===== -->
-  <div class="flex flex-col flex-1 min-h-0" id="mainApp">
-    <!-- Header -->
-    <header class="px-5 pt-[max(22px,env(safe-area-inset-top))] pb-3 shrink-0 bg-blue-600" id="mainHeader">
-      <div class="flex items-start justify-between">
-        <div class="flex-1 min-w-0 flex items-baseline gap-2 pt-1">
-          <h1 class="text-xl font-bold text-white tracking-tight truncate" id="headerTitle">智慧食安</h1>
-          <span id="headerSub" class="text-xs text-white/60 shrink-0">好味道餐饮管理有限公司</span>
-          <span id="headerBadge" class="hidden shrink-0 text-xs font-normal text-white/60 cursor-pointer" onclick="cycleEntState()">· 已生效</span>
+  <!-- ===== ONBOARDING OVERLAY (首次建档) ===== -->
+  <div id="onboardingOverlay" class="absolute inset-0 z-[60] bg-slate-50 flex flex-col">
+    <!-- Onboarding Header -->
+    <header class="px-5 pt-[max(22px,env(safe-area-inset-top))] pb-3 shrink-0 bg-blue-600">
+      <h1 class="text-lg font-bold text-white">商户建档</h1>
+      <p class="text-xs text-white/60 mt-0.5" id="onboardSubtitle">首次使用，请先完成企业信息登记</p>
+    </header>
+
+    <!-- ===== FORM VIEW ===== -->
+    <div id="onboardFormView" class="flex-1 overflow-y-auto">
+      <!-- Step indicator -->
+      <div class="px-5 pt-4 pb-2">
+        <div class="flex items-center gap-2">
+          <div class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-bold shrink-0">1</div>
+          <span class="text-sm font-semibold text-slate-800">填写企业信息</span>
+          <div class="flex-1 h-px bg-slate-200 mx-1"></div>
+          <div class="w-6 h-6 rounded-full bg-slate-200 text-slate-400 text-xs flex items-center justify-center font-bold shrink-0">2</div>
+          <span class="text-sm text-slate-400">等待审批</span>
         </div>
-        <!-- WeChat capsule placeholder -->
-        <div class="shrink-0 flex items-center gap-1.5 ml-3">
-          <div class="flex items-center bg-black/20 rounded-full px-3 py-1.5 gap-3">
-            <span class="text-white/80 text-sm font-bold leading-none">···</span>
-            <div class="w-px h-4 bg-white/20"></div>
-            <div class="w-4 h-4 rounded-full border-2 border-white/70"></div>
+      </div>
+
+      <!-- Form fields -->
+      <div class="px-5 pt-3 pb-8 space-y-5">
+        <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100 space-y-4">
+          <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">主体信息 <span class="text-red-400 text-[11px] normal-case tracking-normal">（带 * 为必填项）</span></h3>
+
+          <!-- 主体名称 -->
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">主体名称 <span class="text-red-500">*</span></label>
+            <input type="text" id="onboardName" placeholder="请输入主体名称"
+              class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+          </div>
+
+          <!-- 统一社会信用代码 -->
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">统一社会信用代码 <span class="text-red-500">*</span></label>
+            <input type="text" id="onboardCreditCode" placeholder="18位信用代码" maxlength="18"
+              class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all font-mono tracking-wider" />
+          </div>
+
+          <!-- 许可证号 -->
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">许可证号 <span class="text-red-500">*</span></label>
+            <input type="text" id="onboardLicense" placeholder="如 JY2123456789012345"
+              class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all font-mono tracking-wider" />
+          </div>
+
+          <!-- 主体业态 -->
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">主体业态 <span class="text-red-500">*</span></label>
+            <div class="flex flex-wrap gap-2" id="onboardBizTypeChips">
+              <button onclick="onboardSelectChip(this, 'onboardBizType')" class="chip-onboardBizType px-4 py-2.5 text-[13px] font-medium rounded-xl bg-blue-600 text-white transition-all" data-value="餐饮服务经营者">餐饮服务经营者</button>
+              <button onclick="onboardSelectChip(this, 'onboardBizType')" class="chip-onboardBizType px-4 py-2.5 text-[13px] font-medium rounded-xl bg-slate-100 text-slate-500 transition-all" data-value="食品销售经营者">食品销售经营者</button>
+              <button onclick="onboardSelectChip(this, 'onboardBizType')" class="chip-onboardBizType px-4 py-2.5 text-[13px] font-medium rounded-xl bg-slate-100 text-slate-500 transition-all" data-value="单位食堂">单位食堂</button>
+              <button onclick="onboardSelectChip(this, 'onboardBizType')" class="chip-onboardBizType px-4 py-2.5 text-[13px] font-medium rounded-xl bg-slate-100 text-slate-500 transition-all" data-value="食品生产加工小作坊">食品生产加工小作坊</button>
+            </div>
+          </div>
+
+          <!-- 法人姓名 + 联系电话 -->
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1.5">法人姓名 <span class="text-red-500">*</span></label>
+              <input type="text" id="onboardLegalPerson" placeholder="请输入法人姓名"
+                class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1.5">联系电话 <span class="text-red-500">*</span></label>
+              <input type="tel" id="onboardPhone" placeholder="请输入联系电话"
+                class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100 space-y-4">
+          <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">经营信息</h3>
+
+          <!-- 招牌名称 -->
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">招牌名称</label>
+            <input type="text" id="onboardSignName" placeholder="请输入招牌名称"
+              class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+          </div>
+
+          <!-- 经营项目 -->
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">经营项目 <span class="text-red-500">*</span></label>
+            <input type="text" id="onboardBizScope" placeholder="如 热食类食品制售、冷食类食品制售"
+              class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+          </div>
+
+          <!-- 经营面积 -->
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">经营面积(㎡) <span class="text-red-500">*</span></label>
+            <div class="flex items-center gap-3">
+              <button onclick="onboardAdjustArea(-1)" class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 active:bg-slate-300 transition-colors text-lg font-semibold">−</button>
+              <input type="number" id="onboardArea" value="" min="0" inputmode="numeric" pattern="[0-9]*" placeholder="请输入经营面积"
+                class="flex-1 px-4 py-3 text-sm text-center text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+              <button onclick="onboardAdjustArea(1)" class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 active:bg-slate-300 transition-colors text-lg font-semibold">+</button>
+            </div>
+          </div>
+
+          <!-- 住所 + 所属镇 -->
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1.5">住所 <span class="text-red-500">*</span></label>
+              <input type="text" id="onboardDomicile" placeholder="请输入住所"
+                class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1.5">所属镇</label>
+              <input type="text" id="onboardTown" placeholder="如 中关村街道"
+                class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+            </div>
+          </div>
+
+          <!-- 经营场所 -->
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">经营场所 <span class="text-red-500">*</span></label>
+            <textarea id="onboardPremises" rows="2" placeholder="请输入经营场所详细地址"
+              class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all resize-none"></textarea>
+          </div>
+
+          <!-- 所属市场所 -->
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">所属市场所</label>
+            <input type="text" id="onboardMarketOffice" placeholder="如 海淀区市场监督管理局中关村所"
+              class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+          </div>
+
+          <!-- 连锁品牌 + 营业状态 -->
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1.5">连锁品牌</label>
+              <input type="text" id="onboardChainBrand" placeholder="如无则不填"
+                class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1.5">营业状态</label>
+              <div class="flex gap-2" id="onboardBizStatusChips">
+                <button onclick="onboardSelectChip(this, 'onboardBizStatus')" class="chip-onboardBizStatus px-3 py-2.5 text-[13px] font-medium rounded-xl bg-blue-600 text-white transition-all" data-value="营业">营业</button>
+                <button onclick="onboardSelectChip(this, 'onboardBizStatus')" class="chip-onboardBizStatus px-3 py-2.5 text-[13px] font-medium rounded-xl bg-slate-100 text-slate-500 transition-all" data-value="停业">停业</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 扩展备注 -->
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">扩展备注</label>
+            <textarea id="onboardRemark" rows="2" placeholder="其他需要说明的信息"
+              class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all resize-none"></textarea>
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- ===== STATUS VIEW (pending / rejected) ===== -->
+    <div id="onboardStatusView" class="hidden flex-1 flex flex-col items-center overflow-y-auto">
+      <div class="flex-1 flex flex-col items-center justify-center px-8 pb-8">
+        <!-- Icon -->
+        <div id="onboardStatusIcon" class="w-20 h-20 rounded-full flex items-center justify-center mb-6">
+          <i id="onboardStatusIconEl" data-lucide="clock" class="w-10 h-10"></i>
+        </div>
+        <!-- Title -->
+        <h2 id="onboardStatusTitle" class="text-lg font-bold text-slate-800 mb-2">建档申请已提交</h2>
+        <!-- Description -->
+        <p id="onboardStatusDesc" class="text-sm text-slate-500 text-center leading-relaxed">监管人员将在 1-3 个工作日内<br>完成信息审核，请耐心等待</p>
+        <!-- Progress stepper -->
+        <div id="onboardProgressSteps" class="w-full max-w-xs mt-8">
+          <div class="flex items-start justify-between relative">
+            <div class="absolute top-5 left-5 right-5 h-0.5 bg-slate-200" style="top: 20px;"></div>
+            <div class="relative z-10 flex flex-col items-center">
+              <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center" id="onboardStep1Circle">
+                <i data-lucide="file-edit" class="w-5 h-5"></i>
+              </div>
+              <span class="text-[11px] font-semibold text-blue-600 mt-2 whitespace-nowrap">提交建档</span>
+            </div>
+            <div class="relative z-10 flex flex-col items-center">
+              <div class="w-10 h-10 rounded-full flex items-center justify-center" id="onboardStep2Circle">
+                <i data-lucide="search-check" class="w-5 h-5"></i>
+              </div>
+              <span class="text-[11px] font-medium mt-2 whitespace-nowrap" id="onboardStep2Label">监管审核</span>
+            </div>
+            <div class="relative z-10 flex flex-col items-center">
+              <div class="w-10 h-10 rounded-full flex items-center justify-center" id="onboardStep3Circle">
+                <i data-lucide="check-circle" class="w-5 h-5"></i>
+              </div>
+              <span class="text-[11px] font-medium mt-2 whitespace-nowrap" id="onboardStep3Label">已开通</span>
+            </div>
+          </div>
+        </div>
+        <!-- Rejected re-edit button (hidden in pending, shown in rejected) -->
+        <button id="onboardReeditBtn" class="hidden mt-8 w-full max-w-xs py-3.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 transition-all" onclick="onboardReedit()">重新填写</button>
+      </div>
+
+      <!-- Demo toggle hint -->
+      <div class="shrink-0 px-5 pb-6 text-center">
+        <p class="text-[11px] text-slate-300 cursor-pointer select-none" id="onboardDebugToggle" onclick="cycleOnboardingState()">
+          演示切换：当前状态 — <span id="onboardDebugLabel">待审批</span>（点击切换）
+        </p>
+      </div>
+    </div>
+
+    <!-- ===== Bottom Submit Bar (form view) ===== -->
+    <div id="onboardBottomBar" class="shrink-0 px-5 pt-3 pb-[max(24px,env(safe-area-inset-bottom))] bg-white border-t border-slate-200">
+      <button onclick="submitOnboarding()" id="onboardSubmitBtn" class="w-full py-3.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">
+        提交建档申请
+      </button>
+      <p class="text-[11px] text-slate-400 text-center mt-2">提交后信息将交由监管人员审核，审核通过后方可使用全部功能</p>
+    </div>
+  </div>
+
+  <!-- ===== MAIN APP ===== -->
+  <div class="flex flex-col flex-1 min-h-0" id="mainApp">
+    <!-- Header -->
+    <header class="px-5 pt-[max(22px,env(safe-area-inset-top))] pb-3 flex items-center shrink-0 bg-blue-600" id="mainHeader">
+      <div class="flex-1 min-w-0 flex items-baseline gap-2">
+        <h1 class="text-xl font-bold text-white tracking-tight truncate" id="headerTitle">智慧食安</h1>
+        <span id="headerSub" class="text-xs text-white/60 shrink-0">好味道餐饮管理有限公司</span>
+        <span id="headerBadge" class="hidden shrink-0 text-xs font-normal text-white/60">· 已生效</span>
+      </div>
+      <button id="headerEditBtn" class="hidden shrink-0 ml-3 px-5 py-2 text-[13px] font-semibold text-white bg-white/20 rounded-lg hover:bg-white/30 active:bg-white/40 transition-colors" onclick="enterEditMode()">编辑</button>
+      <button id="headerCancelBtn" class="hidden shrink-0 ml-3 px-5 py-2 text-[13px] font-medium text-white/70 hover:text-white transition-colors" onclick="cancelEditMode()">取消</button>
+      <button id="headerSubmitBtn" class="hidden shrink-0 ml-2 px-5 py-2 text-[13px] font-semibold text-blue-600 bg-white rounded-lg hover:bg-white/90 active:bg-white/80 transition-colors" onclick="submitForApproval()">提交</button>
     </header>
 
     <!-- Tab content area -->
@@ -697,19 +931,23 @@
           </div>
         </div>
 
-        <!-- Enterprise Approval Status -->
-        <div class="px-5 mb-5">
-          <div onclick="switchTab('enterprise')" class="bg-white rounded-2xl p-4 shadow-card border border-slate-100 flex items-center justify-between active:bg-slate-50 cursor-pointer">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                <i data-lucide="building-2" class="w-5 h-5 text-blue-600"></i>
+        <!-- Quick Actions -->
+        <div class="px-5 mb-6">
+          <div class="grid grid-cols-2 gap-3">
+            <button onclick="openQuickResponse('correction')" class="group relative bg-white rounded-2xl p-5 shadow-card border border-slate-100 text-left hover:shadow-elevated hover:border-blue-200 active:bg-blue-50/30 transition-all duration-200">
+              <div class="w-11 h-11 rounded-2xl bg-blue-50 flex items-center justify-center mb-3.5 group-hover:bg-blue-100 transition-colors">
+                <i data-lucide="file-edit" class="w-5 h-5 text-blue-600"></i>
               </div>
-              <div>
-                <p class="text-sm font-semibold text-slate-800">企业信息审批状态</p>
-                <p class="text-xs text-slate-400 mt-0.5" id="homeApprovalStatus">暂无审批</p>
+              <span class="text-[15px] font-semibold text-slate-800 block">提交整改</span>
+              <span class="text-[13px] text-slate-400 mt-1 block leading-tight">上传文字及照片反馈</span>
+            </button>
+            <button onclick="openQuickResponse('appeal')" class="group relative bg-white rounded-2xl p-5 shadow-card border border-slate-100 text-left hover:shadow-elevated hover:border-orange-200 active:bg-orange-50/30 transition-all duration-200">
+              <div class="w-11 h-11 rounded-2xl bg-orange-50 flex items-center justify-center mb-3.5 group-hover:bg-orange-100 transition-colors">
+                <i data-lucide="message-square-warning" class="w-5 h-5 text-orange-600"></i>
               </div>
-            </div>
-            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300"></i>
+              <span class="text-[15px] font-semibold text-slate-800 block">发起申诉</span>
+              <span class="text-[13px] text-slate-400 mt-1 block leading-tight">上传文字及照片佐证</span>
+            </button>
           </div>
         </div>
 
@@ -799,9 +1037,9 @@
             <button onclick="filterOrders('archived', this)" class="shrink-0 px-4 py-2 text-[13px] font-medium rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all">已归档 <span class="opacity-50 ml-0.5">4</span></button>
           </div>
 
-          <!-- Search & Time filter -->
-          <div class="flex gap-2">
-            <div class="relative flex-1">
+          <!-- Search & Time filters -->
+          <div class="space-y-3">
+            <div class="relative">
               <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
               <input
                 type="text"
@@ -811,17 +1049,11 @@
                 class="w-full pl-10 pr-4 py-2.5 text-[13px] text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all"
               />
             </div>
-            <div class="relative shrink-0">
-              <button onclick="toggleTimeDropdown()" id="timeDropdownBtn" class="flex items-center gap-1 px-3 py-2.5 text-[13px] font-medium text-slate-600 bg-slate-50 rounded-xl border border-slate-200 hover:bg-slate-100 transition-colors">
-                <span id="timeDropdownLabel">全部时间</span>
-                <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
-              </button>
-              <div id="timeDropdown" class="hidden absolute right-0 top-full mt-1 w-36 bg-white rounded-xl shadow-elevated border border-slate-200 overflow-hidden z-20">
-                <button onclick="selectTimeFilter('all', '全部时间')" class="w-full px-4 py-2.5 text-[13px] font-semibold text-left text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors">全部时间</button>
-                <button onclick="selectTimeFilter('week', '近一周')" class="w-full px-4 py-2.5 text-[13px] text-left text-slate-600 hover:bg-slate-50 transition-colors">近一周</button>
-                <button onclick="selectTimeFilter('month', '近一月')" class="w-full px-4 py-2.5 text-[13px] text-left text-slate-600 hover:bg-slate-50 transition-colors">近一月</button>
-                <button onclick="selectTimeFilter('quarter', '近三月')" class="w-full px-4 py-2.5 text-[13px] text-left text-slate-600 hover:bg-slate-50 transition-colors">近三月</button>
-              </div>
+            <div class="flex gap-2 overflow-x-auto scrollbar-hide" id="timeFilterBar">
+              <button onclick="setTimeFilter('all', this)" class="time-filter-btn shrink-0 px-3 py-1.5 text-[12px] font-semibold rounded-lg bg-blue-600 text-white transition-all">全部时间</button>
+              <button onclick="setTimeFilter('week', this)" class="time-filter-btn shrink-0 px-3 py-1.5 text-[12px] font-medium rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all">近一周</button>
+              <button onclick="setTimeFilter('month', this)" class="time-filter-btn shrink-0 px-3 py-1.5 text-[12px] font-medium rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all">近一月</button>
+              <button onclick="setTimeFilter('quarter', this)" class="time-filter-btn shrink-0 px-3 py-1.5 text-[12px] font-medium rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all">近三月</button>
             </div>
           </div>
         </div>
@@ -1017,23 +1249,12 @@
 
       <!-- ========== TAB: ENTERPRISE ========== -->
       <div id="tab-enterprise" class="hidden flex flex-col min-h-full">
-        <!-- Enterprise action bar -->
-        <div class="sticky top-0 z-10 bg-slate-50 px-5 pt-2 pb-3" id="entActionBar">
-          <div id="entEditBtn" class="hidden">
-            <button onclick="enterEditMode()" id="entEditBtnInner" class="w-full py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 transition-all disabled:opacity-40 disabled:cursor-not-allowed">编辑</button>
-          </div>
-          <div id="entEditActions" class="hidden flex gap-3">
-            <button onclick="cancelEditMode()" class="flex-1 py-2.5 bg-slate-100 text-slate-600 text-sm font-medium rounded-xl hover:bg-slate-200 transition-all">取消</button>
-            <button onclick="submitForApproval()" class="flex-1 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 transition-all">提交</button>
-          </div>
-        </div>
-
         <!-- Approval notice banner (hidden by default) -->
-        <div id="approvalNotice" class="hidden mx-5 mt-4 mb-4 rounded-2xl p-4 flex items-start gap-3">
-          <i data-lucide="info" class="w-5 h-5 shrink-0 mt-0.5" id="approvalNoticeIcon"></i>
+        <div id="approvalNotice" class="hidden mx-5 mb-4 bg-blue-50 border border-blue-200 rounded-2xl p-4 flex items-start gap-3">
+          <i data-lucide="info" class="w-5 h-5 text-blue-600 shrink-0 mt-0.5"></i>
           <div>
-            <p class="text-sm font-semibold" id="approvalNoticeTitle">审批期间信息只读，通过后自动生效</p>
-            <p class="text-xs mt-0.5" id="approvalNoticeSub">监管人员将在 1-3 个工作日内完成审核</p>
+            <p class="text-sm font-semibold text-blue-800">审批期间信息只读，通过后自动生效</p>
+            <p class="text-xs text-blue-600 mt-0.5">监管人员将在 1-3 个工作日内完成审核</p>
           </div>
         </div>
 
@@ -1237,32 +1458,12 @@
               </div>
               <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
             </div>
-            <div onclick="showItemDetail('license3a')" class="p-4 flex items-center justify-between border-b border-slate-100 active:bg-slate-50 cursor-pointer">
+            <div onclick="showItemDetail('license3')" class="p-4 flex items-center justify-between active:bg-slate-50 cursor-pointer">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 font-semibold text-sm shrink-0">张</div>
+                <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 font-semibold text-sm shrink-0">健</div>
                 <div>
-                  <p class="text-sm font-semibold text-slate-800">张三 · 健康证</p>
-                  <p class="text-xs text-slate-400">JK2023**** · 有效期至 2025-03-15</p>
-                </div>
-              </div>
-              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
-            </div>
-            <div onclick="showItemDetail('license3b')" class="p-4 flex items-center justify-between border-b border-slate-100 active:bg-slate-50 cursor-pointer">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 font-semibold text-sm shrink-0">李</div>
-                <div>
-                  <p class="text-sm font-semibold text-slate-800">李丽 · 健康证</p>
-                  <p class="text-xs text-slate-400">JK2023**** · 有效期至 2024-08-20</p>
-                </div>
-              </div>
-              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
-            </div>
-            <div onclick="showItemDetail('license3c')" class="p-4 flex items-center justify-between active:bg-slate-50 cursor-pointer">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 font-semibold text-sm shrink-0">王</div>
-                <div>
-                  <p class="text-sm font-semibold text-slate-800">王芳 · 健康证</p>
-                  <p class="text-xs text-slate-400">JK2024**** · 有效期至 2025-01-10</p>
+                  <p class="text-sm font-semibold text-slate-800">从业人员健康证</p>
+                  <p class="text-xs text-slate-400">3人持有有效证件 · 有效期内</p>
                 </div>
               </div>
               <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
@@ -1275,21 +1476,100 @@
 
         <!-- Change Log -->
         <div class="mt-auto px-5 pt-4 pb-8">
-          <div onclick="showItemDetail('changeLogList')" class="bg-white rounded-2xl p-4 shadow-card border border-slate-100 active:bg-slate-50 cursor-pointer flex items-center justify-between">
-            <div>
+          <div onclick="showItemDetail('changeLog')" class="bg-white rounded-2xl p-4 shadow-card border border-slate-100 active:bg-slate-50 cursor-pointer">
+            <div class="flex items-center justify-between">
               <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wide">变更记录</h3>
-              <p class="text-sm text-slate-700 font-medium mt-1">查看全部变更</p>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300"></i>
             </div>
-            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
+            <div class="flex items-center justify-between text-sm mt-2">
+              <span class="text-slate-400">最近更新时间</span>
+              <span class="text-slate-700 font-medium" id="entLastUpdate">2024-06-15 14:30</span>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- ========== TAB: MY ========== -->
-      <div id="tab-my" class="hidden flex flex-col min-h-full">
-        <!-- Menu items -->
-        <div class="px-5 pt-4">
+      <div id="tab-my" class="hidden">
+        <!-- Profile card (compact) -->
+        <div class="px-5 mb-5">
+          <div class="bg-white rounded-2xl p-4 shadow-card border border-slate-100 flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-800 flex items-center justify-center text-white text-lg font-bold shadow-sm shrink-0">
+              食
+            </div>
+            <div class="flex-1 min-w-0">
+              <h2 class="text-sm font-semibold text-slate-900">好味道餐饮管理有限公司</h2>
+              <p class="text-xs text-slate-400 truncate">管理员 · 138****6789</p>
+            </div>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
+          </div>
+        </div>
+
+        <!-- Settings list -->
+        <div class="px-5 mb-4">
+          <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3 px-0.5">通知设置</h2>
           <div class="bg-white rounded-2xl shadow-card border border-slate-100 overflow-hidden">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center">
+                  <i data-lucide="bell" class="w-4 h-4 text-blue-600"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-slate-800">消息推送通知</p>
+                  <p class="text-xs text-slate-400">工单状态变更、换证提醒等消息</p>
+                </div>
+              </div>
+              <button onclick="toggleSwitch(this)" class="w-11 h-6 rounded-full bg-blue-400 relative transition-colors duration-200" aria-label="消息通知开关">
+                <span class="absolute top-0.5 right-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200"></span>
+              </button>
+            </div>
+            <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-orange-50 flex items-center justify-center">
+                  <i data-lucide="vibrate" class="w-4 h-4 text-orange-600"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-slate-800">震动提醒</p>
+                  <p class="text-xs text-slate-400">紧急工单到达时手机震动</p>
+                </div>
+              </div>
+              <button onclick="toggleSwitch(this)" class="w-11 h-6 rounded-full bg-blue-400 relative transition-colors duration-200" aria-label="震动提醒开关">
+                <span class="absolute top-0.5 right-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200"></span>
+              </button>
+            </div>
+            <div class="flex items-center justify-between px-5 py-4">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-green-50 flex items-center justify-center">
+                  <i data-lucide="volume-2" class="w-4 h-4 text-green-600"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-slate-800">声音提醒</p>
+                  <p class="text-xs text-slate-400">收到新工单时播放提示音</p>
+                </div>
+              </div>
+              <button onclick="toggleSwitch(this)" class="w-11 h-6 rounded-full bg-slate-300 relative transition-colors duration-200" aria-label="声音提醒开关">
+                <span class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Account & General -->
+        <div class="px-5 mb-4">
+          <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3 px-0.5">通用</h2>
+          <div class="bg-white rounded-2xl shadow-card border border-slate-100 overflow-hidden">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 cursor-pointer active:bg-slate-50 transition-colors">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-purple-50 flex items-center justify-center">
+                  <i data-lucide="shield" class="w-4 h-4 text-purple-600"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-slate-800">账号安全</p>
+                  <p class="text-xs text-slate-400">修改密码、绑定手机</p>
+                </div>
+              </div>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300"></i>
+            </div>
             <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 cursor-pointer active:bg-slate-50 transition-colors">
               <div class="flex items-center gap-3">
                 <div class="w-9 h-9 rounded-xl bg-orange-50 flex items-center justify-center">
@@ -1317,8 +1597,8 @@
           </div>
         </div>
 
-        <!-- Logout (fixed to bottom) -->
-        <div class="mt-auto px-5 pt-8 pb-8">
+        <!-- Logout -->
+        <div class="px-5 pb-24">
           <button onclick="handleLogout()" class="w-full py-3.5 bg-white text-red-500 text-sm font-semibold rounded-2xl border border-red-200 hover:bg-red-50 active:bg-red-100 active:scale-[0.98] transition-all shadow-card">
             退出登录
           </button>
@@ -1354,16 +1634,23 @@ let currentTab = 'home';
 let currentOrderId = null;
 let photoCount = 0;
 let appealPhotoCount = 0;
+let onboardingState = 'unregistered'; // 'unregistered' | 'pending' | 'rejected' | 'approved'
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', () => {
   lucide.createIcons();
+  updateOnboardingUI();
   // Trigger staggered animation on visible content
   document.querySelectorAll('.anim-stagger.reveal').forEach(el => el.classList.add('reveal'));
 });
 
 // ===== TAB SWITCHING =====
 function switchTab(tab) {
+  // Block tab switching if onboarding not approved
+  if (onboardingState !== 'approved') {
+    showToast('请先完成企业建档并通过审批', '');
+    return;
+  }
   // Close any open overlays first
   const orderOverlay = document.getElementById('orderDetailOverlay');
   const appealOverlay = document.getElementById('appealOverlay');
@@ -1429,20 +1716,16 @@ function updateHeader(tab) {
   const title = document.getElementById('headerTitle');
   const sub = document.getElementById('headerSub');
   const badge = document.getElementById('headerBadge');
-  const entEditBtn = document.getElementById('entEditBtn');
-  const entEditActions = document.getElementById('entEditActions');
-  const entActionBar = document.getElementById('entActionBar');
+  const editBtn = document.getElementById('headerEditBtn');
 
   // Hide enterprise elements by default
   badge.classList.add('hidden');
-  if (entEditBtn) entEditBtn.classList.add('hidden');
-  if (entEditActions) entEditActions.classList.add('hidden');
+  editBtn.classList.add('hidden');
 
   if (tab === 'home') {
     title.textContent = '智慧食安';
     sub.textContent = '好味道餐饮管理有限公司';
     sub.style.display = '';
-    updateHomeApprovalStatus();
   } else if (tab === 'orders') {
     title.textContent = '工单中心';
     sub.style.display = 'none';
@@ -1453,23 +1736,11 @@ function updateHeader(tab) {
       badge.textContent = '· 已生效';
       badge.className = 'shrink-0 text-xs font-normal text-white/60';
       badge.classList.remove('hidden');
-      const editBtnInner = document.getElementById('entEditBtnInner');
-      if (entEditBtn) { entEditBtn.classList.remove('hidden'); entEditActions.classList.add('hidden'); }
-      if (editBtnInner) editBtnInner.disabled = false;
+      editBtn.classList.remove('hidden');
     } else if (entApprovalState === 'pending') {
       badge.textContent = '· 审批中';
       badge.className = 'shrink-0 text-xs font-normal text-white/60';
       badge.classList.remove('hidden');
-      const editBtnInner = document.getElementById('entEditBtnInner');
-      if (entEditBtn) { entEditBtn.classList.remove('hidden'); entEditActions.classList.add('hidden'); }
-      if (editBtnInner) editBtnInner.disabled = true;
-    } else if (entApprovalState === 'rejected') {
-      badge.textContent = '· 已驳回';
-      badge.className = 'shrink-0 text-xs font-normal text-white/60';
-      badge.classList.remove('hidden');
-      const editBtnInner = document.getElementById('entEditBtnInner');
-      if (entEditBtn) { entEditBtn.classList.remove('hidden'); entEditActions.classList.add('hidden'); }
-      if (editBtnInner) editBtnInner.disabled = false;
     }
   } else if (tab === 'my') {
     title.textContent = '我的';
@@ -1478,35 +1749,7 @@ function updateHeader(tab) {
 }
 
 // ===== ENTERPRISE STATE =====
-let entApprovalState = 'approved'; // 'approved' | 'editing' | 'pending' | 'rejected'
-
-function updateHomeApprovalStatus() {
-  const el = document.getElementById('homeApprovalStatus');
-  if (!el) return;
-  if (entApprovalState === 'approved') {
-    el.textContent = '暂无审批'; el.className = 'text-xs text-slate-400 mt-0.5';
-  } else if (entApprovalState === 'pending') {
-    el.textContent = '审批中'; el.className = 'text-xs text-blue-600 font-medium mt-0.5';
-  } else if (entApprovalState === 'rejected') {
-    el.textContent = '已驳回'; el.className = 'text-xs text-orange-600 font-medium mt-0.5';
-  }
-}
-
-function cycleEntState() {
-  if (entApprovalState === 'approved') {
-    entApprovalState = 'pending'; setApprovalNotice('pending');
-    document.getElementById('approvalProgress').classList.remove('hidden');
-  } else if (entApprovalState === 'pending') {
-    entApprovalState = 'rejected'; setApprovalNotice('rejected');
-    document.getElementById('approvalProgress').classList.remove('hidden');
-  } else if (entApprovalState === 'rejected') {
-    entApprovalState = 'approved';
-    document.getElementById('approvalNotice').classList.add('hidden');
-    document.getElementById('approvalProgress').classList.add('hidden');
-  }
-  updateHeader('enterprise');
-  updateHomeApprovalStatus();
-}
+let entApprovalState = 'approved'; // 'approved' | 'editing' | 'pending'
 
 function enterEditMode() {
   entApprovalState = 'editing';
@@ -1514,10 +1757,11 @@ function enterEditMode() {
   document.querySelectorAll('.ent-field-input').forEach(el => el.classList.remove('hidden'));
   document.querySelectorAll('.ent-editable-show').forEach(el => el.classList.remove('hidden'));
   // Toggle header buttons
-  document.getElementById('entEditBtn').classList.add('hidden');
-  document.getElementById('entEditActions').classList.remove('hidden');
+  document.getElementById('headerEditBtn').classList.add('hidden');
   document.getElementById('headerBadge').classList.remove('hidden');
   document.getElementById('headerBadge').textContent = '· 编辑中';
+  document.getElementById('headerCancelBtn').classList.remove('hidden');
+  document.getElementById('headerSubmitBtn').classList.remove('hidden');
 }
 
 function cancelEditMode() {
@@ -1527,13 +1771,14 @@ function cancelEditMode() {
   document.querySelectorAll('.ent-editable-show').forEach(el => el.classList.add('hidden'));
   document.getElementById('approvalNotice').classList.add('hidden');
   document.getElementById('approvalProgress').classList.add('hidden');
-  // Restore action bar
+  // Restore header
   const badge = document.getElementById('headerBadge');
   badge.textContent = '· 已生效';
   badge.className = 'shrink-0 text-xs font-normal text-white/60';
   badge.classList.remove('hidden');
-  document.getElementById('entEditBtn').classList.remove('hidden');
-  document.getElementById('entEditActions').classList.add('hidden');
+  document.getElementById('headerEditBtn').classList.remove('hidden');
+  document.getElementById('headerCancelBtn').classList.add('hidden');
+  document.getElementById('headerSubmitBtn').classList.add('hidden');
 }
 
 function selectChip(btn, group) {
@@ -1547,42 +1792,246 @@ function selectChip(btn, group) {
   btn.classList.add('bg-blue-600', 'text-white');
 }
 
-function setApprovalNotice(type) {
-  const notice = document.getElementById('approvalNotice');
-  const icon = document.getElementById('approvalNoticeIcon');
-  const title = document.getElementById('approvalNoticeTitle');
-  const sub = document.getElementById('approvalNoticeSub');
-  notice.classList.remove('hidden');
-  if (type === 'pending') {
-    notice.className = 'mx-5 mt-4 mb-4 bg-blue-50 border border-blue-200 rounded-2xl p-4 flex items-start gap-3';
-    icon.className = 'w-5 h-5 text-blue-600 shrink-0 mt-0.5';
-    title.textContent = '审批期间信息只读，通过后自动生效'; title.className = 'text-sm font-semibold text-blue-800';
-    sub.textContent = '监管人员将在 1-3 个工作日内完成审核'; sub.className = 'text-xs text-blue-600 mt-0.5';
-  } else if (type === 'rejected') {
-    notice.className = 'mx-5 mt-4 mb-4 bg-orange-50 border border-orange-200 rounded-2xl p-4 flex items-start gap-3';
-    icon.className = 'w-5 h-5 text-orange-600 shrink-0 mt-0.5';
-    title.textContent = '内容被驳回'; title.className = 'text-sm font-semibold text-orange-800';
-    sub.textContent = '请根据驳回意见修改后重新提交'; sub.className = 'text-xs text-orange-600 mt-0.5';
-  }
-}
-
 function submitForApproval() {
-  if (!confirm('确认提交修改？提交后将进入审批流程，期间信息只读。')) return;
   entApprovalState = 'pending';
   document.querySelectorAll('.ent-field-value').forEach(el => el.classList.remove('hidden'));
   document.querySelectorAll('.ent-field-input').forEach(el => el.classList.add('hidden'));
   document.querySelectorAll('.ent-editable-show').forEach(el => el.classList.add('hidden'));
   // Show approval UI
-  setApprovalNotice('pending');
+  document.getElementById('approvalNotice').classList.remove('hidden');
   document.getElementById('approvalProgress').classList.remove('hidden');
   // Update header
   const badge = document.getElementById('headerBadge');
   badge.textContent = '· 审批中';
   badge.className = 'shrink-0 text-xs font-normal text-white/60';
   badge.classList.remove('hidden');
-  document.getElementById('entEditBtn').classList.add('hidden');
-  document.getElementById('entEditActions').classList.add('hidden');
+  document.getElementById('headerEditBtn').classList.add('hidden');
+  document.getElementById('headerCancelBtn').classList.add('hidden');
+  document.getElementById('headerSubmitBtn').classList.add('hidden');
+  // Update time
+  const now = new Date();
+  document.getElementById('entLastUpdate').textContent = now.toISOString().slice(0, 16).replace('T', ' ');
+
   showToast('已提交审批，请等待监管审核', 'success');
+}
+
+// ===== ONBOARDING =====
+function updateOnboardingUI() {
+  const overlay = document.getElementById('onboardingOverlay');
+  const formView = document.getElementById('onboardFormView');
+  const statusView = document.getElementById('onboardStatusView');
+  const bottomBar = document.getElementById('onboardBottomBar');
+  const mainApp = document.getElementById('mainApp');
+  const tabBar = document.getElementById('bottomTabBar');
+
+  if (onboardingState === 'approved') {
+    overlay.style.display = 'none';
+    mainApp.style.display = '';
+    tabBar.style.display = '';
+    // Ensure home tab is shown and header is correct
+    if (currentTab !== 'home') {
+      document.getElementById('tab-home').classList.remove('hidden');
+      document.getElementById('tab-orders').classList.add('hidden');
+      document.getElementById('tab-enterprise').classList.add('hidden');
+      document.getElementById('tab-my').classList.add('hidden');
+      currentTab = 'home';
+    }
+    updateHeader('home');
+    setTimeout(() => lucide.createIcons(), 100);
+    return;
+  }
+
+  // Show onboarding, hide main app
+  overlay.style.display = '';
+  mainApp.style.display = 'none';
+  tabBar.style.display = 'none';
+
+  // Status icon, title, desc
+  const iconDiv = document.getElementById('onboardStatusIcon');
+  const iconEl = document.getElementById('onboardStatusIconEl');
+  const titleEl = document.getElementById('onboardStatusTitle');
+  const descEl = document.getElementById('onboardStatusDesc');
+  const progressSteps = document.getElementById('onboardProgressSteps');
+  const reeditBtn = document.getElementById('onboardReeditBtn');
+  const step1 = document.getElementById('onboardStep1Circle');
+  const step2 = document.getElementById('onboardStep2Circle');
+  const step3 = document.getElementById('onboardStep3Circle');
+  const step2Label = document.getElementById('onboardStep2Label');
+  const step3Label = document.getElementById('onboardStep3Label');
+  const debugLabel = document.getElementById('onboardDebugLabel');
+  const subtitle = document.getElementById('onboardSubtitle');
+
+  if (onboardingState === 'unregistered') {
+    formView.style.display = '';
+    statusView.classList.add('hidden');
+    bottomBar.style.display = '';
+    subtitle.textContent = '首次使用，请先完成企业信息登记';
+  } else if (onboardingState === 'pending') {
+    formView.style.display = 'none';
+    statusView.classList.remove('hidden');
+    bottomBar.style.display = 'none';
+
+    iconDiv.className = 'w-20 h-20 rounded-full flex items-center justify-center mb-6 bg-blue-50';
+    iconEl.setAttribute('data-lucide', 'clock');
+    iconEl.className = 'w-10 h-10 text-blue-600';
+    titleEl.textContent = '建档申请已提交';
+    titleEl.className = 'text-lg font-bold text-slate-800 mb-2';
+    descEl.innerHTML = '监管人员将在 1-3 个工作日内<br>完成信息审核，请耐心等待';
+    descEl.className = 'text-sm text-slate-500 text-center leading-relaxed';
+    progressSteps.style.display = '';
+    reeditBtn.classList.add('hidden');
+
+    // Step 1: completed
+    step1.className = 'w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center';
+    step1.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i>';
+    // Step 2: active
+    step2.className = 'w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center';
+    step2.innerHTML = '<i data-lucide="search-check" class="w-5 h-5"></i>';
+    step2Label.className = 'text-[11px] font-semibold text-blue-600 mt-2 whitespace-nowrap';
+    // Step 3: pending
+    step3.className = 'w-10 h-10 rounded-full bg-slate-100 text-slate-300 flex items-center justify-center';
+    step3.innerHTML = '<i data-lucide="check-circle" class="w-5 h-5"></i>';
+    step3Label.className = 'text-[11px] font-medium text-slate-300 mt-2 whitespace-nowrap';
+
+    debugLabel.textContent = '待审批';
+    subtitle.textContent = '建档申请审核中';
+  } else if (onboardingState === 'rejected') {
+    formView.style.display = 'none';
+    statusView.classList.remove('hidden');
+    bottomBar.style.display = 'none';
+
+    iconDiv.className = 'w-20 h-20 rounded-full flex items-center justify-center mb-6 bg-orange-50';
+    iconEl.setAttribute('data-lucide', 'alert-triangle');
+    iconEl.className = 'w-10 h-10 text-orange-500';
+    titleEl.textContent = '建档申请被驳回';
+    titleEl.className = 'text-lg font-bold text-slate-800 mb-2';
+    descEl.innerHTML = '<span class="text-orange-600 font-medium">驳回原因：</span>请核实统一社会信用代码的准确性，并补充经营场所的详细地址信息';
+    descEl.className = 'text-sm text-slate-500 text-center leading-relaxed bg-orange-50 rounded-xl p-4 mt-2';
+    progressSteps.style.display = '';
+
+    // Step 1: completed
+    step1.className = 'w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center';
+    step1.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i>';
+    // Step 2: rejected
+    step2.className = 'w-10 h-10 rounded-full bg-red-500 text-white flex items-center justify-center';
+    step2.innerHTML = '<i data-lucide="x" class="w-5 h-5"></i>';
+    step2Label.className = 'text-[11px] font-semibold text-red-500 mt-2 whitespace-nowrap';
+    // Step 3: pending
+    step3.className = 'w-10 h-10 rounded-full bg-slate-100 text-slate-300 flex items-center justify-center';
+    step3.innerHTML = '<i data-lucide="check-circle" class="w-5 h-5"></i>';
+    step3Label.className = 'text-[11px] font-medium text-slate-300 mt-2 whitespace-nowrap';
+
+    reeditBtn.classList.remove('hidden');
+    debugLabel.textContent = '已驳回';
+    subtitle.textContent = '建档申请未通过，请重新填写';
+  }
+
+  setTimeout(() => lucide.createIcons(), 50);
+}
+
+function submitOnboarding() {
+  // Validate required fields
+  const requiredFields = [
+    { id: 'onboardName', label: '主体名称' },
+    { id: 'onboardCreditCode', label: '统一社会信用代码' },
+    { id: 'onboardLicense', label: '许可证号' },
+    { id: 'onboardLegalPerson', label: '法人姓名' },
+    { id: 'onboardPhone', label: '联系电话' },
+    { id: 'onboardBizScope', label: '经营项目' },
+    { id: 'onboardArea', label: '经营面积' },
+    { id: 'onboardDomicile', label: '住所' },
+    { id: 'onboardPremises', label: '经营场所' },
+  ];
+
+  let hasError = false;
+  let firstError = null;
+
+  requiredFields.forEach(f => {
+    const el = document.getElementById(f.id);
+    const val = el.value.trim();
+    if (!val) {
+      el.classList.add('border-red-300', 'bg-red-50');
+      if (!firstError) firstError = f;
+      hasError = true;
+    } else {
+      el.classList.remove('border-red-300', 'bg-red-50');
+    }
+  });
+
+  if (hasError) {
+    showToast('请填写所有必填项（' + firstError.label + '）');
+    if (firstError) {
+      document.getElementById(firstError.id).scrollIntoView({ behavior: 'smooth', block: 'center' });
+      document.getElementById(firstError.id).focus();
+    }
+    return;
+  }
+
+  // Validate credit code length
+  const creditCode = document.getElementById('onboardCreditCode').value.trim();
+  if (creditCode.length !== 18) {
+    showToast('统一社会信用代码应为18位');
+    document.getElementById('onboardCreditCode').classList.add('border-red-300', 'bg-red-50');
+    document.getElementById('onboardCreditCode').focus();
+    return;
+  }
+
+  if (!confirm('确认提交建档申请？提交后将交由监管人员审核，期间无法修改。')) return;
+
+  onboardingState = 'pending';
+  updateOnboardingUI();
+  showToast('建档申请已提交，请等待审核', 'success');
+}
+
+function onboardSelectChip(btn, group) {
+  document.querySelectorAll('.chip-' + group).forEach(b => {
+    b.classList.remove('bg-blue-600', 'text-white');
+    b.classList.add('bg-slate-100', 'text-slate-500');
+  });
+  btn.classList.remove('bg-slate-100', 'text-slate-500');
+  btn.classList.add('bg-blue-600', 'text-white');
+}
+
+function onboardAdjustArea(delta) {
+  const input = document.getElementById('onboardArea');
+  let val = parseInt(input.value) || 0;
+  val = Math.max(0, val + delta);
+  input.value = val;
+}
+
+function cycleOnboardingState() {
+  if (onboardingState === 'pending') {
+    onboardingState = 'rejected';
+  } else if (onboardingState === 'rejected') {
+    onboardingState = 'approved';
+  } else if (onboardingState === 'unregistered') {
+    onboardingState = 'pending';
+  }
+  updateOnboardingUI();
+  if (onboardingState === 'approved') {
+    showToast('审批已通过，欢迎使用智慧食安', 'success');
+  }
+}
+
+function onboardReedit() {
+  onboardingState = 'unregistered';
+  updateOnboardingUI();
+}
+
+function toggleOnboardingDemo() {
+  const btn = document.getElementById('demoToggleBtn');
+  if (onboardingState === 'approved') {
+    // Switch to unbound
+    onboardingState = 'unregistered';
+    btn.textContent = '未绑用户';
+    btn.className = 'absolute top-[max(28px,env(safe-area-inset-top))] left-1/2 -translate-x-1/2 z-[70] px-3 py-1.5 rounded-full text-[11px] font-semibold shadow-lg border transition-all active:scale-95 bg-orange-50 text-orange-700 border-orange-200';
+  } else {
+    // Switch to bound (approved)
+    onboardingState = 'approved';
+    btn.textContent = '已绑用户';
+    btn.className = 'absolute top-[max(28px,env(safe-area-inset-top))] left-1/2 -translate-x-1/2 z-[70] px-3 py-1.5 rounded-full text-[11px] font-semibold shadow-lg border transition-all active:scale-95 bg-green-50 text-green-700 border-green-200';
+  }
+  updateOnboardingUI();
 }
 
 // ===== ORDER FILTER =====
@@ -1603,24 +2052,6 @@ function filterOrders(filter, btn) {
 
   applyAllFilters();
 }
-
-function toggleTimeDropdown() {
-  document.getElementById('timeDropdown').classList.toggle('hidden');
-}
-function selectTimeFilter(filter, label) {
-  currentTimeFilter = filter;
-  document.getElementById('timeDropdownLabel').textContent = label;
-  document.getElementById('timeDropdown').classList.add('hidden');
-  applyAllFilters();
-}
-// Close dropdown when clicking outside
-document.addEventListener('click', function(e) {
-  const dd = document.getElementById('timeDropdown');
-  const btn = document.getElementById('timeDropdownBtn');
-  if (dd && btn && !btn.contains(e.target) && !dd.contains(e.target)) {
-    dd.classList.add('hidden');
-  }
-});
 
 function setTimeFilter(filter, btn) {
   currentTimeFilter = filter;
@@ -2233,96 +2664,33 @@ function showItemDetail(key) {
       { label: '许可证编号', value: 'JY111050XXXXXX' }, { label: '发证机关', value: '北京市海淀区市场监督管理局' },
       { label: '发证日期', value: '2019-07-20' }, { label: '有效期至', value: '2024-07-20' },
       { label: '经营项目', value: '热食类食品制售、冷食类食品制售' }, { label: '经营场所', value: '北京市海淀区中关村大街1号' }
-    ], images: ['食品经营许可证-正本', '食品经营许可证-副本']},
+    ]},
     license2: { title: '食品安全管理体系认证', meta: 'ISO 22000:2018', fields: [
       { label: '认证标准', value: 'ISO 22000:2018' }, { label: '认证机构', value: '中国质量认证中心' },
       { label: '发证日期', value: '2022-03-10' }, { label: '有效期至', value: '2025-03-09' },
       { label: '认证范围', value: '餐饮服务全过程食品安全管理' }
-    ], images: ['ISO22000认证证书']},
+    ]},
     empNew: { title: '新增从业人员', meta: '请填写信息', fields: [
       { label: '姓名', value: '' }, { label: '职位', value: '' }, { label: '身份证号', value: '' },
       { label: '联系电话', value: '' }, { label: '健康证编号', value: '' },
       { label: '健康证有效期', value: '' }, { label: '入职日期', value: '' }
     ]},
-    change1: { title: '变更详情', meta: '2024-06-15 14:30 · 审批通过', fields: [
-      { label: '提交时间', value: '2024-06-15 14:30' }, { label: '提交人', value: '张三' },
-      { label: '变更类型', value: '商户自主修改' }, { label: '状态', value: '审批通过' },
-      { label: '', value: '' },
-      { label: '变更内容', value: '' },
-      { label: '经营面积', value: '100㎡ → 120㎡' }, { label: '联系电话', value: '138xxxx6789（不变）' },
-      { label: '', value: '' },
-      { label: '审批流程', value: '' },
-      { label: '商户提交', value: '2024-06-15 14:30 ✓' }, { label: '监管审核', value: '2024-06-15 15:00 ✓' },
-      { label: '已生效', value: '2024-06-15 15:00' },
-    ]},
-    change2: { title: '变更详情', meta: '2024-05-20 10:00 · 监管下推', fields: [
-      { label: '生效时间', value: '2024-05-20 10:00' }, { label: '来源', value: '监管端下推' },
-      { label: '变更类型', value: '监管数据同步' }, { label: '状态', value: '自动生效' },
-      { label: '', value: '' },
-      { label: '变更内容', value: '' },
-      { label: '许可证号', value: 'JY111050XXXXXX（更新）' }, { label: '有效期', value: '延至 2024-07-20' },
-    ]},
-    change3: { title: '变更详情', meta: '2024-03-08 16:00 · 审批通过', fields: [
-      { label: '提交时间', value: '2024-03-08 16:00' }, { label: '提交人', value: '张三' },
-      { label: '变更类型', value: '商户自主修改' }, { label: '状态', value: '审批通过' },
-      { label: '', value: '' },
-      { label: '变更内容', value: '' },
-      { label: '从业人员', value: '新增王芳（食品安全员）' }, { label: '健康证', value: '王芳 JK2024****' },
-      { label: '', value: '' },
-      { label: '审批流程', value: '' },
-      { label: '商户提交', value: '2024-03-08 16:00 ✓' }, { label: '监管审核', value: '2024-03-09 09:00 ✓' },
-      { label: '已生效', value: '2024-03-09 09:00' },
-    ]},
-    change4: { title: '变更详情', meta: '2024-01-15 09:30 · 已归档', fields: [
-      { label: '登记时间', value: '2024-01-15 09:30' }, { label: '来源', value: '监管端录入' },
-      { label: '类型', value: '初始登记' }, { label: '状态', value: '已归档' },
-      { label: '', value: '' },
-      { label: '登记内容', value: '企业主体信息、许可证、从业人员全部初始录入' },
+    changeLog: { title: '变更记录', meta: '最近更新 2024-06-15', fields: [
+      { label: '2024-06-15 14:30', value: '提交审批 — 更新经营面积、联系电话' },
+      { label: '2024-05-20 10:00', value: '监管下推 — 更新许可证信息' },
+      { label: '2024-03-08 16:00', value: '商户上传 — 更新从业人员信息' },
+      { label: '2024-01-15 09:30', value: '初始登记 — 企业信息录入' },
     ]},
     licenseNew: { title: '新增证照', meta: '请填写信息', fields: [
       { label: '证照名称', value: '' }, { label: '证照编号', value: '' }, { label: '发证机关', value: '' },
       { label: '发证日期', value: '' }, { label: '有效期至', value: '' }, { label: '备注', value: '' }
     ]},
-    license3a: { title: '张三 · 健康证', meta: 'JK2023****', fields: [
-      { label: '姓名', value: '张三' }, { label: '健康证编号', value: 'JK2023****' },
-      { label: '发证机构', value: '北京市海淀区疾病预防控制中心' }, { label: '有效期', value: '2024-03-15 至 2025-03-15' }
-    ], images: ['张三-健康证']},
-    license3b: { title: '李丽 · 健康证', meta: 'JK2023****', fields: [
-      { label: '姓名', value: '李丽' }, { label: '健康证编号', value: 'JK2023****' },
-      { label: '发证机构', value: '北京市海淀区疾病预防控制中心' }, { label: '有效期', value: '2023-08-20 至 2024-08-20' }
-    ], images: ['李丽-健康证']},
-    license3c: { title: '王芳 · 健康证', meta: 'JK2024****', fields: [
-      { label: '姓名', value: '王芳' }, { label: '健康证编号', value: 'JK2024****' },
-      { label: '发证机构', value: '北京市海淀区疾病预防控制中心' }, { label: '有效期', value: '2024-01-10 至 2025-01-10' }
-    ], images: ['王芳-健康证']},
+    license3: { title: '从业人员健康证', meta: '3人持有有效证件', fields: [
+      { label: '持证人员', value: '张三、李丽、王芳' }, { label: '发证机构', value: '北京市海淀区疾病预防控制中心' },
+      { label: '张三健康证', value: 'JK2023**** 至 2025-03-15' }, { label: '李丽健康证', value: 'JK2023**** 至 2024-08-20' },
+      { label: '王芳健康证', value: 'JK2024**** 至 2025-01-10' }
+    ]},
   };
-  // Handle change log list view
-  if (key === 'changeLogList') {
-    document.getElementById('itemDetailTitle').textContent = '变更记录';
-    document.getElementById('itemDetailMeta').textContent = '共 4 条记录';
-    document.getElementById('itemDetailSaveBtn').classList.add('hidden');
-    document.getElementById('itemDetailImages').classList.add('hidden');
-    const container = document.getElementById('itemDetailFields');
-    const records = [
-      { key: 'change1', title: '更新经营面积、联系电话', desc: '2024-06-15 14:30 · 审批通过' },
-      { key: 'change2', title: '更新许可证信息', desc: '2024-05-20 10:00 · 监管下推' },
-      { key: 'change3', title: '更新从业人员信息', desc: '2024-03-08 16:00 · 审批通过' },
-      { key: 'change4', title: '企业信息初始登记', desc: '2024-01-15 09:30 · 已归档' },
-    ];
-    container.innerHTML = records.map(r => `
-      <div onclick="showItemDetail('${r.key}')" class="flex items-center justify-between active:bg-slate-50 cursor-pointer py-3 border-b border-slate-50 last:border-0">
-        <div>
-          <p class="text-sm font-medium text-slate-800">${r.title}</p>
-          <p class="text-xs text-slate-400 mt-0.5">${r.desc}</p>
-        </div>
-        <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
-      </div>
-    `).join('');
-    document.getElementById('itemDetailOverlay').classList.add('open');
-    setTimeout(() => lucide.createIcons(), 100);
-    return;
-  }
-
   const data = items[key];
   if (!data) return;
   document.getElementById('itemDetailTitle').textContent = data.title;
@@ -2330,11 +2698,24 @@ function showItemDetail(key) {
 
   const isNew = key === 'empNew' || key === 'licenseNew';
   const isEditing = isNew || entApprovalState === 'editing';
+  const isEmployee = key.startsWith('emp');
   document.getElementById('itemDetailSaveBtn').classList.toggle('hidden', !isEditing);
+
+  // Store current key for OCR callback
+  window._currentItemKey = key;
 
   // Build field rows
   const container = document.getElementById('itemDetailFields');
-  container.innerHTML = data.fields.map((f, i) => {
+  let ocrHTML = '';
+  if (isEmployee && isEditing) {
+    ocrHTML = `
+      <button onclick="simulateEmpOCR()" id="ocrScanBtn" class="w-full flex items-center justify-center gap-2 py-3 px-4 bg-blue-50 border-2 border-dashed border-blue-300 rounded-xl text-sm font-semibold text-blue-600 hover:bg-blue-100 active:bg-blue-200 transition-all mb-2">
+        <i data-lucide="scan" class="w-5 h-5"></i> 拍照识别健康证
+      </button>
+      <p class="text-[11px] text-slate-400 text-center mb-3 -mt-1">上传健康证照片，自动识别填写信息</p>
+    `;
+  }
+  container.innerHTML = ocrHTML + data.fields.map((f, i) => {
     if (isEditing) {
       return `<div class="flex justify-between items-center">
         <span class="text-sm text-slate-400 shrink-0 mr-3">${f.label}</span>
@@ -2348,72 +2729,50 @@ function showItemDetail(key) {
     }
   }).join('');
 
-  // Images
-  const imgSection = document.getElementById('itemDetailImages');
-  const imgGrid = document.getElementById('itemImageGrid');
-  const imgAddBtn = document.getElementById('itemImageAddBtn');
-  const hasImages = data.images && data.images.length > 0;
-  imgSection.classList.toggle('hidden', !hasImages && !isEditing);
-  imgAddBtn.classList.toggle('hidden', !isEditing);
-
-  if (hasImages || isEditing) {
-    let html = '';
-    if (data.images) {
-      const colors = ['#DBEAFE','#D1FAE5','#FEF3C7','#FCE7F3','#E0E7FF','#FEE2E2'];
-      html += data.images.map((name, i) => {
-        const bg = colors[i % colors.length];
-        const delBtn = isEditing ? `<button onclick="removeItemImage(this, ${i})" class="absolute top-1.5 right-1.5 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center"><i data-lucide="x" class="w-3 h-3 text-white"></i></button>` : '';
-        return `<div class="relative bg-white rounded-xl border border-slate-200 overflow-hidden">
-          ${delBtn}
-          <div class="aspect-[3/4] flex items-center justify-center" style="background:${bg}">
-            <div class="text-center">
-              <i data-lucide="image" class="w-8 h-8 text-slate-300 mx-auto mb-1"></i>
-              <span class="text-[11px] text-slate-400">${name}</span>
-            </div>
-          </div>
-          <p class="text-[11px] text-slate-500 px-3 py-2 bg-slate-50 text-center truncate">${name}</p>
-        </div>`;
-      }).join('');
-    }
-    if (isEditing) {
-      html += `<div onclick="addItemImage()" class="border-2 border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center gap-1 aspect-[3/4] cursor-pointer hover:border-blue-300 hover:bg-blue-50/30 active:bg-blue-50 transition-all">
-        <i data-lucide="plus" class="w-6 h-6 text-slate-300"></i>
-        <span class="text-[11px] text-slate-400">上传图片</span>
-      </div>`;
-    }
-    imgGrid.innerHTML = html;
-  } else {
-    imgSection.classList.add('hidden');
-  }
-
   document.getElementById('itemDetailOverlay').classList.add('open');
   setTimeout(() => lucide.createIcons(), 100);
 }
 
-function addItemImage() {
-  const imgGrid = document.getElementById('itemImageGrid');
-  const count = imgGrid.querySelectorAll('.border-slate-200.overflow-hidden').length + 1;
-  const colors = ['#DBEAFE','#D1FAE5','#FEF3C7','#FCE7F3','#E0E7FF','#FEE2E2'];
-  const bg = colors[(count - 1) % colors.length];
-  const name = '新增图片 ' + count;
-  const div = document.createElement('div');
-  div.className = 'relative bg-white rounded-xl border border-slate-200 overflow-hidden';
-  div.innerHTML = `<button onclick="removeItemImage(this, ${count - 1})" class="absolute top-1.5 right-1.5 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center"><i data-lucide="x" class="w-3 h-3 text-white"></i></button>
-    <div class="aspect-[3/4] flex items-center justify-center" style="background:${bg}">
-      <div class="text-center"><i data-lucide="image" class="w-8 h-8 text-slate-300 mx-auto mb-1"></i><span class="text-[11px] text-slate-400">${name}</span></div>
-    </div>
-    <p class="text-[11px] text-slate-500 px-3 py-2 bg-slate-50 text-center truncate">${name}</p>`;
-  const uploadZone = imgGrid.querySelector('.border-dashed');
-  imgGrid.insertBefore(div, uploadZone);
-  setTimeout(() => lucide.createIcons(), 50);
-}
-
-function removeItemImage(btn, idx) {
-  btn.closest('.relative').remove();
-}
-
 function closeItemDetail() {
   document.getElementById('itemDetailOverlay').classList.remove('open');
+}
+
+function simulateEmpOCR() {
+  // Show scanning overlay
+  const scanOverlay = document.getElementById('ocrScanOverlay');
+  scanOverlay.classList.remove('hidden');
+
+  // Simulate scanning delay (1.8s)
+  setTimeout(() => {
+    scanOverlay.classList.add('hidden');
+
+    // Mock recognized data from health certificate
+    const mockData = [
+      { field: 0, value: '赵六' },
+      { field: 1, value: '食品安全员' },
+      { field: 2, value: '110108****9012' },
+      { field: 3, value: '136****7890' },
+      { field: 4, value: 'JK2026****' },
+      { field: 5, value: '2026-03-01 至 2027-03-01' },
+      { field: 6, value: '2025-09-01' },
+    ];
+
+    // Populate input fields
+    const inputs = document.querySelectorAll('#itemDetailFields input[data-field]');
+    mockData.forEach(m => {
+      if (inputs[m.field]) {
+        inputs[m.field].value = m.value;
+        // Trigger a visual highlight
+        inputs[m.field].classList.add('bg-blue-50', 'border-blue-400');
+        setTimeout(() => {
+          inputs[m.field].classList.remove('bg-blue-50', 'border-blue-400');
+        }, 1200);
+      }
+    });
+
+    showToast('健康证识别完成，信息已自动填入', 'success');
+    setTimeout(() => lucide.createIcons(), 50);
+  }, 1800);
 }
 
 function openEnterpriseEdit() {

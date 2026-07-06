@@ -1,0 +1,2347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>智慧食安 · 管理平台（PC端）高保真原型</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        gov: {
+          50:  '#EFF6FF',
+          100: '#DBEAFE',
+          200: '#BFDBFE',
+          300: '#93C5FD',
+          400: '#60A5FA',
+          500: '#3B82F6',
+          600: '#1A56DB',
+          700: '#1E40AF',
+          800: '#1E3A8A',
+          900: '#1A295C',
+        },
+        surface: {
+          DEFAULT: '#F8FAFC',
+          elevated: '#FFFFFF',
+          muted: '#F1F5F9',
+        },
+        ink: {
+          DEFAULT: '#1E293B',
+          secondary: '#64748B',
+          muted: '#94A3B8',
+          disabled: '#CBD5E1',
+        },
+        status: {
+          critical: '#DC2626',
+          warning: '#D97706',
+          success: '#059669',
+          info:    '#0284C7',
+        }
+      },
+      fontFamily: {
+        sans: ['"PingFang SC"', '"Microsoft YaHei"', '"Helvetica Neue"', 'system-ui', 'sans-serif'],
+        mono: ['"JetBrains Mono"', '"SF Mono"', '"Cascadia Code"', 'monospace'],
+      }
+    }
+  }
+}
+</script>
+
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body, #root { height: 100%; overflow: hidden; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: #F8FAFC;
+    color: #1E293B;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+  /* Animation keyframes */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.5; transform: scale(0.8); }
+  }
+  @keyframes slideInRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .animate-fade-in-up  { animation: fadeInUp 0.4s ease-out both; }
+  .animate-fade-in     { animation: fadeIn 0.3s ease-out both; }
+  .animate-slide-right { animation: slideInRight 0.35s ease-out both; }
+
+  .skeleton {
+    background: linear-gradient(90deg, #E2E8F0 0%, #F1F5F9 40%, #E2E8F0 80%);
+    background-size: 200% 100%;
+    animation: shimmer 1.8s infinite;
+    border-radius: 6px;
+  }
+
+  /* Stagger children */
+  .stagger > *:nth-child(1) { animation-delay: 0.00s; }
+  .stagger > *:nth-child(2) { animation-delay: 0.06s; }
+  .stagger > *:nth-child(3) { animation-delay: 0.12s; }
+  .stagger > *:nth-child(4) { animation-delay: 0.18s; }
+  .stagger > *:nth-child(5) { animation-delay: 0.24s; }
+  .stagger > *:nth-child(6) { animation-delay: 0.30s; }
+  .stagger > *:nth-child(7) { animation-delay: 0.36s; }
+  .stagger > *:nth-child(8) { animation-delay: 0.42s; }
+
+  /* Heatmap cell */
+  .heat-cell { transition: all 0.2s ease; cursor: pointer; }
+  .heat-cell:hover { transform: scale(1.08); filter: brightness(0.9); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+
+  /* Video thumbnail */
+  .video-thumb {
+    transition: all 0.25s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .video-thumb:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+  .video-thumb:hover .video-play-overlay { opacity: 1; }
+
+  .video-play-overlay {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    position: absolute;
+    inset: 0;
+    background: rgba(26,86,219,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Nav item */
+  .nav-item {
+    transition: all 0.18s ease;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+  }
+  .nav-item:hover { background: #F1F5F9; }
+  .nav-item.active {
+    background: #EFF6FF;
+    border-left-color: #1A56DB;
+    color: #1A56DB;
+    font-weight: 600;
+  }
+
+  /* Table row */
+  .table-row { transition: background 0.12s ease; }
+  .table-row:hover { background: #F8FAFC; }
+
+  /* Badge pulse */
+  .badge-dot {
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  /* Modal backdrop */
+  .modal-backdrop {
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  /* Tab underline */
+  .tab-underline {
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Card hover lift */
+  .card-lift {
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .card-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef, useMemo, useCallback, Fragment } = React;
+
+// ────────────────────────────────────────
+// MOCK DATA
+// ────────────────────────────────────────
+const MOCK = {
+  stats: {
+    aiAlarmToday: 47,
+    certRemindToday: 12,
+    pendingReview: 83,
+    certExpiring: 156,
+    totalEnterprise: 2847,
+  },
+  alarms: [
+    { id:'ALM001', time:'2026-07-03 14:22:15', enterprise:'永和豆浆（城东店）', town:'城东镇', detectType:'鼠患', severity:'高', status:'待整改', confidence:0.94, orderNo:'WO20260703001' },
+    { id:'ALM002', time:'2026-07-03 14:18:03', enterprise:'老重庆火锅（南桥店）', town:'南桥镇', detectType:'未戴口罩', severity:'中', status:'待整改', confidence:0.87, orderNo:'WO20260703002' },
+    { id:'ALM003', time:'2026-07-03 14:05:41', enterprise:'味多美烘焙坊', town:'城东镇', detectType:'垃圾桶未加盖', severity:'低', status:'待整改', confidence:0.72, orderNo:'WO20260703003' },
+    { id:'ALM004', time:'2026-07-03 13:50:19', enterprise:'沙县小吃（中心店）', town:'中心镇', detectType:'抽烟', severity:'中', status:'已确认', confidence:0.91, orderNo:'WO20260702045' },
+    { id:'ALM005', time:'2026-07-03 13:38:07', enterprise:'肯德基（万达店）', town:'城东镇', detectType:'未戴帽子', severity:'低', status:'已撤销', confidence:0.55, orderNo:'WO20260702032' },
+    { id:'ALM006', time:'2026-07-03 13:20:55', enterprise:'老乡鸡（北关店）', town:'北关镇', detectType:'陌生人闯入', severity:'高', status:'待整改', confidence:0.96, orderNo:'WO20260703006' },
+    { id:'ALM007', time:'2026-07-03 13:05:30', enterprise:'黄焖鸡米饭（学院店）', town:'南桥镇', detectType:'明火离人', severity:'高', status:'待整改', confidence:0.89, orderNo:'WO20260703007' },
+    { id:'ALM008', time:'2026-07-03 12:48:22', enterprise:'海底捞（中心广场店）', town:'中心镇', detectType:'未戴口罩', severity:'中', status:'已确认', confidence:0.93, orderNo:'WO20260701018' },
+  ],
+  approvals: [
+    { id:'APR001', type:'整改', typeColor:'blue', source:'AI报警', title:'后厨鼠患整改通知', enterprise:'永和豆浆（城东店）', town:'城东镇', submitTime:'2026-07-03 09:15', waitHours:5, severity:'高', summary:'已按要求完成全面消杀，更换防鼠设施，清理后厨死角。附现场整改照片。' },
+    { id:'APR002', type:'整改', typeColor:'blue', source:'证照到期', title:'食品经营许可证到期换证', enterprise:'老重庆火锅（南桥店）', town:'南桥镇', submitTime:'2026-07-03 08:40', waitHours:6, severity:'中', summary:'已获取新证照，编号JY20260703002，有效期至2031年7月。' },
+    { id:'APR003', type:'申诉', typeColor:'orange', source:'商户申诉', title:'申诉：工单#WO20260702032', enterprise:'肯德基（万达店）', town:'城东镇', submitTime:'2026-07-02 16:22', waitHours:22, severity:'低', summary:'经核查，报警时段后厨人员在岗且佩戴整齐，AI检测置信度仅0.55，申请撤销本次报警。' },
+    { id:'APR004', type:'整改', typeColor:'blue', source:'AI报警', title:'未戴口罩违规整改', enterprise:'沙县小吃（中心店）', town:'中心镇', submitTime:'2026-07-02 15:10', waitHours:23, severity:'中', summary:'已对涉事员工进行食品安全培训，加强口罩佩戴检查制度。附培训记录及承诺书。' },
+    { id:'APR005', type:'整改', typeColor:'blue', source:'证照到期', title:'从业人员健康证到期换证', enterprise:'味多美烘焙坊', town:'城东镇', submitTime:'2026-07-02 14:05', waitHours:25, severity:'中', summary:'3名从业人员已完成健康体检，新健康证已上传。' },
+    { id:'APR006', type:'申诉', typeColor:'orange', source:'商户申诉', title:'申诉：工单#WO20260701055', enterprise:'黄焖鸡米饭（学院店）', town:'南桥镇', submitTime:'2026-07-02 11:30', waitHours:27, severity:'中', summary:'视频画面中人员为设备检修人员，非后厨工作人员，申请撤销明火离人报警。' },
+    { id:'APR007', type:'整改', typeColor:'blue', source:'AI报警', title:'垃圾桶未加盖整改', enterprise:'老乡鸡（北关店）', town:'北关镇', submitTime:'2026-07-02 10:08', waitHours:29, severity:'低', summary:'已更换带盖垃圾桶，建立每日检查台账。' },
+    { id:'APR008', type:'整改', typeColor:'blue', source:'AI报警', title:'抽烟违规整改通知', enterprise:'海底捞（中心广场店）', town:'中心镇', submitTime:'2026-07-01 09:50', waitHours:53, severity:'高', summary:'已对当事人进行处罚，全店张贴禁烟标识，加强巡查力度。' },
+  ],
+  enterprises: [
+    { id:'ENT001', name:'永和豆浆（城东店）', creditCode:'91310115MA1K3XXXXX', town:'城东镇', entityType:'餐饮服务', riskLevel:'高', bizStatus:'营业', recentOrders:12, legalPerson:'张明华' },
+    { id:'ENT002', name:'老重庆火锅（南桥店）', creditCode:'91310115MA1K3YYYYY', town:'南桥镇', entityType:'餐饮服务', riskLevel:'中', bizStatus:'营业', recentOrders:5, legalPerson:'李建国' },
+    { id:'ENT003', name:'味多美烘焙坊', creditCode:'91310115MA1K3ZZZZZ', town:'城东镇', entityType:'食品销售', riskLevel:'低', bizStatus:'营业', recentOrders:2, legalPerson:'王芳' },
+    { id:'ENT004', name:'沙县小吃（中心店）', creditCode:'91310115MA1K3AAAAA', town:'中心镇', entityType:'餐饮服务', riskLevel:'中', bizStatus:'营业', recentOrders:8, legalPerson:'陈志强' },
+    { id:'ENT005', name:'肯德基（万达店）', creditCode:'91310115MA1K3BBBBB', town:'城东镇', entityType:'餐饮服务', riskLevel:'低', bizStatus:'营业', recentOrders:1, legalPerson:'赵丽' },
+    { id:'ENT006', name:'老乡鸡（北关店）', creditCode:'91310115MA1K3CCCCC', town:'北关镇', entityType:'餐饮服务', riskLevel:'高', bizStatus:'营业', recentOrders:15, legalPerson:'刘伟' },
+    { id:'ENT007', name:'黄焖鸡米饭（学院店）', creditCode:'91310115MA1K3DDDDD', town:'南桥镇', entityType:'餐饮服务', riskLevel:'高', bizStatus:'营业', recentOrders:9, legalPerson:'孙磊' },
+    { id:'ENT008', name:'海底捞（中心广场店）', creditCode:'91310115MA1K3EEEEE', town:'中心镇', entityType:'餐饮服务', riskLevel:'中', bizStatus:'营业', recentOrders:3, legalPerson:'周杰' },
+    { id:'ENT009', name:'第一中学食堂', creditCode:'91310115MA1K3FFFFF', town:'北关镇', entityType:'单位食堂', riskLevel:'中', bizStatus:'营业', recentOrders:6, legalPerson:'吴刚' },
+    { id:'ENT010', name:'华联超市（食品区）', creditCode:'91310115MA1K3GGGGG', town:'城东镇', entityType:'食品销售', riskLevel:'低', bizStatus:'营业', recentOrders:0, legalPerson:'郑小红' },
+  ],
+  notifications: [
+    { id:'NTF001', type:'warning', title:'工单超时预警', content:'永和豆浆（城东店）整改工单已超过截止时间24小时未处理', time:'2026-07-03 14:30', read:false },
+    { id:'NTF002', type:'info', title:'新AI报警', content:'老重庆火锅（南桥店）检测到未戴口罩违规', time:'2026-07-03 14:22', read:false },
+    { id:'NTF003', type:'info', title:'证照到期提醒', content:'味多美烘焙坊食品经营许可证将于30天后到期', time:'2026-07-03 13:00', read:false },
+    { id:'NTF004', type:'success', title:'工单审批完成', content:'沙县小吃（中心店）整改工单已通过审核', time:'2026-07-03 11:20', read:true },
+    { id:'NTF005', type:'warning', title:'驳回次数超限', content:'黄焖鸡米饭（学院店）整改工单已累计驳回3次，系统自动关闭', time:'2026-07-03 10:15', read:true },
+    { id:'NTF006', type:'info', title:'新AI报警', content:'老乡鸡（北关店）检测到陌生人闯入', time:'2026-07-03 13:20', read:false },
+    { id:'NTF007', type:'error', title:'摄像头断流', content:'永和豆浆（城东店）后厨-灶台摄像头已离线超过15分钟', time:'2026-07-03 12:05', read:false },
+    { id:'NTF008', type:'success', title:'巡检报告生成完成', content:'城东镇2026年7月第1周巡检报告已自动生成', time:'2026-07-03 08:00', read:true },
+  ],
+};
+
+// ────────────────────────────────────────
+// HELPER COMPONENTS
+// ────────────────────────────────────────
+
+function Badge({ children, color = 'gray', dot = false, className = '' }) {
+  const schemes = {
+    blue:   'bg-blue-50 text-blue-700 border-blue-200',
+    orange: 'bg-orange-50 text-orange-700 border-orange-200',
+    green:  'bg-emerald-50 text-emerald-700 border-emerald-200',
+    red:    'bg-red-50 text-red-700 border-red-200',
+    yellow: 'bg-amber-50 text-amber-700 border-amber-200',
+    gray:   'bg-slate-50 text-slate-600 border-slate-200',
+    indigo: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+  };
+  return (
+    <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium border rounded-full ${schemes[color]} ${className}`}>
+      {dot && <span className="w-1.5 h-1.5 rounded-full bg-current badge-dot"></span>}
+      {children}
+    </span>
+  );
+}
+
+function Skeleton({ className = '', style = {} }) {
+  return <div className={`skeleton ${className}`} style={style}></div>;
+}
+
+function StatCard({ label, value, unit, icon, color, onClick }) {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setLoaded(true), 300 + Math.random() * 400); return () => clearTimeout(t); }, []);
+
+  const colors = {
+    blue:   { bg: 'bg-blue-50', icon: 'text-blue-600', val: 'text-blue-700' },
+    orange: { bg: 'bg-orange-50', icon: 'text-orange-600', val: 'text-orange-700' },
+    red:    { bg: 'bg-red-50', icon: 'text-red-600', val: 'text-red-700' },
+    amber:  { bg: 'bg-amber-50', icon: 'text-amber-600', val: 'text-amber-700' },
+    teal:   { bg: 'bg-teal-50', icon: 'text-teal-600', val: 'text-teal-700' },
+  };
+  const c = colors[color] || colors.blue;
+
+  return (
+    <div
+      className={`card-lift bg-white rounded-lg border border-slate-200 px-5 py-4 cursor-pointer ${loaded ? 'animate-fade-in-up' : ''}`}
+      onClick={onClick}
+      style={{ opacity: loaded ? 1 : 0 }}
+    >
+      {!loaded ? (
+        <div className="space-y-2">
+          <Skeleton className="h-3 w-20" />
+          <Skeleton className="h-8 w-16" />
+          <Skeleton className="h-2 w-28" />
+        </div>
+      ) : (
+        <>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-medium text-ink-secondary tracking-wide uppercase">{label}</span>
+            <span className={`w-8 h-8 rounded-md ${c.bg} flex items-center justify-center`}>
+              <span className={c.icon}>{icon}</span>
+            </span>
+          </div>
+          <div className={`text-3xl font-bold ${c.val} tracking-tight tabular-nums`}>
+            {value.toLocaleString()}<span className="text-sm font-normal text-ink-secondary ml-1">{unit}</span>
+          </div>
+          <div className="text-[11px] text-ink-muted mt-1.5">实时更新</div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function Tooltip({ text, children }) {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="relative inline-flex" onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}>
+      {children}
+      {show && (
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2.5 py-1 bg-slate-800 text-white text-xs rounded shadow-lg whitespace-nowrap z-50 animate-fade-in">
+          {text}
+          <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-4 border-transparent border-t-slate-800"></div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ────────────────────────────────────────
+// SVG CHARTS
+// ────────────────────────────────────────
+
+function TrendChart({ data, width = 520, height = 200 }) {
+  const points = useMemo(() => {
+    if (!data.length) return '';
+    const max = Math.max(...data.map(d => d.value));
+    const min = 0;
+    const range = max - min || 1;
+    const pad = 0;
+    const w = width - pad * 2;
+    const h = height - pad * 2;
+    return data.map((d, i) => {
+      const x = pad + (i / Math.max(data.length - 1, 1)) * w;
+      const y = pad + h - ((d.value - min) / range) * h;
+      return `${x},${y}`;
+    }).join(' ');
+  }, [data, width, height]);
+
+  const areaPath = useMemo(() => {
+    if (!data.length) return '';
+    const max = Math.max(...data.map(d => d.value));
+    const range = max || 1;
+    const pad = 0;
+    const w = width - pad * 2;
+    const h = height - pad * 2;
+    let d = '';
+    data.forEach((pt, i) => {
+      const x = pad + (i / Math.max(data.length - 1, 1)) * w;
+      const y = pad + h - ((pt.value) / range) * h;
+      d += (i === 0 ? 'M' : 'L') + ` ${x},${y} `;
+    });
+    d += `L ${pad + w},${pad + h} L ${pad},${pad + h} Z`;
+    return d;
+  }, [data, width, height]);
+
+  if (!data.length) return <div className="flex items-center justify-center text-ink-muted text-sm" style={{width,height}}>暂无数据</div>;
+
+  return (
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="overflow-visible">
+      <defs>
+        <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#1A56DB" stopOpacity="0.15" />
+          <stop offset="100%" stopColor="#1A56DB" stopOpacity="0.01" />
+        </linearGradient>
+      </defs>
+      <path d={areaPath} fill="url(#areaGrad)" />
+      <polyline points={points} fill="none" stroke="#1A56DB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      {data.map((d, i) => {
+        const max = Math.max(...data.map(d => d.value));
+        const range = max || 1;
+        const pad = 0;
+        const w = width - pad * 2;
+        const h = height - pad * 2;
+        const cx = pad + (i / Math.max(data.length - 1, 1)) * w;
+        const cy = pad + h - ((d.value) / range) * h;
+        return (
+          <g key={i} className="group">
+            <circle cx={cx} cy={cy} r="3.5" fill="white" stroke="#1A56DB" strokeWidth="2" />
+            <circle cx={cx} cy={cy} r="10" fill="transparent" className="cursor-pointer" />
+            <g className="opacity-0 group-hover:opacity-100 transition-opacity">
+              <rect x={cx-22} y={cy-28} width="44" height="20" rx="4" fill="#1E293B" />
+              <text x={cx} y={cy-13} textAnchor="middle" fill="white" fontSize="10" fontWeight="600">{d.value}</text>
+            </g>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+function BarChart({ data, width = 400, height = 160 }) {
+  const max = Math.max(...data.map(d => d.value), 1);
+  const barW = Math.min(28, (width - 40) / data.length - 8);
+  return (
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
+      {data.map((d, i) => {
+        const barH = (d.value / max) * (height - 36);
+        const x = 20 + i * ((width - 40) / data.length) + ((width-40)/data.length - barW)/2;
+        const y = height - 20 - barH;
+        return (
+          <g key={i} className="group">
+            <rect x={x} y={y} width={barW} height={barH} rx="3" fill={d.color || '#1A56DB'} opacity="0.85"
+              className="transition-all duration-200 hover:opacity-100" />
+            <text x={x + barW/2} y={height - 4} textAnchor="middle" fill="#94A3B8" fontSize="9">{d.label}</text>
+            <g className="opacity-0 group-hover:opacity-100 transition-opacity">
+              <text x={x + barW/2} y={y - 6} textAnchor="middle" fill="#1E293B" fontSize="10" fontWeight="600">{d.value}</text>
+            </g>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+// ────────────────────────────────────────
+// CSV EXPORT UTILITIES
+// ────────────────────────────────────────
+
+function downloadCSV(filename, rows) {
+  const BOM = '﻿'; // UTF-8 BOM for Excel Chinese support
+  const csv = BOM + rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function exportMerchantCSV(enterprises) {
+  const headers = ['企业名称','统一社会信用代码','许可证号','所属镇','主体业态','法人姓名','风险等级','营业状态','最近工单数','导出时间'];
+  const rows = [headers];
+  enterprises.forEach(e => {
+    rows.push([e.name, e.creditCode, e.licenseNo || '', e.town, e.entityType, e.legalPerson, e.riskLevel, e.bizStatus, String(e.recentOrders), new Date().toLocaleString('zh-CN')]);
+  });
+  const totalRow = ['','','','','','','','合计企业数',String(enterprises.length),''];
+  rows.push(totalRow);
+  downloadCSV(`商户台账_${new Date().toISOString().slice(0,10)}.csv`, rows);
+}
+
+function exportStaffCSV(enterprises) {
+  const headers = ['企业名称','所属镇','人员姓名','岗位','身份证号','联系电话','健康证编号','健康证到期日期','健康证状态','导出时间'];
+  const rows = [headers];
+  const now = new Date();
+  const mockStaffPool = [
+    { name:'张三', position:'主厨', idCard:'320102199001011234', phone:'13800001111', hcNo:'JK20250101001', hcExp:'2026-09-15' },
+    { name:'李四', position:'帮厨', idCard:'320102199205052345', phone:'13800002222', hcNo:'JK20250315002', hcExp:'2026-06-20' },
+    { name:'王五', position:'服务员', idCard:'320102198812016789', phone:'13800003333', hcNo:'JK20250801003', hcExp:'2026-12-01' },
+    { name:'赵六', position:'洗碗工', idCard:'320102199507013456', phone:'13800004444', hcNo:'JK20250615004', hcExp:'2026-07-05' },
+    { name:'钱七', position:'配菜员', idCard:'320102199303012345', phone:'13800005555', hcNo:'JK20250420005', hcExp:'2026-10-20' },
+  ];
+  enterprises.forEach(e => {
+    const count = 1 + Math.floor(Math.random() * 4);
+    const shuffled = [...mockStaffPool].sort(() => Math.random() - 0.5);
+    shuffled.slice(0, count).forEach(s => {
+      const expDate = new Date(s.hcExp);
+      const status = expDate < now ? '已过期' : (expDate - now)/(1000*60*60*24) < 30 ? '即将到期' : '正常';
+      rows.push([e.name, e.town, s.name, s.position, s.idCard, s.phone, s.hcNo, s.hcExp, status, new Date().toLocaleString('zh-CN')]);
+    });
+  });
+  downloadCSV(`人员台账_${new Date().toISOString().slice(0,10)}.csv`, rows);
+}
+
+// ────────────────────────────────────────
+// MAIN APP
+// ────────────────────────────────────────
+
+const NAV_ITEMS = [
+  { key: 'dashboard',    label: '工作台',    icon: '■' },
+  { key: 'entity',       label: '主体管理',   icon: '▲' },
+  { key: 'video',        label: '视频监控',   icon: '◈' },
+  { key: 'risk',         label: '风险预警',   icon: '◆', badge: MOCK.stats.aiAlarmToday + MOCK.stats.certRemindToday },
+  { key: 'approval',     label: '审批记录',   icon: '●', badge: MOCK.stats.pendingReview },
+  { key: 'notifications',label: '通知信息',   icon: '◉', badge: MOCK.notifications.filter(n=>!n.read).length },
+  { key: 'settings',     label: '系统管理',   icon: '◎' },
+];
+
+function App() {
+  const [activeNav, setActiveNav] = useState('dashboard');
+  const [showDetail, setShowDetail] = useState(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [userRole, setUserRole] = useState('R01'); // R01=区级, R02=镇级
+  const roleTown = '城东镇'; // 演示用：R02 默认所属镇
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const t = setTimeout(() => setLoading(false), 800);
+    return () => clearTimeout(t);
+  }, []);
+
+  // Show skeleton only on initial load for dashboard
+  const [dashReady, setDashReady] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setDashReady(true), 600); return () => clearTimeout(t); }, []);
+
+  const renderContent = () => {
+    switch (activeNav) {
+      case 'dashboard':    return <Dashboard loading={!dashReady} onNavigate={setActiveNav} userRole={userRole} roleTown={roleTown} />;
+      case 'risk':         return <RiskWarning userRole={userRole} roleTown={roleTown} />;
+      case 'approval':     return <ApprovalRecords showDetail={showDetail} setShowDetail={setShowDetail} userRole={userRole} roleTown={roleTown} />;
+      case 'entity':       return <EntityManagement userRole={userRole} roleTown={roleTown} />;
+      case 'video':        return <VideoSurveillance userRole={userRole} roleTown={roleTown} />;
+      case 'notifications':return <NotificationCenter />;
+      case 'settings':     return <SystemSettings />;
+      default:             return <Dashboard loading={false} onNavigate={setActiveNav} userRole={userRole} roleTown={roleTown} />;
+    }
+  };
+
+  const visibleNav = useMemo(() => {
+    return NAV_ITEMS.filter(item => {
+      if (item.key === 'settings' && userRole === 'R02') return false; // 镇级不显示系统管理
+      return true;
+    });
+  }, [userRole]);
+
+  const unreadNotif = MOCK.notifications.filter(n => !n.read).length;
+
+  return (
+    <div className="flex h-full bg-surface">
+      {/* Sidebar */}
+      <aside className={`${sidebarCollapsed ? 'w-[64px]' : 'w-[232px]'} bg-white border-r border-slate-200 flex flex-col transition-all duration-250 shrink-0 z-20`}>
+        {/* Logo */}
+        <div className="h-14 flex items-center px-4 border-b border-slate-100">
+          <div className="w-8 h-8 rounded-md bg-gov-600 flex items-center justify-center shrink-0">
+            <span className="text-white text-sm font-bold">食</span>
+          </div>
+          {!sidebarCollapsed && (
+            <div className="ml-3 overflow-hidden">
+              <div className="text-sm font-bold text-ink tracking-tight">智慧食安</div>
+              <div className="text-[10px] text-ink-muted">管理平台</div>
+            </div>
+          )}
+        </div>
+
+        {/* Nav items */}
+        <nav className="flex-1 py-3 overflow-y-auto">
+          {visibleNav.map(item => (
+            <div
+              key={item.key}
+              className={`nav-item flex items-center px-4 py-2.5 mx-2 rounded-r-lg text-sm ${activeNav === item.key ? 'active' : 'text-ink-secondary'}`}
+              onClick={() => { setActiveNav(item.key); setShowDetail(null); }}
+            >
+              <span className={`w-5 text-center mr-3 shrink-0 ${activeNav === item.key ? 'text-gov-600' : 'text-ink-muted'}`}>{item.icon}</span>
+              {!sidebarCollapsed && (
+                <>
+                  <span className="truncate">{item.label}</span>
+                  {item.badge > 0 && (
+                    <span className="ml-auto bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-none">
+                      {item.badge > 99 ? '99+' : item.badge}
+                    </span>
+                  )}
+                </>
+              )}
+            </div>
+          ))}
+        </nav>
+
+        {/* Collapse toggle */}
+        <div className="border-t border-slate-100 p-3">
+          <button
+            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            className="w-full flex items-center justify-center py-2 text-xs text-ink-muted hover:text-ink-secondary transition-colors"
+          >
+            {sidebarCollapsed ? '→' : '← 收起'}
+          </button>
+        </div>
+      </aside>
+
+      {/* Main */}
+      <main className="flex-1 flex flex-col overflow-hidden">
+        {/* Top bar */}
+        <header className="h-14 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0">
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-ink-muted tracking-wide">智慧食安</span>
+            <span className="text-ink-disabled">/</span>
+            <span className="text-sm font-medium text-ink">{NAV_ITEMS.find(n => n.key === activeNav)?.label}</span>
+          </div>
+          <div className="flex items-center gap-4">
+            {/* ── Role Toggle (演示用) ── */}
+            <div className="flex items-center gap-2 pr-3 border-r border-slate-200">
+              <span className="text-[10px] text-ink-muted font-medium tracking-wide">演示切换</span>
+              <div className="flex bg-slate-100 rounded-md p-0.5">
+                <button
+                  onClick={() => setUserRole('R01')}
+                  className={`px-2.5 py-1 text-[10px] font-medium rounded transition-all ${userRole === 'R01' ? 'bg-white text-gov-700 shadow-sm' : 'text-ink-muted hover:text-ink'}`}
+                >区级</button>
+                <button
+                  onClick={() => setUserRole('R02')}
+                  className={`px-2.5 py-1 text-[10px] font-medium rounded transition-all ${userRole === 'R02' ? 'bg-white text-gov-700 shadow-sm' : 'text-ink-muted hover:text-ink'}`}
+                >镇级</button>
+              </div>
+            </div>
+            <button onClick={() => setActiveNav('notifications')} className="relative p-1.5 rounded-md hover:bg-slate-50 transition-colors">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2" strokeLinecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              {unreadNotif > 0 && <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">{unreadNotif}</span>}
+            </button>
+            <div className="flex items-center gap-2 pl-3 border-l border-slate-200">
+              <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${userRole === 'R01' ? 'bg-gov-100 text-gov-700' : 'bg-emerald-50 text-emerald-700'}`}>
+                {userRole === 'R01' ? '区' : '镇'}
+              </div>
+              <div className="text-sm">
+                <div className="font-medium text-ink leading-tight">{userRole === 'R01' ? '张主任' : '李所长'}</div>
+                <div className="text-[10px] text-ink-muted leading-tight">{userRole === 'R01' ? '区级管理员' : `镇级管理员 · ${roleTown}`}</div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto p-6" key={activeNav}>
+          <div className="animate-fade-in">
+            {renderContent()}
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
+
+// ────────────────────────────────────────
+// DASHBOARD (3.1 工作台)
+// ────────────────────────────────────────
+
+function Dashboard({ loading, onNavigate, userRole, roleTown }) {
+  const isDistrict = userRole === 'R01';
+
+  const scopedStats = useMemo(() => {
+    if (isDistrict) return MOCK.stats;
+    const ratio = 0.28;
+    return {
+      aiAlarmToday: Math.round(MOCK.stats.aiAlarmToday * ratio),
+      certRemindToday: Math.round(MOCK.stats.certRemindToday * ratio),
+      pendingReview: Math.round(MOCK.stats.pendingReview * ratio),
+      certExpiring: Math.round(MOCK.stats.certExpiring * ratio),
+      totalEnterprise: 623,
+    };
+  }, [isDistrict]);
+
+  const trendData = useMemo(() => {
+    const data = [];
+    for (let i = 0; i < 30; i++) {
+      data.push({ label: `${i+1}日`, value: Math.floor(15 + Math.random() * 45) });
+    }
+    return data;
+  }, []);
+
+  const barData = [
+    { label:'城东镇', value: 47, color: '#1A56DB' },
+    { label:'南桥镇', value: 32, color: '#3B82F6' },
+    { label:'中心镇', value: 28, color: '#60A5FA' },
+    { label:'北关镇', value: 19, color: '#93C5FD' },
+    { label:'其他',   value: 8, color: '#BFDBFE' },
+  ];
+
+  // ── District Risk Data ──
+  const districtData = [
+    { name:'城关区',  risk:82, enterprises:856, alarms:62,  trend:'↑8%' },
+    { name:'城东镇',  risk:75, enterprises:623, alarms:47,  trend:'↑12%' },
+    { name:'北关镇',  risk:68, enterprises:512, alarms:35,  trend:'↑5%' },
+    { name:'南桥镇',  risk:58, enterprises:481, alarms:32,  trend:'↓3%' },
+    { name:'开发区',  risk:52, enterprises:442, alarms:28,  trend:'→' },
+    { name:'城西镇',  risk:42, enterprises:356, alarms:14,  trend:'↓8%' },
+    { name:'新港镇',  risk:38, enterprises:298, alarms:11,  trend:'↓2%' },
+    { name:'湖滨镇',  risk:24, enterprises:157, alarms:5,   trend:'→' },
+  ];
+
+  const riskLabel = (r) => {
+    if (r >= 70) return { label:'高风险', color:'red' };
+    if (r >= 50) return { label:'中高风险', color:'orange' };
+    if (r >= 35) return { label:'中风险', color:'yellow' };
+    return { label:'低风险', color:'green' };
+  };
+
+  return (
+    <div className="flex flex-col gap-3 h-full" style={{maxHeight:'calc(100vh - 110px)'}}>
+      {/* Page title — compact */}
+      <div className="flex items-center justify-between shrink-0">
+        <div className="flex items-baseline gap-2">
+          <h1 className="text-lg font-bold text-ink tracking-tight">工作台</h1>
+          <span className="text-[11px] text-ink-muted">
+            {isDistrict
+              ? `${MOCK.stats.totalEnterprise.toLocaleString()} 家企业监控中`
+              : `${roleTown} · ${scopedStats.totalEnterprise} 家企业监控中`
+            }
+          </span>
+        </div>
+        <div className="flex items-center gap-2 text-[10px] text-ink-muted">
+          {!isDistrict && <Badge color="blue">{roleTown}</Badge>}
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          系统正常 · {new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})}
+        </div>
+      </div>
+
+      {/* 5 Stat Cards — compact */}
+      <div className="grid grid-cols-5 gap-3 stagger shrink-0">
+        <StatCardCompact label="今日AI报警" value={scopedStats.aiAlarmToday} unit="条" color="red"    onClick={() => onNavigate('risk')} />
+        <StatCardCompact label="今日换证提醒" value={scopedStats.certRemindToday} unit="条" color="orange" onClick={() => onNavigate('risk')} />
+        <StatCardCompact label="待审核总数"   value={scopedStats.pendingReview}   unit="条" color="blue"   onClick={() => onNavigate('approval')} />
+        <StatCardCompact label="证照临期告警" value={scopedStats.certExpiring}   unit="张" color="amber"  onClick={() => onNavigate('risk')} />
+        <StatCardCompact label="企业总数"     value={scopedStats.totalEnterprise} unit="家" color="teal"   onClick={() => onNavigate('entity')} badge={isDistrict ? '全区' : roleTown} />
+      </div>
+
+      {/* Main row: Admin Map Heatmap + Trend + Approval */}
+      <div className="grid grid-cols-5 gap-3 flex-1 min-h-0">
+        {/* Administrative Map Heatmap (3 cols) */}
+        <div className="col-span-3 bg-white rounded-lg border border-slate-200 p-3 flex flex-col card-lift animate-fade-in-up" style={{animationDelay:'0.2s'}}>
+          <div className="flex items-center justify-between mb-1.5 shrink-0">
+            <div className="flex items-center gap-2">
+              <h3 className="text-[12.5px] font-semibold text-ink">行政地图热力图</h3>
+              <span className="text-[10px] text-ink-muted">{isDistrict ? '全区' : roleTown} · 企业风险分布密度</span>
+            </div>
+            <div className="flex items-center gap-2 text-[10px]">
+              <span className="flex items-center gap-0.5"><span className="w-2 h-2 rounded-sm" style={{background:'#34D399'}}></span>低</span>
+              <span className="flex items-center gap-0.5"><span className="w-2 h-2 rounded-sm" style={{background:'#FCD34D'}}></span>中</span>
+              <span className="flex items-center gap-0.5"><span className="w-2 h-2 rounded-sm" style={{background:'#F97316'}}></span>中高</span>
+              <span className="flex items-center gap-0.5"><span className="w-2 h-2 rounded-sm" style={{background:'#EF4444'}}></span>高</span>
+            </div>
+          </div>
+          {/* District Risk Table */}
+          <div className="flex-1 overflow-y-auto min-h-0">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b border-slate-100 text-[10px] text-ink-muted uppercase tracking-wider">
+                  <th className="text-left py-2 pr-2 font-medium">行政区域</th>
+                  <th className="text-left py-2 pr-2 font-medium">风险等级</th>
+                  <th className="text-right py-2 pr-2 font-medium">风险指数</th>
+                  <th className="text-right py-2 pr-2 font-medium">监管企业</th>
+                  <th className="text-right py-2 pr-2 font-medium">本月报警</th>
+                  <th className="text-right py-2 font-medium">环比变化</th>
+                </tr>
+              </thead>
+              <tbody>
+                {districtData.map((d, i) => {
+                  const rl = riskLabel(d.risk);
+                  return (
+                    <tr key={i} className="border-b border-slate-50 last:border-0 table-row">
+                      <td className="py-2 pr-2">
+                        <span className="font-medium text-ink">{d.name}</span>
+                      </td>
+                      <td className="py-2 pr-2">
+                        <Badge color={rl.color}>{rl.label}</Badge>
+                      </td>
+                      <td className="py-2 pr-2 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <span className="font-mono font-bold text-ink">{d.risk}</span>
+                          <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                            <div className={`h-full rounded-full transition-all ${d.risk>=70?'bg-red-500':d.risk>=50?'bg-orange-400':d.risk>=35?'bg-amber-300':'bg-emerald-400'}`}
+                              style={{width:`${d.risk}%`}}></div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-2 pr-2 text-right font-mono text-ink-secondary">{d.enterprises}</td>
+                      <td className="py-2 pr-2 text-right font-mono text-ink-secondary">{d.alarms}</td>
+                      <td className={`py-2 text-right font-mono text-[10px] ${d.trend.startsWith('↑')?'text-red-500':d.trend.startsWith('↓')?'text-emerald-600':'text-ink-muted'}`}>{d.trend}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Right column: Trend + Pending List (2 cols) */}
+        <div className="col-span-2 flex flex-col gap-3">
+          {/* Trend Chart */}
+          <div className="bg-white rounded-lg border border-slate-200 p-3 card-lift animate-fade-in-up flex-1 flex flex-col" style={{animationDelay:'0.26s'}}>
+            <div className="flex items-center justify-between mb-1 shrink-0">
+              <h3 className="text-[12px] font-semibold text-ink">AI报警趋势（30天）</h3>
+              <span className="text-[10px] text-ink-muted">条/日</span>
+            </div>
+            <div className="flex-1 flex items-center justify-center min-h-0">
+              <TrendChart data={trendData} width={340} height={140} />
+            </div>
+            <div className="flex justify-between text-[10px] text-ink-muted shrink-0 mt-1">
+              <span>日均 {Math.round(trendData.reduce((a,b)=>a+b.value,0)/trendData.length)} 条</span>
+              <span className="text-red-500">↑ 12%</span>
+            </div>
+          </div>
+
+          {/* Pending Approval */}
+          <div className="bg-white rounded-lg border border-slate-200 p-3 card-lift animate-fade-in-up flex-1 flex flex-col" style={{animationDelay:'0.32s'}}>
+            <div className="flex items-center justify-between mb-1.5 shrink-0">
+              <div>
+                <h3 className="text-[12px] font-semibold text-ink">待审批事项</h3>
+              </div>
+              <button onClick={() => onNavigate('approval')} className="text-[10px] text-gov-600 hover:text-gov-700 font-medium">全部 →</button>
+            </div>
+            <div className="flex-1 space-y-0.5 overflow-hidden">
+              {MOCK.approvals.slice(0, 5).map((a, i) => (
+                <div key={a.id} className="flex items-center gap-2 px-2 py-1 rounded table-row cursor-pointer" onClick={() => onNavigate('approval')}>
+                  <Badge color={a.type === '整改' ? 'blue' : 'orange'}>{a.type}</Badge>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[11px] text-ink truncate">{a.enterprise}</div>
+                  </div>
+                  <span className={`text-[10px] font-medium shrink-0 ${a.waitHours > 24 ? 'text-red-600' : 'text-ink-muted'}`}>
+                    {a.waitHours > 24 ? '超' : ''}{a.waitHours}h
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Video strip — compact */}
+      <div className="bg-white rounded-lg border border-slate-200 p-3 card-lift animate-fade-in-up shrink-0" style={{animationDelay:'0.38s'}}>
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <h3 className="text-[12px] font-semibold text-ink">实时监控画面</h3>
+            <span className="text-[10px] text-ink-muted">高风险优先 · 10秒轮播 · 悬停暂停</span>
+          </div>
+          <button onClick={() => onNavigate('video')} className="text-[10px] text-gov-600 hover:text-gov-700 font-medium">视频监控 →</button>
+        </div>
+        <div className="flex gap-2.5 overflow-x-auto">
+          {[
+            { name:'永和豆浆（城东店）', cam:'后厨-灶台', online:true },
+            { name:'老乡鸡（北关店）',   cam:'后厨-加工区', online:true },
+            { name:'老重庆火锅（南桥店）', cam:'后厨-凉菜间', online:true },
+            { name:'海底捞（中心广场店）', cam:'后厨-洗碗间', online:true },
+            { name:'黄焖鸡米饭（学院店）', cam:'后厨-灶台', online:false },
+            { name:'沙县小吃（中心店）',  cam:'后厨-全景', online:true },
+            { name:'味多美烘焙坊',      cam:'后厨-烘焙间', online:true },
+          ].map((v, i) => (
+            <div key={i} className="video-thumb shrink-0 w-[148px] rounded-md border border-slate-200 overflow-hidden">
+              <div className="h-[82px] bg-slate-800 relative flex items-center justify-center">
+                {v.online ? (
+                  <>
+                    <div className="absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-900"></div>
+                    <div className="absolute inset-0 opacity-25" style={{background:'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px)'}}></div>
+                    <span className="text-white/35 text-[10px] z-10">LIVE</span>
+                    <div className="absolute top-1.5 left-1.5 flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-dot"></span>
+                      <span className="text-[9px] text-white/60">在线</span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-slate-400 text-[10px] text-center">
+                    <div className="mb-1">⏻</div>
+                    <div>设备离线</div>
+                  </div>
+                )}
+                <div className="video-play-overlay rounded-md">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21" /></svg>
+                </div>
+              </div>
+              <div className="px-2 py-1.5">
+                <div className="text-[10.5px] font-medium text-ink truncate">{v.name}</div>
+                <div className="text-[9px] text-ink-muted truncate">{v.cam}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ────────────────────────────────────────
+// Compact Stat Card for Dashboard
+// ────────────────────────────────────────
+function StatCardCompact({ label, value, unit, color, onClick, badge }) {
+  const colors = {
+    red:    { dot:'bg-red-500',    accent:'text-red-600' },
+    orange: { dot:'bg-orange-500', accent:'text-orange-600' },
+    blue:   { dot:'bg-blue-500',   accent:'text-blue-600' },
+    amber:  { dot:'bg-amber-500',  accent:'text-amber-600' },
+    teal:   { dot:'bg-teal-500',   accent:'text-teal-600' },
+  };
+  const c = colors[color] || colors.blue;
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setLoaded(true), 300 + Math.random() * 400); return () => clearTimeout(t); }, []);
+
+  return (
+    <div className="card-lift bg-white rounded-lg border border-slate-200 px-3.5 py-2.5 cursor-pointer animate-fade-in-up" onClick={onClick} style={{opacity: loaded ? 1 : 0}}>
+      {!loaded ? (
+        <div className="space-y-1.5">
+          <Skeleton className="h-2.5 w-16" />
+          <Skeleton className="h-6 w-12" />
+        </div>
+      ) : (
+        <>
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className={`w-1.5 h-1.5 rounded-full ${c.dot}`}></span>
+            <span className="text-[10px] text-ink-muted font-medium">{label}</span>
+            {badge && <span className="ml-auto text-[9px] text-ink-muted bg-slate-50 px-1 rounded">{badge}</span>}
+          </div>
+          <div className={`text-xl font-bold ${c.accent} tracking-tight tabular-nums`}>
+            {value.toLocaleString()}<span className="text-[10px] font-normal text-ink-muted ml-0.5">{unit}</span>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ────────────────────────────────────────
+// SVG Mini Icons for Stat Cards
+// ────────────────────────────────────────
+
+function AlarmIcon() { return (<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>); }
+function CertIcon()  { return (<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12l2 2 4-4"/></svg>); }
+function ReviewIcon(){ return (<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>); }
+function ClockIcon(){ return (<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>); }
+function BuildIcon(){ return (<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>); }
+
+// ────────────────────────────────────────
+// RISK WARNING (3.2 风险预警)
+// ────────────────────────────────────────
+
+function RiskWarning({ userRole, roleTown }) {
+  const isDistrict = userRole === 'R01';
+  const [tab, setTab] = useState('alarm');
+  const [filterType, setFilterType] = useState('all');
+  const [filterSeverity, setFilterSeverity] = useState('all');
+  const [filterTown, setFilterTown] = useState(isDistrict ? 'all' : roleTown);
+
+  const filteredAlarms = MOCK.alarms.filter(a => {
+    if (!isDistrict && a.town !== roleTown) return false;
+    if (filterType !== 'all' && a.detectType !== filterType) return false;
+    if (filterSeverity !== 'all' && a.severity !== filterSeverity) return false;
+    if (filterTown !== 'all' && a.town !== filterTown) return false;
+    return true;
+  });
+
+  const detectTypes = ['鼠患','未戴口罩','未戴帽子','垃圾桶未加盖','陌生人闯入','明火离人','抽烟'];
+  const towns = ['城东镇','南桥镇','中心镇','北关镇'];
+
+  // Certificate expiry mock data
+  const certExpiryData = [
+    { id:'C001', enterprise:'永和豆浆（城东店）', certType:'食品经营许可证', certNo:'JY20201015001', expiryDate:'2026-08-02', daysLeft:30, level:'30天' },
+    { id:'C002', enterprise:'老重庆火锅（南桥店）', certType:'营业执照', certNo:'91310115MA1K3YYYYY', expiryDate:'2026-07-10', daysLeft:7, level:'7天' },
+    { id:'C003', enterprise:'味多美烘焙坊', certType:'食品经营许可证', certNo:'JY20190620003', expiryDate:'2026-07-05', daysLeft:2, level:'3天' },
+    { id:'C004', enterprise:'沙县小吃（中心店）', certType:'从业人员健康证', certNo:'JK20210115004', expiryDate:'2026-07-15', daysLeft:12, level:'30天' },
+    { id:'C005', enterprise:'老乡鸡（北关店）', certType:'食品经营许可证', certNo:'JY20180810005', expiryDate:'2026-09-30', daysLeft:89, level:'90天' },
+    { id:'C006', enterprise:'海底捞（中心广场店）', certType:'ISO22000认证', certNo:'ISO20220501006', expiryDate:'2026-07-20', daysLeft:17, level:'30天' },
+  ];
+
+  return (
+    <div className="space-y-5">
+      <div>
+        <h1 className="text-xl font-bold text-ink tracking-tight">风险预警</h1>
+        <p className="text-sm text-ink-secondary mt-0.5">
+          {isDistrict ? 'AI报警记录 + 证照到期预警，统一入口管理' : `${roleTown} · AI报警记录 + 证照到期预警`}
+        </p>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex gap-0 border-b border-slate-200">
+        <button
+          className={`px-5 py-2.5 text-sm font-medium border-b-2 transition-colors ${tab === 'alarm' ? 'border-gov-600 text-gov-600' : 'border-transparent text-ink-secondary hover:text-ink'}`}
+          onClick={() => setTab('alarm')}
+        >AI报警记录 <span className="ml-1.5 text-[11px] bg-slate-100 px-1.5 py-0.5 rounded-full">{MOCK.alarms.length}</span></button>
+        <button
+          className={`px-5 py-2.5 text-sm font-medium border-b-2 transition-colors ${tab === 'cert' ? 'border-gov-600 text-gov-600' : 'border-transparent text-ink-secondary hover:text-ink'}`}
+          onClick={() => setTab('cert')}
+        >证照到期预警 <span className="ml-1.5 text-[11px] bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded-full">{certExpiryData.length}</span></button>
+      </div>
+
+      {tab === 'alarm' ? (
+        <>
+          {/* Filters */}
+          <div className="flex flex-wrap items-center gap-3 bg-white rounded-lg border border-slate-200 p-3 animate-fade-in-up">
+            <span className="text-[11px] text-ink-muted font-medium">筛选：</span>
+            <select value={filterSeverity} onChange={e => setFilterSeverity(e.target.value)}
+              className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
+              <option value="all">全部紧急程度</option>
+              <option value="高">高</option>
+              <option value="中">中</option>
+              <option value="低">低</option>
+            </select>
+            <select value={filterType} onChange={e => setFilterType(e.target.value)}
+              className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
+              <option value="all">全部检测类型</option>
+              {detectTypes.map(t => <option key={t} value={t}>{t}</option>)}
+            </select>
+            <select value={filterTown} onChange={e => setFilterTown(e.target.value)}
+              className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
+              <option value="all">全部镇/街道</option>
+              {towns.map(t => <option key={t} value={t}>{t}</option>)}
+            </select>
+            <span className="ml-auto text-[11px] text-ink-muted">共 {filteredAlarms.length} 条记录</span>
+          </div>
+
+          {/* Table */}
+          <div className="bg-white rounded-lg border border-slate-200 overflow-hidden animate-fade-in-up">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-200">
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">报警时间</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">企业名称</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">所属镇</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">检测类型</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">置信度</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">紧急程度</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">状态</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">关联工单</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredAlarms.map((a, i) => (
+                  <tr key={a.id} className="table-row border-b border-slate-100 last:border-0">
+                    <td className="px-4 py-3 text-xs font-mono text-ink-secondary">{a.time}</td>
+                    <td className="px-4 py-3 text-xs font-medium text-ink">{a.enterprise}</td>
+                    <td className="px-4 py-3 text-xs text-ink-secondary">{a.town}</td>
+                    <td className="px-4 py-3 text-xs">{a.detectType}</td>
+                    <td className="px-4 py-3">
+                      <span className="text-xs font-mono text-ink-secondary">{(a.confidence * 100).toFixed(0)}%</span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <Badge color={a.severity==='高'?'red':a.severity==='中'?'yellow':'gray'}>{a.severity}</Badge>
+                    </td>
+                    <td className="px-4 py-3">
+                      <Badge color={a.status==='待整改'?'yellow':a.status==='已确认'?'green':'gray'} dot={a.status==='待整改'}>{a.status}</Badge>
+                    </td>
+                    <td className="px-4 py-3 text-xs font-mono text-gov-600 cursor-pointer hover:underline">{a.orderNo}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      ) : (
+        <>
+          {/* Certificate Expiry */}
+          <div className="bg-white rounded-lg border border-slate-200 overflow-hidden animate-fade-in-up">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-200">
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">企业名称</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">证照类型</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">证照编号</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">到期日期</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">剩余天数</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">预警级别</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                {certExpiryData.map(c => (
+                  <tr key={c.id} className="table-row border-b border-slate-100 last:border-0">
+                    <td className="px-4 py-3 text-xs font-medium text-ink">{c.enterprise}</td>
+                    <td className="px-4 py-3 text-xs text-ink-secondary">{c.certType}</td>
+                    <td className="px-4 py-3 text-xs font-mono text-ink-secondary">{c.certNo}</td>
+                    <td className="px-4 py-3 text-xs text-ink-secondary">{c.expiryDate}</td>
+                    <td className="px-4 py-3">
+                      <span className={`text-xs font-bold ${c.daysLeft <= 7 ? 'text-red-600' : c.daysLeft <= 30 ? 'text-amber-600' : 'text-ink-secondary'}`}>
+                        {c.daysLeft}天
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <Badge color={c.daysLeft <= 3 ? 'red' : c.daysLeft <= 7 ? 'orange' : c.daysLeft <= 30 ? 'yellow' : 'gray'}>{c.level}</Badge>
+                    </td>
+                    <td className="px-4 py-3">
+                      <button className="text-[11px] text-gov-600 hover:text-gov-700 font-medium">查看</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ────────────────────────────────────────
+// APPROVAL RECORDS (3.3 审批记录)
+// ────────────────────────────────────────
+
+function ApprovalRecords({ showDetail, setShowDetail, userRole, roleTown }) {
+  const isDistrict = userRole === 'R01';
+  const [filterType, setFilterType] = useState('all');
+  const [filterTown, setFilterTown] = useState(isDistrict ? 'all' : roleTown);
+  const [filterUrgency, setFilterUrgency] = useState('all');
+  const [filterDuration, setFilterDuration] = useState('all');
+
+  const filtered = MOCK.approvals.filter(a => {
+    if (!isDistrict && a.town !== roleTown) return false;
+    if (filterType !== 'all' && a.type !== filterType) return false;
+    if (filterTown !== 'all' && a.town !== filterTown) return false;
+    if (filterUrgency !== 'all' && a.severity !== filterUrgency) return false;
+    if (filterDuration === '24h' && a.waitHours < 24) return false;
+    if (filterDuration === '48h' && a.waitHours < 48) return false;
+    if (filterDuration === '72h' && a.waitHours < 72) return false;
+    return true;
+  });
+
+  return (
+    <div className="space-y-5">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold text-ink tracking-tight">审批记录</h1>
+          <p className="text-sm text-ink-secondary mt-0.5">
+            {isDistrict
+              ? '整改工单 + 申诉工单统一审批入口 · 区级仅查看，审核权全归镇级'
+              : `${roleTown} · 整改工单 + 申诉工单统一审批 · 您拥有审核权`
+            }
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] text-ink-muted">30秒自动刷新</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 badge-dot"></span>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="flex flex-wrap items-center gap-3 bg-white rounded-lg border border-slate-200 p-3 animate-fade-in-up">
+        <span className="text-[11px] text-ink-muted font-medium">筛选：</span>
+        <select value={filterType} onChange={e => setFilterType(e.target.value)}
+          className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
+          <option value="all">全部类型</option>
+          <option value="整改">整改工单</option>
+          <option value="申诉">申诉工单</option>
+        </select>
+        {isDistrict ? (
+          <select value={filterTown} onChange={e => setFilterTown(e.target.value)}
+            className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
+            <option value="all">全部镇/街道</option>
+            <option value="城东镇">城东镇</option>
+            <option value="南桥镇">南桥镇</option>
+            <option value="中心镇">中心镇</option>
+            <option value="北关镇">北关镇</option>
+          </select>
+        ) : (
+          <span className="text-xs text-ink-secondary bg-slate-50 px-2.5 py-1.5 rounded-md border border-slate-200">{roleTown}</span>
+        )}
+        <select value={filterUrgency} onChange={e => setFilterUrgency(e.target.value)}
+          className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
+          <option value="all">全部紧急程度</option>
+          <option value="高">高</option>
+          <option value="中">中</option>
+          <option value="低">低</option>
+        </select>
+        <select value={filterDuration} onChange={e => setFilterDuration(e.target.value)}
+          className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
+          <option value="all">全部待审时长</option>
+          <option value="24h">超24小时</option>
+          <option value="48h">超48小时</option>
+          <option value="72h">超72小时</option>
+        </select>
+        <div className="flex-1"></div>
+        <input type="text" placeholder="搜索企业名称…" className="text-xs border border-slate-200 rounded-md px-3 py-1.5 w-48 outline-none focus:border-gov-400" />
+        <span className="text-[11px] text-ink-muted">共 {filtered.length} 条</span>
+      </div>
+
+      {/* Approval List */}
+      <div className="bg-white rounded-lg border border-slate-200 overflow-hidden animate-fade-in-up">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="bg-slate-50 border-b border-slate-200">
+              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">审批类型</th>
+              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">企业名称</th>
+              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">摘要信息</th>
+              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">提交时间</th>
+              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">等待时长</th>
+              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">紧急程度</th>
+              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map(a => (
+              <tr key={a.id} className="table-row border-b border-slate-100 last:border-0">
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-1.5">
+                    <span className={`w-1.5 h-1.5 rounded-full ${a.typeColor === 'blue' ? 'bg-blue-500' : 'bg-orange-500'}`}></span>
+                    <Badge color={a.typeColor}>{a.type}</Badge>
+                    <span className="text-[10px] text-ink-muted">{a.source}</span>
+                  </div>
+                </td>
+                <td className="px-4 py-3 text-xs font-medium text-ink cursor-pointer hover:text-gov-600">{a.enterprise}</td>
+                <td className="px-4 py-3 text-xs text-ink-secondary max-w-[280px] truncate">{a.summary}</td>
+                <td className="px-4 py-3 text-xs font-mono text-ink-secondary">{a.submitTime}</td>
+                <td className="px-4 py-3">
+                  <span className={`text-xs font-medium ${a.waitHours > 24 ? 'text-red-600' : 'text-ink-secondary'}`}>
+                    {a.waitHours > 24 ? '⚠ ' : ''}{a.waitHours}h
+                  </span>
+                </td>
+                <td className="px-4 py-3">
+                  <Badge color={a.severity==='高'?'red':a.severity==='中'?'yellow':'gray'}>{a.severity}</Badge>
+                </td>
+                <td className="px-4 py-3">
+                  {isDistrict ? (
+                    <span className="text-[11px] text-ink-muted">仅查看</span>
+                  ) : (
+                    <button
+                      onClick={() => setShowDetail(a)}
+                      className="text-[11px] bg-gov-600 text-white px-3 py-1.5 rounded-md hover:bg-gov-700 transition-colors font-medium"
+                    >进入审核</button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Detail Drawer */}
+      {showDetail && (
+        <div className="fixed inset-0 z-50 flex justify-end modal-backdrop" style={{background:'rgba(15,23,42,0.3)'}} onClick={() => setShowDetail(null)}>
+          <div className="w-[560px] bg-white h-full shadow-2xl overflow-y-auto animate-slide-right" onClick={e => e.stopPropagation()}>
+            <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between z-10">
+              <div>
+                <div className="flex items-center gap-2">
+                  <Badge color={showDetail.typeColor}>{showDetail.type}工单</Badge>
+                  <Badge color={showDetail.severity==='高'?'red':showDetail.severity==='中'?'yellow':'gray'}>{showDetail.severity}紧急</Badge>
+                </div>
+                <h2 className="text-base font-bold text-ink mt-1.5">{showDetail.title}</h2>
+              </div>
+              <button onClick={() => setShowDetail(null)} className="p-1.5 rounded-md hover:bg-slate-100 text-ink-muted">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+
+            <div className="p-6 space-y-5">
+              {/* Source info */}
+              <section className="bg-slate-50 rounded-lg p-4">
+                <h4 className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-2">来源信息</h4>
+                <div className="space-y-1.5 text-xs">
+                  <div className="flex"><span className="text-ink-muted w-16 shrink-0">来源类型</span><span className="text-ink">{showDetail.source}</span></div>
+                  <div className="flex"><span className="text-ink-muted w-16 shrink-0">企业名称</span><span className="text-ink font-medium">{showDetail.enterprise}</span></div>
+                  <div className="flex"><span className="text-ink-muted w-16 shrink-0">所属镇</span><span className="text-ink">{showDetail.town}</span></div>
+                  <div className="flex"><span className="text-ink-muted w-16 shrink-0">提交时间</span><span className="font-mono text-ink">{showDetail.submitTime}</span></div>
+                </div>
+              </section>
+
+              {/* Merchant submission */}
+              <section className="bg-white rounded-lg border border-slate-200 p-4">
+                <h4 className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-2">商户提交内容</h4>
+                <p className="text-sm text-ink leading-relaxed">{showDetail.summary}</p>
+                {showDetail.type === '整改' && (
+                  <div className="mt-3 flex gap-2">
+                    <div className="w-20 h-20 bg-slate-100 rounded-md flex items-center justify-center text-[10px] text-ink-muted">整改照片1</div>
+                    <div className="w-20 h-20 bg-slate-100 rounded-md flex items-center justify-center text-[10px] text-ink-muted">整改照片2</div>
+                  </div>
+                )}
+              </section>
+
+              {/* Progress */}
+              <section className="bg-white rounded-lg border border-slate-200 p-4">
+                <h4 className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-3">处理进度</h4>
+                <div className="flex items-center gap-0">
+                  {['系统生成','商户提交','审核中'].map((label, i) => (
+                    <Fragment key={i}>
+                      <div className="flex flex-col items-center">
+                        <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold ${i < 2 ? 'bg-gov-600 text-white' : 'bg-gov-100 text-gov-600 border-2 border-gov-400'}`}>
+                          {i < 2 ? '✓' : '3'}
+                        </div>
+                        <span className="text-[10px] text-ink-muted mt-1">{label}</span>
+                      </div>
+                      {i < 2 && <div className={`flex-1 h-0.5 mx-2 ${i < 1 ? 'bg-gov-600' : 'bg-slate-200'}`}></div>}
+                    </Fragment>
+                  ))}
+                </div>
+              </section>
+
+              {/* Action */}
+              <section className="bg-white rounded-lg border border-slate-200 p-4">
+                <h4 className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-3">审核操作</h4>
+                <div className="space-y-3">
+                  <textarea
+                    placeholder="输入审核意见（驳回时必填，限500字）…"
+                    className="w-full border border-slate-200 rounded-md px-3 py-2 text-xs text-ink outline-none focus:border-gov-400 resize-none h-20"
+                  ></textarea>
+                  <div className="flex gap-2">
+                    <button className="flex-1 py-2 bg-emerald-600 text-white text-sm font-medium rounded-md hover:bg-emerald-700 transition-colors">审核通过</button>
+                    <button className="flex-1 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 transition-colors">驳回（需填写原因）</button>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ────────────────────────────────────────
+// ────────────────────────────────────────
+// ENTITY MANAGEMENT (3.4 主体管理)
+// ────────────────────────────────────────
+
+const EMPTY_FORM = {
+  name:'', creditCode:'', licenseNo:'', entityType:'餐饮服务', legalPerson:'', phone:'',
+  brandName:'', bizScope:'', areaSqm:'', address:'', bizAddress:'', orgId:'城东镇',
+  bizStatus:'营业', riskLevel:'中', remark:'',
+};
+
+const INIT_STAFF = [
+  { id:'s1', name:'张三', idCard:'320102199001011234', position:'主厨', phone:'13800001111', healthCertNo:'JK20250101001', healthCertExp:'2026-09-15' },
+  { id:'s2', name:'李四', idCard:'320102199205052345', position:'帮厨', phone:'13800002222', healthCertNo:'JK20250315002', healthCertExp:'2026-06-20' },
+];
+const INIT_LICENSES = [
+  { id:'l1', licenseType:'营业执照', licenseNo:'91310115MA1K3XXXXX', expiryDate:'2030-05-20', imageName:'' },
+  { id:'l2', licenseType:'食品经营许可证', licenseNo:'JY20201015001', expiryDate:'2026-08-02', imageName:'' },
+];
+
+function EntityManagement({ userRole, roleTown }) {
+  const isDistrict = userRole === 'R01';
+  const [search, setSearch] = useState('');
+  const [filterTown, setFilterTown] = useState('all');
+  const [filterType, setFilterType] = useState('all');
+  const [filterRisk, setFilterRisk] = useState('all');
+  const [expanded, setExpanded] = useState(null);
+  const [enterprises, setEnterprises] = useState(MOCK.enterprises);
+
+  // Modal state
+  const [modalMode, setModalMode] = useState(null); // null | 'add' | 'edit'
+  const [editTargetId, setEditTargetId] = useState(null);
+  const [formData, setFormData] = useState(EMPTY_FORM);
+  const [formStaff, setFormStaff] = useState([]);
+  const [formLicenses, setFormLicenses] = useState([]);
+  const [activeTab, setActiveTab] = useState('basic');
+  const [savedToast, setSavedToast] = useState(false);
+
+  // Inline staff editing
+  const [addStaffName, setAddStaffName] = useState('');
+  const [addStaffPos, setAddStaffPos] = useState('');
+  const [addStaffIdCard, setAddStaffIdCard] = useState('');
+  const [addStaffPhone, setAddStaffPhone] = useState('');
+  const [addStaffHCNo, setAddStaffHCNo] = useState('');
+  const [addStaffHCExp, setAddStaffHCExp] = useState('');
+  const [editStaffId, setEditStaffId] = useState(null);
+
+  // Inline license editing
+  const [addLicType, setAddLicType] = useState('营业执照');
+  const [addLicNo, setAddLicNo] = useState('');
+  const [addLicExp, setAddLicExp] = useState('');
+  const [editLicId, setEditLicId] = useState(null);
+
+  const filtered = enterprises.filter(e => {
+    if (search && !e.name.includes(search) && !e.creditCode.includes(search)) return false;
+    if (filterTown !== 'all' && e.town !== filterTown) return false;
+    if (filterType !== 'all' && e.entityType !== filterType) return false;
+    if (filterRisk !== 'all' && e.riskLevel !== filterRisk) return false;
+    return true;
+  });
+
+  const staffMock = [
+    { name:'张三', position:'主厨', healthCertExp:'2026-09-15', healthStatus:'normal' },
+    { name:'李四', position:'帮厨', healthCertExp:'2026-06-20', healthStatus:'expired' },
+    { name:'王五', position:'服务员', healthCertExp:'2026-12-01', healthStatus:'normal' },
+    { name:'赵六', position:'洗碗工', healthCertExp:'2026-07-05', healthStatus:'expiring' },
+  ];
+
+  const openAdd = () => {
+    setModalMode('add');
+    setEditTargetId(null);
+    setFormData({...EMPTY_FORM});
+    setFormStaff([...INIT_STAFF.map(s=>({...s}))]);
+    setFormLicenses([...INIT_LICENSES.map(l=>({...l}))]);
+    setActiveTab('basic');
+    setEditStaffId(null);
+    setEditLicId(null);
+  };
+
+  const openEdit = (e) => {
+    setModalMode('edit');
+    setEditTargetId(e.id);
+    setFormData({
+      name:e.name, creditCode:e.creditCode, licenseNo:e.licenseNo || '', entityType:e.entityType,
+      legalPerson:e.legalPerson, phone:e.phone || '', brandName:e.brandName || '',
+      bizScope:e.bizScope || '', areaSqm:e.areaSqm || '', address:e.address || '',
+      bizAddress:e.bizAddress || '', orgId:e.town, bizStatus:e.bizStatus, riskLevel:e.riskLevel, remark:e.remark || '',
+    });
+    setFormStaff([...INIT_STAFF.map(s=>({...s}))]);
+    setFormLicenses([...INIT_LICENSES.map(l=>({...l}))]);
+    setActiveTab('basic');
+    setEditStaffId(null);
+    setEditLicId(null);
+  };
+
+  const closeModal = () => {
+    setModalMode(null);
+    setEditTargetId(null);
+    setEditStaffId(null);
+    setEditLicId(null);
+  };
+
+  const handleSave = () => {
+    if (!formData.name.trim() || !formData.creditCode.trim()) {
+      alert('请填写企业名称和统一社会信用代码');
+      return;
+    }
+    if (modalMode === 'add') {
+      const newEnt = {
+        id: 'ENT' + String(enterprises.length + 1).padStart(3,'0'),
+        name: formData.name,
+        creditCode: formData.creditCode,
+        licenseNo: formData.licenseNo,
+        town: formData.orgId,
+        entityType: formData.entityType,
+        riskLevel: formData.riskLevel,
+        bizStatus: formData.bizStatus,
+        recentOrders: 0,
+        legalPerson: formData.legalPerson,
+      };
+      setEnterprises([newEnt, ...enterprises]);
+    } else {
+      setEnterprises(enterprises.map(ent => ent.id === editTargetId ? {
+        ...ent,
+        name: formData.name,
+        creditCode: formData.creditCode,
+        licenseNo: formData.licenseNo,
+        town: formData.orgId,
+        entityType: formData.entityType,
+        riskLevel: formData.riskLevel,
+        bizStatus: formData.bizStatus,
+        legalPerson: formData.legalPerson,
+      } : ent));
+    }
+    closeModal();
+    setSavedToast(true);
+    setTimeout(() => setSavedToast(false), 2400);
+  };
+
+  // Staff CRUD in form
+  const addStaffRow = () => {
+    if (!addStaffName.trim()) return;
+    setFormStaff([...formStaff, {
+      id:'s'+Date.now(), name:addStaffName, idCard:addStaffIdCard, position:addStaffPos,
+      phone:addStaffPhone, healthCertNo:addStaffHCNo, healthCertExp:addStaffHCExp,
+    }]);
+    setAddStaffName(''); setAddStaffPos(''); setAddStaffIdCard(''); setAddStaffPhone(''); setAddStaffHCNo(''); setAddStaffHCExp('');
+  };
+  const removeStaff = (id) => setFormStaff(formStaff.filter(s => s.id !== id));
+  const saveStaffEdit = () => {
+    setFormStaff(formStaff.map(s => s.id === editStaffId ? {...s,
+      name:addStaffName, idCard:addStaffIdCard, position:addStaffPos,
+      phone:addStaffPhone, healthCertNo:addStaffHCNo, healthCertExp:addStaffHCExp,
+    } : s));
+    setEditStaffId(null);
+    setAddStaffName(''); setAddStaffPos(''); setAddStaffIdCard(''); setAddStaffPhone(''); setAddStaffHCNo(''); setAddStaffHCExp('');
+  };
+  const startEditStaff = (s) => {
+    setEditStaffId(s.id);
+    setAddStaffName(s.name); setAddStaffPos(s.position); setAddStaffIdCard(s.idCard);
+    setAddStaffPhone(s.phone); setAddStaffHCNo(s.healthCertNo); setAddStaffHCExp(s.healthCertExp);
+  };
+  const cancelEditStaff = () => {
+    setEditStaffId(null);
+    setAddStaffName(''); setAddStaffPos(''); setAddStaffIdCard(''); setAddStaffPhone(''); setAddStaffHCNo(''); setAddStaffHCExp('');
+  };
+
+  // License CRUD in form
+  const addLicRow = () => {
+    if (!addLicNo.trim()) return;
+    setFormLicenses([...formLicenses, { id:'l'+Date.now(), licenseType:addLicType, licenseNo:addLicNo, expiryDate:addLicExp, imageName:'' }]);
+    setAddLicNo(''); setAddLicExp(''); setAddLicType('营业执照');
+  };
+  const removeLic = (id) => setFormLicenses(formLicenses.filter(l => l.id !== id));
+  const saveLicEdit = () => {
+    setFormLicenses(formLicenses.map(l => l.id === editLicId ? {...l, licenseType:addLicType, licenseNo:addLicNo, expiryDate:addLicExp} : l));
+    setEditLicId(null); setAddLicNo(''); setAddLicExp(''); setAddLicType('营业执照');
+  };
+  const startEditLic = (l) => {
+    setEditLicId(l.id); setAddLicType(l.licenseType); setAddLicNo(l.licenseNo); setAddLicExp(l.expiryDate);
+  };
+  const cancelEditLic = () => { setEditLicId(null); setAddLicNo(''); setAddLicExp(''); setAddLicType('营业执照'); };
+
+  const updateForm = (key, val) => setFormData(prev => ({...prev, [key]: val}));
+
+  const labelClass = "text-[11.5px] font-medium text-ink-secondary mb-1 block";
+  const inputClass = "w-full border border-slate-200 rounded-md px-3 py-2 text-xs text-ink outline-none focus:border-gov-400 focus:ring-1 focus:ring-gov-100 transition-all bg-white placeholder:text-ink-disabled";
+  const selectClass = "w-full border border-slate-200 rounded-md px-3 py-2 text-xs text-ink outline-none focus:border-gov-400 focus:ring-1 focus:ring-gov-100 transition-all bg-white";
+
+  return (
+    <div className="space-y-5">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold text-ink tracking-tight">主体管理</h1>
+          <p className="text-sm text-ink-secondary mt-0.5">企业及从业人员统一管理 · 树形结构浏览</p>
+        </div>
+        <div className="flex items-center gap-2">
+          {/* Export dropdown */}
+          <div className="relative group">
+            <button className="flex items-center gap-1.5 bg-white text-xs font-medium px-3.5 py-2 rounded-md border border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-colors text-ink-secondary">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              导出台账
+              <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div className="absolute right-0 top-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg py-1 w-44 z-30 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150">
+              <button onClick={() => exportMerchantCSV(enterprises)} className="w-full text-left px-3.5 py-2 text-xs text-ink-secondary hover:bg-slate-50 hover:text-ink flex items-center gap-2 transition-colors">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12l2 2 4-4"/></svg>
+                导出商户台账 (.csv)
+              </button>
+              <button onClick={() => exportStaffCSV(enterprises)} className="w-full text-left px-3.5 py-2 text-xs text-ink-secondary hover:bg-slate-50 hover:text-ink flex items-center gap-2 transition-colors">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                导出人员台账 (.csv)
+              </button>
+            </div>
+          </div>
+          <button
+            onClick={openAdd}
+            className="flex items-center gap-1.5 bg-gov-600 text-white text-xs font-medium px-4 py-2 rounded-md hover:bg-gov-700 transition-colors shadow-sm"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            新增企业
+          </button>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="flex flex-wrap items-center gap-3 bg-white rounded-lg border border-slate-200 p-3 animate-fade-in-up">
+        <input type="text" placeholder="搜索企业名称 / 统一社会信用代码 / 许可证号…" value={search} onChange={e => setSearch(e.target.value)}
+          className="text-xs border border-slate-200 rounded-md px-3 py-1.5 w-72 outline-none focus:border-gov-400" />
+        <select value={filterTown} onChange={e => setFilterTown(e.target.value)}
+          className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
+          <option value="all">全部镇/街道</option>
+          <option value="城东镇">城东镇</option><option value="南桥镇">南桥镇</option>
+          <option value="中心镇">中心镇</option><option value="北关镇">北关镇</option>
+        </select>
+        <select value={filterType} onChange={e => setFilterType(e.target.value)}
+          className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
+          <option value="all">全部主体业态</option>
+          <option value="餐饮服务">餐饮服务</option><option value="食品销售">食品销售</option><option value="单位食堂">单位食堂</option>
+        </select>
+        <select value={filterRisk} onChange={e => setFilterRisk(e.target.value)}
+          className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
+          <option value="all">全部风险等级</option>
+          <option value="高">高风险</option><option value="中">中风险</option><option value="低">低风险</option>
+        </select>
+        <span className="ml-auto text-[11px] text-ink-muted">共 {filtered.length} 家企业</span>
+      </div>
+
+      {/* Enterprise list */}
+      <div className="bg-white rounded-lg border border-slate-200 overflow-hidden animate-fade-in-up">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="bg-slate-50 border-b border-slate-200">
+              <th className="w-8 px-3 py-3"></th>
+              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">企业名称</th>
+              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">统一社会信用代码</th>
+              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">所属镇</th>
+              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">主体业态</th>
+              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">风险等级</th>
+              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">营业状态</th>
+              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">最近工单</th>
+              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map(e => (
+              <Fragment key={e.id}>
+                <tr className="table-row border-b border-slate-100">
+                  <td className="px-3 py-3">
+                    <button
+                      onClick={() => setExpanded(expanded === e.id ? null : e.id)}
+                      className={`w-5 h-5 rounded flex items-center justify-center text-[10px] transition-transform ${expanded === e.id ? 'rotate-90 bg-slate-100' : 'bg-slate-50 text-ink-muted'}`}
+                    >▶</button>
+                  </td>
+                  <td className="px-4 py-3 text-xs font-medium text-ink cursor-pointer hover:text-gov-600">{e.name}</td>
+                  <td className="px-4 py-3 text-xs font-mono text-ink-secondary">{e.creditCode}</td>
+                  <td className="px-4 py-3 text-xs text-ink-secondary">{e.town}</td>
+                  <td className="px-4 py-3 text-xs text-ink-secondary">{e.entityType}</td>
+                  <td className="px-4 py-3">
+                    <Badge color={e.riskLevel==='高'?'red':e.riskLevel==='中'?'yellow':'green'}>{e.riskLevel}风险</Badge>
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className="flex items-center gap-1 text-xs">
+                      <span className={`w-1.5 h-1.5 rounded-full ${e.bizStatus === '营业' ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
+                      {e.bizStatus}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-xs text-ink-secondary">{e.recentOrders}条</td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => openEdit(e)} className="text-[11px] text-gov-600 hover:text-gov-700 font-medium">编辑</button>
+                      <button className="text-[11px] text-ink-muted hover:text-ink font-medium">详情</button>
+                    </div>
+                  </td>
+                </tr>
+                {expanded === e.id && (
+                  <tr key={`${e.id}-staff`}>
+                    <td colSpan="9" className="bg-slate-50 px-4 py-3">
+                      <div className="ml-8 border-l-2 border-gov-200 pl-6">
+                        <div className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-2">从业人员</div>
+                        <div className="grid grid-cols-4 gap-2">
+                          {staffMock.map((s, si) => (
+                            <div key={si} className="bg-white rounded-md border border-slate-200 p-2.5 flex items-center justify-between">
+                              <div>
+                                <div className="text-xs font-medium text-ink">{s.name}</div>
+                                <div className="text-[10px] text-ink-muted">{s.position}</div>
+                              </div>
+                              <Badge color={s.healthStatus === 'expired' ? 'red' : s.healthStatus === 'expiring' ? 'orange' : 'green'}>
+                                {s.healthStatus === 'expired' ? '已过期' : s.healthStatus === 'expiring' ? '即将到期' : '正常'}
+                              </Badge>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </Fragment>
+            ))}
+          </tbody>
+        </table>
+        <div className="flex items-center justify-between px-4 py-3 border-t border-slate-100 bg-white">
+          <span className="text-[11px] text-ink-muted">显示 1-{filtered.length} 条，共 {filtered.length} 条</span>
+          <div className="flex items-center gap-1">
+            <button className="px-2.5 py-1 text-[11px] text-ink-muted border border-slate-200 rounded hover:bg-slate-50">上一页</button>
+            <button className="px-2.5 py-1 text-[11px] bg-gov-600 text-white rounded font-medium">1</button>
+            <button className="px-2.5 py-1 text-[11px] text-ink-secondary border border-slate-200 rounded hover:bg-slate-50">2</button>
+            <button className="px-2.5 py-1 text-[11px] text-ink-secondary border border-slate-200 rounded hover:bg-slate-50">3</button>
+            <button className="px-2.5 py-1 text-[11px] text-ink-muted border border-slate-200 rounded hover:bg-slate-50">下一页</button>
+          </div>
+        </div>
+      </div>
+
+      {/* ── ADD / EDIT DRAWER ── */}
+      {modalMode && (
+        <div className="fixed inset-0 z-50 flex justify-end modal-backdrop" style={{background:'rgba(15,23,42,0.35)'}} onClick={closeModal}>
+          <div className="w-[680px] bg-white h-full shadow-2xl overflow-y-auto animate-slide-right flex flex-col" onClick={e => e.stopPropagation()}>
+
+            {/* Drawer Header */}
+            <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between z-10 shrink-0">
+              <div>
+                <h2 className="text-base font-bold text-ink">{modalMode === 'add' ? '新增企业' : '编辑企业'}</h2>
+                <p className="text-[11px] text-ink-muted mt-0.5">
+                  {modalMode === 'add' ? '创建新的食品经营主体档案' : `正在编辑：${formData.name}`}
+                </p>
+              </div>
+              <button onClick={closeModal} className="p-1.5 rounded-md hover:bg-slate-100 text-ink-muted transition-colors">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+
+            {/* Tab Bar */}
+            <div className="flex border-b border-slate-200 px-6 shrink-0 bg-white">
+              {[
+                { key:'basic', label:'基础信息', icon:'▦' },
+                { key:'staff', label:'人员信息', icon:'▲', count: formStaff.length },
+                { key:'license', label:'证照管理', icon:'◈', count: formLicenses.length },
+              ].map(t => (
+                <button key={t.key} onClick={() => { setActiveTab(t.key); setEditStaffId(null); setEditLicId(null); }}
+                  className={`flex items-center gap-1.5 px-5 py-3 text-xs font-medium border-b-2 transition-colors ${activeTab === t.key ? 'border-gov-600 text-gov-600' : 'border-transparent text-ink-secondary hover:text-ink'}`}
+                >
+                  <span>{t.icon}</span> {t.label}
+                  {t.count > 0 && <span className="bg-slate-100 text-ink-secondary text-[10px] px-1.5 py-0.5 rounded-full leading-none">{t.count}</span>}
+                </button>
+              ))}
+            </div>
+
+            {/* Tab Content */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-5">
+
+              {/* ═══ TAB: 基础信息 ═══ */}
+              {activeTab === 'basic' && (
+                <div className="animate-fade-in space-y-5">
+                  {/* 企业主体信息 */}
+                  <section>
+                    <h4 className="text-[11.5px] font-semibold text-ink-muted uppercase tracking-wider mb-4 pb-2 border-b border-slate-100">企业主体信息</h4>
+                    <div className="grid grid-cols-2 gap-x-5 gap-y-3.5">
+                      <div>
+                        <label className={labelClass}>企业名称 <span className="text-red-500">*</span></label>
+                        <input className={inputClass} value={formData.name} onChange={e => updateForm('name',e.target.value)} placeholder="请输入企业名称" />
+                      </div>
+                      <div>
+                        <label className={labelClass}>统一社会信用代码 <span className="text-red-500">*</span></label>
+                        <input className={inputClass} value={formData.creditCode} onChange={e => updateForm('creditCode',e.target.value)} placeholder="18位统一社会信用代码" maxLength={18} />
+                      </div>
+                      <div>
+                        <label className={labelClass}>许可证号</label>
+                        <input className={inputClass} value={formData.licenseNo} onChange={e => updateForm('licenseNo',e.target.value)} placeholder="食品经营许可证号" />
+                      </div>
+                      <div>
+                        <label className={labelClass}>招牌名称</label>
+                        <input className={inputClass} value={formData.brandName} onChange={e => updateForm('brandName',e.target.value)} placeholder="对外经营的招牌名称" />
+                      </div>
+                      <div>
+                        <label className={labelClass}>法人姓名</label>
+                        <input className={inputClass} value={formData.legalPerson} onChange={e => updateForm('legalPerson',e.target.value)} placeholder="法定代表人姓名" />
+                      </div>
+                      <div>
+                        <label className={labelClass}>联系电话</label>
+                        <input className={inputClass} value={formData.phone} onChange={e => updateForm('phone',e.target.value)} placeholder="企业联系电话" maxLength={11} />
+                      </div>
+                      <div>
+                        <label className={labelClass}>主体业态</label>
+                        <select className={selectClass} value={formData.entityType} onChange={e => updateForm('entityType',e.target.value)}>
+                          <option value="餐饮服务">餐饮服务</option>
+                          <option value="食品销售">食品销售</option>
+                          <option value="单位食堂">单位食堂</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className={labelClass}>经营项目</label>
+                        <input className={inputClass} value={formData.bizScope} onChange={e => updateForm('bizScope',e.target.value)} placeholder="如：热食类食品制售" />
+                      </div>
+                      <div className="col-span-2">
+                        <label className={labelClass}>住所</label>
+                        <input className={inputClass} value={formData.address} onChange={e => updateForm('address',e.target.value)} placeholder="企业注册住所" />
+                      </div>
+                      <div className="col-span-2">
+                        <label className={labelClass}>经营场所</label>
+                        <input className={inputClass} value={formData.bizAddress} onChange={e => updateForm('bizAddress',e.target.value)} placeholder="实际经营场所地址" />
+                      </div>
+                      <div>
+                        <label className={labelClass}>经营面积（㎡）</label>
+                        <input className={inputClass} type="number" value={formData.areaSqm} onChange={e => updateForm('areaSqm',e.target.value)} placeholder="平方米" />
+                      </div>
+                    </div>
+                  </section>
+
+                  {/* 管理属性 */}
+                  <section>
+                    <h4 className="text-[11.5px] font-semibold text-ink-muted uppercase tracking-wider mb-4 pb-2 border-b border-slate-100">管理属性</h4>
+                    <div className="grid grid-cols-3 gap-x-5 gap-y-3.5">
+                      <div>
+                        <label className={labelClass}>所属镇/街道</label>
+                        <select className={selectClass} value={formData.orgId} onChange={e => updateForm('orgId',e.target.value)}>
+                          <option value="城东镇">城东镇</option><option value="南桥镇">南桥镇</option>
+                          <option value="中心镇">中心镇</option><option value="北关镇">北关镇</option>
+                          <option value="城南镇">城南镇</option><option value="西江镇">西江镇</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className={labelClass}>营业状态</label>
+                        <select className={selectClass} value={formData.bizStatus} onChange={e => updateForm('bizStatus',e.target.value)}>
+                          <option value="营业">营业</option><option value="停业">停业</option><option value="注销">注销</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className={labelClass}>风险等级</label>
+                        <select className={selectClass} value={formData.riskLevel} onChange={e => updateForm('riskLevel',e.target.value)}>
+                          <option value="高">高风险</option><option value="中">中风险</option><option value="低">低风险</option>
+                        </select>
+                      </div>
+                      <div className="col-span-3">
+                        <label className={labelClass}>备注</label>
+                        <textarea className={inputClass} rows="2" value={formData.remark} onChange={e => updateForm('remark',e.target.value)} placeholder="其他需要记录的备注信息" />
+                      </div>
+                    </div>
+                  </section>
+                </div>
+              )}
+
+              {/* ═══ TAB: 人员信息 ═══ */}
+              {activeTab === 'staff' && (
+                <div className="animate-fade-in space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-sm font-semibold text-ink">从业人员列表</h4>
+                      <p className="text-[11px] text-ink-muted mt-0.5">管理该企业下的从业人员及健康证信息</p>
+                    </div>
+                    <span className="text-[11px] text-ink-muted">共 {formStaff.length} 人</span>
+                  </div>
+
+                  {/* Staff list */}
+                  <div className="space-y-2">
+                    {formStaff.map(s => (
+                      <div key={s.id} className="border border-slate-200 rounded-lg p-4 hover:border-slate-300 transition-colors">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-2">
+                            <span className="w-7 h-7 rounded-full bg-gov-100 text-gov-700 flex items-center justify-center text-xs font-bold">{s.name.charAt(0)}</span>
+                            <span className="text-sm font-semibold text-ink">{s.name}</span>
+                            <span className="text-[11px] text-ink-muted">{s.position}</span>
+                            <Badge color={s.healthCertExp && new Date(s.healthCertExp) < new Date() ? 'red' : s.healthCertExp && (new Date(s.healthCertExp)-new Date())/(1000*60*60*24) < 30 ? 'orange' : 'green'}>
+                              {s.healthCertExp && new Date(s.healthCertExp) < new Date() ? '健康证已过期' : s.healthCertExp && (new Date(s.healthCertExp)-new Date())/(1000*60*60*24) < 30 ? '健康证临期' : '健康证正常'}
+                            </Badge>
+                          </div>
+                          <div className="flex gap-1.5">
+                            <button onClick={() => startEditStaff(s)} className="text-[11px] text-gov-600 hover:text-gov-700 font-medium px-2 py-1 rounded hover:bg-gov-50 transition-colors">编辑</button>
+                            <button onClick={() => removeStaff(s.id)} className="text-[11px] text-red-500 hover:text-red-600 font-medium px-2 py-1 rounded hover:bg-red-50 transition-colors">移除</button>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-5 gap-3 text-[11.5px]">
+                          <div><span className="text-ink-muted">身份证号</span><div className="text-ink font-mono mt-0.5">{s.idCard}</div></div>
+                          <div><span className="text-ink-muted">电话</span><div className="text-ink mt-0.5">{s.phone}</div></div>
+                          <div><span className="text-ink-muted">健康证编号</span><div className="text-ink font-mono mt-0.5">{s.healthCertNo || '—'}</div></div>
+                          <div><span className="text-ink-muted">健康证到期</span><div className="text-ink mt-0.5">{s.healthCertExp || '—'}</div></div>
+                          <div><span className="text-ink-muted">岗位</span><div className="text-ink mt-0.5">{s.position}</div></div>
+                        </div>
+                      </div>
+                    ))}
+                    {formStaff.length === 0 && (
+                      <div className="text-center py-10 text-ink-muted border-2 border-dashed border-slate-200 rounded-lg">
+                        <div className="text-2xl mb-2">▲</div>
+                        <div className="text-xs">暂无从业人员</div>
+                        <div className="text-[10px] mt-1">请使用下方表单添加</div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Add / Edit staff form */}
+                  <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+                    <h5 className="text-[11.5px] font-semibold text-ink mb-3">{editStaffId ? '编辑从业人员' : '新增从业人员'}</h5>
+                    <div className="grid grid-cols-3 gap-x-3 gap-y-2.5">
+                      <div>
+                        <label className="text-[10px] text-ink-muted mb-0.5 block">姓名</label>
+                        <input className={inputClass} value={addStaffName} onChange={e => setAddStaffName(e.target.value)} placeholder="姓名" />
+                      </div>
+                      <div>
+                        <label className="text-[10px] text-ink-muted mb-0.5 block">身份证号</label>
+                        <input className={inputClass} value={addStaffIdCard} onChange={e => setAddStaffIdCard(e.target.value)} placeholder="18位身份证号" maxLength={18} />
+                      </div>
+                      <div>
+                        <label className="text-[10px] text-ink-muted mb-0.5 block">岗位</label>
+                        <input className={inputClass} value={addStaffPos} onChange={e => setAddStaffPos(e.target.value)} placeholder="如：主厨、服务员" />
+                      </div>
+                      <div>
+                        <label className="text-[10px] text-ink-muted mb-0.5 block">联系电话</label>
+                        <input className={inputClass} value={addStaffPhone} onChange={e => setAddStaffPhone(e.target.value)} placeholder="手机号码" maxLength={11} />
+                      </div>
+                      <div>
+                        <label className="text-[10px] text-ink-muted mb-0.5 block">健康证编号</label>
+                        <input className={inputClass} value={addStaffHCNo} onChange={e => setAddStaffHCNo(e.target.value)} placeholder="健康证号" />
+                      </div>
+                      <div>
+                        <label className="text-[10px] text-ink-muted mb-0.5 block">健康证到期</label>
+                        <input className={inputClass} type="date" value={addStaffHCExp} onChange={e => setAddStaffHCExp(e.target.value)} />
+                      </div>
+                    </div>
+                    <div className="flex gap-2 mt-3">
+                      {editStaffId ? (
+                        <>
+                          <button onClick={saveStaffEdit} className="text-[11px] bg-gov-600 text-white px-4 py-1.5 rounded-md hover:bg-gov-700 transition-colors font-medium">保存修改</button>
+                          <button onClick={cancelEditStaff} className="text-[11px] text-ink-secondary border border-slate-200 px-4 py-1.5 rounded-md hover:bg-white transition-colors">取消</button>
+                        </>
+                      ) : (
+                        <button onClick={addStaffRow} className="text-[11px] bg-gov-600 text-white px-4 py-1.5 rounded-md hover:bg-gov-700 transition-colors font-medium">添加人员</button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ═══ TAB: 证照管理 ═══ */}
+              {activeTab === 'license' && (
+                <div className="animate-fade-in space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-sm font-semibold text-ink">证照管理</h4>
+                      <p className="text-[11px] text-ink-muted mt-0.5">管理企业证照及从业人员健康证的证照信息</p>
+                    </div>
+                    <span className="text-[11px] text-ink-muted">共 {formLicenses.length} 张证照</span>
+                  </div>
+
+                  {/* License list */}
+                  <div className="space-y-2">
+                    {formLicenses.map(l => {
+                      const isExpiring = l.expiryDate && (new Date(l.expiryDate)-new Date())/(1000*60*60*24) < 30;
+                      const isExpired = l.expiryDate && new Date(l.expiryDate) < new Date();
+                      return (
+                        <div key={l.id} className="border border-slate-200 rounded-lg p-4 hover:border-slate-300 transition-colors">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`w-9 h-9 rounded-md flex items-center justify-center shrink-0 ${isExpired ? 'bg-red-50 text-red-600' : isExpiring ? 'bg-amber-50 text-amber-600' : 'bg-gov-50 text-gov-600'}`}>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12l2 2 4-4"/></svg>
+                              </div>
+                              <div>
+                                <div className="text-sm font-semibold text-ink">{l.licenseType}</div>
+                                <div className="text-[11px] font-mono text-ink-secondary mt-0.5">{l.licenseNo}</div>
+                              </div>
+                              <Badge color={isExpired ? 'red' : isExpiring ? 'orange' : 'green'}>
+                                {isExpired ? '已过期' : isExpiring ? '即将到期' : '有效'}
+                              </Badge>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <span className="text-[11px] text-ink-muted">到期：{l.expiryDate || '—'}</span>
+                              <div className="flex gap-1.5">
+                                <button onClick={() => startEditLic(l)} className="text-[11px] text-gov-600 hover:text-gov-700 font-medium px-2 py-1 rounded hover:bg-gov-50 transition-colors">编辑</button>
+                                <button onClick={() => removeLic(l.id)} className="text-[11px] text-red-500 hover:text-red-600 font-medium px-2 py-1 rounded hover:bg-red-50 transition-colors">移除</button>
+                              </div>
+                            </div>
+                          </div>
+                          {/* Upload area */}
+                          <div className="mt-3 border-2 border-dashed border-slate-200 rounded-lg p-4 text-center hover:border-gov-300 transition-colors cursor-pointer bg-slate-50/50">
+                            {l.imageName ? (
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2 text-xs">
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                  <span className="text-emerald-700 font-medium">{l.imageName}</span>
+                                </div>
+                                <span className="text-[10px] text-ink-muted">点击重新上传</span>
+                              </div>
+                            ) : (
+                              <div className="text-xs text-ink-muted">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="mx-auto mb-1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                <span>点击上传证照图片</span>
+                                <span className="text-[10px] block mt-0.5">支持 JPG / PNG / PDF，单文件不超过 10MB</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                    {formLicenses.length === 0 && (
+                      <div className="text-center py-10 text-ink-muted border-2 border-dashed border-slate-200 rounded-lg">
+                        <div className="text-2xl mb-2">◈</div>
+                        <div className="text-xs">暂无证照信息</div>
+                        <div className="text-[10px] mt-1">请使用下方表单添加</div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Add / Edit license form */}
+                  <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+                    <h5 className="text-[11.5px] font-semibold text-ink mb-3">{editLicId ? '编辑证照信息' : '新增证照'}</h5>
+                    <div className="grid grid-cols-3 gap-x-3 gap-y-2.5">
+                      <div>
+                        <label className="text-[10px] text-ink-muted mb-0.5 block">证照类型</label>
+                        <select className={selectClass} value={addLicType} onChange={e => setAddLicType(e.target.value)}>
+                          <option value="营业执照">营业执照</option>
+                          <option value="食品经营许可证">食品经营许可证</option>
+                          <option value="健康证">健康证</option>
+                          <option value="ISO认证">ISO认证</option>
+                          <option value="其他">其他</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-[10px] text-ink-muted mb-0.5 block">证照编号</label>
+                        <input className={inputClass} value={addLicNo} onChange={e => setAddLicNo(e.target.value)} placeholder="证照编号" />
+                      </div>
+                      <div>
+                        <label className="text-[10px] text-ink-muted mb-0.5 block">有效期至</label>
+                        <input className={inputClass} type="date" value={addLicExp} onChange={e => setAddLicExp(e.target.value)} />
+                      </div>
+                    </div>
+                    <div className="flex gap-2 mt-3">
+                      {editLicId ? (
+                        <>
+                          <button onClick={saveLicEdit} className="text-[11px] bg-gov-600 text-white px-4 py-1.5 rounded-md hover:bg-gov-700 transition-colors font-medium">保存修改</button>
+                          <button onClick={cancelEditLic} className="text-[11px] text-ink-secondary border border-slate-200 px-4 py-1.5 rounded-md hover:bg-white transition-colors">取消</button>
+                        </>
+                      ) : (
+                        <button onClick={addLicRow} className="text-[11px] bg-gov-600 text-white px-4 py-1.5 rounded-md hover:bg-gov-700 transition-colors font-medium">添加证照</button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Drawer Footer */}
+            <div className="sticky bottom-0 bg-white border-t border-slate-200 px-6 py-4 flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-3 text-[11px] text-ink-muted">
+                <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>基础信息</span>
+                <span className="text-ink-disabled">→</span>
+                <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-gov-500"></span>人员信息 ({formStaff.length})</span>
+                <span className="text-ink-disabled">→</span>
+                <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>证照管理 ({formLicenses.length})</span>
+              </div>
+              <div className="flex gap-2">
+                <button onClick={closeModal} className="px-5 py-2 text-xs font-medium text-ink-secondary border border-slate-200 rounded-md hover:bg-slate-50 transition-colors">取消</button>
+                <button onClick={handleSave} className="px-5 py-2 text-xs font-medium text-white bg-gov-600 rounded-md hover:bg-gov-700 transition-colors shadow-sm">
+                  {modalMode === 'add' ? '创建企业' : '保存修改'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toast */}
+      {savedToast && (
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] bg-slate-800 text-white text-xs px-5 py-2.5 rounded-lg shadow-lg flex items-center gap-2 animate-fade-in-up">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          {modalMode === 'add' ? '企业创建成功' : '企业信息已更新'}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ────────────────────────────────────────
+// VIDEO SURVEILLANCE (3.6 视频监控)
+// ────────────────────────────────────────
+
+function VideoSurveillance({ userRole, roleTown }) {
+  const isDistrict = userRole === 'R01';
+  const [layout, setLayout] = useState(4);
+  const [selectedTown, setSelectedTown] = useState('all');
+
+  const cameras = [
+    { id:'CAM001', enterprise:'永和豆浆（城东店）', location:'后厨-灶台', town:'城东镇', online:true },
+    { id:'CAM002', enterprise:'永和豆浆（城东店）', location:'后厨-加工区', town:'城东镇', online:true },
+    { id:'CAM003', enterprise:'老重庆火锅（南桥店）', location:'后厨-凉菜间', town:'南桥镇', online:true },
+    { id:'CAM004', enterprise:'老重庆火锅（南桥店）', location:'后厨-灶台', town:'南桥镇', online:false },
+    { id:'CAM005', enterprise:'海底捞（中心广场店）', location:'后厨-洗碗间', town:'中心镇', online:true },
+    { id:'CAM006', enterprise:'海底捞（中心广场店）', location:'后厨-灶台', town:'中心镇', online:true },
+    { id:'CAM007', enterprise:'老乡鸡（北关店）', location:'后厨-加工区', town:'北关镇', online:true },
+    { id:'CAM008', enterprise:'黄焖鸡米饭（学院店）', location:'后厨-灶台', town:'南桥镇', online:true },
+    { id:'CAM009', enterprise:'沙县小吃（中心店）', location:'后厨-全景', town:'中心镇', online:true },
+    { id:'CAM010', enterprise:'味多美烘焙坊', location:'后厨-烘焙间', town:'城东镇', online:true },
+  ];
+
+  const filtered = selectedTown === 'all' ? cameras : cameras.filter(c => c.town === selectedTown);
+
+  const gridCols = layout === 1 ? 'grid-cols-1' : layout === 4 ? 'grid-cols-2' : layout === 9 ? 'grid-cols-3' : 'grid-cols-4';
+
+  return (
+    <div className="space-y-5">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold text-ink tracking-tight">视频监控（明厨亮灶）</h1>
+          <p className="text-sm text-ink-secondary mt-0.5">实时查看辖区内企业后厨画面 · 远程非现场监管</p>
+        </div>
+        <div className="flex items-center gap-2">
+          {[1,4,9,16].map(n => (
+            <button key={n} onClick={() => setLayout(n)}
+              className={`px-3 py-1.5 text-xs rounded-md border transition-colors ${layout === n ? 'bg-gov-600 text-white border-gov-600' : 'bg-white text-ink-secondary border-slate-200 hover:bg-slate-50'}`}
+            >{n}画面</button>
+          ))}
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="flex items-center gap-3 bg-white rounded-lg border border-slate-200 p-3 animate-fade-in-up">
+        <select value={selectedTown} onChange={e => setSelectedTown(e.target.value)}
+          className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
+          <option value="all">全部镇/街道</option>
+          <option value="城东镇">城东镇</option><option value="南桥镇">南桥镇</option>
+          <option value="中心镇">中心镇</option><option value="北关镇">北关镇</option>
+        </select>
+        <span className="text-[11px] text-ink-muted">{filtered.filter(c=>c.online).length}/{filtered.length} 在线</span>
+        <button className="ml-auto text-[11px] text-gov-600 hover:text-gov-700 font-medium">全屏模式</button>
+      </div>
+
+      {/* Video Grid */}
+      <div className={`grid ${gridCols} gap-3 animate-fade-in-up`}>
+        {filtered.map(c => (
+          <div key={c.id} className="video-thumb bg-white rounded-lg border border-slate-200 overflow-hidden">
+            <div className="aspect-video bg-slate-800 relative flex items-center justify-center">
+              {c.online ? (
+                <>
+                  <div className="absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-900"></div>
+                  <div className="absolute inset-0 opacity-20" style={{background:'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px)'}}></div>
+                  <span className="text-white/30 text-sm">LIVE</span>
+                  <div className="absolute top-2 left-2 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 pulse-dot"></span>
+                    <span className="text-[10px] text-white/60">在线</span>
+                  </div>
+                  <div className="absolute top-2 right-2 text-[10px] text-white/50 bg-black/30 px-1.5 py-0.5 rounded">实时</div>
+                </>
+              ) : (
+                <div className="text-slate-500 text-xs text-center">
+                  <div className="mb-2 text-lg">⏻</div>
+                  <div>设备离线</div>
+                </div>
+              )}
+              <div className="video-play-overlay">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21" /></svg>
+              </div>
+            </div>
+            <div className="p-3">
+              <div className="text-[12px] font-medium text-ink">{c.enterprise}</div>
+              <div className="text-[10px] text-ink-muted mt-0.5">{c.location}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ────────────────────────────────────────
+// NOTIFICATIONS (3.8 通知与消息)
+// ────────────────────────────────────────
+
+function NotificationCenter() {
+  const [filter, setFilter] = useState('all');
+  const [notifs, setNotifs] = useState(MOCK.notifications);
+
+  const filtered = filter === 'all' ? notifs : filter === 'unread' ? notifs.filter(n => !n.read) : notifs.filter(n => n.read);
+
+  const markAllRead = () => setNotifs(notifs.map(n => ({...n, read:true})));
+  const markRead = (id) => setNotifs(notifs.map(n => n.id === id ? {...n, read:true} : n));
+
+  const typeStyles = {
+    warning: { bg:'bg-amber-50', icon:'⚠', color:'text-amber-600' },
+    info:    { bg:'bg-blue-50',  icon:'ℹ', color:'text-blue-600' },
+    success: { bg:'bg-emerald-50', icon:'✓', color:'text-emerald-600' },
+    error:   { bg:'bg-red-50', icon:'✕', color:'text-red-600' },
+  };
+
+  return (
+    <div className="space-y-5">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold text-ink tracking-tight">通知信息</h1>
+          <p className="text-sm text-ink-secondary mt-0.5">{notifs.filter(n=>!n.read).length} 条未读</p>
+        </div>
+        <button onClick={markAllRead} className="text-xs text-gov-600 hover:text-gov-700 font-medium">全部标为已读</button>
+      </div>
+
+      {/* Filter tabs */}
+      <div className="flex gap-1 bg-white rounded-lg border border-slate-200 p-1 w-fit animate-fade-in-up">
+        {[
+          { key:'all', label:'全部' },
+          { key:'unread', label:`未读 (${notifs.filter(n=>!n.read).length})` },
+          { key:'read', label:'已读' },
+        ].map(t => (
+          <button key={t.key} onClick={() => setFilter(t.key)}
+            className={`px-4 py-1.5 text-xs rounded-md transition-colors ${filter === t.key ? 'bg-gov-600 text-white' : 'text-ink-secondary hover:bg-slate-50'}`}
+          >{t.label}</button>
+        ))}
+      </div>
+
+      {/* Notification List */}
+      <div className="space-y-1.5 animate-fade-in-up">
+        {filtered.map(n => {
+          const ts = typeStyles[n.type] || typeStyles.info;
+          return (
+            <div key={n.id}
+              onClick={() => markRead(n.id)}
+              className={`bg-white rounded-lg border px-4 py-3.5 cursor-pointer transition-all hover:shadow-sm ${!n.read ? 'border-l-[3px] border-l-gov-500 bg-gov-50/30' : 'border-slate-200'}`}
+            >
+              <div className="flex items-start gap-3">
+                <div className={`w-8 h-8 rounded-md ${ts.bg} flex items-center justify-center shrink-0 ${ts.color}`}>
+                  <span className="text-sm font-bold">{ts.icon}</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <h4 className={`text-sm ${!n.read ? 'font-semibold text-ink' : 'text-ink-secondary'}`}>{n.title}</h4>
+                    {!n.read && <span className="w-1.5 h-1.5 rounded-full bg-gov-500 shrink-0"></span>}
+                  </div>
+                  <p className="text-[12.5px] text-ink-secondary mt-0.5">{n.content}</p>
+                </div>
+                <span className="text-[10px] text-ink-muted shrink-0 whitespace-nowrap">{n.time}</span>
+              </div>
+            </div>
+          );
+        })}
+        {filtered.length === 0 && (
+          <div className="text-center py-16 text-ink-muted">
+            <div className="text-4xl mb-3">◉</div>
+            <div className="text-sm">暂无通知</div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ────────────────────────────────────────
+// SYSTEM SETTINGS (3.9 系统管理)
+// ────────────────────────────────────────
+
+function SystemSettings() {
+  const [tab, setTab] = useState('users');
+
+  const settingTabs = [
+    { key:'users', label:'用户管理' },
+    { key:'roles', label:'角色与权限' },
+    { key:'org', label:'组织架构' },
+    { key:'ai', label:'AI报警规则' },
+    { key:'cert', label:'证照扫描规则' },
+    { key:'logs', label:'操作日志' },
+  ];
+
+  return (
+    <div className="space-y-5">
+      <div>
+        <h1 className="text-xl font-bold text-ink tracking-tight">系统管理</h1>
+        <p className="text-sm text-ink-secondary mt-0.5">授权人员可进行系统配置与运维操作</p>
+      </div>
+
+      {/* Setting tabs */}
+      <div className="flex gap-0 border-b border-slate-200 overflow-x-auto">
+        {settingTabs.map(t => (
+          <button key={t.key} onClick={() => setTab(t.key)}
+            className={`px-5 py-2.5 text-sm font-medium border-b-2 whitespace-nowrap transition-colors ${tab === t.key ? 'border-gov-600 text-gov-600' : 'border-transparent text-ink-secondary hover:text-ink'}`}
+          >{t.label}</button>
+        ))}
+      </div>
+
+      {/* Tab content */}
+      <div className="animate-fade-in-up">
+        {tab === 'users' && (
+          <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
+            <div className="flex items-center justify-between px-5 py-3 border-b border-slate-100">
+              <span className="text-sm font-semibold text-ink">用户列表</span>
+              <button className="text-xs bg-gov-600 text-white px-3 py-1.5 rounded-md hover:bg-gov-700 transition-colors">新增用户</button>
+            </div>
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-200">
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase">用户名</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase">角色</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase">所属组织</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase">状态</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase">最后登录</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { user:'zhangzhuren', role:'R01 区级管理员', org:'区市场监管局', status:'正常', lastLogin:'2026-07-03 08:30' },
+                  { user:'lisuozhang', role:'R02 镇级管理员', org:'城东镇市场监管所', status:'正常', lastLogin:'2026-07-03 09:15' },
+                  { user:'wangsuozhang', role:'R02 镇级管理员', org:'南桥镇市场监管所', status:'正常', lastLogin:'2026-07-03 08:50' },
+                  { user:'chensuozhang', role:'R02 镇级管理员', org:'中心镇市场监管所', status:'禁用', lastLogin:'2026-06-20 14:22' },
+                  { user:'zhaosuozhang', role:'R02 镇级管理员', org:'北关镇市场监管所', status:'正常', lastLogin:'2026-07-03 07:45' },
+                ].map((u,i) => (
+                  <tr key={i} className="table-row border-b border-slate-100 last:border-0">
+                    <td className="px-4 py-3 text-xs font-medium text-ink">{u.user}</td>
+                    <td className="px-4 py-3 text-xs text-ink-secondary">{u.role}</td>
+                    <td className="px-4 py-3 text-xs text-ink-secondary">{u.org}</td>
+                    <td className="px-4 py-3">
+                      <Badge color={u.status==='正常'?'green':'gray'}>{u.status}</Badge>
+                    </td>
+                    <td className="px-4 py-3 text-xs text-ink-secondary">{u.lastLogin}</td>
+                    <td className="px-4 py-3 text-xs space-x-2">
+                      <button className="text-gov-600 hover:text-gov-700 font-medium">编辑</button>
+                      <button className="text-red-500 hover:text-red-600 font-medium">禁用</button>
+                      <button className="text-ink-muted hover:text-ink font-medium">重置密码</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {tab === 'roles' && (
+          <div className="bg-white rounded-lg border border-slate-200 p-5">
+            <h3 className="text-sm font-semibold text-ink mb-4">角色与权限配置</h3>
+            <div className="space-y-3">
+              {[
+                { role:'R01 区级管理员', desc:'全量数据查看与统计分析 · 不能审批 · 授权人员可进行系统配置', perms:'工作台查看 · 风险预警查看 · 审批记录查看 · 主体管理查看 · 视频监控查看 · 系统管理' },
+                { role:'R02 镇级管理员', desc:'唯一审批权 · 本镇数据汇总查看 · 一个镇一个账号', perms:'工作台查看(本镇) · 风险预警处理 · 审批记录(唯一审批权) · 主体管理维护 · 视频监控(本镇)' },
+                { role:'R03 商户负责人', desc:'上传数据 · 工单整改 · 提交申诉 · 仅看本企业数据', perms:'工单中心 · 企业信息维护 · 从业人员管理 · 通知消息' },
+              ].map((r,i) => (
+                <div key={i} className="border border-slate-200 rounded-lg p-4">
+                  <div className="text-sm font-semibold text-ink">{r.role}</div>
+                  <div className="text-xs text-ink-secondary mt-1">{r.desc}</div>
+                  <div className="text-[11px] text-ink-muted mt-2 bg-slate-50 p-2 rounded">{r.perms}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {tab === 'org' && (
+          <div className="bg-white rounded-lg border border-slate-200 p-5">
+            <h3 className="text-sm font-semibold text-ink mb-4">组织架构（区 → 镇 二级）</h3>
+            <div className="space-y-2 ml-4">
+              <div className="flex items-center gap-2 text-sm font-semibold text-ink">
+                <span>▼</span> 区市场监督管理局
+              </div>
+              {['城东镇市场监管所','南桥镇市场监管所','中心镇市场监管所','北关镇市场监管所','城南镇市场监管所','西江镇市场监管所','东湖镇市场监管所'].map((t,i) => (
+                <div key={i} className="flex items-center gap-2 ml-6 text-sm text-ink-secondary py-1.5">
+                  <span className="text-ink-muted">├</span> {t}
+                  <span className="text-[10px] text-ink-muted ml-2">({Math.floor(Math.random()*500+100)}家企业)</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {tab === 'ai' && (
+          <div className="bg-white rounded-lg border border-slate-200 p-5">
+            <h3 className="text-sm font-semibold text-ink mb-4">AI报警规则配置</h3>
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                { type:'鼠患检测', sens:'中', window:'5分钟', threshold:'3次/日', enabled:true },
+                { type:'未戴口罩检测', sens:'高', window:'3分钟', threshold:'5次/日', enabled:true },
+                { type:'未戴帽子检测', sens:'低', window:'10分钟', threshold:'8次/日', enabled:true },
+                { type:'垃圾桶未加盖', sens:'中', window:'5分钟', threshold:'5次/日', enabled:true },
+                { type:'陌生人闯入', sens:'高', window:'2分钟', threshold:'2次/日', enabled:true },
+                { type:'明火离人', sens:'高', window:'3分钟', threshold:'2次/日', enabled:true },
+                { type:'抽烟检测', sens:'中', window:'5分钟', threshold:'3次/日', enabled:true },
+              ].map((a,i) => (
+                <div key={i} className="border border-slate-200 rounded-lg p-3 flex items-center justify-between">
+                  <div>
+                    <div className="text-xs font-medium text-ink">{a.type}</div>
+                    <div className="text-[10px] text-ink-muted mt-0.5">灵敏度:{a.sens} · 去重:{a.window} · 熔断:{a.threshold}</div>
+                  </div>
+                  <Badge color={a.enabled ? 'green' : 'gray'}>{a.enabled ? '启用' : '禁用'}</Badge>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {tab === 'cert' && (
+          <div className="bg-white rounded-lg border border-slate-200 p-5">
+            <h3 className="text-sm font-semibold text-ink mb-4">证照扫描规则</h3>
+            <div className="space-y-2 text-xs text-ink-secondary">
+              <div className="flex justify-between py-2 border-b border-slate-100"><span>扫描频率</span><span className="font-medium text-ink">每日凌晨 02:00</span></div>
+              <div className="flex justify-between py-2 border-b border-slate-100"><span>提醒节点</span><span className="font-medium text-ink">到期前90 / 60 / 30 / 7 / 3天</span></div>
+              <div className="flex justify-between py-2 border-b border-slate-100"><span>合并策略</span><span className="font-medium text-ink">同商户+7天内到期+同类证照→合并为一条工单</span></div>
+              <div className="flex justify-between py-2 border-b border-slate-100"><span>去重规则</span><span className="font-medium text-ink">同证照+已有未处理/处理中换证工单→跳过</span></div>
+              <div className="flex justify-between py-2"><span>续提醒</span><span className="font-medium text-ink">前序工单归档后证照仍临期→重新生成（标注"第N次提醒"）</span></div>
+            </div>
+          </div>
+        )}
+
+        {tab === 'logs' && (
+          <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-200">
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase">时间</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase">操作人</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase">角色</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase">操作类型</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase">详情</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase">IP地址</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { time:'2026-07-03 14:30:25', user:'lisuozhang', role:'R02', action:'审核通过', detail:'工单#WO20260703001 整改审核通过', ip:'192.168.1.100' },
+                  { time:'2026-07-03 14:22:15', user:'SYSTEM', role:'SYSTEM', action:'自动生成', detail:'AI报警→工单#WO20260703001 自动生成', ip:'—' },
+                  { time:'2026-07-03 13:15:40', user:'zhangzhuren', role:'R01', action:'查看', detail:'查看城东镇风险热力图', ip:'192.168.1.50' },
+                  { time:'2026-07-03 12:05:30', user:'SYSTEM', role:'SYSTEM', action:'扫描完成', detail:'证照到期扫描完成，发现12条临期证照', ip:'—' },
+                  { time:'2026-07-03 11:20:10', user:'wangsuozhang', role:'R02', action:'审核驳回', detail:'工单#WO20260701055 申诉驳回，原因：佐证材料不足', ip:'192.168.1.101' },
+                ].map((l,i) => (
+                  <tr key={i} className="table-row border-b border-slate-100 last:border-0">
+                    <td className="px-4 py-3 text-xs font-mono text-ink-secondary">{l.time}</td>
+                    <td className="px-4 py-3 text-xs text-ink">{l.user}</td>
+                    <td className="px-4 py-3 text-xs"><Badge color={l.role==='SYSTEM'?'indigo':l.role==='R01'?'blue':'gray'}>{l.role}</Badge></td>
+                    <td className="px-4 py-3 text-xs text-ink">{l.action}</td>
+                    <td className="px-4 py-3 text-xs text-ink-secondary max-w-[300px] truncate">{l.detail}</td>
+                    <td className="px-4 py-3 text-xs font-mono text-ink-muted">{l.ip}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ────────────────────────────────────────
+// RENDER
+// ────────────────────────────────────────
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
