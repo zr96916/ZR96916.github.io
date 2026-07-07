@@ -229,6 +229,63 @@ const MOCK = {
     { id:'ARC005', type:'变更', typeColor:'green', source:'主体变更', title:'经营场所地址变更申请', enterprise:'海底捞（中心广场店）', town:'中心镇', submitTime:'2026-06-18 09:00', completeTime:'2026-06-21 14:10', severity:'高', result:'驳回', reviewer:'陈所长', reviewTime:'2026-06-21 14:10', reviewOpinion:'新地址的食品经营场所平面图与实际不符，请重新提交准确图纸后再次申请。', summary:'因店面扩租，申请变更经营场所为"中心广场B座2-3层"（原"中心广场B座2层"）。', changeFields:[{field:'经营场所',oldVal:'中心广场B座2层',newVal:'中心广场B座2-3层'},{field:'经营面积',oldVal:'800㎡',newVal:'1200㎡'}] },
     { id:'ARC006', type:'申诉', typeColor:'orange', source:'商户申诉', title:'申诉：工单#WO20260615042', enterprise:'第一中学食堂', town:'北关镇', submitTime:'2026-06-15 16:40', completeTime:'2026-06-18 10:00', severity:'低', result:'通过', reviewer:'赵所长', reviewTime:'2026-06-18 10:00', reviewOpinion:'经核查，该时段为食堂设备维护时间，非供餐时段，AI报警属误报，同意撤销。', summary:'明火离人报警发生在食堂设备检修期间，非正常运营时段，申请撤销本次报警工单。' },
   ],
+  cameras: (() => {
+    const merchants = [
+      '永和豆浆（城东店）','老重庆火锅（南桥店）','味多美烘焙坊','沙县小吃（中心店）',
+      '肯德基（万达店）','老乡鸡（北关店）','黄焖鸡米饭（学院店）','海底捞（中心广场店）',
+      '第一中学食堂','华联超市（食品区）','瑞幸咖啡（万达店）','张亮麻辣烫（学院店）',
+      '杨国福麻辣烫（城东店）','必胜客（中心广场店）','星巴克（万达店）',
+    ];
+    const towns = ['城东镇','南桥镇','中心镇','北关镇'];
+    const locations = ['后厨-灶台','后厨-加工区','后厨-凉菜间','后厨-洗碗间','后厨-全景','后厨-烘焙间','后厨-备餐间','前厅-收银区','前厅-就餐区','仓库-入口','仓库-冷库','出入口-正门'];
+    const cams = [];
+    // Pre-generated UUIDs for QianLiYan devices
+    const uuids = [
+      'a3f7c8d1-2b4e-4a9f-8c1d-7e6f5a4b3c2d','b4e8d9e2-3c5f-4b0a-9d2e-8f7a6b5c4d3e',
+      'c5f9e0f3-4d6a-4c1b-0e3f-9a8b7c6d5e4f','d6a0f1a4-5e7b-4d2c-1f4a-0b9c8d7e6f5a',
+      'e7b1a2b5-6f8c-4e3d-2a5b-1c0d9e8f7a6b','f8c2b3c6-7a9d-4f4e-3b6c-2d1e0f9a8b7c',
+      'a9d3c4d7-8b0e-4a5f-4c7d-3e2f1a0b9c8d','b0e4d5e8-9c1f-4b6a-5d8e-4f3a2b1c0d9e',
+      'c1f5e6f9-0d2a-4c7b-6e9f-5a4b3c2d1e0f','d2a6f7a0-1e3b-4d8c-7f0a-6b5c4d3e2f1a',
+      'e3b7a8b1-2f4c-4e9d-8a1b-7c6d5e4f3a2b','f4c8b9c2-3a5d-4f0e-9b2c-8d7e6f5a4b3c',
+      'a5d9c0d3-4b6e-4a1f-0c3d-9e8f7a6b5c4d','b6e0d1e4-5c7f-4b2a-1d4e-0f9a8b7c6d5e',
+      'c7f1e2f5-6d8a-4c3b-2e5f-1a0b9c8d7e6f','d8a2f3a6-7e9b-4d4c-3f6a-2b1c0d9e8f7a',
+      'e9b3a4b7-8f0c-4e5d-4a7b-3c2d1e0f9a8b','f0c4b5c8-9a1d-4f6e-5b8c-4d3e2f1a0b9c',
+      'a1d5c6d9-0b2e-4a7f-6c9d-5e4f3a2b1c0d','b2e6d7e0-1c3f-4b8a-7d0e-6f5a4b3c2d1e',
+      'c3f7e8f1-2d4a-4c9b-8e1f-7a6b5c4d3e2f','d4a8f9a2-3e5b-4d0c-9f2a-8b7c6d5e4f3a',
+      'e5b9a0b3-4f6c-4e1d-0a3b-9c8d7e6f5a4b','f6c0b1c4-5a7d-4f2e-1b4c-0d9e8f7a6b5c',
+      'a7d1c2d5-6b8e-4a3f-2c5d-1e0f9a8b7c6d','b8e2d3e6-7c9f-4b4a-3d6e-2f1a0b9c8d7e',
+      'c9f3e4f7-8d0a-4c5b-4e7f-3a2b1c0d9e8f','d0a4f5a8-9e1b-4d6c-5f8a-4b3c2d1e0f9a',
+      'e1b5a6b9-0f2c-4e7d-6a9b-5c4d3e2f1a0b','f2c6b7c0-1a3d-4f8e-7b0c-6d5e4f3a2b1c',
+      'a3d7c8d1-2b4e-4a9f-8c1d-7e6f5a4b3c2d','b4e8d9e2-3c5f-4b0a-9d2e-8f7a6b5c4d3e',
+      'c5f9e0f3-4d6a-4c1b-0e3f-9a8b7c6d5e4f','d6a0f1a4-5e7b-4d2c-1f4a-0b9c8d7e6f5a',
+      'e7b1a2b5-6f8c-4e3d-2a5b-1c0d9e8f7a6b',
+    ];
+    for (let i = 1; i <= 38; i++) {
+      const mIdx = i <= 15 ? (i % 15) : Math.floor(Math.random() * 15);
+      const m = merchants[mIdx];
+      const t = i <= 8 ? towns[i % 4] : i <= 20 ? towns[(i+1) % 4] : towns[(i+2)%4];
+      const loc = locations[i % locations.length];
+      const status = i <= 15 ? 'associated' : i <= 28 ? 'unassociated' : 'auto_matched';
+      const confidence = status === 'auto_matched' ? (0.62 + Math.random() * 0.35).toFixed(2) : (status === 'associated' ? 1.0 : null);
+      const associatedMerchant = status === 'associated' ? m : (status === 'auto_matched' ? merchants[Math.floor(Math.random()*15)] : null);
+      cams.push({
+        id: `CAM${String(i).padStart(4,'0')}`,
+        deviceUuid: uuids[i-1] || `x${String(i).padStart(4,'0')}-0000-0000-0000-${String(i).padStart(12,'0')}`,
+        deviceSn: `QLY-${String(20240000 + i)}-${String(Math.floor(Math.random()*9000)+1000)}`,
+        location: loc,
+        enterprise: status === 'associated' ? m : null,
+        town: t,
+        matchMerchant: status === 'auto_matched' ? associatedMerchant : null,
+        matchConfidence: confidence,
+        matchBasis: status === 'auto_matched' ? (['IP地址段','地理位置','设备名称关键词'][Math.floor(Math.random()*3)]) : null,
+        status: status,
+        ip: `192.168.${Math.floor(i/4)+1}.${(i%250)+1}`,
+        online: Math.random() > 0.12,
+        installDate: `2025-${String(Math.floor(Math.random()*12)+1).padStart(2,'0')}-${String(Math.floor(Math.random()*28)+1).padStart(2,'0')}`,
+      });
+    }
+    return cams;
+  })(),
   enterprises: [
     { id:'ENT001', name:'永和豆浆（城东店）', creditCode:'91310115MA1K3XXXXX', town:'城东镇', entityType:'餐饮服务', riskLevel:'高', bizStatus:'营业', recentOrders:12, legalPerson:'张明华' },
     { id:'ENT002', name:'老重庆火锅（南桥店）', creditCode:'91310115MA1K3YYYYY', town:'南桥镇', entityType:'餐饮服务', riskLevel:'中', bizStatus:'营业', recentOrders:5, legalPerson:'李建国' },
@@ -490,6 +547,7 @@ const NAV_ITEMS = [
   { key: 'dashboard',    label: '工作台',    icon: '■' },
   { key: 'entity',       label: '主体管理',   icon: '▲' },
   { key: 'video',        label: '视频监控',   icon: '◈' },
+  { key: 'device',       label: '设备关联',   icon: '▣' },
   { key: 'risk',         label: '风险预警',   icon: '◆', badge: MOCK.stats.aiAlarmToday + MOCK.stats.certRemindToday },
   { key: 'approval',     label: '审批记录',   icon: '●', badge: MOCK.stats.pendingReview },
   { key: 'notifications',label: '通知信息',   icon: '◉', badge: MOCK.notifications.filter(n=>!n.read).length },
@@ -520,6 +578,7 @@ function App() {
       case 'approval':     return <ApprovalRecords showDetail={showDetail} setShowDetail={setShowDetail} userRole={userRole} roleTown={roleTown} />;
       case 'entity':       return <EntityManagement userRole={userRole} roleTown={roleTown} />;
       case 'video':        return <VideoSurveillance userRole={userRole} roleTown={roleTown} />;
+      case 'device':       return <DeviceAssociation userRole={userRole} roleTown={roleTown} />;
       case 'notifications':return <NotificationCenter />;
       case 'settings':     return <SystemSettings />;
       default:             return <Dashboard loading={false} onNavigate={setActiveNav} userRole={userRole} roleTown={roleTown} />;
@@ -1436,8 +1495,8 @@ const EMPTY_FORM = {
 };
 
 const INIT_STAFF = [
-  { id:'s1', name:'张三', idCard:'320102199001011234', position:'主厨', phone:'13800001111', healthCertNo:'JK20250101001', healthCertExp:'2026-09-15' },
-  { id:'s2', name:'李四', idCard:'320102199205052345', position:'帮厨', phone:'13800002222', healthCertNo:'JK20250315002', healthCertExp:'2026-06-20' },
+  { id:'s1', name:'张三', idCard:'320102199001011234', gender:'男', age:36, phone:'13800001111', bizType:'餐饮服务', healthCertNo:'JK20250101001', healthCertExp:'2026-09-15', healthCertStatus:'有效' },
+  { id:'s2', name:'李四', idCard:'320102199205052345', gender:'女', age:34, phone:'13800002222', bizType:'餐饮服务', healthCertNo:'JK20250315002', healthCertExp:'2026-06-20', healthCertStatus:'已过期' },
 ];
 const INIT_LICENSES = [
   { id:'l1', licenseType:'营业执照', licenseNo:'91310115MA1K3XXXXX', expiryDate:'2030-05-20', imageName:'' },
@@ -1461,15 +1520,36 @@ function EntityManagement({ userRole, roleTown }) {
   const [formLicenses, setFormLicenses] = useState([]);
   const [activeTab, setActiveTab] = useState('basic');
   const [savedToast, setSavedToast] = useState(false);
+  const [staffToast, setStaffToast] = useState(null);
+  const toastStaff = (msg) => { setStaffToast(msg); setTimeout(() => setStaffToast(null), 2400); };
 
   // Inline staff editing
   const [addStaffName, setAddStaffName] = useState('');
-  const [addStaffPos, setAddStaffPos] = useState('');
   const [addStaffIdCard, setAddStaffIdCard] = useState('');
   const [addStaffPhone, setAddStaffPhone] = useState('');
+  const [addStaffGender, setAddStaffGender] = useState('男');
+  const [addStaffAge, setAddStaffAge] = useState('');
+  const [addStaffBizType, setAddStaffBizType] = useState('');
   const [addStaffHCNo, setAddStaffHCNo] = useState('');
   const [addStaffHCExp, setAddStaffHCExp] = useState('');
+  const [addStaffHCStatus, setAddStaffHCStatus] = useState('有效');
   const [editStaffId, setEditStaffId] = useState(null);
+
+  // ID card auto-fill: parse gender & age from 18-digit ID
+  const handleIdCardChange = (val) => {
+    setAddStaffIdCard(val);
+    if (val.length === 18 && /^\d{17}[\dXx]$/.test(val)) {
+      // Gender: 17th digit (index 16), odd=male, even=female
+      const genderDigit = parseInt(val.charAt(16), 10);
+      setAddStaffGender(isNaN(genderDigit) ? '男' : (genderDigit % 2 === 1 ? '男' : '女'));
+      // Age: extract birth year from positions 7-10 (index 6-9)
+      const birthYear = parseInt(val.substring(6, 10), 10);
+      if (!isNaN(birthYear) && birthYear >= 1900 && birthYear <= 2100) {
+        const currentYear = new Date().getFullYear();
+        setAddStaffAge(String(currentYear - birthYear));
+      }
+    }
+  };
 
   // Inline license editing
   const [addLicType, setAddLicType] = useState('营业执照');
@@ -1565,30 +1645,42 @@ function EntityManagement({ userRole, roleTown }) {
 
   // Staff CRUD in form
   const addStaffRow = () => {
-    if (!addStaffName.trim()) return;
+    if (!addStaffName.trim()) { toastStaff('请填写姓名（必填）'); return; }
+    if (!addStaffIdCard.trim()) { toastStaff('请填写身份证号（必填）'); return; }
+    if (addStaffIdCard.length !== 18 || !/^\d{17}[\dXx]$/.test(addStaffIdCard)) { toastStaff('身份证号格式不正确，应为18位'); return; }
+    // Health cert group: if 编号 filled but 有效期 empty, hint
+    if (addStaffHCNo.trim() && !addStaffHCExp) { toastStaff('已填写健康证编号，建议补全有效期'); }
     setFormStaff([...formStaff, {
-      id:'s'+Date.now(), name:addStaffName, idCard:addStaffIdCard, position:addStaffPos,
-      phone:addStaffPhone, healthCertNo:addStaffHCNo, healthCertExp:addStaffHCExp,
+      id:'s'+Date.now(), name:addStaffName, idCard:addStaffIdCard,
+      gender:addStaffGender, age:addStaffAge, phone:addStaffPhone, bizType:addStaffBizType,
+      healthCertNo:addStaffHCNo, healthCertExp:addStaffHCExp, healthCertStatus:addStaffHCStatus,
     }]);
-    setAddStaffName(''); setAddStaffPos(''); setAddStaffIdCard(''); setAddStaffPhone(''); setAddStaffHCNo(''); setAddStaffHCExp('');
+    setAddStaffName(''); setAddStaffIdCard(''); setAddStaffPhone(''); setAddStaffGender('男'); setAddStaffAge('');
+    setAddStaffBizType(''); setAddStaffHCNo(''); setAddStaffHCExp(''); setAddStaffHCStatus('有效');
   };
   const removeStaff = (id) => setFormStaff(formStaff.filter(s => s.id !== id));
   const saveStaffEdit = () => {
+    if (!addStaffName.trim()) { toastStaff('请填写姓名（必填）'); return; }
+    if (!addStaffIdCard.trim()) { toastStaff('请填写身份证号（必填）'); return; }
     setFormStaff(formStaff.map(s => s.id === editStaffId ? {...s,
-      name:addStaffName, idCard:addStaffIdCard, position:addStaffPos,
-      phone:addStaffPhone, healthCertNo:addStaffHCNo, healthCertExp:addStaffHCExp,
+      name:addStaffName, idCard:addStaffIdCard,
+      gender:addStaffGender, age:addStaffAge, phone:addStaffPhone, bizType:addStaffBizType,
+      healthCertNo:addStaffHCNo, healthCertExp:addStaffHCExp, healthCertStatus:addStaffHCStatus,
     } : s));
     setEditStaffId(null);
-    setAddStaffName(''); setAddStaffPos(''); setAddStaffIdCard(''); setAddStaffPhone(''); setAddStaffHCNo(''); setAddStaffHCExp('');
+    setAddStaffName(''); setAddStaffIdCard(''); setAddStaffPhone(''); setAddStaffGender('男'); setAddStaffAge('');
+    setAddStaffBizType(''); setAddStaffHCNo(''); setAddStaffHCExp(''); setAddStaffHCStatus('有效');
   };
   const startEditStaff = (s) => {
     setEditStaffId(s.id);
-    setAddStaffName(s.name); setAddStaffPos(s.position); setAddStaffIdCard(s.idCard);
-    setAddStaffPhone(s.phone); setAddStaffHCNo(s.healthCertNo); setAddStaffHCExp(s.healthCertExp);
+    setAddStaffName(s.name); setAddStaffIdCard(s.idCard); setAddStaffPhone(s.phone||'');
+    setAddStaffGender(s.gender||'男'); setAddStaffAge(s.age||''); setAddStaffBizType(s.bizType||'');
+    setAddStaffHCNo(s.healthCertNo||''); setAddStaffHCExp(s.healthCertExp||''); setAddStaffHCStatus(s.healthCertStatus||'有效');
   };
   const cancelEditStaff = () => {
     setEditStaffId(null);
-    setAddStaffName(''); setAddStaffPos(''); setAddStaffIdCard(''); setAddStaffPhone(''); setAddStaffHCNo(''); setAddStaffHCExp('');
+    setAddStaffName(''); setAddStaffIdCard(''); setAddStaffPhone(''); setAddStaffGender('男'); setAddStaffAge('');
+    setAddStaffBizType(''); setAddStaffHCNo(''); setAddStaffHCExp(''); setAddStaffHCStatus('有效');
   };
 
   // License CRUD in form
@@ -1899,15 +1991,20 @@ function EntityManagement({ userRole, roleTown }) {
 
                   {/* Staff list */}
                   <div className="space-y-2">
-                    {formStaff.map(s => (
+                    {formStaff.map(s => {
+                      const isHCExpired = s.healthCertExp && new Date(s.healthCertExp) < new Date();
+                      const isHCExpiring = s.healthCertExp && !isHCExpired && (new Date(s.healthCertExp)-new Date())/(1000*60*60*24) < 30;
+                      return (
                       <div key={s.id} className="border border-slate-200 rounded-lg p-4 hover:border-slate-300 transition-colors">
                         <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center gap-2">
                             <span className="w-7 h-7 rounded-full bg-gov-100 text-gov-700 flex items-center justify-center text-xs font-bold">{s.name.charAt(0)}</span>
                             <span className="text-sm font-semibold text-ink">{s.name}</span>
-                            <span className="text-[11px] text-ink-muted">{s.position}</span>
-                            <Badge color={s.healthCertExp && new Date(s.healthCertExp) < new Date() ? 'red' : s.healthCertExp && (new Date(s.healthCertExp)-new Date())/(1000*60*60*24) < 30 ? 'orange' : 'green'}>
-                              {s.healthCertExp && new Date(s.healthCertExp) < new Date() ? '健康证已过期' : s.healthCertExp && (new Date(s.healthCertExp)-new Date())/(1000*60*60*24) < 30 ? '健康证临期' : '健康证正常'}
+                            <span className="text-[11px] text-ink-muted">{s.gender}</span>
+                            {s.age && <span className="text-[11px] text-ink-muted">{s.age}岁</span>}
+                            {s.bizType && <Badge color="gray">{s.bizType}</Badge>}
+                            <Badge color={isHCExpired ? 'red' : isHCExpiring ? 'orange' : s.healthCertStatus === '已过期' ? 'red' : s.healthCertStatus === '临期' ? 'orange' : 'green'}>
+                              {isHCExpired ? '健康证已过期' : isHCExpiring ? '健康证临期' : s.healthCertStatus === '已过期' ? '健康证已过期' : s.healthCertStatus === '临期' ? '健康证临期' : '健康证有效'}
                             </Badge>
                           </div>
                           <div className="flex gap-1.5">
@@ -1917,13 +2014,15 @@ function EntityManagement({ userRole, roleTown }) {
                         </div>
                         <div className="grid grid-cols-5 gap-3 text-[11.5px]">
                           <div><span className="text-ink-muted">身份证号</span><div className="text-ink font-mono mt-0.5">{s.idCard}</div></div>
-                          <div><span className="text-ink-muted">电话</span><div className="text-ink mt-0.5">{s.phone}</div></div>
+                          <div><span className="text-ink-muted">手机号</span><div className="text-ink mt-0.5">{s.phone || '—'}</div></div>
                           <div><span className="text-ink-muted">健康证编号</span><div className="text-ink font-mono mt-0.5">{s.healthCertNo || '—'}</div></div>
-                          <div><span className="text-ink-muted">健康证到期</span><div className="text-ink mt-0.5">{s.healthCertExp || '—'}</div></div>
-                          <div><span className="text-ink-muted">岗位</span><div className="text-ink mt-0.5">{s.position}</div></div>
+                          <div><span className="text-ink-muted">健康证有效期</span><div className="text-ink mt-0.5">{s.healthCertExp || '—'}</div></div>
+                          <div><span className="text-ink-muted">健康证状态</span><div className="text-ink mt-0.5">
+                            <Badge color={s.healthCertStatus === '有效' ? 'green' : s.healthCertStatus === '临期' ? 'orange' : 'red'}>{s.healthCertStatus || '—'}</Badge>
+                          </div></div>
                         </div>
                       </div>
-                    ))}
+                    )})}
                     {formStaff.length === 0 && (
                       <div className="text-center py-10 text-ink-muted border-2 border-dashed border-slate-200 rounded-lg">
                         <div className="text-2xl mb-2">▲</div>
@@ -1936,31 +2035,78 @@ function EntityManagement({ userRole, roleTown }) {
                   {/* Add / Edit staff form */}
                   <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
                     <h5 className="text-[11.5px] font-semibold text-ink mb-3">{editStaffId ? '编辑从业人员' : '新增从业人员'}</h5>
-                    <div className="grid grid-cols-3 gap-x-3 gap-y-2.5">
+                    {/* Row 1: 姓名 · 身份证号 · 手机号 */}
+                    <div className="grid grid-cols-3 gap-x-3 gap-y-2.5 mb-2.5">
                       <div>
-                        <label className="text-[10px] text-ink-muted mb-0.5 block">姓名</label>
-                        <input className={inputClass} value={addStaffName} onChange={e => setAddStaffName(e.target.value)} placeholder="姓名" />
+                        <label className="text-[10px] text-ink-muted mb-0.5 block">姓名 <span className="text-red-500">*</span></label>
+                        <input className={inputClass} value={addStaffName} onChange={e => setAddStaffName(e.target.value)} placeholder="请输入姓名" />
                       </div>
                       <div>
-                        <label className="text-[10px] text-ink-muted mb-0.5 block">身份证号</label>
-                        <input className={inputClass} value={addStaffIdCard} onChange={e => setAddStaffIdCard(e.target.value)} placeholder="18位身份证号" maxLength={18} />
+                        <label className="text-[10px] text-ink-muted mb-0.5 block">身份证号 <span className="text-red-500">*</span></label>
+                        <input className={inputClass} value={addStaffIdCard} onChange={e => handleIdCardChange(e.target.value)} placeholder="请输入18位身份证号" maxLength={18} />
                       </div>
                       <div>
-                        <label className="text-[10px] text-ink-muted mb-0.5 block">岗位</label>
-                        <input className={inputClass} value={addStaffPos} onChange={e => setAddStaffPos(e.target.value)} placeholder="如：主厨、服务员" />
+                        <label className="text-[10px] text-ink-muted mb-0.5 block">手机号</label>
+                        <input className={inputClass} value={addStaffPhone} onChange={e => setAddStaffPhone(e.target.value)} placeholder="请输入手机号" maxLength={11} />
+                      </div>
+                    </div>
+                    {/* Row 2: 性别 · 年龄 · 企业类别 */}
+                    <div className="grid grid-cols-3 gap-x-3 gap-y-2.5 mb-2.5">
+                      <div>
+                        <label className="text-[10px] text-ink-muted mb-0.5 block">性别</label>
+                        <div className="flex items-center gap-4 pt-1.5">
+                          <label className="flex items-center gap-1.5 cursor-pointer">
+                            <input type="radio" name="staffGender" value="男" checked={addStaffGender==='男'} onChange={e => setAddStaffGender(e.target.value)} className="w-3 h-3 accent-gov-600" />
+                            <span className="text-xs text-ink">男</span>
+                          </label>
+                          <label className="flex items-center gap-1.5 cursor-pointer">
+                            <input type="radio" name="staffGender" value="女" checked={addStaffGender==='女'} onChange={e => setAddStaffGender(e.target.value)} className="w-3 h-3 accent-gov-600" />
+                            <span className="text-xs text-ink">女</span>
+                          </label>
+                        </div>
                       </div>
                       <div>
-                        <label className="text-[10px] text-ink-muted mb-0.5 block">联系电话</label>
-                        <input className={inputClass} value={addStaffPhone} onChange={e => setAddStaffPhone(e.target.value)} placeholder="手机号码" maxLength={11} />
+                        <label className="text-[10px] text-ink-muted mb-0.5 block">年龄</label>
+                        <input className={`${inputClass} bg-slate-100 text-ink-secondary cursor-default`} value={addStaffAge} readOnly placeholder="身份证自动带入" />
                       </div>
                       <div>
-                        <label className="text-[10px] text-ink-muted mb-0.5 block">健康证编号</label>
-                        <input className={inputClass} value={addStaffHCNo} onChange={e => setAddStaffHCNo(e.target.value)} placeholder="健康证号" />
+                        <label className="text-[10px] text-ink-muted mb-0.5 block">企业类别</label>
+                        <select className={selectClass} value={addStaffBizType} onChange={e => setAddStaffBizType(e.target.value)}>
+                          <option value="">请选择</option>
+                          <option value="餐饮服务">餐饮服务</option>
+                          <option value="食品销售">食品销售</option>
+                          <option value="单位食堂">单位食堂</option>
+                          <option value="食品生产">食品生产</option>
+                          <option value="小作坊">小作坊</option>
+                        </select>
                       </div>
-                      <div>
-                        <label className="text-[10px] text-ink-muted mb-0.5 block">健康证到期</label>
-                        <input className={inputClass} type="date" value={addStaffHCExp} onChange={e => setAddStaffHCExp(e.target.value)} />
+                    </div>
+                    {/* 健康证信息 */}
+                    <div className="border-t border-slate-200 pt-2.5 mt-1">
+                      <label className="text-[10px] text-ink-muted mb-2 block font-semibold">健康证信息</label>
+                      <div className="grid grid-cols-3 gap-x-3 gap-y-2.5">
+                        <div>
+                          <label className="text-[10px] text-ink-muted mb-0.5 block">健康证编号</label>
+                          <input className={inputClass} value={addStaffHCNo} onChange={e => setAddStaffHCNo(e.target.value)} placeholder="如: JKZ20260001" />
+                        </div>
+                        <div>
+                          <label className="text-[10px] text-ink-muted mb-0.5 block">健康证有效期</label>
+                          <input className={inputClass} type="date" value={addStaffHCExp} onChange={e => setAddStaffHCExp(e.target.value)} placeholder="选择到期日期" />
+                        </div>
+                        <div>
+                          <label className="text-[10px] text-ink-muted mb-0.5 block">健康证状态</label>
+                          <select className={selectClass} value={addStaffHCStatus} onChange={e => setAddStaffHCStatus(e.target.value)}>
+                            <option value="有效">有效</option>
+                            <option value="临期">临期</option>
+                            <option value="已过期">已过期</option>
+                          </select>
+                        </div>
                       </div>
+                      {addStaffHCNo.trim() && !addStaffHCExp && (
+                        <p className="text-[10px] text-amber-600 mt-1.5 flex items-center gap-1">
+                          <span>⚠</span> 已填写健康证编号，建议补全有效期以便系统自动判断临期/过期状态
+                        </p>
+                      )}
                     </div>
                     <div className="flex gap-2 mt-3">
                       {editStaffId ? (
@@ -2110,6 +2256,15 @@ function EntityManagement({ userRole, roleTown }) {
           {modalMode === 'add' ? '企业创建成功' : '企业信息已更新'}
         </div>
       )}
+      {/* Staff Toast */}
+      {staffToast && (
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[101] bg-slate-800 text-white text-xs px-5 py-2.5 rounded-lg shadow-lg flex items-center gap-2 animate-fade-in-up">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={staffToast.includes('建议') || staffToast.includes('不正确') ? '#F59E0B' : '#10B981'} strokeWidth="3" strokeLinecap="round">
+            {staffToast.includes('建议') || staffToast.includes('不正确') ? <><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></> : <polyline points="20 6 9 17 4 12"/>}
+          </svg>
+          {staffToast}
+        </div>
+      )}
     </div>
   );
 }
@@ -2201,6 +2356,587 @@ function VideoSurveillance({ userRole, roleTown }) {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+// ────────────────────────────────────────
+// DEVICE ASSOCIATION (3.7 设备关联)
+// ────────────────────────────────────────
+
+function DeviceAssociation({ userRole, roleTown }) {
+  const isDistrict = userRole === 'R01';
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [filterTown, setFilterTown] = useState(isDistrict ? 'all' : roleTown);
+  const [filterLocation, setFilterLocation] = useState('all');
+  const [selectedIds, setSelectedIds] = useState(new Set());
+  const [showManualModal, setShowManualModal] = useState(null);
+  const [showAutoPanel, setShowAutoPanel] = useState(false);
+  const [page, setPage] = useState(1);
+  const pageSize = 20;
+  const [toastMsg, setToastMsg] = useState(null);
+
+  const toast = (msg) => { setToastMsg(msg); setTimeout(() => setToastMsg(null), 2200); };
+
+  // CSV export
+  const handleExportCSV = () => {
+    const headers = ['设备UUID','千里眼SN','安装位置','所属镇','关联商户','关联状态','匹配依据','IP地址','在线状态','安装日期'];
+    const rows = MOCK.cameras.map(c => [
+      c.deviceUuid, c.deviceSn, c.location, c.town,
+      c.enterprise || (c.matchMerchant || ''), c.status === 'associated' ? '已关联' : c.status === 'auto_matched' ? '待确认' : '未关联',
+      c.matchBasis || (c.status === 'associated' ? '人工确认' : ''), c.ip, c.online ? '在线' : '离线', c.installDate
+    ]);
+    const csv = [headers.join(','), ...rows.map(r => r.map(v => `"${v||''}"`).join(','))].join('\n');
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `千里眼设备关联表_${new Date().toISOString().slice(0,10)}.csv`;
+    link.click();
+    toast('CSV 导出成功');
+  };
+
+  // CSV import
+  const fileInputRef = React.useRef(null);
+  const handleImportCSV = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const text = ev.target.result;
+      const lines = text.split('\n').filter(l => l.trim());
+      if (lines.length < 2) { toast('CSV 格式无效：至少需要标题行和一条数据'); return; }
+      // Skip BOM and header
+      const headerLine = lines[0].replace(/^﻿/, '');
+      const headers = headerLine.split(',').map(h => h.replace(/"/g,'').trim());
+      const uuidIdx = headers.findIndex(h => h.includes('UUID'));
+      const snIdx = headers.findIndex(h => h.includes('SN') || h.includes('序列号'));
+      let imported = 0, updated = 0;
+      for (let i = 1; i < lines.length; i++) {
+        const cols = lines[i].split(',').map(c => c.replace(/^"|"$/g,'').trim());
+        if (cols.length < 2) continue;
+        const uuid = uuidIdx >= 0 ? cols[uuidIdx] : null;
+        const sn = snIdx >= 0 ? cols[snIdx] : cols[1];
+        // Find existing device by UUID or SN
+        const existing = MOCK.cameras.find(c =>
+          (uuid && c.deviceUuid === uuid) || (sn && c.deviceSn === sn)
+        );
+        if (existing && cols.length >= 5) {
+          const merchantName = cols[4];
+          if (merchantName) {
+            existing.status = 'associated';
+            existing.enterprise = merchantName;
+            existing.matchBasis = 'CSV导入';
+            existing.matchConfidence = 1.0;
+            existing.matchMerchant = null;
+            updated++;
+          }
+          imported++;
+        }
+      }
+      toast(`CSV 导入完成：处理 ${imported} 条，更新关联 ${updated} 条`);
+    };
+    reader.readAsText(file, 'UTF-8');
+    e.target.value = '';
+  };
+
+  const filtered = MOCK.cameras.filter(c => {
+    if (!isDistrict && c.town !== roleTown) return false;
+    if (filterStatus !== 'all' && c.status !== filterStatus) return false;
+    if (filterTown !== 'all' && c.town !== filterTown) return false;
+    if (filterLocation !== 'all' && !c.location.includes(filterLocation)) return false;
+    if (searchQuery && !c.id.toLowerCase().includes(searchQuery.toLowerCase())
+      && !c.deviceUuid.toLowerCase().includes(searchQuery.toLowerCase())
+      && !c.deviceSn.toLowerCase().includes(searchQuery.toLowerCase())
+      && !(c.enterprise||'').includes(searchQuery)
+      && !c.location.includes(searchQuery)) return false;
+    return true;
+  });
+
+  const totalPages = Math.ceil(filtered.length / pageSize);
+  const pageData = filtered.slice((page - 1) * pageSize, page * pageSize);
+
+  const isAllSelected = pageData.length > 0 && pageData.every(c => selectedIds.has(c.id));
+  const toggleSelectAll = () => {
+    const next = new Set(selectedIds);
+    if (isAllSelected) { pageData.forEach(c => next.delete(c.id)); }
+    else { pageData.forEach(c => next.add(c.id)); }
+    setSelectedIds(next);
+  };
+  const toggleSelect = (id) => {
+    const next = new Set(selectedIds);
+    if (next.has(id)) next.delete(id); else next.add(id);
+    setSelectedIds(next);
+  };
+
+  const stats = {
+    total: MOCK.cameras.length,
+    associated: MOCK.cameras.filter(c => c.status === 'associated').length,
+    unassociated: MOCK.cameras.filter(c => c.status === 'unassociated').length,
+    autoMatched: MOCK.cameras.filter(c => c.status === 'auto_matched').length,
+  };
+
+  // Locations for filter
+  const locationGroups = ['后厨','前厅','仓库','出入口'];
+  const towns = ['城东镇','南桥镇','中心镇','北关镇'];
+
+  // Manual association
+  const handleManualAssociate = (camId, enterpriseName) => {
+    const cam = MOCK.cameras.find(c => c.id === camId);
+    if (cam) {
+      cam.status = 'associated';
+      cam.enterprise = enterpriseName;
+      cam.matchConfidence = 1.0;
+      cam.matchMerchant = null;
+    }
+    setShowManualModal(null);
+    toast(`摄像头 ${camId} 已关联至「${enterpriseName}」`);
+  };
+
+  // Batch unbind
+  const handleBatchUnbind = () => {
+    selectedIds.forEach(id => {
+      const cam = MOCK.cameras.find(c => c.id === id);
+      if (cam && cam.status !== 'unassociated') {
+        cam.status = 'unassociated';
+        cam.enterprise = null;
+        cam.matchConfidence = null;
+        cam.matchMerchant = null;
+      }
+    });
+    toast(`已解绑 ${selectedIds.size} 个摄像头`);
+    setSelectedIds(new Set());
+  };
+
+  // Auto-match
+  const handleAutoMatch = () => {
+    let matched = 0;
+    const bases = ['IP地址段', '地理位置', '设备名称关键词'];
+    MOCK.cameras.forEach(c => {
+      if (c.status === 'unassociated') {
+        // Simulate: match by town proximity to known merchants
+        const merchantsInTown = MOCK.enterprises.filter(e => e.town === c.town);
+        if (merchantsInTown.length > 0 && Math.random() > 0.3) {
+          const pick = merchantsInTown[Math.floor(Math.random() * merchantsInTown.length)];
+          c.status = 'auto_matched';
+          c.matchMerchant = pick.name;
+          c.matchBasis = bases[Math.floor(Math.random() * bases.length)];
+          c.matchConfidence = parseFloat((0.60 + Math.random() * 0.35).toFixed(2));
+          matched++;
+        } else if (Math.random() > 0.7) {
+          // Match to a random merchant in a different town
+          const pick = MOCK.enterprises[Math.floor(Math.random() * MOCK.enterprises.length)];
+          c.status = 'auto_matched';
+          c.matchMerchant = pick.name;
+          c.matchBasis = bases[Math.floor(Math.random() * bases.length)];
+          c.matchConfidence = parseFloat((0.50 + Math.random() * 0.30).toFixed(2));
+          matched++;
+        }
+      }
+    });
+    setShowAutoPanel(false);
+    toast(`自动匹配完成，共 ${matched} 个摄像头待确认`);
+  };
+
+  // Batch confirm auto-match
+  const handleBatchConfirm = () => {
+    let confirmed = 0;
+    selectedIds.forEach(id => {
+      const cam = MOCK.cameras.find(c => c.id === id);
+      if (cam && cam.status === 'auto_matched' && cam.matchMerchant) {
+        cam.status = 'associated';
+        cam.enterprise = cam.matchMerchant;
+        cam.matchConfidence = 1.0;
+        cam.matchMerchant = null;
+        confirmed++;
+      }
+    });
+    toast(`已确认关联 ${confirmed} 个摄像头`);
+    setSelectedIds(new Set());
+  };
+
+  // Single confirm auto-match
+  const handleConfirmMatch = (camId) => {
+    const cam = MOCK.cameras.find(c => c.id === camId);
+    if (cam && cam.status === 'auto_matched' && cam.matchMerchant) {
+      cam.status = 'associated';
+      cam.enterprise = cam.matchMerchant;
+      cam.matchConfidence = 1.0;
+      cam.matchMerchant = null;
+      toast(`摄像头 ${camId} 已确认关联至「${cam.enterprise}」`);
+    }
+  };
+
+  // Single unbind
+  const handleUnbind = (camId) => {
+    const cam = MOCK.cameras.find(c => c.id === camId);
+    if (cam) {
+      cam.status = 'unassociated';
+      cam.enterprise = null;
+      cam.matchConfidence = null;
+      cam.matchMerchant = null;
+      toast(`摄像头 ${camId} 已解绑`);
+    }
+  };
+
+  const selectedCount = selectedIds.size;
+  const hasAutoMatchedSelected = [...selectedIds].some(id => {
+    const c = MOCK.cameras.find(c => c.id === id);
+    return c && c.status === 'auto_matched';
+  });
+
+  return (
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold text-ink tracking-tight">设备关联</h1>
+          <p className="text-sm text-ink-secondary mt-0.5">
+            移动千里眼设备与商户关联管理 · 支持手动关联、自动匹配与批量导入 · {stats.total} 台设备
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <input type="file" ref={fileInputRef} onChange={handleImportCSV} accept=".csv" className="hidden" />
+          <button
+            onClick={() => fileInputRef.current && fileInputRef.current.click()}
+            className="text-xs font-medium px-3.5 py-2 rounded-md border transition-colors bg-white text-ink-secondary border-slate-300 hover:bg-slate-50"
+            title="导入 CSV 文件批量更新设备关联"
+          >
+            <span className="mr-1">📥</span>导入 CSV
+          </button>
+          <button
+            onClick={handleExportCSV}
+            className="text-xs font-medium px-3.5 py-2 rounded-md border transition-colors bg-white text-ink-secondary border-slate-300 hover:bg-slate-50"
+            title="导出当前设备列表为 CSV 文件"
+          >
+            <span className="mr-1">📤</span>导出 CSV
+          </button>
+          <button
+            onClick={() => { setShowAutoPanel(!showAutoPanel); }}
+            className={`text-xs font-medium px-3.5 py-2 rounded-md border transition-colors ${showAutoPanel ? 'bg-gov-600 text-white border-gov-600' : 'bg-white text-gov-600 border-gov-300 hover:bg-gov-50'}`}
+          >
+            <span className="mr-1">⟳</span>自动匹配
+          </button>
+          <span className="text-[11px] text-ink-muted">{stats.total} 台设备</span>
+        </div>
+      </div>
+
+      {/* Stats summary */}
+      <div className="grid grid-cols-4 gap-3 animate-fade-in-up">
+        {[
+          { label:'设备总数', value:stats.total, color:'slate' },
+          { label:'已关联', value:stats.associated, color:'emerald' },
+          { label:'未关联', value:stats.unassociated, color:'amber' },
+          { label:'待确认', value:stats.autoMatched, color:'blue' },
+        ].map((s, i) => (
+          <div key={i} className="bg-white rounded-lg border border-slate-200 px-4 py-3 flex items-center justify-between">
+            <div>
+              <div className="text-[10px] text-ink-muted uppercase tracking-wider">{s.label}</div>
+              <div className="text-2xl font-bold text-ink mt-0.5">{s.value}</div>
+            </div>
+            <div className={`w-2.5 h-2.5 rounded-full ${s.color==='emerald'?'bg-emerald-500':s.color==='amber'?'bg-amber-500':s.color==='blue'?'bg-blue-500':'bg-slate-400'}`}></div>
+          </div>
+        ))}
+      </div>
+
+      {/* Auto-match panel */}
+      {showAutoPanel && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 animate-fade-in-up">
+          <div className="flex items-start justify-between mb-3">
+            <div>
+              <h3 className="text-sm font-semibold text-blue-800">自动匹配规则</h3>
+              <p className="text-[11px] text-blue-600 mt-0.5">系统根据千里眼设备元数据（IP地址段、安装位置、设备名称）与商户注册信息自动计算匹配度</p>
+            </div>
+            <button onClick={() => setShowAutoPanel(false)} className="text-blue-400 hover:text-blue-600 text-sm">✕</button>
+          </div>
+          <div className="grid grid-cols-3 gap-3 mb-3 text-[11px]">
+            {(() => {
+              const unassocCount = MOCK.cameras.filter(c => c.status === 'unassociated').length;
+              const rules = [
+                { title:'IP 地址段匹配', desc:'同网段（/24）千里眼设备优先匹配同镇商户', basis:'示例：192.168.1.x → 城东镇商户', estimate: Math.floor(unassocCount * 0.45) },
+                { title:'地理位置匹配', desc:'摄像头安装地址与商户经营地址进行行政区划+道路级比对', basis:'示例："城东镇建设路12号" → 城东镇商户', estimate: Math.floor(unassocCount * 0.30) },
+                { title:'设备名称关键词匹配', desc:'千里眼设备名称（店名/后厨等）与商户名称模糊匹配', basis:'示例：设备名含"永和" → "永和豆浆"', estimate: Math.floor(unassocCount * 0.18) },
+              ];
+              return rules.map((r, i) => (
+                <div key={i} className="bg-white rounded-md border border-blue-200 p-2.5">
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="font-medium text-blue-800">{r.title}</div>
+                    <span className="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded font-medium">≈{r.estimate} 台</span>
+                  </div>
+                  <div className="text-blue-600 mb-1">{r.desc}</div>
+                  <div className="text-[10px] text-blue-400 italic">{r.basis}</div>
+                </div>
+              ));
+            })()}
+          </div>
+          <div className="flex gap-2">
+            <button onClick={handleAutoMatch} className="text-[11px] bg-blue-600 text-white px-4 py-1.5 rounded-md hover:bg-blue-700 transition-colors font-medium">开始自动匹配</button>
+            <span className="text-[10px] text-blue-500 self-center">匹配结果将标记为「待确认」状态，显示匹配依据与置信度，需人工确认后生效</span>
+          </div>
+        </div>
+      )}
+
+      {/* Filter bar */}
+      <div className="flex flex-wrap items-center gap-3 bg-white rounded-lg border border-slate-200 p-3 animate-fade-in-up">
+        <span className="text-[11px] text-ink-muted font-medium">筛选：</span>
+        <select value={filterStatus} onChange={e => { setFilterStatus(e.target.value); setPage(1); }}
+          className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
+          <option value="all">全部状态</option>
+          <option value="associated">已关联</option>
+          <option value="unassociated">未关联</option>
+          <option value="auto_matched">待确认（自动匹配）</option>
+        </select>
+        {isDistrict && (
+          <select value={filterTown} onChange={e => { setFilterTown(e.target.value); setPage(1); }}
+            className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
+            <option value="all">全部镇/街道</option>
+            {towns.map(t => <option key={t} value={t}>{t}</option>)}
+          </select>
+        )}
+        <select value={filterLocation} onChange={e => { setFilterLocation(e.target.value); setPage(1); }}
+          className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
+          <option value="all">全部区域</option>
+          {locationGroups.map(l => <option key={l} value={l}>{l}</option>)}
+        </select>
+        <div className="flex-1"></div>
+        <input type="text" placeholder="搜索设备UUID / 千里眼SN / 商户 / 位置…" value={searchQuery} onChange={e => { setSearchQuery(e.target.value); setPage(1); }}
+          className="text-xs border border-slate-200 rounded-md px-3 py-1.5 w-56 outline-none focus:border-gov-400" />
+        <span className="text-[11px] text-ink-muted">共 {filtered.length} 台</span>
+      </div>
+
+      {/* Batch operations bar */}
+      {selectedCount > 0 && (
+        <div className="flex items-center gap-3 bg-gov-50 border border-gov-200 rounded-lg px-4 py-2.5 animate-fade-in-up">
+          <span className="text-xs font-medium text-gov-700">已选 {selectedCount} 台</span>
+          <div className="flex-1"></div>
+          {hasAutoMatchedSelected && (
+            <button onClick={handleBatchConfirm} className="text-[11px] bg-emerald-600 text-white px-3 py-1.5 rounded-md hover:bg-emerald-700 transition-colors font-medium">批量确认关联</button>
+          )}
+          <button onClick={handleBatchUnbind} className="text-[11px] bg-red-500 text-white px-3 py-1.5 rounded-md hover:bg-red-600 transition-colors font-medium">批量解绑</button>
+          <button onClick={() => setSelectedIds(new Set())} className="text-[11px] text-ink-muted hover:text-ink font-medium">取消选择</button>
+        </div>
+      )}
+
+      {/* Camera table */}
+      <div className="bg-white rounded-lg border border-slate-200 overflow-hidden animate-fade-in-up">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="bg-slate-50 border-b border-slate-200">
+              <th className="w-8 px-3 py-3">
+                <input type="checkbox" checked={isAllSelected} onChange={toggleSelectAll} className="w-3.5 h-3.5 rounded border-slate-300 cursor-pointer" />
+              </th>
+              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">千里眼 UUID</th>
+              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">千里眼 SN</th>
+              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">安装位置</th>
+              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">所属镇</th>
+              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">关联商户</th>
+              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">匹配依据</th>
+              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">关联状态</th>
+              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">在线状态</th>
+              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            {pageData.map(c => {
+              const isSel = selectedIds.has(c.id);
+              return (
+                <tr key={c.id} className={`table-row border-b border-slate-100 last:border-0 ${isSel ? 'bg-gov-50/50' : ''}`}>
+                  <td className="px-3 py-3">
+                    <input type="checkbox" checked={isSel} onChange={() => toggleSelect(c.id)} className="w-3.5 h-3.5 rounded border-slate-300 cursor-pointer" />
+                  </td>
+                  <td className="px-4 py-3 text-[10px] font-mono text-ink-secondary max-w-[140px] truncate" title={c.deviceUuid}>
+                    {c.deviceUuid.slice(0, 12) + '…'}
+                  </td>
+                  <td className="px-4 py-3 text-[10px] font-mono text-ink font-medium">{c.deviceSn}</td>
+                  <td className="px-4 py-3 text-xs text-ink-secondary">{c.location}</td>
+                  <td className="px-4 py-3 text-xs text-ink-secondary">{c.town}</td>
+                  <td className="px-4 py-3">
+                    {c.status === 'associated' ? (
+                      <span className="text-xs font-medium text-ink">{c.enterprise}</span>
+                    ) : c.status === 'auto_matched' ? (
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs text-gov-600 font-medium">{c.matchMerchant}</span>
+                        <span className="text-[10px] text-ink-muted">{(c.matchConfidence * 100).toFixed(0)}%</span>
+                      </div>
+                    ) : (
+                      <span className="text-xs text-ink-muted">—</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3">
+                    {c.status === 'auto_matched' ? (
+                      <span className="text-[10px] bg-blue-50 text-blue-600 border border-blue-200 px-1.5 py-0.5 rounded font-medium">{c.matchBasis || '综合匹配'}</span>
+                    ) : c.status === 'associated' ? (
+                      <span className="text-[10px] text-ink-muted">人工确认</span>
+                    ) : (
+                      <span className="text-[10px] text-ink-muted">—</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3">
+                    {c.status === 'associated' ? (
+                      <Badge color="green">已关联</Badge>
+                    ) : c.status === 'auto_matched' ? (
+                      <Badge color="blue" dot>待确认</Badge>
+                    ) : (
+                      <Badge color="yellow">未关联</Badge>
+                    )}
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className="flex items-center gap-1 text-xs">
+                      <span className={`w-1.5 h-1.5 rounded-full ${c.online ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
+                      {c.online ? '在线' : '离线'}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-1.5">
+                      {c.status === 'unassociated' ? (
+                        <button onClick={() => setShowManualModal(c)} className="text-[11px] text-gov-600 hover:text-gov-700 font-medium">手动关联</button>
+                      ) : c.status === 'auto_matched' ? (
+                        <>
+                          <button onClick={() => handleConfirmMatch(c.id)} className="text-[11px] text-emerald-600 hover:text-emerald-700 font-medium">确认</button>
+                          <button onClick={() => setShowManualModal(c)} className="text-[11px] text-gov-600 hover:text-gov-700 font-medium">改关联</button>
+                        </>
+                      ) : (
+                        <>
+                          <button onClick={() => setShowManualModal(c)} className="text-[11px] text-gov-600 hover:text-gov-700 font-medium">改关联</button>
+                          <button onClick={() => handleUnbind(c.id)} className="text-[11px] text-red-500 hover:text-red-600 font-medium">解绑</button>
+                        </>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+            {pageData.length === 0 && (
+              <tr><td colSpan="10" className="text-center py-14 text-ink-muted">
+                <div className="text-2xl mb-2">▣</div>
+                <div className="text-xs">无匹配的摄像头记录</div>
+                <div className="text-[10px] mt-1">请调整筛选条件或进行自动匹配</div>
+              </td></tr>
+            )}
+          </tbody>
+        </table>
+
+        {/* Pagination */}
+        <div className="flex items-center justify-between px-4 py-3 border-t border-slate-100 bg-white">
+          <span className="text-[11px] text-ink-muted">
+            显示 {filtered.length === 0 ? 0 : (page-1)*pageSize+1}-{Math.min(page*pageSize, filtered.length)} 条，共 {filtered.length} 条
+          </span>
+          <div className="flex items-center gap-1">
+            <button onClick={() => setPage(Math.max(1, page-1))} disabled={page===1}
+              className="px-2.5 py-1 text-[11px] text-ink-muted border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-40 disabled:cursor-default">上一页</button>
+            {Array.from({length: Math.min(totalPages, 5)}, (_,i) => {
+              const start = Math.max(1, Math.min(page-2, totalPages-4));
+              const p = start + i;
+              if (p > totalPages) return null;
+              return <button key={p} onClick={() => setPage(p)}
+                className={`px-2.5 py-1 text-[11px] rounded ${p===page ? 'bg-gov-600 text-white font-medium' : 'text-ink-secondary border border-slate-200 hover:bg-slate-50'}`}>{p}</button>;
+            })}
+            <button onClick={() => setPage(Math.min(totalPages, page+1))} disabled={page===totalPages}
+              className="px-2.5 py-1 text-[11px] text-ink-muted border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-40 disabled:cursor-default">下一页</button>
+          </div>
+        </div>
+      </div>
+
+      {/* Manual association modal */}
+      {showManualModal && React.createElement(() => {
+        const [modalSearch, setModalSearch] = useState('');
+        const recentAssociations = (() => {
+          const seen = new Set();
+          return MOCK.cameras
+            .filter(c => c.status === 'associated' && c.enterprise && c.id !== showManualModal.id)
+            .slice(-10)
+            .map(c => c.enterprise)
+            .filter(v => seen.has(v) ? false : (seen.add(v), true))
+            .slice(0, 6);
+        })();
+
+        const sameTownMerchants = MOCK.enterprises.filter(e => e.town === showManualModal.town);
+        const otherTownMerchants = MOCK.enterprises.filter(e => e.town !== showManualModal.town);
+        const allFiltered = [...sameTownMerchants, ...otherTownMerchants].filter(e =>
+          !modalSearch || e.name.includes(modalSearch) || e.town.includes(modalSearch) || e.entityType.includes(modalSearch)
+        );
+
+        return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop" style={{background:'rgba(15,23,42,0.35)'}} onClick={() => setShowManualModal(null)}>
+          <div className="bg-white rounded-xl shadow-2xl w-[520px] animate-fade-in-up" onClick={e => e.stopPropagation()}>
+            <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-bold text-ink">手动关联千里眼设备</h3>
+                <p className="text-[11px] text-ink-muted mt-0.5">{showManualModal.deviceSn} · {showManualModal.location}</p>
+              </div>
+              <button onClick={() => setShowManualModal(null)} className="p-1 rounded-md hover:bg-slate-100 text-ink-muted">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+            <div className="p-5 space-y-4">
+              <div>
+                <label className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-1.5 block">千里眼设备信息</label>
+                <div className="bg-slate-50 rounded-lg p-3 text-xs space-y-1">
+                  <div className="flex"><span className="text-ink-muted w-16 shrink-0">设备UUID</span><span className="font-mono text-[10px] text-ink-secondary truncate" title={showManualModal.deviceUuid}>{showManualModal.deviceUuid}</span></div>
+                  <div className="flex"><span className="text-ink-muted w-16 shrink-0">千里眼SN</span><span className="font-mono text-ink font-medium">{showManualModal.deviceSn}</span></div>
+                  <div className="flex"><span className="text-ink-muted w-16 shrink-0">位置</span><span className="text-ink">{showManualModal.location}</span></div>
+                  <div className="flex"><span className="text-ink-muted w-16 shrink-0">所属镇</span><span className="text-ink">{showManualModal.town}</span></div>
+                  <div className="flex"><span className="text-ink-muted w-16 shrink-0">IP地址</span><span className="font-mono text-ink-secondary">{showManualModal.ip}</span></div>
+                  {showManualModal.matchMerchant && (
+                    <div className="flex"><span className="text-ink-muted w-16 shrink-0">当前匹配</span><span className="text-gov-600 font-medium">{showManualModal.matchMerchant}（{(showManualModal.matchConfidence*100).toFixed(0)}%）</span></div>
+                  )}
+                </div>
+              </div>
+
+              {/* Recent association records */}
+              {recentAssociations.length > 0 && (
+                <div>
+                  <label className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-1.5 block">最近关联记录</label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {recentAssociations.map(name => (
+                      <button key={name}
+                        onClick={() => handleManualAssociate(showManualModal.id, name)}
+                        className="text-[11px] px-2.5 py-1.5 rounded-md bg-gov-50 text-gov-700 border border-gov-200 hover:bg-gov-100 transition-colors font-medium"
+                      >{name}</button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <label className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-1.5 block">搜索并选择商户</label>
+                <input type="text" placeholder="搜索商户名称 / 所属镇 / 业态类型…"
+                  value={modalSearch} onChange={e => setModalSearch(e.target.value)}
+                  className="w-full text-xs border border-slate-200 rounded-md px-3 py-2 outline-none focus:border-gov-400 mb-2" />
+                <div className="max-h-[220px] overflow-y-auto border border-slate-200 rounded-lg divide-y divide-slate-100">
+                  {allFiltered.map(e => (
+                    <div key={e.id}
+                      onClick={() => handleManualAssociate(showManualModal.id, e.name)}
+                      className="px-4 py-2.5 flex items-center justify-between cursor-pointer hover:bg-gov-50 transition-colors group"
+                    >
+                      <div>
+                        <div className="text-xs font-medium text-ink group-hover:text-gov-700">{e.name}</div>
+                        <div className="text-[10px] text-ink-muted">{e.town} · {e.entityType} · 风险{e.riskLevel}</div>
+                      </div>
+                      {e.town === showManualModal.town && (
+                        <span className="text-[9px] bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded">同镇</span>
+                      )}
+                      <span className="text-[10px] text-gov-600 opacity-0 group-hover:opacity-100 transition-opacity font-medium">选择 →</span>
+                    </div>
+                  ))}
+                  {allFiltered.length === 0 && (
+                    <div className="px-4 py-6 text-center text-[11px] text-ink-muted">未找到匹配的商户</div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        );
+      })}
+
+      {/* Toast */}
+      {toastMsg && (
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] bg-slate-800 text-white text-xs px-5 py-2.5 rounded-lg shadow-lg flex items-center gap-2 animate-fade-in-up">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          {toastMsg}
+        </div>
+      )}
     </div>
   );
 }
