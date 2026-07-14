@@ -209,25 +209,25 @@ const MOCK = {
     { id:'ALM008', time:'2026-07-03 12:48:22', enterprise:'海底捞（中心广场店）', town:'中心镇', detectType:'未戴口罩', severity:'中', status:'已确认', confidence:0.93, orderNo:'WO20260701018' },
   ],
   approvals: [
-    { id:'APR001', type:'整改', typeColor:'blue', source:'AI报警', title:'后厨鼠患整改通知', enterprise:'永和豆浆（城东店）', town:'城东镇', submitTime:'2026-07-03 09:15', waitHours:5, severity:'高', summary:'已按要求完成全面消杀，更换防鼠设施，清理后厨死角。附现场整改照片。' },
-    { id:'APR002', type:'整改', typeColor:'blue', source:'证照到期', title:'食品经营许可证到期换证', enterprise:'老重庆火锅（南桥店）', town:'南桥镇', submitTime:'2026-07-03 08:40', waitHours:6, severity:'中', summary:'已获取新证照，编号JY20260703002，有效期至2031年7月。' },
-    { id:'APR003', type:'申诉', typeColor:'orange', source:'商户申诉', title:'申诉：工单#WO20260702032', enterprise:'肯德基（万达店）', town:'城东镇', submitTime:'2026-07-02 16:22', waitHours:22, severity:'低', summary:'经核查，报警时段后厨人员在岗且佩戴整齐，AI检测置信度仅0.55，申请撤销本次报警。' },
-    { id:'APR004', type:'整改', typeColor:'blue', source:'AI报警', title:'未戴口罩违规整改', enterprise:'沙县小吃（中心店）', town:'中心镇', submitTime:'2026-07-02 15:10', waitHours:23, severity:'中', summary:'已对涉事员工进行食品安全培训，加强口罩佩戴检查制度。附培训记录及承诺书。' },
-    { id:'APR005', type:'整改', typeColor:'blue', source:'证照到期', title:'从业人员健康证到期换证', enterprise:'味多美烘焙坊', town:'城东镇', submitTime:'2026-07-02 14:05', waitHours:25, severity:'中', summary:'3名从业人员已完成健康体检，新健康证已上传。' },
-    { id:'APR006', type:'申诉', typeColor:'orange', source:'商户申诉', title:'申诉：工单#WO20260701055', enterprise:'黄焖鸡米饭（学院店）', town:'南桥镇', submitTime:'2026-07-02 11:30', waitHours:27, severity:'中', summary:'视频画面中人员为设备检修人员，非后厨工作人员，申请撤销明火离人报警。' },
-    { id:'APR007', type:'整改', typeColor:'blue', source:'AI报警', title:'垃圾桶未加盖整改', enterprise:'老乡鸡（北关店）', town:'北关镇', submitTime:'2026-07-02 10:08', waitHours:29, severity:'低', summary:'已更换带盖垃圾桶，建立每日检查台账。' },
-    { id:'APR008', type:'整改', typeColor:'blue', source:'AI报警', title:'抽烟违规整改通知', enterprise:'海底捞（中心广场店）', town:'中心镇', submitTime:'2026-07-01 09:50', waitHours:53, severity:'高', summary:'已对当事人进行处罚，全店张贴禁烟标识，加强巡查力度。' },
-    { id:'APR009', type:'变更', typeColor:'green', source:'主体变更', title:'企业主体信息变更申请', enterprise:'永和豆浆（城东店）', town:'城东镇', submitTime:'2026-07-03 10:20', waitHours:4, severity:'中', summary:'申请变更法人代表为"李明华"（原"张明华"），联系电话变更为"13900001111"，经营面积变更为"280㎡"（原"250㎡"）。', changeFields:[{field:'法人代表',oldVal:'张明华',newVal:'李明华'},{field:'联系电话',oldVal:'13812345678',newVal:'13900001111'},{field:'经营面积',oldVal:'250㎡',newVal:'280㎡'}] },
-    { id:'APR010', type:'变更', typeColor:'green', source:'主体变更', title:'食品经营许可证信息变更', enterprise:'老重庆火锅（南桥店）', town:'南桥镇', submitTime:'2026-07-02 15:30', waitHours:22, severity:'高', summary:'申请变更经营项目，新增"冷食类食品制售"，变更经营场所地址为"南桥镇解放路168号"（原"南桥镇人民路56号"）。', changeFields:[{field:'经营项目',oldVal:'热食类食品制售',newVal:'热食类食品制售、冷食类食品制售'},{field:'经营场所',oldVal:'南桥镇人民路56号',newVal:'南桥镇解放路168号'}] },
-    { id:'APR011', type:'变更', typeColor:'green', source:'主体变更', title:'企业基础信息变更申请', enterprise:'味多美烘焙坊', town:'城东镇', submitTime:'2026-07-01 11:05', waitHours:47, severity:'低', summary:'申请变更企业名称为"味多美烘焙坊（城东旗舰店）"（原"味多美烘焙坊"），同步更新招牌名称。', changeFields:[{field:'企业名称',oldVal:'味多美烘焙坊',newVal:'味多美烘焙坊（城东旗舰店）'},{field:'招牌名称',oldVal:'味多美烘焙坊',newVal:'味多美烘焙坊（城东旗舰店）'}] },
+    { id:'APR001', orderNo:'WO20260703001', orderType:'整改', sourceType:'AI报警', sourceDesc:'后厨鼠患报警（ALM001），置信度94%', sourceLinkId:'ALM001', enterprise:'永和豆浆（城东店）', town:'城东镇', submitTime:'2026-07-03 09:15:00', severity:'高', status:'待审批', progressStep:1, summary:'已按要求完成全面消杀，更换防鼠设施，清理后厨死角。', rectPhotos:[{name:'消杀现场.jpg'},{name:'防鼠设施.jpg'}], rejectHistory:[] },
+    { id:'APR002', orderNo:'WO20260703002', orderType:'整改', sourceType:'证照到期', sourceDesc:'食品经营许可证即将到期（C001），剩余30天', sourceLinkId:'C001', enterprise:'老重庆火锅（南桥店）', town:'南桥镇', submitTime:'2026-07-03 08:40:00', severity:'低', status:'待审批', progressStep:1, summary:'已获取新证照，编号JY20260703002，有效期至2031年7月。', rectPhotos:[{name:'新证照.jpg'}], rejectHistory:[] },
+    { id:'APR003', orderNo:'WO20260703003', orderType:'申诉', sourceType:'AI报警', sourceDesc:'未戴帽子报警（ALM005），置信度55%，商户申诉撤销', sourceLinkId:'ALM005', enterprise:'肯德基（万达店）', town:'城东镇', submitTime:'2026-07-02 16:22:00', severity:'低', status:'已驳回', progressStep:1, summary:'经核查，报警时段后厨人员在岗且佩戴整齐，AI检测置信度仅0.55，申请撤销本次报警。', rejectHistory:[{rejectTime:'2026-07-03 10:30:00', reviewer:'李所长', reason:'提供的视频证据未覆盖完整报警时段，请补充涉事时间段前后各5分钟的完整录像。', rejectRound:1}] },
+    { id:'APR004', orderNo:'WO20260703004', orderType:'整改', sourceType:'AI报警', sourceDesc:'未戴口罩违规报警（ALM008），置信度93%', sourceLinkId:'ALM008', enterprise:'沙县小吃（中心店）', town:'中心镇', submitTime:'2026-07-02 15:10:00', severity:'中', status:'待审批', progressStep:1, summary:'已对涉事员工进行食品安全培训，加强口罩佩戴检查制度。', rectPhotos:[{name:'培训记录.jpg'}], rejectHistory:[] },
+    { id:'APR005', orderNo:'WO20260703005', orderType:'整改', sourceType:'证照到期', sourceDesc:'从业人员健康证到期换证（C004），剩余12天', sourceLinkId:'C004', enterprise:'味多美烘焙坊', town:'城东镇', submitTime:'2026-07-02 14:05:00', severity:'低', status:'待审批', progressStep:1, summary:'3名从业人员已完成健康体检，新健康证已上传。', rectPhotos:[{name:'健康证1.jpg'},{name:'健康证2.jpg'},{name:'健康证3.jpg'}], rejectHistory:[] },
+    { id:'APR006', orderNo:'WO20260703006', orderType:'申诉', sourceType:'AI报警', sourceDesc:'明火离人报警（ALM007），置信度89%，商户申诉', sourceLinkId:'ALM007', enterprise:'黄焖鸡米饭（学院店）', town:'南桥镇', submitTime:'2026-07-02 11:30:00', severity:'中', status:'已驳回', progressStep:1, summary:'视频画面中人员为设备检修人员，非后厨工作人员，申请撤销明火离人报警。', rejectHistory:[{rejectTime:'2026-07-03 09:15:00', reviewer:'王所长', reason:'视频中检修人员未穿工作服进入后厨区域属违规行为，不构成撤销理由，需先整改后重新提交申诉。', rejectRound:1}] },
+    { id:'APR007', orderNo:'WO20260703007', orderType:'整改', sourceType:'AI报警', sourceDesc:'垃圾桶未加盖报警（ALM003），置信度72%', sourceLinkId:'ALM003', enterprise:'老乡鸡（北关店）', town:'北关镇', submitTime:'2026-07-02 10:08:00', severity:'低', status:'待审批', progressStep:1, summary:'已更换带盖垃圾桶，建立每日检查台账。', rectPhotos:[{name:'新垃圾桶.jpg'}], rejectHistory:[] },
+    { id:'APR008', orderNo:'WO20260702045', orderType:'整改', sourceType:'AI报警', sourceDesc:'抽烟违规报警（ALM004），置信度91%', sourceLinkId:'ALM004', enterprise:'海底捞（中心广场店）', town:'中心镇', submitTime:'2026-07-01 09:50:00', severity:'高', status:'已驳回', progressStep:1, summary:'已对当事人进行处罚，全店张贴禁烟标识，加强巡查力度。', rectPhotos:[{name:'处罚记录.jpg'},{name:'禁烟标识.jpg'}], rejectHistory:[{rejectTime:'2026-07-02 14:20:00', reviewer:'陈所长', reason:'处罚记录缺少当事人签字确认，禁烟标识安装位置未附照片，请补充证明材料后重新提交。', rejectRound:1}] },
+    { id:'APR009', orderNo:'WO20260703009', orderType:'变更', sourceType:'主体变更', sourceDesc:'法人代表变更：张明华→李明华；联系电话变更；经营面积变更', sourceLinkId:'ENT001', enterprise:'永和豆浆（城东店）', town:'城东镇', submitTime:'2026-07-03 10:20:00', severity:'低', status:'待审批', progressStep:1, summary:'申请变更法人代表为"李明华"（原"张明华"），联系电话变更为"13900001111"，经营面积变更为"280㎡"（原"250㎡"）。', changeFields:[{field:'法人代表',oldVal:'张明华',newVal:'李明华'},{field:'联系电话',oldVal:'13812345678',newVal:'13900001111'},{field:'经营面积',oldVal:'250㎡',newVal:'280㎡'}], rejectHistory:[] },
+    { id:'APR010', orderNo:'WO20260703010', orderType:'变更', sourceType:'主体变更', sourceDesc:'经营项目变更：新增冷食类食品制售；经营场所地址变更', sourceLinkId:'ENT002', enterprise:'老重庆火锅（南桥店）', town:'南桥镇', submitTime:'2026-07-02 15:30:00', severity:'低', status:'待审批', progressStep:1, summary:'申请变更经营项目，新增"冷食类食品制售"，变更经营场所地址为"南桥镇解放路168号"（原"南桥镇人民路56号"）。', changeFields:[{field:'经营项目',oldVal:'热食类食品制售',newVal:'热食类食品制售、冷食类食品制售'},{field:'经营场所',oldVal:'南桥镇人民路56号',newVal:'南桥镇解放路168号'}], rejectHistory:[] },
+    { id:'APR011', orderNo:'WO20260703011', orderType:'变更', sourceType:'主体变更', sourceDesc:'企业名称变更：味多美烘焙坊→味多美烘焙坊（城东旗舰店）', sourceLinkId:'ENT003', enterprise:'味多美烘焙坊', town:'城东镇', submitTime:'2026-07-01 11:05:00', severity:'低', status:'待审批', progressStep:1, summary:'申请变更企业名称为"味多美烘焙坊（城东旗舰店）"（原"味多美烘焙坊"），同步更新招牌名称。', changeFields:[{field:'企业名称',oldVal:'味多美烘焙坊',newVal:'味多美烘焙坊（城东旗舰店）'},{field:'招牌名称',oldVal:'味多美烘焙坊',newVal:'味多美烘焙坊（城东旗舰店）'}], rejectHistory:[] },
   ],
   archivedApprovals: [
-    { id:'ARC001', type:'整改', typeColor:'blue', source:'AI报警', title:'后厨鼠患整改通知', enterprise:'沙县小吃（中心店）', town:'中心镇', submitTime:'2026-06-28 14:10', completeTime:'2026-06-30 09:15', severity:'高', result:'通过', reviewer:'李所长', reviewTime:'2026-06-30 09:15', reviewOpinion:'整改措施到位，现场核实确认无误，予以通过。', summary:'已按要求完成全面消杀，更换防鼠设施，清理后厨死角。附现场整改照片。' },
-    { id:'ARC002', type:'申诉', typeColor:'orange', source:'商户申诉', title:'申诉：工单#WO20260625018', enterprise:'肯德基（万达店）', town:'城东镇', submitTime:'2026-06-25 10:30', completeTime:'2026-06-27 16:20', severity:'中', result:'驳回', reviewer:'李所长', reviewTime:'2026-06-27 16:20', reviewOpinion:'视频证据显示该时段确有一名后厨人员未佩戴口罩超过3分钟，AI检测置信度0.93，不符合撤销条件，驳回申诉。', summary:'申诉理由：报警时段后厨人员刚从休息区返回，正在更换口罩过程中被拍摄，申请撤销处罚。' },
-    { id:'ARC003', type:'变更', typeColor:'green', source:'主体变更', title:'企业主体信息变更申请', enterprise:'老乡鸡（北关店）', town:'北关镇', submitTime:'2026-06-22 08:50', completeTime:'2026-06-24 11:30', severity:'中', result:'通过', reviewer:'赵所长', reviewTime:'2026-06-24 11:30', reviewOpinion:'变更材料齐全，营业执照变更已完成备案，予以通过。', summary:'申请变更法人代表为"刘伟强"（原"刘伟"），统一社会信用代码不变。', changeFields:[{field:'法人代表',oldVal:'刘伟',newVal:'刘伟强'}] },
-    { id:'ARC004', type:'整改', typeColor:'blue', source:'证照到期', title:'食品经营许可证到期换证', enterprise:'黄焖鸡米饭（学院店）', town:'南桥镇', submitTime:'2026-06-20 13:25', completeTime:'2026-06-22 15:40', severity:'高', result:'通过', reviewer:'王所长', reviewTime:'2026-06-22 15:40', reviewOpinion:'新证照已核验，编号JY20260622009，有效期至2031年6月，资料完整予以通过。', summary:'已获取新食品经营许可证，编号JY20260622009，有效期至2031年6月。' },
-    { id:'ARC005', type:'变更', typeColor:'green', source:'主体变更', title:'经营场所地址变更申请', enterprise:'海底捞（中心广场店）', town:'中心镇', submitTime:'2026-06-18 09:00', completeTime:'2026-06-21 14:10', severity:'高', result:'驳回', reviewer:'陈所长', reviewTime:'2026-06-21 14:10', reviewOpinion:'新地址的食品经营场所平面图与实际不符，请重新提交准确图纸后再次申请。', summary:'因店面扩租，申请变更经营场所为"中心广场B座2-3层"（原"中心广场B座2层"）。', changeFields:[{field:'经营场所',oldVal:'中心广场B座2层',newVal:'中心广场B座2-3层'},{field:'经营面积',oldVal:'800㎡',newVal:'1200㎡'}] },
-    { id:'ARC006', type:'申诉', typeColor:'orange', source:'商户申诉', title:'申诉：工单#WO20260615042', enterprise:'第一中学食堂', town:'北关镇', submitTime:'2026-06-15 16:40', completeTime:'2026-06-18 10:00', severity:'低', result:'通过', reviewer:'赵所长', reviewTime:'2026-06-18 10:00', reviewOpinion:'经核查，该时段为食堂设备维护时间，非供餐时段，AI报警属误报，同意撤销。', summary:'明火离人报警发生在食堂设备检修期间，非正常运营时段，申请撤销本次报警工单。' },
+    { id:'ARC001', orderNo:'WO20260628001', orderType:'整改', sourceType:'AI报警', sourceDesc:'后厨鼠患报警（ALM001），置信度94%', sourceLinkId:'ALM001', enterprise:'沙县小吃（中心店）', town:'中心镇', submitTime:'2026-06-28 14:10:00', completeTime:'2026-06-30 09:15:00', severity:'高', status:'已归档', progressStep:3, result:'通过', reviewer:'李所长', reviewTime:'2026-06-30 09:15:00', reviewOpinion:'整改措施到位，现场核实确认无误，予以通过。', summary:'已按要求完成全面消杀，更换防鼠设施，清理后厨死角。', rectPhotos:[{name:'消杀现场.jpg'},{name:'防鼠设施.jpg'}] },
+    { id:'ARC002', orderNo:'WO20260625018', orderType:'申诉', sourceType:'AI报警', sourceDesc:'未戴口罩报警，置信度93%，商户申诉撤销', sourceLinkId:'ALM008', enterprise:'肯德基（万达店）', town:'城东镇', submitTime:'2026-06-25 10:30:00', completeTime:'2026-06-27 16:20:00', severity:'中', status:'已归档', progressStep:3, result:'通过', reviewer:'李所长', reviewTime:'2026-06-27 16:20:00', reviewOpinion:'商户已补充完整监控录像，经核实该时段后厨人员确在更换口罩而非违规操作，同意撤销。', summary:'申诉理由：报警时段后厨人员刚从休息区返回，正在更换口罩过程中被拍摄，申请撤销处罚。' },
+    { id:'ARC003', orderNo:'WO20260622003', orderType:'变更', sourceType:'主体变更', sourceDesc:'法人代表变更：刘伟→刘伟强', sourceLinkId:'ENT006', enterprise:'老乡鸡（北关店）', town:'北关镇', submitTime:'2026-06-22 08:50:00', completeTime:'2026-06-24 11:30:00', severity:'低', status:'已归档', progressStep:3, result:'通过', reviewer:'赵所长', reviewTime:'2026-06-24 11:30:00', reviewOpinion:'变更材料齐全，营业执照变更已完成备案，予以通过。', summary:'申请变更法人代表为"刘伟强"（原"刘伟"），统一社会信用代码不变。', changeFields:[{field:'法人代表',oldVal:'刘伟',newVal:'刘伟强'}] },
+    { id:'ARC004', orderNo:'WO20260620004', orderType:'整改', sourceType:'证照到期', sourceDesc:'食品经营许可证到期换证（C005），剩余90天', sourceLinkId:'C005', enterprise:'黄焖鸡米饭（学院店）', town:'南桥镇', submitTime:'2026-06-20 13:25:00', completeTime:'2026-06-22 15:40:00', severity:'低', status:'已归档', progressStep:3, result:'通过', reviewer:'王所长', reviewTime:'2026-06-22 15:40:00', reviewOpinion:'新证照已核验，编号JY20260622009，有效期至2031年6月，资料完整予以通过。', summary:'已获取新食品经营许可证，编号JY20260622009，有效期至2031年6月。', rectPhotos:[{name:'新证照.jpg'}] },
+    { id:'ARC005', orderNo:'WO20260618005', orderType:'变更', sourceType:'主体变更', sourceDesc:'经营场所地址变更：B座2层→B座2-3层', sourceLinkId:'ENT008', enterprise:'海底捞（中心广场店）', town:'中心镇', submitTime:'2026-06-18 09:00:00', completeTime:'2026-06-21 14:10:00', severity:'低', status:'已归档', progressStep:3, result:'通过', reviewer:'陈所长', reviewTime:'2026-06-21 14:10:00', reviewOpinion:'商户已重新提交准确的经营场所平面图，符合要求，予以通过。', summary:'因店面扩租，申请变更经营场所为"中心广场B座2-3层"（原"中心广场B座2层"）。', changeFields:[{field:'经营场所',oldVal:'中心广场B座2层',newVal:'中心广场B座2-3层'},{field:'经营面积',oldVal:'800㎡',newVal:'1200㎡'}] },
+    { id:'ARC006', orderNo:'WO20260615042', orderType:'申诉', sourceType:'AI报警', sourceDesc:'明火离人报警，置信度89%，商户申诉', sourceLinkId:'ALM007', enterprise:'第一中学食堂', town:'北关镇', submitTime:'2026-06-15 16:40:00', completeTime:'2026-06-18 10:00:00', severity:'低', status:'已归档', progressStep:3, result:'通过', reviewer:'赵所长', reviewTime:'2026-06-18 10:00:00', reviewOpinion:'经核查，该时段为食堂设备维护时间，非供餐时段，AI报警属误报，同意撤销。', summary:'明火离人报警发生在食堂设备检修期间，非正常运营时段，申请撤销本次报警工单。' },
   ],
   cameras: (() => {
     const merchants = [
@@ -867,13 +867,11 @@ function Dashboard({ loading, onNavigate, userRole, roleTown }) {
             <div className="flex-1 space-y-0.5 overflow-hidden">
               {MOCK.approvals.slice(0, 5).map((a, i) => (
                 <div key={a.id} className="flex items-center gap-2 px-2 py-1 rounded table-row cursor-pointer" onClick={() => onNavigate('approval')}>
-                  <Badge color={a.type === '整改' ? 'blue' : a.type === '申诉' ? 'orange' : 'green'}>{a.type}</Badge>
+                  <Badge color={a.orderType === '整改' ? 'blue' : a.orderType === '申诉' ? 'orange' : 'green'}>{a.orderType}</Badge>
                   <div className="flex-1 min-w-0">
                     <div className="text-[11px] text-ink truncate">{a.enterprise}</div>
                   </div>
-                  <span className={`text-[10px] font-medium shrink-0 ${a.waitHours > 24 ? 'text-red-600' : 'text-ink-muted'}`}>
-                    {a.waitHours > 24 ? '超' : ''}{a.waitHours}h
-                  </span>
+                  <Badge color={a.status==='待审批'?'yellow':'red'}>{a.status}</Badge>
                 </div>
               ))}
             </div>
@@ -993,6 +991,8 @@ function RiskWarning({ userRole, roleTown }) {
   const [filterType, setFilterType] = useState('all');
   const [filterSeverity, setFilterSeverity] = useState('all');
   const [filterTown, setFilterTown] = useState(isDistrict ? 'all' : roleTown);
+  const [selectedAlarm, setSelectedAlarm] = useState(null); // alarm detail drawer
+  const [selectedCert, setSelectedCert] = useState(null);     // cert detail drawer
 
   const filteredAlarms = MOCK.alarms.filter(a => {
     if (!isDistrict && a.town !== roleTown) return false;
@@ -1090,7 +1090,7 @@ function RiskWarning({ userRole, roleTown }) {
                 <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">置信度</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">紧急程度</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">状态</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">关联工单</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">查看详情</th>
               </tr>
             </thead>
             <tbody>
@@ -1109,7 +1109,9 @@ function RiskWarning({ userRole, roleTown }) {
                   <td className="px-4 py-3">
                     <Badge color={a.status==='待整改'?'yellow':a.status==='已确认'?'green':'gray'} dot={a.status==='待整改'}>{a.status}</Badge>
                   </td>
-                  <td className="px-4 py-3 text-xs font-mono text-gov-600 cursor-pointer hover:underline">{a.orderNo}</td>
+                  <td className="px-4 py-3">
+                    <button onClick={() => setSelectedAlarm(a)} className="text-[11px] text-gov-600 hover:text-gov-700 font-medium border border-gov-300 rounded-md px-2.5 py-1 hover:bg-gov-50 transition-colors">查看详情</button>
+                  </td>
                 </tr>
               ))}
               {filteredAlarms.length === 0 && (
@@ -1148,7 +1150,7 @@ function RiskWarning({ userRole, roleTown }) {
                     <Badge color={c.daysLeft <= 3 ? 'red' : c.daysLeft <= 7 ? 'orange' : c.daysLeft <= 30 ? 'yellow' : 'gray'}>{c.level}</Badge>
                   </td>
                   <td className="px-4 py-3">
-                    <button className="text-[11px] text-gov-600 hover:text-gov-700 font-medium">查看</button>
+                    <button onClick={() => setSelectedCert(c)} className="text-[11px] text-gov-600 hover:text-gov-700 font-medium border border-gov-300 rounded-md px-2.5 py-1 hover:bg-gov-50 transition-colors">查看详情</button>
                   </td>
                 </tr>
               ))}
@@ -1156,36 +1158,187 @@ function RiskWarning({ userRole, roleTown }) {
           </table>
         </div>
       )}
+
+      {/* ═══ Risk Warning Detail Drawer ═══ */}
+      {selectedAlarm && (
+        <div className="fixed inset-0 z-50 flex justify-end modal-backdrop" style={{background:'rgba(15,23,42,0.3)'}} onClick={() => setSelectedAlarm(null)}>
+          <div className="w-[580px] bg-white h-full shadow-2xl overflow-y-auto animate-slide-right" onClick={e => e.stopPropagation()}>
+            {/* Drawer Header */}
+            <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between z-10">
+              <div>
+                <div className="flex items-center gap-2">
+                  <Badge color={selectedAlarm.severity==='高'?'red':selectedAlarm.severity==='中'?'yellow':'gray'}>{selectedAlarm.severity}紧急</Badge>
+                  <Badge color={selectedAlarm.status==='待整改'?'yellow':selectedAlarm.status==='已确认'?'green':'gray'} dot={selectedAlarm.status==='待整改'}>{selectedAlarm.status}</Badge>
+                </div>
+                <h2 className="text-base font-bold text-ink mt-1.5">AI报警详情 · {selectedAlarm.detectType}</h2>
+                <p className="text-[11px] text-ink-muted mt-0.5">{selectedAlarm.id} · {selectedAlarm.time}</p>
+              </div>
+              <button onClick={() => setSelectedAlarm(null)} className="p-1.5 rounded-md hover:bg-slate-100 text-ink-muted">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+
+            <div className="p-6 space-y-5">
+              {/* AI截图 */}
+              <section>
+                <h4 className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-2">AI 抓拍截图</h4>
+                <div className="bg-slate-100 rounded-lg border border-slate-200 overflow-hidden">
+                  <div className="aspect-video bg-slate-200 flex items-center justify-center relative">
+                    <div className="text-center">
+                      <div className="text-4xl mb-2">📷</div>
+                      <div className="text-xs text-ink-muted">{selectedAlarm.detectType} · AI识别截图</div>
+                      <div className="text-[10px] text-ink-muted mt-0.5">置信度 {(selectedAlarm.confidence * 100).toFixed(0)}%</div>
+                    </div>
+                    {/* Detection bounding box mock */}
+                    <div className="absolute top-1/4 left-1/3 w-16 h-12 border-2 border-red-400 rounded-md flex items-center justify-center">
+                      <span className="text-[9px] text-red-500 font-bold bg-white/80 px-1 rounded">{selectedAlarm.detectType}</span>
+                    </div>
+                  </div>
+                  <div className="px-4 py-2 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+                    <span className="text-[10px] text-ink-muted">{selectedAlarm.time}</span>
+                    <span className="text-[10px] text-ink-muted font-mono">{selectedAlarm.enterprise} · {selectedAlarm.town}</span>
+                  </div>
+                </div>
+              </section>
+
+              {/* 报警基本信息 */}
+              <section className="bg-slate-50 rounded-lg p-4">
+                <h4 className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-3">报警基本信息</h4>
+                <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-xs">
+                  <div className="flex justify-between"><span className="text-ink-muted">报警编号</span><span className="font-mono text-ink font-medium">{selectedAlarm.id}</span></div>
+                  <div className="flex justify-between"><span className="text-ink-muted">报警时间</span><span className="font-mono text-ink">{selectedAlarm.time}</span></div>
+                  <div className="flex justify-between"><span className="text-ink-muted">企业名称</span><span className="text-ink font-medium">{selectedAlarm.enterprise}</span></div>
+                  <div className="flex justify-between"><span className="text-ink-muted">检测类型</span><span className="text-ink font-medium">{selectedAlarm.detectType}</span></div>
+                  <div className="flex justify-between"><span className="text-ink-muted">所属镇/街道</span><span className="text-ink">{selectedAlarm.town}</span></div>
+                  <div className="flex justify-between"><span className="text-ink-muted">AI置信度</span><span className="font-mono text-ink">{(selectedAlarm.confidence * 100).toFixed(0)}%</span></div>
+                  <div className="flex justify-between"><span className="text-ink-muted">紧急程度</span>
+                    <Badge color={selectedAlarm.severity==='高'?'red':selectedAlarm.severity==='中'?'yellow':'gray'}>{selectedAlarm.severity}</Badge>
+                  </div>
+                  <div className="flex justify-between"><span className="text-ink-muted">当前状态</span>
+                    <Badge color={selectedAlarm.status==='待整改'?'yellow':selectedAlarm.status==='已确认'?'green':'gray'} dot={selectedAlarm.status==='待整改'}>{selectedAlarm.status}</Badge>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══ Cert Expiry Detail Drawer ═══ */}
+      {selectedCert && (
+        <div className="fixed inset-0 z-50 flex justify-end modal-backdrop" style={{background:'rgba(15,23,42,0.3)'}} onClick={() => setSelectedCert(null)}>
+          <div className="w-[520px] bg-white h-full shadow-2xl overflow-y-auto animate-slide-right" onClick={e => e.stopPropagation()}>
+            {/* Drawer Header */}
+            <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between z-10">
+              <div>
+                <div className="flex items-center gap-2">
+                  <Badge color={selectedCert.daysLeft <= 3 ? 'red' : selectedCert.daysLeft <= 7 ? 'orange' : selectedCert.daysLeft <= 30 ? 'yellow' : 'gray'}>{selectedCert.level}预警</Badge>
+                  {selectedCert.daysLeft <= 7 && <span className="w-1.5 h-1.5 rounded-full bg-red-500 badge-dot"></span>}
+                </div>
+                <h2 className="text-base font-bold text-ink mt-1.5">{selectedCert.certType} · 证照到期详情</h2>
+                <p className="text-[11px] text-ink-muted mt-0.5">{selectedCert.enterprise} · {selectedCert.id}</p>
+              </div>
+              <button onClick={() => setSelectedCert(null)} className="p-1.5 rounded-md hover:bg-slate-100 text-ink-muted">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+
+            <div className="p-6 space-y-5">
+              {/* 到期倒计时 */}
+              <section className="bg-white rounded-lg border border-slate-200 p-4 text-center">
+                <h4 className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-3">距到期剩余</h4>
+                <div className="flex items-center justify-center gap-1">
+                  <span className={`text-5xl font-bold ${selectedCert.daysLeft <= 3 ? 'text-red-600' : selectedCert.daysLeft <= 7 ? 'text-amber-600' : selectedCert.daysLeft <= 30 ? 'text-amber-500' : 'text-ink'}`}>
+                    {selectedCert.daysLeft}
+                  </span>
+                  <span className="text-lg text-ink-muted mt-3">天</span>
+                </div>
+                <div className="mt-2">
+                  <div className="w-48 h-2 bg-slate-200 rounded-full mx-auto overflow-hidden">
+                    <div className={`h-full rounded-full ${selectedCert.daysLeft <= 3 ? 'bg-red-500' : selectedCert.daysLeft <= 7 ? 'bg-amber-500' : selectedCert.daysLeft <= 30 ? 'bg-amber-400' : 'bg-slate-400'}`}
+                      style={{width: `${Math.max(5, Math.min(100, (selectedCert.daysLeft / 90) * 100))}%`}}></div>
+                  </div>
+                  <p className="text-[10px] text-ink-muted mt-1">到期日期：{selectedCert.expiryDate}</p>
+                </div>
+              </section>
+
+              {/* 证照基本信息 */}
+              <section className="bg-slate-50 rounded-lg p-4">
+                <h4 className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-3">证照基本信息</h4>
+                <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-xs">
+                  <div className="flex justify-between"><span className="text-ink-muted">证照类型</span><span className="text-ink font-medium">{selectedCert.certType}</span></div>
+                  <div className="flex justify-between"><span className="text-ink-muted">证照编号</span><span className="font-mono text-ink font-medium">{selectedCert.certNo}</span></div>
+                  <div className="flex justify-between"><span className="text-ink-muted">企业名称</span><span className="text-ink font-medium">{selectedCert.enterprise}</span></div>
+                  <div className="flex justify-between"><span className="text-ink-muted">到期日期</span><span className="font-mono text-ink">{selectedCert.expiryDate}</span></div>
+                  <div className="flex justify-between"><span className="text-ink-muted">剩余天数</span>
+                    <span className={`font-bold ${selectedCert.daysLeft <= 7 ? 'text-red-600' : selectedCert.daysLeft <= 30 ? 'text-amber-600' : 'text-ink-secondary'}`}>{selectedCert.daysLeft} 天</span>
+                  </div>
+                  <div className="flex justify-between"><span className="text-ink-muted">预警级别</span>
+                    <Badge color={selectedCert.daysLeft <= 3 ? 'red' : selectedCert.daysLeft <= 7 ? 'orange' : selectedCert.daysLeft <= 30 ? 'yellow' : 'gray'}>{selectedCert.level}</Badge>
+                  </div>
+                  <div className="flex justify-between"><span className="text-ink-muted">发证机关</span><span className="text-ink">市场监督管理局</span></div>
+                  <div className="flex justify-between"><span className="text-ink-muted">持证主体</span><span className="text-ink">{selectedCert.enterprise}</span></div>
+                </div>
+              </section>
+
+              {/* 到期影响说明 */}
+              <section className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                <h4 className="text-[11px] font-semibold text-amber-700 uppercase tracking-wider mb-2">⚠ 到期影响</h4>
+                <ul className="text-xs text-amber-800 space-y-1.5">
+                  {selectedCert.certType === '营业执照' ? (
+                    <>
+                      <li className="flex items-start gap-1.5"><span className="mt-0.5">·</span>营业执照到期后，企业不得继续从事经营活动</li>
+                      <li className="flex items-start gap-1.5"><span className="mt-0.5">·</span>逾期未换证将被列入经营异常名录</li>
+                      <li className="flex items-start gap-1.5"><span className="mt-0.5">·</span>建议在到期前30日内向登记机关申请换发</li>
+                    </>
+                  ) : selectedCert.certType === '食品经营许可证' ? (
+                    <>
+                      <li className="flex items-start gap-1.5"><span className="mt-0.5">·</span>许可证到期后不得继续从事食品经营活动</li>
+                      <li className="flex items-start gap-1.5"><span className="mt-0.5">·</span>需在到期前30个工作日内向食药监部门申请延续</li>
+                      <li className="flex items-start gap-1.5"><span className="mt-0.5">·</span>逾期未延续将视为无证经营，面临行政处罚</li>
+                    </>
+                  ) : selectedCert.certType === '从业人员健康证' ? (
+                    <>
+                      <li className="flex items-start gap-1.5"><span className="mt-0.5">·</span>健康证有效期为1年，到期前应重新体检</li>
+                      <li className="flex items-start gap-1.5"><span className="mt-0.5">·</span>持过期健康证上岗将被处以警告或罚款</li>
+                      <li className="flex items-start gap-1.5"><span className="mt-0.5">·</span>建议提前安排从业人员到指定医疗机构体检</li>
+                    </>
+                  ) : (
+                    <>
+                      <li className="flex items-start gap-1.5"><span className="mt-0.5">·</span>该证照即将到期，请及时办理续期手续</li>
+                      <li className="flex items-start gap-1.5"><span className="mt-0.5">·</span>到期后将影响企业正常生产经营活动</li>
+                    </>
+                  )}
+                </ul>
+              </section>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-// ────────────────────────────────────────
-// APPROVAL RECORDS (3.3 审批记录)
-// ────────────────────────────────────────
-
 function ApprovalRecords({ showDetail, setShowDetail, userRole, roleTown }) {
   const isDistrict = userRole === 'R01';
-  const [filterType, setFilterType] = useState('all');
+  const [filterType, setFilterType] = useState('all');       // orderType: 整改/申诉/变更
   const [filterTown, setFilterTown] = useState(isDistrict ? 'all' : roleTown);
-  const [filterUrgency, setFilterUrgency] = useState('all');
-  const [filterDuration, setFilterDuration] = useState('all');
-  const [activeTab, setActiveTab] = useState('active'); // 'active' | 'archived'
+  const [filterSeverity, setFilterSeverity] = useState('all'); // 高/中/低
+  const [activeTab, setActiveTab] = useState('inProgress'); // 'inProgress' | 'archived'
+  const [filterStatus, setFilterStatus] = useState('all');   // 处理状态: all/待审批/已驳回 (only for inProgress)
   const [searchQuery, setSearchQuery] = useState('');
-  const [archiveFilterResult, setArchiveFilterResult] = useState('all');
 
-  const filtered = (activeTab === 'active' ? MOCK.approvals : MOCK.archivedApprovals).filter(a => {
+  const inProgressList = MOCK.approvals.filter(a => a.status === '待审批' || a.status === '已驳回');
+
+  const baseList = activeTab === 'inProgress' ? inProgressList : MOCK.archivedApprovals;
+
+  const filtered = baseList.filter(a => {
     if (!isDistrict && a.town !== roleTown) return false;
-    if (filterType !== 'all' && a.type !== filterType) return false;
+    if (filterType !== 'all' && a.orderType !== filterType) return false;
     if (filterTown !== 'all' && a.town !== filterTown) return false;
-    if (filterUrgency !== 'all' && a.severity !== filterUrgency) return false;
-    if (searchQuery && !a.enterprise.includes(searchQuery) && !a.title.includes(searchQuery)) return false;
-    if (activeTab === 'archived' && archiveFilterResult !== 'all' && a.result !== archiveFilterResult) return false;
-    if (activeTab === 'active') {
-      if (filterDuration === '24h' && a.waitHours < 24) return false;
-      if (filterDuration === '48h' && a.waitHours < 48) return false;
-      if (filterDuration === '72h' && a.waitHours < 72) return false;
-    }
+    if (filterSeverity !== 'all' && a.severity !== filterSeverity) return false;
+    if (activeTab === 'inProgress' && filterStatus !== 'all' && a.status !== filterStatus) return false;
+    if (searchQuery && !a.enterprise.includes(searchQuery) && !a.orderNo.includes(searchQuery) && !a.sourceDesc.includes(searchQuery)) return false;
     return true;
   });
 
@@ -1196,34 +1349,34 @@ function ApprovalRecords({ showDetail, setShowDetail, userRole, roleTown }) {
           <h1 className="text-xl font-bold text-ink tracking-tight">审批记录</h1>
           <p className="text-sm text-ink-secondary mt-0.5">
             {isDistrict
-              ? '整改工单 + 申诉工单 + 变更工单统一审批入口 · 区级仅查看，审核权全归镇级'
-              : `${roleTown} · 整改工单 + 申诉工单 + 变更工单统一审批 · 您拥有审核权`
+              ? '工单审批记录 · 区级仅查看，审核权全归镇级 · 驳回后等待商户重新提交'
+              : `${roleTown} · 工单审批记录 · 您拥有审核权 · 驳回后等待商户重新提交`
             }
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {activeTab === 'active' && (
+          {activeTab === 'inProgress' && (
             <>
               <span className="text-[11px] text-ink-muted">30秒自动刷新</span>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 badge-dot"></span>
             </>
           )}
           {activeTab === 'archived' && (
-            <Badge color="gray">{MOCK.archivedApprovals.length} 条已归档</Badge>
+            <Badge color="green">{MOCK.archivedApprovals.length} 条已通过</Badge>
           )}
         </div>
       </div>
 
-      {/* Tab bar */}
+      {/* Tab bar — 流转中 / 已通过 */}
       <div className="flex gap-0 border-b border-slate-200 -mt-2">
         <button
-          className={`px-5 py-2.5 text-sm font-medium border-b-2 transition-colors ${activeTab === 'active' ? 'border-gov-600 text-gov-600' : 'border-transparent text-ink-secondary hover:text-ink'}`}
-          onClick={() => { setActiveTab('active'); setShowDetail(null); }}
-        >待审批 <span className="ml-1.5 text-[11px] bg-slate-100 px-1.5 py-0.5 rounded-full">{MOCK.approvals.length}</span></button>
+          className={`px-5 py-2.5 text-sm font-medium border-b-2 transition-colors ${activeTab === 'inProgress' ? 'border-gov-600 text-gov-600' : 'border-transparent text-ink-secondary hover:text-ink'}`}
+          onClick={() => { setActiveTab('inProgress'); setFilterStatus('all'); setShowDetail(null); }}
+        >流转中 <span className="ml-1.5 text-[11px] bg-slate-100 px-1.5 py-0.5 rounded-full">{inProgressList.length}</span></button>
         <button
           className={`px-5 py-2.5 text-sm font-medium border-b-2 transition-colors ${activeTab === 'archived' ? 'border-gov-600 text-gov-600' : 'border-transparent text-ink-secondary hover:text-ink'}`}
           onClick={() => { setActiveTab('archived'); setShowDetail(null); }}
-        >已归档 <span className="ml-1.5 text-[11px] bg-slate-100 px-1.5 py-0.5 rounded-full">{MOCK.archivedApprovals.length}</span></button>
+        >已通过 <span className="ml-1.5 text-[11px] bg-slate-100 px-1.5 py-0.5 rounded-full">{MOCK.archivedApprovals.length}</span></button>
       </div>
 
       {/* Filters */}
@@ -1231,10 +1384,10 @@ function ApprovalRecords({ showDetail, setShowDetail, userRole, roleTown }) {
         <span className="text-[11px] text-ink-muted font-medium">筛选：</span>
         <select value={filterType} onChange={e => setFilterType(e.target.value)}
           className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
-          <option value="all">全部类型</option>
-          <option value="整改">整改工单</option>
-          <option value="申诉">申诉工单</option>
-          <option value="变更">变更工单</option>
+          <option value="all">全部工单类型</option>
+          <option value="整改">整改</option>
+          <option value="申诉">申诉</option>
+          <option value="变更">变更</option>
         </select>
         {isDistrict ? (
           <select value={filterTown} onChange={e => setFilterTown(e.target.value)}
@@ -1248,31 +1401,23 @@ function ApprovalRecords({ showDetail, setShowDetail, userRole, roleTown }) {
         ) : (
           <span className="text-xs text-ink-secondary bg-slate-50 px-2.5 py-1.5 rounded-md border border-slate-200">{roleTown}</span>
         )}
-        <select value={filterUrgency} onChange={e => setFilterUrgency(e.target.value)}
+        <select value={filterSeverity} onChange={e => setFilterSeverity(e.target.value)}
           className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
           <option value="all">全部紧急程度</option>
           <option value="高">高</option>
           <option value="中">中</option>
           <option value="低">低</option>
         </select>
-        {activeTab === 'active' ? (
-          <select value={filterDuration} onChange={e => setFilterDuration(e.target.value)}
+        {activeTab === 'inProgress' && (
+          <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
             className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
-            <option value="all">全部待审时长</option>
-            <option value="24h">超24小时</option>
-            <option value="48h">超48小时</option>
-            <option value="72h">超72小时</option>
-          </select>
-        ) : (
-          <select value={archiveFilterResult} onChange={e => setArchiveFilterResult(e.target.value)}
-            className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
-            <option value="all">全部审批结果</option>
-            <option value="通过">审批通过</option>
-            <option value="驳回">审批驳回</option>
+            <option value="all">全部处理状态</option>
+            <option value="待审批">待审批</option>
+            <option value="已驳回">已驳回</option>
           </select>
         )}
         <div className="flex-1"></div>
-        <input type="text" placeholder="搜索企业名称…" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="text-xs border border-slate-200 rounded-md px-3 py-1.5 w-48 outline-none focus:border-gov-400" />
+        <input type="text" placeholder="搜索企业名称 / 工单号…" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="text-xs border border-slate-200 rounded-md px-3 py-1.5 w-48 outline-none focus:border-gov-400" />
         <span className="text-[11px] text-ink-muted">共 {filtered.length} 条</span>
       </div>
 
@@ -1281,58 +1426,67 @@ function ApprovalRecords({ showDetail, setShowDetail, userRole, roleTown }) {
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-200">
-              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">审批类型</th>
-              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">企业名称</th>
-              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">摘要信息</th>
-              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">提交时间</th>
-              {activeTab === 'active' ? (
-                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">等待时长</th>
+              <th className="text-left px-3 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">工单编号</th>
+              <th className="text-left px-3 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">来源类型</th>
+              <th className="text-left px-3 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">企业名称</th>
+              <th className="text-left px-3 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">所属镇</th>
+              <th className="text-left px-3 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">工单类型</th>
+              <th className="text-left px-3 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">紧急程度</th>
+              {activeTab === 'inProgress' ? (
+                <th className="text-left px-3 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">处理状态</th>
               ) : (
-                <>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">审批结果</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">完成时间</th>
-                </>
+                <th className="text-left px-3 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">审批结果</th>
               )}
-              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">紧急程度</th>
-              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">操作</th>
+              <th className="text-left px-3 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">发起时间</th>
+              <th className="text-left px-3 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">操作</th>
             </tr>
           </thead>
           <tbody>
-            {filtered.map(a => (
+            {filtered.map(a => {
+              const typeColor = a.orderType === '整改' ? 'blue' : a.orderType === '申诉' ? 'orange' : 'green';
+              const typeIcon = a.orderType === '整改' ? '●' : a.orderType === '申诉' ? '▲' : '◆';
+              return (
               <tr key={a.id} className="table-row border-b border-slate-100 last:border-0">
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-1.5">
-                    <span className={`w-1.5 h-1.5 rounded-full ${a.typeColor === 'blue' ? 'bg-blue-500' : a.typeColor === 'orange' ? 'bg-orange-500' : 'bg-emerald-500'}`}></span>
-                    <Badge color={a.typeColor}>{a.type}</Badge>
-                    <span className="text-[10px] text-ink-muted">{a.source}</span>
-                  </div>
+                <td className="px-3 py-3 text-[11px] font-mono text-gov-600 font-medium">{a.orderNo}</td>
+                <td className="px-3 py-3 text-xs text-ink-secondary">{a.sourceType}</td>
+                <td className="px-3 py-3 text-xs font-medium text-ink cursor-pointer hover:text-gov-600">{a.enterprise}</td>
+                <td className="px-3 py-3 text-xs text-ink-secondary">{a.town}</td>
+                <td className="px-3 py-3">
+                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full ${typeColor === 'blue' ? 'bg-blue-50 text-blue-700 border border-blue-200' : typeColor === 'orange' ? 'bg-orange-50 text-orange-700 border border-orange-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}`}>
+                    <span className="text-[8px]">{typeIcon}</span>{a.orderType}
+                  </span>
                 </td>
-                <td className="px-4 py-3 text-xs font-medium text-ink cursor-pointer hover:text-gov-600">{a.enterprise}</td>
-                <td className="px-4 py-3 text-xs text-ink-secondary max-w-[280px] truncate">{a.summary}</td>
-                <td className="px-4 py-3 text-xs font-mono text-ink-secondary">{a.submitTime}</td>
-                {activeTab === 'active' ? (
-                  <td className="px-4 py-3">
-                    <span className={`text-xs font-medium ${a.waitHours > 24 ? 'text-red-600' : 'text-ink-secondary'}`}>
-                      {a.waitHours > 24 ? '⚠ ' : ''}{a.waitHours}h
-                    </span>
-                  </td>
-                ) : (
-                  <>
-                    <td className="px-4 py-3">
-                      <Badge color={a.result === '通过' ? 'green' : 'red'}>{a.result}</Badge>
-                    </td>
-                    <td className="px-4 py-3 text-xs font-mono text-ink-secondary">{a.completeTime}</td>
-                  </>
-                )}
-                <td className="px-4 py-3">
+                <td className="px-3 py-3">
                   <Badge color={a.severity==='高'?'red':a.severity==='中'?'yellow':'gray'}>{a.severity}</Badge>
                 </td>
-                <td className="px-4 py-3">
+                {activeTab === 'inProgress' ? (
+                  <td className="px-3 py-3">
+                    <Badge color={a.status==='待审批'?'yellow':'red'} dot={a.status==='待审批'}>{a.status}</Badge>
+                    {a.rejectHistory && a.rejectHistory.length > 0 && (
+                      <span className="text-[9px] text-ink-muted ml-1">第{a.rejectHistory.length}次驳回</span>
+                    )}
+                  </td>
+                ) : (
+                  <td className="px-3 py-3">
+                    <Badge color={a.result === '通过' ? 'green' : 'red'}>{a.result === '通过' ? '✓ 通过' : '✕ 驳回'}</Badge>
+                  </td>
+                )}
+                <td className="px-3 py-3 text-[11px] font-mono text-ink-secondary">{a.submitTime}</td>
+                <td className="px-3 py-3">
                   {activeTab === 'archived' ? (
                     <button
                       onClick={() => setShowDetail(a)}
-                      className="text-[11px] text-ink-secondary border border-slate-200 px-3 py-1.5 rounded-md hover:bg-slate-50 hover:text-ink transition-colors font-medium"
+                      className="text-[11px] text-ink-secondary border border-slate-200 px-2.5 py-1.5 rounded-md hover:bg-slate-50 hover:text-ink transition-colors font-medium"
                     >查看详情</button>
+                  ) : a.status === '已驳回' ? (
+                    isDistrict ? (
+                      <span className="text-[11px] text-ink-muted cursor-pointer hover:text-ink" onClick={() => setShowDetail(a)}>查看详情</span>
+                    ) : (
+                      <button
+                        onClick={() => setShowDetail(a)}
+                        className="text-[11px] bg-slate-400 text-white px-3 py-1.5 rounded-md transition-colors font-medium"
+                      >进入审核</button>
+                    )
                   ) : isDistrict ? (
                     <span className="text-[11px] text-ink-muted cursor-pointer hover:text-ink" onClick={() => setShowDetail(a)}>查看详情</span>
                   ) : (
@@ -1343,9 +1497,12 @@ function ApprovalRecords({ showDetail, setShowDetail, userRole, roleTown }) {
                   )}
                 </td>
               </tr>
-            ))}
+            )})}
           </tbody>
         </table>
+        {filtered.length === 0 && (
+          <div className="text-center py-14 text-ink-muted text-xs">暂无符合条件的审批记录</div>
+        )}
       </div>
 
       {/* Detail Drawer */}
@@ -1355,11 +1512,15 @@ function ApprovalRecords({ showDetail, setShowDetail, userRole, roleTown }) {
             <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between z-10">
               <div>
                 <div className="flex items-center gap-2">
-                  <Badge color={showDetail.typeColor}>{showDetail.type}工单</Badge>
+                  <Badge color={showDetail.orderType==='整改'?'blue':showDetail.orderType==='申诉'?'orange':'green'}>{showDetail.orderType}工单</Badge>
                   <Badge color={showDetail.severity==='高'?'red':showDetail.severity==='中'?'yellow':'gray'}>{showDetail.severity}紧急</Badge>
-                  {activeTab === 'archived' && <Badge color="gray">已归档</Badge>}
+                  {activeTab === 'archived' && <Badge color="green">已通过</Badge>}
+                  {activeTab === 'inProgress' && (
+                    <Badge color={showDetail.status==='待审批'?'yellow':'red'} dot={showDetail.status==='待审批'}>{showDetail.status}</Badge>
+                  )}
                 </div>
-                <h2 className="text-base font-bold text-ink mt-1.5">{showDetail.title}</h2>
+                <h2 className="text-base font-bold text-ink mt-1.5">工单详情 · {showDetail.orderNo}</h2>
+                <p className="text-[11px] text-ink-muted mt-0.5">{showDetail.enterprise} · 发起时间 {showDetail.submitTime}</p>
               </div>
               <button onClick={() => setShowDetail(null)} className="p-1.5 rounded-md hover:bg-slate-100 text-ink-muted">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -1367,37 +1528,107 @@ function ApprovalRecords({ showDetail, setShowDetail, userRole, roleTown }) {
             </div>
 
             <div className="p-6 space-y-5">
-              {/* Source info */}
+              {/* 工单基本信息 */}
               <section className="bg-slate-50 rounded-lg p-4">
-                <h4 className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-2">来源信息</h4>
-                <div className="space-y-1.5 text-xs">
-                  <div className="flex"><span className="text-ink-muted w-16 shrink-0">来源类型</span><span className="text-ink">{showDetail.source}</span></div>
-                  <div className="flex"><span className="text-ink-muted w-16 shrink-0">企业名称</span><span className="text-ink font-medium">{showDetail.enterprise}</span></div>
-                  <div className="flex"><span className="text-ink-muted w-16 shrink-0">所属镇</span><span className="text-ink">{showDetail.town}</span></div>
-                  <div className="flex"><span className="text-ink-muted w-16 shrink-0">提交时间</span><span className="font-mono text-ink">{showDetail.submitTime}</span></div>
-                  {activeTab === 'archived' && (
-                    <>
-                      <div className="flex"><span className="text-ink-muted w-16 shrink-0">审批人</span><span className="text-ink font-medium">{showDetail.reviewer}</span></div>
-                      <div className="flex"><span className="text-ink-muted w-16 shrink-0">审批时间</span><span className="font-mono text-ink">{showDetail.reviewTime}</span></div>
-                    </>
+                <h4 className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-3">工单基本信息</h4>
+                <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-xs">
+                  <div className="flex justify-between"><span className="text-ink-muted">工单编号</span><span className="font-mono text-gov-600 font-medium">{showDetail.orderNo}</span></div>
+                  <div className="flex justify-between"><span className="text-ink-muted">工单类型</span>
+                    <Badge color={showDetail.orderType==='整改'?'blue':showDetail.orderType==='申诉'?'orange':'green'}>{showDetail.orderType}</Badge>
+                  </div>
+                  <div className="flex justify-between"><span className="text-ink-muted">来源类型</span><span className="text-ink font-medium">{showDetail.sourceType}</span></div>
+                  <div className="flex justify-between"><span className="text-ink-muted">紧急程度</span>
+                    <Badge color={showDetail.severity==='高'?'red':showDetail.severity==='中'?'yellow':'gray'}>{showDetail.severity}</Badge>
+                  </div>
+                  <div className="flex justify-between"><span className="text-ink-muted">企业名称</span><span className="text-ink font-medium">{showDetail.enterprise}</span></div>
+                  <div className="flex justify-between"><span className="text-ink-muted">所属镇</span><span className="text-ink">{showDetail.town}</span></div>
+                  <div className="flex justify-between"><span className="text-ink-muted">处理状态</span>
+                    {activeTab === 'archived' ? (
+                      <Badge color="green">已通过</Badge>
+                    ) : (
+                      <Badge color={showDetail.status==='待审批'?'yellow':'red'} dot={showDetail.status==='待审批'}>{showDetail.status}</Badge>
+                    )}
+                  </div>
+                  <div className="flex justify-between"><span className="text-ink-muted">发起时间</span><span className="font-mono text-ink">{showDetail.submitTime}</span></div>
+                </div>
+              </section>
+
+              {/* 驳回记录 */}
+              {showDetail.rejectHistory && showDetail.rejectHistory.length > 0 && (
+                <section className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <h4 className="text-[11px] font-semibold text-red-600 uppercase tracking-wider mb-2">✕ 驳回记录</h4>
+                  <div className="space-y-3">
+                    {showDetail.rejectHistory.map((rh, i) => (
+                      <div key={i} className="bg-white rounded-lg border border-red-100 p-3">
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="text-[11px] font-semibold text-red-700">第 {rh.rejectRound} 次驳回</span>
+                          <span className="text-[10px] text-ink-muted">{rh.rejectTime}</span>
+                        </div>
+                        <div className="text-[10px] text-ink-muted mb-1">驳回人：{rh.reviewer}</div>
+                        <p className="text-xs text-ink leading-relaxed">{rh.reason}</p>
+                      </div>
+                    ))}
+                  </div>
+                  {activeTab === 'inProgress' && showDetail.status === '已驳回' && (
+                    <p className="text-[10px] text-ink-muted mt-2">等待商户重新提交后将自动回到「待审批」列表</p>
+                  )}
+                </section>
+              )}
+
+              {/* 来源描述 */}
+              <section className="bg-white rounded-lg border border-slate-200 p-4">
+                <h4 className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-2">来源描述</h4>
+                <p className="text-sm text-ink leading-relaxed">{showDetail.sourceDesc}</p>
+                <div className="mt-2 flex items-center gap-2">
+                  {showDetail.sourceType === 'AI报警' && (
+                    <span className="text-[11px] text-gov-600 bg-gov-50 px-2 py-0.5 rounded border border-gov-200 cursor-pointer hover:bg-gov-100 transition-colors">
+                      📋 查看关联报警记录（{showDetail.sourceLinkId}）
+                    </span>
+                  )}
+                  {showDetail.sourceType === '证照到期' && (
+                    <span className="text-[11px] text-gov-600 bg-gov-50 px-2 py-0.5 rounded border border-gov-200 cursor-pointer hover:bg-gov-100 transition-colors">
+                      📋 查看证照到期记录（{showDetail.sourceLinkId}）
+                    </span>
+                  )}
+                  {showDetail.sourceType === '主体变更' && (
+                    <span className="text-[11px] text-gov-600 bg-gov-50 px-2 py-0.5 rounded border border-gov-200 cursor-pointer hover:bg-gov-100 transition-colors">
+                      📋 查看企业信息变更（{showDetail.sourceLinkId}）
+                    </span>
                   )}
                 </div>
               </section>
 
-              {/* Merchant submission */}
-              <section className="bg-white rounded-lg border border-slate-200 p-4">
-                <h4 className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-2">商户提交内容</h4>
-                <p className="text-sm text-ink leading-relaxed">{showDetail.summary}</p>
-                {showDetail.type === '整改' && (
-                  <div className="mt-3 flex gap-2">
-                    <div className="w-20 h-20 bg-slate-100 rounded-md flex items-center justify-center text-[10px] text-ink-muted">整改照片1</div>
-                    <div className="w-20 h-20 bg-slate-100 rounded-md flex items-center justify-center text-[10px] text-ink-muted">整改照片2</div>
-                  </div>
-                )}
-              </section>
+              {/* 整改说明 + 照片 — for 整改 type */}
+              {showDetail.orderType === '整改' && (
+                <section className="bg-white rounded-lg border border-slate-200 p-4">
+                  <h4 className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-2">整改说明</h4>
+                  <p className="text-sm text-ink leading-relaxed">{showDetail.summary}</p>
+                  {showDetail.rectPhotos && showDetail.rectPhotos.length > 0 && (
+                    <>
+                      <h4 className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-2 mt-3">整改照片</h4>
+                      <div className="flex gap-2 flex-wrap">
+                        {showDetail.rectPhotos.map((p, i) => (
+                          <div key={i} className="w-24 h-24 bg-slate-100 rounded-md border border-slate-200 flex flex-col items-center justify-center text-[10px] text-ink-muted gap-1">
+                            <span className="text-lg">🖼</span>
+                            <span className="truncate w-20 text-center">{p.name}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </section>
+              )}
 
-              {/* 变更前后对比 — only for 变更 type */}
-              {showDetail.type === '变更' && showDetail.changeFields && (
+              {/* 申诉内容 — for 申诉 type */}
+              {showDetail.orderType === '申诉' && (
+                <section className="bg-white rounded-lg border border-slate-200 p-4">
+                  <h4 className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-2">申诉说明</h4>
+                  <p className="text-sm text-ink leading-relaxed">{showDetail.summary}</p>
+                </section>
+              )}
+
+              {/* 变更前后对比 — for 变更 type */}
+              {showDetail.orderType === '变更' && showDetail.changeFields && (
                 <section className="bg-white rounded-lg border border-slate-200 p-4">
                   <h4 className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-3">变更前后对比</h4>
                   <table className="w-full text-xs">
@@ -1420,48 +1651,56 @@ function ApprovalRecords({ showDetail, setShowDetail, userRole, roleTown }) {
                       ))}
                     </tbody>
                   </table>
-                  <div className="mt-3 flex gap-2">
-                    <div className="w-20 h-20 bg-slate-100 rounded-md flex items-center justify-center text-[10px] text-ink-muted">变更佐证1</div>
-                    <div className="w-20 h-20 bg-slate-100 rounded-md flex items-center justify-center text-[10px] text-ink-muted">变更佐证2</div>
-                  </div>
                 </section>
               )}
 
-              {/* Progress */}
+              {/* 处理进度 */}
               <section className="bg-white rounded-lg border border-slate-200 p-4">
                 <h4 className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-3">处理进度</h4>
                 <div className="flex items-center gap-0">
-                  {(activeTab === 'archived'
-                    ? (showDetail.type === '变更' ? ['商户提交变更','资料核验','审批完成'] : ['系统生成','商户提交','审批完成'])
-                    : (showDetail.type === '变更' ? ['商户提交变更','资料核验','审核中'] : ['系统生成','商户提交','审核中'])
-                  ).map((label, i) => (
+                  {['提交申请','审核中','审核完成'].map((label, i) => {
+                    const stepReached = activeTab === 'archived' ? 3 : showDetail.progressStep;
+                    const isDone = i < stepReached;
+                    const isCurrent = i === stepReached - 1;
+                    return (
                     <Fragment key={i}>
                       <div className="flex flex-col items-center">
-                        <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold ${activeTab === 'archived' ? 'bg-emerald-500 text-white' : i < 2 ? 'bg-gov-600 text-white' : 'bg-gov-100 text-gov-600 border-2 border-gov-400'}`}>
-                          {activeTab === 'archived' ? '✓' : i < 2 ? '✓' : '3'}
+                        <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold ${isDone ? 'bg-gov-600 text-white' : isCurrent ? 'bg-gov-100 text-gov-600 border-2 border-gov-400' : 'bg-slate-100 text-ink-muted'}`}>
+                          {isDone ? '✓' : i + 1}
                         </div>
                         <span className="text-[10px] text-ink-muted mt-1">{label}</span>
                       </div>
-                      {i < 2 && <div className={`flex-1 h-0.5 mx-2 ${activeTab === 'archived' ? 'bg-emerald-500' : i < 1 ? 'bg-gov-600' : 'bg-slate-200'}`}></div>}
+                      {i < 2 && <div className={`flex-1 h-0.5 mx-2 ${isDone ? 'bg-gov-600' : 'bg-slate-200'}`}></div>}
                     </Fragment>
-                  ))}
+                    );
+                  })}
                 </div>
+                {activeTab === 'archived' && (
+                  <p className="text-[10px] text-ink-muted text-center mt-2">审核完成后已自动归档</p>
+                )}
               </section>
 
-              {/* Action — only for active tab */}
-              {activeTab === 'active' ? (
+              {/* 审核操作 — inProgress tab */}
+              {activeTab === 'inProgress' ? (
                 <section className="bg-white rounded-lg border border-slate-200 p-4">
                   <h4 className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-3">审核操作</h4>
-                  <div className="space-y-3">
-                    <textarea
-                      placeholder="输入审核意见（驳回时必填，限500字）…"
-                      className="w-full border border-slate-200 rounded-md px-3 py-2 text-xs text-ink outline-none focus:border-gov-400 resize-none h-20"
-                    ></textarea>
-                    <div className="flex gap-2">
-                      <button className="flex-1 py-2 bg-emerald-600 text-white text-sm font-medium rounded-md hover:bg-emerald-700 transition-colors">审核通过</button>
-                      <button className="flex-1 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 transition-colors">驳回（需填写原因）</button>
+                  {showDetail.status === '已驳回' ? (
+                    <div className="bg-slate-50 rounded-lg p-3 text-center">
+                      <p className="text-xs text-ink-muted mb-1">⏳ 该工单已被驳回，等待商户重新提交</p>
+                      <p className="text-[10px] text-ink-muted">商户重新提交后状态将自动变为「待审批」，届时可进行审核操作</p>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <textarea
+                        placeholder="输入审核意见（驳回时必填，限500字）…"
+                        className="w-full border border-slate-200 rounded-md px-3 py-2 text-xs text-ink outline-none focus:border-gov-400 resize-none h-20"
+                      ></textarea>
+                      <div className="flex gap-2">
+                        <button className="flex-1 py-2 bg-emerald-600 text-white text-sm font-medium rounded-md hover:bg-emerald-700 transition-colors">审核通过</button>
+                        <button className="flex-1 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 transition-colors">驳回（需填写原因）</button>
+                      </div>
+                    </div>
+                  )}
                 </section>
               ) : (
                 <section className="bg-white rounded-lg border border-slate-200 p-4">

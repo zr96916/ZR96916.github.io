@@ -295,37 +295,68 @@
         <i data-lucide="arrow-left" class="w-5 h-5 text-slate-700"></i>
       </button>
       <span class="text-base font-semibold text-slate-900 flex-1">工单详情</span>
-      <span class="text-xs font-medium px-2.5 py-1 rounded-full" id="detailStatusBadge">待处理</span>
+      <span class="text-xs font-medium px-2.5 py-1 rounded-full" id="detailStatusBadge">待审核</span>
     </div>
 
     <div class="flex-1 overflow-y-auto">
       <!-- Order info -->
       <div class="p-5">
         <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100">
-          <div class="flex items-start justify-between mb-4">
-            <div>
-              <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full uppercase tracking-wide" id="detailType">报警记录</span>
-              <h2 class="text-lg font-semibold text-slate-900 mt-2" id="detailTitle">后厨卫生整改通知</h2>
+          <!-- Fields -->
+          <div class="space-y-0">
+            <div class="flex items-center py-2.5 border-b border-slate-50">
+              <span class="text-[13px] text-slate-400 w-20 shrink-0">工单编号</span>
+              <span class="text-[13px] text-slate-700 font-medium" id="detailId">WO20241201002</span>
+            </div>
+            <div class="flex items-center py-2.5 border-b border-slate-50">
+              <span class="text-[13px] text-slate-400 w-20 shrink-0">工单类型</span>
+              <span class="text-[13px] text-slate-700 font-medium" id="detailOrderType">报警工单</span>
+            </div>
+            <div class="flex items-center py-2.5 border-b border-slate-50">
+              <span class="text-[13px] text-slate-400 w-20 shrink-0">关联设备</span>
+              <span class="text-[13px] text-slate-700 font-medium" id="detailDevice">明厨亮灶专用智能摄像头</span>
+            </div>
+            <div class="flex items-center py-2.5 border-b border-slate-50">
+              <span class="text-[13px] text-slate-400 w-20 shrink-0">关联摄像头</span>
+              <span class="text-[13px] text-slate-700 font-medium" id="detailCameras">后厨烹饪区摄像头 / 后厨通道摄像头</span>
+            </div>
+            <div class="flex items-center py-2.5">
+              <span class="text-[13px] text-slate-400 w-20 shrink-0">工单状态</span>
+              <span class="text-xs font-medium px-2.5 py-1 rounded-full" id="detailStatusBadge">待审核</span>
             </div>
           </div>
-          <div class="space-y-3">
-            <div class="flex justify-between text-sm">
-              <span class="text-slate-400">工单编号</span>
-              <span class="text-slate-700 font-medium" id="detailId">#WO20240601001</span>
+        </div>
+      </div>
+
+      <!-- Alert Info -->
+      <div class="px-5 mb-4" id="alertInfoSection">
+        <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100">
+          <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3" id="alertInfoTitle">告警信息</h3>
+          <p class="text-[13px] text-slate-700 leading-relaxed" id="detailAlertInfo">
+            后厨烹饪区摄像头检测到厨师未佩戴厨师帽，可能存在卫生安全隐患。请商户及时处理。
+          </p>
+        </div>
+      </div>
+
+      <!-- Alert Screenshots -->
+      <div class="px-5 mb-4" id="alertImagesSection">
+        <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100">
+          <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">告警截图</h3>
+          <div class="grid grid-cols-2 gap-3" id="alertImagesGrid">
+            <div class="photo-thumb bg-slate-100">
+              <img src="" alt="告警截图" onerror="this.style.display='none'; this.parentElement.classList.add('bg-slate-100','flex','items-center','justify-center'); this.parentElement.innerHTML='<div class=text-center><i data-lucide=camera class=w-6 h-6 text-slate-300 mx-auto mb-1></i><span class=text-[10px] text-slate-400>截图 1</span></div>'; setTimeout(()=>lucide.createIcons(),50);" />
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+                <span class="text-[10px] text-white font-medium">2024-12-01 14:30:22</span>
+                <span class="text-[10px] text-white/70 block">后厨烹饪区摄像头</span>
+              </div>
             </div>
-            <div class="flex justify-between text-sm">
-              <span class="text-slate-400">发起时间</span>
-              <span class="text-slate-700 font-medium" id="detailDate">2024-06-01 09:30</span>
+            <div class="photo-thumb bg-slate-100">
+              <img src="" alt="告警截图" onerror="this.style.display='none'; this.parentElement.classList.add('bg-slate-100','flex','items-center','justify-center'); this.parentElement.innerHTML='<div class=text-center><i data-lucide=camera class=w-6 h-6 text-slate-300 mx-auto mb-1></i><span class=text-[10px] text-slate-400>截图 2</span></div>'; setTimeout(()=>lucide.createIcons(),50);" />
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+                <span class="text-[10px] text-white font-medium">2024-12-01 14:30:25</span>
+                <span class="text-[10px] text-white/70 block">后厨通道摄像头</span>
+              </div>
             </div>
-            <div class="flex justify-between text-sm">
-              <span class="text-slate-400">要求完成时间</span>
-              <span class="text-slate-700 font-medium" id="detailDeadline">2024-06-15</span>
-            </div>
-          </div>
-          <div class="mt-4 pt-4 border-t border-slate-100">
-            <p class="text-sm text-slate-500 leading-relaxed" id="detailDesc">
-              根据近期检查，你单位后厨存在卫生不达标情况，请于6月15日前完成整改并提交整改报告及相关照片。
-            </p>
           </div>
         </div>
       </div>
@@ -356,13 +387,13 @@
               <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all" id="step3Circle">
                 <i data-lucide="archive" class="w-5 h-5"></i>
               </div>
-              <span class="text-[11px] font-medium mt-2 text-center whitespace-nowrap" id="step3Label">已归档</span>
+              <span class="text-[11px] font-medium mt-2 text-center whitespace-nowrap" id="step3Label">已通过</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Submitted content (read-only, for processing/archived/rejected) -->
+      <!-- Submitted content (read-only, for pending/rejected/passed) -->
       <div class="px-5 mb-4 hidden" id="submittedContentSection">
         <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100">
           <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">已提交内容</h3>
@@ -449,7 +480,7 @@
     <div class="flex-1 overflow-y-auto px-5 pt-5 pb-8">
       <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100">
         <label class="block text-sm font-medium text-slate-600 mb-1.5">申诉工单</label>
-        <div class="bg-slate-50 rounded-xl px-4 py-3 text-sm text-slate-700 mb-5" id="appealOrderRef">#WO20240601001 — 后厨卫生整改通知</div>
+        <div class="bg-slate-50 rounded-xl px-4 py-3 text-sm text-slate-700 mb-5" id="appealOrderRef">WO240601 — 后厨卫生整改通知</div>
 
         <label class="block text-sm font-medium text-slate-600 mb-1.5">申诉理由</label>
         <textarea
@@ -906,7 +937,7 @@
               <div class="flex items-end gap-4">
                 <span class="text-7xl font-bold text-white leading-none tabular-nums" style="font-size: 5rem;">5</span>
                 <div class="pb-2">
-                  <span class="text-base text-white/80 font-medium">条待处理工单</span>
+                  <span class="text-base text-white/80 font-medium">条待审核工单</span>
                   <div class="flex items-center gap-2 mt-1.5">
                     <span class="w-2 h-2 rounded-full bg-orange-400 animate-pulse"></span>
                     <span class="text-sm text-orange-300 font-medium">需要关注</span>
@@ -974,15 +1005,15 @@
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center gap-2 mb-0.5">
                     <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-md bg-red-50 text-red-600">报警</span>
-                    <span class="text-[11px] text-slate-400">#WO240601</span>
+                    <span class="text-[11px] text-slate-400">WO240601</span>
                   </div>
                   <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">后厨卫生整改通知</h3>
-                  <p class="text-[13px] text-slate-400 mt-1 flex items-center gap-1.5">
-                    <i data-lucide="clock" class="w-3 h-3"></i> 要求完成：2024-06-15
+                  <p class="text-[12px] text-slate-400 mt-1 leading-relaxed">
+                    设备：明厨亮灶专用智能摄像头 · 摄像头：后厨烹饪区摄像头 / 后厨通道摄像头
                   </p>
                 </div>
                 <div class="flex flex-col items-end gap-1.5 shrink-0">
-                  <span class="text-[11px] font-semibold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-full whitespace-nowrap">待处理</span>
+                  <span class="text-[11px] font-semibold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-full whitespace-nowrap">待审核</span>
                 </div>
               </div>
             </div>
@@ -995,15 +1026,15 @@
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center gap-2 mb-0.5">
                     <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600">换证</span>
-                    <span class="text-[11px] text-slate-400">#LC240528</span>
+                    <span class="text-[11px] text-slate-400">LC240528</span>
                   </div>
                   <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">食品经营许可证即将到期</h3>
-                  <p class="text-[13px] text-slate-400 mt-1 flex items-center gap-1.5">
-                    <i data-lucide="calendar" class="w-3 h-3"></i> 到期日期：2024-07-20
+                  <p class="text-[12px] text-slate-400 mt-1 leading-relaxed">
+                    到期日期：2024-07-20
                   </p>
                 </div>
                 <div class="flex flex-col items-end gap-1.5 shrink-0">
-                  <span class="text-[11px] font-semibold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-full whitespace-nowrap">待处理</span>
+                  <span class="text-[11px] font-semibold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-full whitespace-nowrap">待审核</span>
                 </div>
               </div>
             </div>
@@ -1016,11 +1047,11 @@
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center gap-2 mb-0.5">
                     <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-md bg-red-50 text-red-600">报警</span>
-                    <span class="text-[11px] text-slate-400">#WO240610</span>
+                    <span class="text-[11px] text-slate-400">WO240610</span>
                   </div>
                   <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">食材存储温度异常告警</h3>
-                  <p class="text-[13px] text-slate-400 mt-1 flex items-center gap-1.5">
-                    <i data-lucide="clock" class="w-3 h-3"></i> 告警时间：2024-06-10 14:30
+                  <p class="text-[12px] text-slate-400 mt-1 leading-relaxed">
+                    设备：冷链温度监测传感器 · 摄像头：冷链仓库全景摄像头
                   </p>
                 </div>
                 <div class="flex flex-col items-end gap-1.5 shrink-0">
@@ -1038,10 +1069,9 @@
         <div class="sticky top-0 z-10 bg-slate-50 px-5 pt-3 pb-3 -mx-0">
           <!-- Filter tabs -->
           <div class="flex gap-2 overflow-x-auto scrollbar-hide mb-3" id="orderFilterBar">
-            <button onclick="filterOrders('pending', this)" class="shrink-0 px-4 py-2 text-[13px] font-semibold rounded-xl bg-blue-600 text-white transition-all">待处理 <span class="opacity-70 ml-0.5">2</span></button>
-            <button onclick="filterOrders('processing', this)" class="shrink-0 px-4 py-2 text-[13px] font-medium rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all">处理中 <span class="opacity-50 ml-0.5">1</span></button>
+            <button onclick="filterOrders('pending', this)" class="shrink-0 px-4 py-2 text-[13px] font-semibold rounded-xl bg-blue-600 text-white transition-all">待审核 <span class="opacity-70 ml-0.5">3</span></button>
             <button onclick="filterOrders('rejected', this)" class="shrink-0 px-4 py-2 text-[13px] font-medium rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all">已驳回 <span class="opacity-50 ml-0.5">1</span></button>
-            <button onclick="filterOrders('archived', this)" class="shrink-0 px-4 py-2 text-[13px] font-medium rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all">已归档 <span class="opacity-50 ml-0.5">4</span></button>
+            <button onclick="filterOrders('passed', this)" class="shrink-0 px-4 py-2 text-[13px] font-medium rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all">已通过 <span class="opacity-50 ml-0.5">4</span></button>
           </div>
 
           <!-- Search & Time filters -->
@@ -1067,7 +1097,7 @@
 
         <!-- Unified Order List -->
         <div class="px-5 pb-24 space-y-3 anim-stagger reveal" id="orderList">
-          <!-- Order 1: 报警 - 未处理 -->
+          <!-- Order 1: 报警 - 待审核 -->
           <div onclick="openOrderDetail('order1')" class="order-card group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated" data-status="pending" data-date="2024-06-01">
             <div class="flex items-start gap-3">
               <div class="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center shrink-0 mt-0.5">
@@ -1076,20 +1106,20 @@
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 mb-0.5">
                   <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-md bg-red-50 text-red-600">报警</span>
-                  <span class="text-[11px] text-slate-400">#WO240601</span>
+                  <span class="text-[11px] text-slate-400">WO240601</span>
                 </div>
                 <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">后厨卫生整改通知</h3>
-                <p class="text-[13px] text-slate-400 mt-1 flex items-center gap-1.5">
-                  <i data-lucide="clock" class="w-3 h-3"></i> 要求完成：2024-06-15
+                <p class="text-[12px] text-slate-400 mt-1 leading-relaxed">
+                  设备：明厨亮灶专用智能摄像头 · 摄像头：后厨烹饪区摄像头 / 后厨通道摄像头
                 </p>
               </div>
               <div class="flex flex-col items-end gap-1.5 shrink-0">
-                <span class="text-[11px] font-semibold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-full whitespace-nowrap">未处理</span>
+                <span class="text-[11px] font-semibold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-full whitespace-nowrap">待审核</span>
               </div>
             </div>
           </div>
 
-          <!-- Order 2: 换证 - 未处理 -->
+          <!-- Order 2: 换证 - 待审核 -->
           <div onclick="openOrderDetail('order2')" class="order-card group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated" data-status="pending" data-date="2024-05-28">
             <div class="flex items-start gap-3">
               <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0 mt-0.5">
@@ -1098,21 +1128,21 @@
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 mb-0.5">
                   <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600">换证</span>
-                  <span class="text-[11px] text-slate-400">#LC240528</span>
+                  <span class="text-[11px] text-slate-400">LC240528</span>
                 </div>
                 <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">食品经营许可证即将到期</h3>
-                <p class="text-[13px] text-slate-400 mt-1 flex items-center gap-1.5">
-                  <i data-lucide="calendar" class="w-3 h-3"></i> 到期日期：2024-07-20 · 剩余21天
+                <p class="text-[12px] text-slate-400 mt-1 leading-relaxed">
+                  到期日期：2024-07-20 · 剩余21天
                 </p>
               </div>
               <div class="flex flex-col items-end gap-1.5 shrink-0">
-                <span class="text-[11px] font-semibold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-full whitespace-nowrap">未处理</span>
+                <span class="text-[11px] font-semibold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-full whitespace-nowrap">待审核</span>
               </div>
             </div>
           </div>
 
-          <!-- Order 3: 报警 - 处理中 -->
-          <div onclick="openOrderDetail('order3')" class="order-card group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated" data-status="processing" data-date="2024-06-10">
+          <!-- Order 3: 报警 - 待审核 -->
+          <div onclick="openOrderDetail('order3')" class="order-card group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated" data-status="pending" data-date="2024-06-10">
             <div class="flex items-start gap-3">
               <div class="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center shrink-0 mt-0.5">
                 <i data-lucide="alert-circle" class="w-5 h-5 text-red-500"></i>
@@ -1120,21 +1150,21 @@
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 mb-0.5">
                   <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-md bg-red-50 text-red-600">报警</span>
-                  <span class="text-[11px] text-slate-400">#WO240610</span>
+                  <span class="text-[11px] text-slate-400">WO240610</span>
                 </div>
                 <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">食材存储温度异常告警</h3>
-                <p class="text-[13px] text-slate-400 mt-1 flex items-center gap-1.5">
-                  <i data-lucide="clock" class="w-3 h-3"></i> 告警时间：2024-06-10 14:30
+                <p class="text-[12px] text-slate-400 mt-1 leading-relaxed">
+                  设备：冷链温度监测传感器 · 摄像头：冷链仓库全景摄像头
                 </p>
               </div>
               <div class="flex flex-col items-end gap-1.5 shrink-0">
-                <span class="text-[11px] font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full whitespace-nowrap">处理中</span>
+                <span class="text-[11px] font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full whitespace-nowrap">待审核</span>
               </div>
             </div>
           </div>
 
-          <!-- Order 4: 申诉 - 已归档 -->
-          <div onclick="openOrderDetail('order4')" class="order-card group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated" data-status="archived" data-date="2024-05-20">
+          <!-- Order 4: 申诉 - 已通过 -->
+          <div onclick="openOrderDetail('order4')" class="order-card group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated" data-status="passed" data-date="2024-05-20">
             <div class="flex items-start gap-3">
               <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 mt-0.5">
                 <i data-lucide="message-square-warning" class="w-5 h-5 text-slate-400"></i>
@@ -1142,21 +1172,21 @@
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 mb-0.5">
                   <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-md bg-orange-50 text-orange-600">申诉</span>
-                  <span class="text-[11px] text-slate-400">#AP240520</span>
+                  <span class="text-[11px] text-slate-400">AP240520</span>
                 </div>
                 <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">从业人员健康证过期 — 申诉已通过</h3>
-                <p class="text-[13px] text-slate-400 mt-1 flex items-center gap-1.5">
-                  <i data-lucide="clock" class="w-3 h-3"></i> 归档时间：2024-06-05
+                <p class="text-[12px] text-slate-400 mt-1 leading-relaxed">
+                  归档时间：2024-06-05
                 </p>
               </div>
               <div class="flex flex-col items-end gap-1.5 shrink-0">
-                <span class="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full whitespace-nowrap">已归档</span>
+                <span class="text-[11px] font-semibold text-green-600 bg-green-50 px-2.5 py-1 rounded-full whitespace-nowrap">已通过</span>
               </div>
             </div>
           </div>
 
-          <!-- Order 5: 换证 - 已归档 -->
-          <div onclick="openOrderDetail('order5')" class="order-card group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated" data-status="archived" data-date="2024-06-12">
+          <!-- Order 5: 换证 - 已通过 -->
+          <div onclick="openOrderDetail('order5')" class="order-card group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated" data-status="passed" data-date="2024-06-12">
             <div class="flex items-start gap-3">
               <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 mt-0.5">
                 <i data-lucide="file-text" class="w-5 h-5 text-slate-400"></i>
@@ -1164,15 +1194,15 @@
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 mb-0.5">
                   <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600">换证</span>
-                  <span class="text-[11px] text-slate-400">#LC240612</span>
+                  <span class="text-[11px] text-slate-400">LC240612</span>
                 </div>
                 <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">食品生产许可证年审提醒</h3>
-                <p class="text-[13px] text-slate-400 mt-1 flex items-center gap-1.5">
-                  <i data-lucide="clock" class="w-3 h-3"></i> 年审完成：2024-06-12
+                <p class="text-[12px] text-slate-400 mt-1 leading-relaxed">
+                  年审完成：2024-06-12
                 </p>
               </div>
               <div class="flex flex-col items-end gap-1.5 shrink-0">
-                <span class="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full whitespace-nowrap">已归档</span>
+                <span class="text-[11px] font-semibold text-green-600 bg-green-50 px-2.5 py-1 rounded-full whitespace-nowrap">已通过</span>
               </div>
             </div>
           </div>
@@ -1186,11 +1216,11 @@
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 mb-0.5">
                   <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-md bg-red-50 text-red-600">报警</span>
-                  <span class="text-[11px] text-slate-400">#WO240608</span>
+                  <span class="text-[11px] text-slate-400">WO240608</span>
                 </div>
                 <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">后厨卫生整改复查未通过</h3>
-                <p class="text-[13px] text-slate-400 mt-1 flex items-center gap-1.5">
-                  <i data-lucide="clock" class="w-3 h-3"></i> 驳回时间：2024-06-08
+                <p class="text-[12px] text-slate-400 mt-1 leading-relaxed">
+                  设备：明厨亮灶专用智能摄像头 · 摄像头：后厨烹饪区摄像头
                 </p>
               </div>
               <div class="flex flex-col items-end gap-1.5 shrink-0">
@@ -1199,8 +1229,8 @@
             </div>
           </div>
 
-          <!-- Order 7: 申诉 - 已归档 -->
-          <div onclick="openOrderDetail('order7')" class="order-card group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated" data-status="archived" data-date="2024-06-15">
+          <!-- Order 7: 申诉 - 已通过 -->
+          <div onclick="openOrderDetail('order7')" class="order-card group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated" data-status="passed" data-date="2024-06-15">
             <div class="flex items-start gap-3">
               <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 mt-0.5">
                 <i data-lucide="message-square-warning" class="w-5 h-5 text-slate-400"></i>
@@ -1208,21 +1238,21 @@
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 mb-0.5">
                   <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-md bg-orange-50 text-orange-600">申诉</span>
-                  <span class="text-[11px] text-slate-400">#AP240615</span>
+                  <span class="text-[11px] text-slate-400">AP240615</span>
                 </div>
                 <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">食材存储温度异常告警 — 申诉已通过</h3>
-                <p class="text-[13px] text-slate-400 mt-1 flex items-center gap-1.5">
-                  <i data-lucide="clock" class="w-3 h-3"></i> 归档时间：2024-06-15
+                <p class="text-[12px] text-slate-400 mt-1 leading-relaxed">
+                  设备：冷链温度监测传感器 · 摄像头：冷链仓库全景摄像头
                 </p>
               </div>
               <div class="flex flex-col items-end gap-1.5 shrink-0">
-                <span class="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full whitespace-nowrap">已归档</span>
+                <span class="text-[11px] font-semibold text-green-600 bg-green-50 px-2.5 py-1 rounded-full whitespace-nowrap">已通过</span>
               </div>
             </div>
           </div>
 
-          <!-- Order 8: 驳回重提交 → 已归档 -->
-          <div onclick="openOrderDetail('order8')" class="order-card group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated" data-status="archived" data-date="2024-06-18">
+          <!-- Order 8: 驳回重提交 → 已通过 -->
+          <div onclick="openOrderDetail('order8')" class="order-card group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated" data-status="passed" data-date="2024-06-18">
             <div class="flex items-start gap-3">
               <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 mt-0.5">
                 <i data-lucide="alert-circle" class="w-5 h-5 text-slate-400"></i>
@@ -1230,15 +1260,15 @@
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 mb-0.5">
                   <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-md bg-red-50 text-red-600">报警</span>
-                  <span class="text-[11px] text-slate-400">#WO240608</span>
+                  <span class="text-[11px] text-slate-400">WO240608</span>
                 </div>
-                <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">后厨卫生整改 — 驳回重提交已归档</h3>
-                <p class="text-[13px] text-slate-400 mt-1 flex items-center gap-1.5">
-                  <i data-lucide="clock" class="w-3 h-3"></i> 归档时间：2024-06-18
+                <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">后厨卫生整改 — 驳回重提交已通过</h3>
+                <p class="text-[12px] text-slate-400 mt-1 leading-relaxed">
+                  设备：明厨亮灶专用智能摄像头 · 摄像头：后厨烹饪区摄像头
                 </p>
               </div>
               <div class="flex flex-col items-end gap-1.5 shrink-0">
-                <span class="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full whitespace-nowrap">已归档</span>
+                <span class="text-[11px] font-semibold text-green-600 bg-green-50 px-2.5 py-1 rounded-full whitespace-nowrap">已通过</span>
               </div>
             </div>
           </div>
@@ -2124,7 +2154,7 @@ function applyAllFilters() {
     if (keyword) reason = '关键词无匹配';
     else if (currentTimeFilter !== 'all') reason = '该时间段内无工单';
     else if (currentOrderFilter !== 'all') {
-      const textMap = { pending: '暂无待处理工单', processing: '暂无处理中工单', rejected: '暂无已驳回工单', archived: '暂无已归档工单' };
+      const textMap = { pending: '暂无待审核工单', rejected: '暂无已驳回工单', passed: '暂无已通过工单' };
       reason = textMap[currentOrderFilter];
     }
     document.getElementById('orderEmptyText').textContent = reason || '暂无工单';
@@ -2144,66 +2174,96 @@ function applyAllFilters() {
 // ===== ORDER DETAIL OVERLAY =====
 const orderData = {
   order1: {
-    type: '报警记录', typeClass: 'bg-red-50 text-red-600',
-    title: '后厨卫生整改通知', id: '#WO240601', date: '2024-06-01 09:30',
+    orderType: '报警工单', typeTag: '报警', typeClass: 'bg-red-50 text-red-600',
+    title: '后厨卫生整改通知', id: 'WO240601', date: '2024-06-01 09:30',
     deadline: '2024-06-15',
-    desc: '根据近期检查，你单位后厨存在卫生不达标情况（操作台面清洁不彻底、垃圾桶未加盖、地面有积水和油污），请于6月15日前完成整改并提交整改报告及现场照片。',
-    status: '未处理', statusClass: 'bg-orange-50 text-orange-600'
+    device: '明厨亮灶专用智能摄像头',
+    cameras: '后厨烹饪区摄像头 / 后厨通道摄像头',
+    alertInfo: '后厨烹饪区摄像头检测到厨师未佩戴厨师帽，可能存在卫生安全隐患。请商户及时处理。',
+    alertImages: [
+      { time: '2024-06-01 09:30:15', camera: '后厨烹饪区摄像头' },
+      { time: '2024-06-01 09:30:18', camera: '后厨通道摄像头' },
+    ],
+    status: '待审核', statusClass: 'bg-orange-50 text-orange-600'
   },
   order2: {
-    type: '换证提醒', typeClass: 'bg-blue-50 text-blue-600',
-    title: '食品经营许可证即将到期', id: '#LC240528', date: '2024-05-28 08:00',
+    orderType: '换证提醒', typeTag: '换证', typeClass: 'bg-blue-50 text-blue-600',
+    title: '食品经营许可证即将到期', id: 'LC240528', date: '2024-05-28 08:00',
     deadline: '2024-07-20',
-    desc: '你单位的食品经营许可证（编号：JY111050XXXXXX）将于2024年7月20日到期。请在有效期届满前30个工作日内向原发证机关申请延续，并按要求提交相关材料。',
-    status: '未处理', statusClass: 'bg-orange-50 text-orange-600'
+    device: '—',
+    cameras: '—',
+    alertInfo: '你单位的食品经营许可证（编号：JY111050XXXXXX）将于2024年7月20日到期。请在有效期届满前30个工作日内向原发证机关申请延续，并按要求提交相关材料。',
+    alertImages: [],
+    status: '待审核', statusClass: 'bg-orange-50 text-orange-600'
   },
   order3: {
-    type: '报警记录', typeClass: 'bg-red-50 text-red-600',
-    title: '食材存储温度异常告警', id: '#WO240610', date: '2024-06-10 14:30',
+    orderType: '报警工单', typeTag: '报警', typeClass: 'bg-red-50 text-red-600',
+    title: '食材存储温度异常告警', id: 'WO240610', date: '2024-06-10 14:30',
     deadline: '2024-06-11',
-    desc: '系统监测到冷链仓库温度在14:30-14:45期间持续超过4℃，可能影响食材品质安全。请立即检查冷链设备运行状态，确认食材安全后提交设备检查和食材状态报告。',
-    status: '处理中', statusClass: 'bg-blue-50 text-blue-600'
+    device: '冷链温度监测传感器',
+    cameras: '冷链仓库全景摄像头',
+    alertInfo: '系统监测到冷链仓库温度在14:30-14:45期间持续超过4℃，可能影响食材品质安全。请立即检查冷链设备运行状态，确认食材安全后提交设备检查和食材状态报告。',
+    alertImages: [
+      { time: '2024-06-10 14:30:05', camera: '冷链仓库全景摄像头' },
+      { time: '2024-06-10 14:35:22', camera: '冷链仓库全景摄像头' },
+    ],
+    status: '待审核', statusClass: 'bg-orange-50 text-orange-600'
   },
   order4: {
-    type: '申诉记录', typeClass: 'bg-orange-50 text-orange-600',
-    title: '从业人员健康证过期 — 申诉已通过', id: '#AP240520', date: '2024-05-20 10:00',
+    orderType: '申诉记录', typeTag: '申诉', typeClass: 'bg-orange-50 text-orange-600',
+    title: '从业人员健康证过期 — 申诉已通过', id: 'AP240520', date: '2024-05-20 10:00',
     deadline: '2024-06-05',
-    desc: '你单位就"从业人员健康证过期"工单发起的申诉已通过监管审核。经核查，相关人员已在规定期限内完成体检，新健康证已生效。该工单自动归档。',
-    status: '已归档', statusClass: 'bg-slate-100 text-slate-500',
+    device: '—',
+    cameras: '—',
+    alertInfo: '你单位就"从业人员健康证过期"工单发起的申诉已通过监管审核。经核查，相关人员已在规定期限内完成体检，新健康证已生效。该工单自动归档。',
+    alertImages: [],
+    status: '已通过', statusClass: 'bg-green-50 text-green-600',
     isAppeal: true
   },
   order5: {
-    type: '换证提醒', typeClass: 'bg-blue-50 text-blue-600',
-    title: '食品生产许可证年审提醒', id: '#LC240612', date: '2024-06-12 08:00',
+    orderType: '换证提醒', typeTag: '换证', typeClass: 'bg-blue-50 text-blue-600',
+    title: '食品生产许可证年审提醒', id: 'LC240612', date: '2024-06-12 08:00',
     deadline: '2024-08-15',
-    desc: '你单位的食品生产许可证需在2024年8月15日前完成年度审核。请准备年度自查报告、产品检测报告等材料，按时提交年审申请。',
-    status: '已归档', statusClass: 'bg-slate-100 text-slate-500'
+    device: '—',
+    cameras: '—',
+    alertInfo: '你单位的食品生产许可证需在2024年8月15日前完成年度审核。请准备年度自查报告、产品检测报告等材料，按时提交年审申请。',
+    alertImages: [],
+    status: '已通过', statusClass: 'bg-green-50 text-green-600'
   },
   order6: {
-    type: '报警记录', typeClass: 'bg-red-50 text-red-600',
-    title: '后厨卫生整改复查未通过', id: '#WO240608', date: '2024-06-08 11:00',
+    orderType: '报警工单', typeTag: '报警', typeClass: 'bg-red-50 text-red-600',
+    title: '后厨卫生整改复查未通过', id: 'WO240608', date: '2024-06-08 11:00',
     deadline: '2024-06-20',
-    desc: '你单位提交的整改材料经复审未通过。主要问题：操作台面清洁仍不达标、未提供垃圾桶加盖的整改照片。请根据驳回意见重新整改并提交材料。',
+    device: '明厨亮灶专用智能摄像头',
+    cameras: '后厨烹饪区摄像头',
+    alertInfo: '你单位提交的整改材料经复审未通过。主要问题：操作台面清洁仍不达标、未提供垃圾桶加盖的整改照片。请根据驳回意见重新整改并提交材料。',
+    alertImages: [],
     status: '已驳回', statusClass: 'bg-red-50 text-red-600',
     submittedText: '已完成操作台面深度清洁，更换了新的不锈钢垃圾桶并加盖，重新粉刷了后厨墙面。详见照片。',
     submittedPhotos: true
   },
   order7: {
-    type: '申诉记录', typeClass: 'bg-orange-50 text-orange-600',
-    title: '食材存储温度异常告警 — 申诉已通过', id: '#AP240615', date: '2024-06-15 14:00',
+    orderType: '申诉记录', typeTag: '申诉', typeClass: 'bg-orange-50 text-orange-600',
+    title: '食材存储温度异常告警 — 申诉已通过', id: 'AP240615', date: '2024-06-15 14:00',
     deadline: '2024-06-20',
-    desc: '你单位就"食材存储温度异常告警"工单发起的申诉已通过监管审核。经核实，温度异常系冷链设备传感器故障所致，实际食材存储温度正常。设备已修复，该工单自动归档。',
-    status: '已归档', statusClass: 'bg-slate-100 text-slate-500',
+    device: '冷链温度监测传感器',
+    cameras: '冷链仓库全景摄像头',
+    alertInfo: '你单位就"食材存储温度异常告警"工单发起的申诉已通过监管审核。经核实，温度异常系冷链设备传感器故障所致，实际食材存储温度正常。设备已修复，该工单自动归档。',
+    alertImages: [],
+    status: '已通过', statusClass: 'bg-green-50 text-green-600',
     isAppeal: true,
     submittedText: '经检查，冷链仓库温度异常系传感器故障导致，实际食材存储温度一直维持在2-3℃，符合标准。已更换新的温度传感器，附设备维修单据和食材温度记录。',
     submittedPhotos: true
   },
   order8: {
-    type: '报警记录', typeClass: 'bg-red-50 text-red-600',
-    title: '后厨卫生整改 — 驳回重提交已归档', id: '#WO240608', date: '2024-06-08 11:00',
+    orderType: '报警工单', typeTag: '报警', typeClass: 'bg-red-50 text-red-600',
+    title: '后厨卫生整改 — 驳回重提交已通过', id: 'WO240608', date: '2024-06-08 11:00',
     deadline: '2024-06-18',
-    desc: '你单位就"后厨卫生整改复查未通过"工单重新提交了整改材料。经监管复审，操作台面清洁、垃圾桶加盖、后厨墙面均已达标。审核通过，工单归档。',
-    status: '已归档', statusClass: 'bg-slate-100 text-slate-500',
+    device: '明厨亮灶专用智能摄像头',
+    cameras: '后厨烹饪区摄像头',
+    alertInfo: '你单位就"后厨卫生整改复查未通过"工单重新提交了整改材料。经监管复审，操作台面清洁、垃圾桶加盖、后厨墙面均已达标。审核通过，工单归档。',
+    alertImages: [],
+    status: '已通过', statusClass: 'bg-green-50 text-green-600',
     submittedText: '已按驳回意见完成以下整改：1. 操作台面深度清洁并消毒；2. 更换不锈钢加盖垃圾桶并拍摄加盖状态照片；3. 后厨墙面重新粉刷防水涂料。附整改前后对比照片。',
     submittedPhotos: true
   }
@@ -2214,17 +2274,54 @@ function openOrderDetail(orderId) {
   const data = orderData[orderId];
   if (!data) return;
 
-  // Populate detail view
-  document.getElementById('detailType').textContent = data.type;
-  document.getElementById('detailType').className = 'text-xs font-semibold px-2.5 py-1 rounded-full uppercase tracking-wide ' + data.typeClass;
-  document.getElementById('detailTitle').textContent = data.title;
+  // Populate detail view - fields
   document.getElementById('detailId').textContent = data.id;
-  document.getElementById('detailDate').textContent = data.date;
-  document.getElementById('detailDeadline').textContent = data.deadline;
-  document.getElementById('detailDesc').textContent = data.desc;
+  document.getElementById('detailOrderType').textContent = data.orderType;
+  document.getElementById('detailDevice').textContent = data.device;
+  document.getElementById('detailCameras').textContent = data.cameras;
   const badge = document.getElementById('detailStatusBadge');
   badge.textContent = data.status;
   badge.className = 'text-xs font-medium px-2.5 py-1 rounded-full ' + data.statusClass;
+
+  // Alert info section
+  const alertInfoSection = document.getElementById('alertInfoSection');
+  if (data.alertInfo) {
+    alertInfoSection.style.display = '';
+    document.getElementById('detailAlertInfo').textContent = data.alertInfo;
+    // Set section title based on order type
+    const alertTitle = document.getElementById('alertInfoTitle');
+    if (data.orderType === '报警工单' || data.orderType === '申诉记录') {
+      alertTitle.textContent = '告警信息';
+    } else {
+      alertTitle.textContent = '详情说明';
+    }
+  } else {
+    alertInfoSection.style.display = 'none';
+  }
+
+  // Alert images section
+  const alertImagesSection = document.getElementById('alertImagesSection');
+  const alertImagesGrid = document.getElementById('alertImagesGrid');
+  if (data.alertImages && data.alertImages.length > 0) {
+    alertImagesSection.style.display = '';
+    let imagesHtml = '';
+    data.alertImages.forEach((img, i) => {
+      imagesHtml += `
+        <div class="photo-thumb bg-slate-100 flex items-center justify-center">
+          <div class="text-center">
+            <i data-lucide="camera" class="w-6 h-6 text-slate-300 mx-auto mb-1"></i>
+            <span class="text-[10px] text-slate-400">截图 ${i + 1}</span>
+          </div>
+          <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+            <span class="text-[10px] text-white font-medium">${img.time}</span>
+            <span class="text-[10px] text-white/70 block">${img.camera}</span>
+          </div>
+        </div>`;
+    });
+    alertImagesGrid.innerHTML = imagesHtml;
+  } else {
+    alertImagesSection.style.display = 'none';
+  }
 
   // Set progress stepper
   const statusText = data.status;
@@ -2234,7 +2331,7 @@ function openOrderDetail(orderId) {
   const steps = [
     { circle: document.getElementById('step1Circle'), label: document.getElementById('step1Label'), text: step1Text },
     { circle: document.getElementById('step2Circle'), label: document.getElementById('step2Label'), text: '监管审核' },
-    { circle: document.getElementById('step3Circle'), label: document.getElementById('step3Label'), text: '已归档' },
+    { circle: document.getElementById('step3Circle'), label: document.getElementById('step3Label'), text: '已通过' },
   ];
 
   // Update step labels and reset icons
@@ -2244,19 +2341,15 @@ function openOrderDetail(orderId) {
   document.getElementById('step3Circle').innerHTML = '<i data-lucide="archive" class="w-5 h-5"></i>';
   steps.forEach(s => { s.label.textContent = s.text; });
 
-  if (statusText === '未处理') {
+  if (statusText === '待审核') {
     setStepState(steps[0], 'active');
     setStepState(steps[1], 'pending');
-    setStepState(steps[2], 'pending');
-  } else if (statusText === '处理中') {
-    setStepState(steps[0], 'completed');
-    setStepState(steps[1], 'active');
     setStepState(steps[2], 'pending');
   } else if (statusText === '已驳回') {
     setStepState(steps[0], 'completed');
     setStepState(steps[1], 'rejected');
     setStepState(steps[2], 'pending');
-  } else if (statusText === '已归档') {
+  } else if (statusText === '已通过') {
     setStepState(steps[0], 'completed');
     setStepState(steps[1], 'completed');
     setStepState(steps[2], 'completed');
@@ -2271,7 +2364,7 @@ function openOrderDetail(orderId) {
 
   const hasSubmitted = data.submittedText;
 
-  if (statusText === '未处理') {
+  if (statusText === '待审核') {
     submittedSection.classList.add('hidden');
     formSection.style.display = '';
     responseTitle.textContent = '提交整改反馈';
@@ -2282,14 +2375,6 @@ function openOrderDetail(orderId) {
     document.getElementById('responseText').value = '';
     resetPhotos();
     showUploadZone(true);
-  } else if (statusText === '处理中') {
-    if (hasSubmitted) {
-      submittedSection.classList.remove('hidden');
-      document.getElementById('submittedText').textContent = data.submittedText;
-    } else {
-      submittedSection.classList.add('hidden');
-    }
-    formSection.style.display = 'none';
   } else if (statusText === '已驳回') {
     if (hasSubmitted) {
       submittedSection.classList.remove('hidden');
@@ -2306,7 +2391,7 @@ function openOrderDetail(orderId) {
     document.getElementById('responseText').value = '';
     resetPhotos();
     showUploadZone(true);
-  } else if (statusText === '已归档') {
+  } else if (statusText === '已通过') {
     if (hasSubmitted) {
       submittedSection.classList.remove('hidden');
       document.getElementById('submittedText').textContent = data.submittedText;
@@ -2317,7 +2402,7 @@ function openOrderDetail(orderId) {
   }
 
   // Reset form
-  if (statusText === '未处理' || statusText === '已驳回') {
+  if (statusText === '待审核' || statusText === '已驳回') {
     document.getElementById('responseText').value = '';
     resetPhotos();
   }
@@ -2370,7 +2455,7 @@ function openQuickResponse(type) {
   } else if (type === 'appeal') {
     // Open appeal overlay for first pending order
     currentOrderId = 'order1';
-    document.getElementById('appealOrderRef').textContent = '#WO240601 — 后厨卫生整改通知';
+    document.getElementById('appealOrderRef').textContent = 'WO240601 — 后厨卫生整改通知';
     document.getElementById('appealText').value = '';
     resetAppealPhotos();
     document.getElementById('appealOverlay').classList.add('open');
@@ -2503,27 +2588,27 @@ function submitResponse() {
   const data = orderData[currentOrderId];
   if (!data) return;
 
-  // If rejected order being re-submitted, transition to 处理中
+  // If rejected order being re-submitted, transition to 待审核
   if (data.status === '已驳回') {
-    data.status = '处理中';
-    data.statusClass = 'bg-blue-50 text-blue-600';
+    data.status = '待审核';
+    data.statusClass = 'bg-orange-50 text-orange-600';
     data.submittedText = text || data.submittedText;
 
     // Update the card in the list
     const card = document.querySelector(`[onclick="openOrderDetail('${currentOrderId}')"]`);
     if (card) {
-      card.setAttribute('data-status', 'processing');
+      card.setAttribute('data-status', 'pending');
       const badge = card.querySelector('.rounded-full.whitespace-nowrap');
       if (badge) {
-        badge.textContent = '处理中';
-        badge.className = 'text-[11px] font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full whitespace-nowrap';
+        badge.textContent = '待审核';
+        badge.className = 'text-[11px] font-semibold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-full whitespace-nowrap';
       }
     }
 
     // Update the detail overlay badge and stepper
     const detailBadge = document.getElementById('detailStatusBadge');
-    detailBadge.textContent = '处理中';
-    detailBadge.className = 'text-xs font-medium px-2.5 py-1 rounded-full bg-blue-50 text-blue-600';
+    detailBadge.textContent = '待审核';
+    detailBadge.className = 'text-xs font-medium px-2.5 py-1 rounded-full bg-orange-50 text-orange-600';
 
     const steps = [
       { circle: document.getElementById('step1Circle'), label: document.getElementById('step1Label') },
@@ -2542,7 +2627,7 @@ function submitResponse() {
     // Hide form
     document.getElementById('responseFormSection').style.display = 'none';
 
-    showToast('已重新提交，状态更新为处理中', 'success');
+    showToast('已重新提交，状态更新为待审核', 'success');
     setTimeout(() => lucide.createIcons(), 50);
     return;
   }
@@ -2557,7 +2642,7 @@ function submitAppeal() {
   closeOrderDetail();
   currentOrderId = currentOrderId || 'order1';
   const data = orderData[currentOrderId];
-  document.getElementById('appealOrderRef').textContent = (data ? data.id + ' — ' + data.title : '#WO240601 — 后厨卫生整改通知');
+  document.getElementById('appealOrderRef').textContent = (data ? data.id + ' — ' + data.title : 'WO240601 — 后厨卫生整改通知');
   document.getElementById('appealText').value = '';
   resetAppealPhotos();
   setTimeout(() => {
