@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>康健医疗 - 小程序原型</title>
+<style>
+  :root {
+    --bg: #f5f7f6;
+    --white: #fff;
+    --primary: #099B8C;
+    --primary-light: #e8f6f4;
+    --text: #1a1a1a;
+    --text2: #555;
+    --text3: #999;
+    --red: #e05050;
+    --orange: #e88330;
+    --blue: #3b8fd4;
+    --green: #32a85e;
+    --shadow: 0 1px 3px rgba(0,0,0,0.05);
+    --shadow-md: 0 2px 10px rgba(0,0,0,0.07);
+    --radius: 14px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+    background: #e8ecf0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 20px 0;
+  }
+
+  /* ── SVG Icons (Lucide style) ── */
+  .lucide { width: 22px; height: 22px; stroke: currentColor; stroke-width: 2;
+            stroke-linecap: round; stroke-linejoin: round; fill: none; flex-shrink: 0; }
+  .lucide.sm  { width: 17px; height: 17px; }
+  .lucide.lg  { width: 26px; height: 26px; }
+  .lucide.xl  { width: 30px; height: 30px; }
+
+  /* ── Phone Frame ── */
+  .phone {
+    position: relative;
+    width: 470px;
+    height: 100vh;
+    max-height: 860px;
+    overflow: hidden;
+    background: var(--bg);
+    box-shadow: 0 4px 30px rgba(0,0,0,0.12);
+  }
+
+  /* ── Page Stack ── */
+  .page {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--bg);
+    transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform; overflow-y: auto; overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+  .page.active  { transform: translateX(0); }
+  .page.behind  { transform: translateX(-35%); }
+  .page.forward { transform: translateX(105%); }
+
+  /* ═══════════ MAIN PAGE ═══════════ */
+  #pageMain { padding-bottom: 24px; }
+
+  /* ── 1. Header / Nav ── */
+  .nav-bar {
+    padding: 48px 16px 10px;
+    display: flex; align-items: center; gap: 10px;
+    background: var(--white);
+  }
+  .nav-bar .back { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; color: #333; }
+  .nav-bar .title { font-size: 17px; font-weight: 600; color: var(--text); flex: 1; text-align: center; letter-spacing: 0.5px; }
+  .nav-bar .action { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; color: #333; }
+
+  /* Search bar */
+  .search-bar {
+    margin: 0 14px 10px; padding: 9px 14px;
+    background: #f2f4f4; border-radius: 20px;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: #b0b0b0;
+  }
+
+  /* ── 2. Carousel ── */
+  .carousel {
+    margin: 0 14px 10px; height: 148px; border-radius: var(--radius);
+    overflow: hidden; position: relative;
+    background: linear-gradient(135deg, #e0f0f2 0%, #c8e6e0 30%, #a8d8d0 60%, #7cc8b8 100%);
+  }
+  .carousel-inner {
+    display: flex; width: 100%; height: 100%;
+    background: linear-gradient(135deg, #1a7a6e 0%, #0d8a7e 40%, #199b8d 100%);
+    position: relative;
+  }
+  .carousel-text {
+    position: absolute; bottom: 16px; left: 16px; color: #fff; z-index: 2;
+  }
+  .carousel-text .c-title { font-size: 18px; font-weight: 700; text-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+  .carousel-text .c-sub  { font-size: 11px; opacity: 0.85; margin-top: 4px; }
+  /* Decorative circles */
+  .carousel-inner::before {
+    content: ''; position: absolute; top: -30px; right: -20px;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+  }
+  .carousel-inner::after {
+    content: ''; position: absolute; bottom: -40px; right: 40px;
+    width: 100px; height: 100px; border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+  }
+  /* Dots */
+  .carousel-dots {
+    display: flex; justify-content: center; gap: 6px; margin-top: -22px;
+    position: relative; z-index: 3; padding-bottom: 2px;
+  }
+  .carousel-dots span {
+    width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.5);
+  }
+  .carousel-dots span.active { background: #fff; width: 16px; border-radius: 3px; }
+
+  /* ── 3. Medical Card ── */
+  .medical-card {
+    margin: 12px 14px; padding: 16px 16px 14px;
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow-md); position: relative; overflow: hidden;
+  }
+  .medical-card::after {
+    content: ''; position: absolute; top: -20px; right: -16px;
+    width: 90px; height: 90px; border-radius: 50%;
+    background: rgba(9,155,140,0.06);
+  }
+  .mc-header {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
+    position: relative; z-index: 1;
+  }
+  .mc-header .mc-label {
+    font-size: 13px; color: var(--text3); display: flex; align-items: center; gap: 4px;
+  }
+  .mc-header .mc-badge {
+    font-size: 10px; color: var(--primary); background: var(--primary-light);
+    padding: 2px 8px; border-radius: 10px; font-weight: 500;
+  }
+  .mc-info {
+    display: flex; align-items: flex-end; gap: 20px; position: relative; z-index: 1;
+  }
+  .mc-info .mc-name {
+    font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: 0.5px;
+  }
+  .mc-info .mc-id {
+    font-size: 12px; color: var(--text3); margin-top: 2px;
+  }
+  .mc-qr {
+    width: 38px; height: 38px; background: #f5f5f5; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; color: #bbb; flex-shrink: 0;
+  }
+
+  /* ── 4. Function Area ── */
+  .func-area {
+    margin: 14px 14px;
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 16px 8px;
+  }
+  .func-row {
+    display: flex; align-items: center; justify-content: space-around;
+  }
+  .func-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    cursor: pointer; border: none; background: none; padding: 6px 4px;
+    -webkit-tap-highlight-color: transparent; outline: none;
+    transition: transform 0.15s; position: relative;
+    width: 80px;
+  }
+  .func-btn:active { transform: scale(0.94); }
+  .func-btn .f-icon {
+    width: 48px; height: 48px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .f-icon.c1 { background: #e8f4fd; color: #3b8fd4; }
+  .f-icon.c2 { background: #e4f6ec; color: #32a85e; }
+  .f-icon.c3 { background: #fef0e8; color: #e88330; }
+  .f-icon.c4 { background: #e9f6f4; color: #099B8C; }
+  .func-btn .f-label {
+    font-size: 11px; font-weight: 500; color: #444; letter-spacing: 0.2px;
+  }
+  .func-btn .badge-new {
+    position: absolute; top: 0; right: 6px;
+    background: #ff3b4a; color: #fff; font-size: 9px; font-weight: 600;
+    padding: 1px 7px; border-radius: 8px; line-height: 16px;
+  }
+
+  /* ── 5. Test Items ── */
+  .test-section {
+    margin: 0 14px;
+  }
+  .section-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 0 10px;
+  }
+  .section-head .s-title {
+    font-size: 16px; font-weight: 600; color: var(--text);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-head .s-title::before {
+    content: ''; width: 3px; height: 15px; border-radius: 2px;
+    background: var(--primary); display: block;
+  }
+  .section-head .s-more { font-size: 12px; color: #bbb; }
+
+  .test-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+  }
+  .test-item {
+    background: var(--white); border-radius: var(--radius);
+    padding: 16px 10px 12px; text-align: center;
+    box-shadow: var(--shadow); cursor: pointer;
+    transition: transform 0.15s;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  .test-item:active { transform: scale(0.96); }
+  .test-item .t-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .t-icon.t1 { background: #eef3ff; color: #5b7ce0; }
+  .t-icon.t2 { background: #fef3e8; color: #e08830; }
+  .t-icon.t3 { background: #eef6f0; color: #50a060; }
+  .t-icon.t4 { background: #fef0f0; color: #d05050; }
+  .t-icon.t5 { background: #eef0f8; color: #6858d0; }
+  .t-icon.t6 { background: #e8f4f8; color: #3b90b0; }
+  .test-item .t-name { font-size: 12px; font-weight: 500; color: #444; }
+  .test-item .t-price { font-size: 10px; color: #bbb; }
+
+  /* ═══════════ SOLUTION PAGE ═══════════ */
+  #pageSolution { padding-bottom: 30px; }
+  .page-header {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--primary); padding: 46px 14px 14px;
+    display: flex; align-items: center; gap: 10px; color: #fff;
+  }
+  .page-header .h-back {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(255,255,255,0.2); border: none; color: #fff;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    padding: 6px;
+  }
+  .page-header .h-title { font-size: 17px; font-weight: 600; letter-spacing: 0.3px; }
+
+  .sol-card-detail {
+    background: var(--white); margin: 14px 14px; border-radius: var(--radius);
+    padding: 18px 16px; box-shadow: var(--shadow);
+  }
+  .sol-card-detail .sd-head {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding-bottom: 14px; border-bottom: 1px solid #f0f0f0; margin-bottom: 14px;
+  }
+  .sd-icon-wrap {
+    width: 48px; height: 48px; border-radius: 13px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;
+  }
+  .sd-icon-wrap.d1 { background: #fff0f0; color: #e05050; }
+  .sd-icon-wrap.d2 { background: #e8f8f5; color: #099B8C; }
+  .sd-icon-wrap.d3 { background: #fef6e8; color: #d4880c; }
+  .sd-icon-wrap.d4 { background: #f2edfc; color: #6c50d8; }
+  .sd-head .sd-name { font-size: 16px; font-weight: 600; color: var(--text); line-height: 1.4; }
+  .sd-head .sd-price { font-size: 13px; color: var(--primary); font-weight: 500; margin-top: 3px; }
+
+  /* Image placeholder */
+  .sd-img-placeholder {
+    margin: 14px 0; border-radius: 10px; overflow: hidden;
+    background: #f8faf9; border: 1.5px dashed #d0ddd8;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 40px 20px; color: #b0beb8; text-align: center; gap: 6px;
+  }
+  .sd-img-placeholder .ph-icon { opacity: 0.4; }
+  .sd-img-placeholder .ph-label { font-size: 13px; font-weight: 500; }
+  .sd-img-placeholder .ph-hint { font-size: 11px; opacity: 0.6; }
+
+  .sd-text { padding: 4px 0 0; }
+  .sd-text p { font-size: 14px; color: var(--text2); line-height: 1.75; margin-bottom: 10px; }
+  .sd-text p:last-child { margin-bottom: 0; }
+  .sd-text p strong { color: var(--text); font-weight: 600; }
+
+  /* ═══════════ CONTACT PAGE ═══════════ */
+  #pageContact { padding-bottom: 30px; }
+  .contact-img-wrap {
+    margin: 12px 14px; border-radius: var(--radius);
+    overflow: hidden; box-shadow: var(--shadow-md); background: #fff;
+  }
+  .contact-img-wrap img { display: block; width: 100%; height: auto; }
+  .ci-card {
+    margin: 0 14px; padding: 14px 16px; background: #fff;
+    border-radius: var(--radius); box-shadow: var(--shadow);
+  }
+  .ci-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 0; font-size: 13px; color: var(--text2);
+  }
+  .ci-row .ci-ico {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+
+  .bottom-safe { height: 30px; }
+</style>
+</head>
+<body>
+
+<div class="phone" id="phone">
+
+  <!-- ═══════════ 首页 ═══════════ -->
+  <div class="page active" id="pageMain">
+
+    <!-- 1. 导航栏 -->
+    <div class="nav-bar">
+      <span class="back">
+        <svg class="lucide" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      </span>
+      <span class="title">康健医疗</span>
+      <span class="action">
+        <svg class="lucide" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </span>
+    </div>
+
+    <!-- 搜索栏 -->
+    <div class="search-bar">
+      <svg class="lucide sm" viewBox="0 0 24 24" style="color:#bbb;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <span>搜索检查项目、医生</span>
+    </div>
+
+    <!-- 2. 轮播区 -->
+    <div class="carousel">
+      <div class="carousel-inner">
+        <div class="carousel-text">
+          <div class="c-title">康建医学先锋计划</div>
+          <div class="c-sub">精准筛查 · 慢病管理 · 尊享健康</div>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-dots">
+      <span class="active"></span><span></span><span></span>
+    </div>
+
+    <!-- 3. 就诊卡区 -->
+    <div class="medical-card">
+      <div class="mc-header">
+        <span class="mc-label">
+          <svg class="lucide sm" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          电子就诊卡
+        </span>
+        <span class="mc-badge">已认证</span>
+      </div>
+      <div class="mc-info">
+        <div>
+          <div class="mc-name">张先生</div>
+          <div class="mc-id">ID: 2024****0621</div>
+        </div>
+        <div class="mc-qr">
+          <svg class="lucide" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="14" y1="14" x2="14" y2="14.01"/><line x1="18" y1="14" x2="18" y2="14.01"/><line x1="14" y1="18" x2="14" y2="18.01"/><line x1="18" y1="18" x2="18" y2="18.01"/><line x1="21" y1="14" x2="21" y2="18"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. 功能区 — 4个按钮 -->
+    <div class="func-area">
+      <div class="func-row">
+        <button class="func-btn" onclick="showToast('预约检测')">
+          <div class="f-icon c1">
+            <svg class="lucide lg" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg>
+          </div>
+          <span class="f-label">预约检测</span>
+        </button>
+
+        <button class="func-btn" onclick="showToast('报告查询')">
+          <div class="f-icon c2">
+            <svg class="lucide lg" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><line x1="10" y1="12" x2="16" y2="12"/><line x1="10" y1="16" x2="14" y2="16"/></svg>
+          </div>
+          <span class="f-label">报告查询</span>
+        </button>
+
+        <button class="func-btn" onclick="goTo('pageSolution')">
+          <div class="f-icon c3">
+            <svg class="lucide lg" viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5C8.26 12.26 8.73 13.02 8.91 14"/></svg>
+          </div>
+          <span class="f-label">技术方案</span>
+        </button>
+
+        <button class="func-btn" onclick="goTo('pageContact')">
+          <div class="f-icon c4">
+            <svg class="lucide lg" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          <span class="f-label">企业微信</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 5. 检测项目区 -->
+    <div class="test-section">
+      <div class="section-head">
+        <span class="s-title">检测项目</span>
+        <span class="s-more">查看全部 ›</span>
+      </div>
+      <div class="test-grid">
+        <div class="test-item" onclick="showToast('常规体检')">
+          <div class="t-icon t1">
+            <svg class="lucide lg" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          </div>
+          <div class="t-name">常规体检</div>
+          <div class="t-price">¥298起</div>
+        </div>
+        <div class="test-item" onclick="showToast('基因检测')">
+          <div class="t-icon t2">
+            <svg class="lucide lg" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M3 22v-2a4 4 0 0 1 4-4h1"/><path d="M21 22v-2a4 4 0 0 0-4-4h-1"/><line x1="7" y1="14" x2="17" y2="14"/></svg>
+          </div>
+          <div class="t-name">基因检测</div>
+          <div class="t-price">¥980起</div>
+        </div>
+        <div class="test-item" onclick="showToast('癌症早筛')">
+          <div class="t-icon t3">
+            <svg class="lucide lg" viewBox="0 0 24 24"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M9 12h6M12 9v6"/></svg>
+          </div>
+          <div class="t-name">癌症早筛</div>
+          <div class="t-price">¥1,280起</div>
+        </div>
+        <div class="test-item" onclick="showToast('心脑检查')">
+          <div class="t-icon t4">
+            <svg class="lucide lg" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+          </div>
+          <div class="t-name">心脑检查</div>
+          <div class="t-price">¥680起</div>
+        </div>
+        <div class="test-item" onclick="showToast('慢病管理')">
+          <div class="t-icon t5">
+            <svg class="lucide lg" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <div class="t-name">慢病管理</div>
+          <div class="t-price">¥3,680/年</div>
+        </div>
+        <div class="test-item" onclick="showToast('企业体检')">
+          <div class="t-icon t6">
+            <svg class="lucide lg" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4"/><line x1="9" y1="12" x2="15" y2="12"/></svg>
+          </div>
+          <div class="t-name">企业体检</div>
+          <div class="t-price">¥9,800起</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-safe"></div>
+  </div>
+
+  <!-- ═══════════ 技术方案 ═══════════ -->
+  <div class="page forward" id="pageSolution">
+    <div class="page-header">
+      <button class="h-back" onclick="goBack('pageSolution')">
+        <svg class="lucide sm" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      </button>
+      <span class="h-title">技术方案</span>
+    </div>
+
+    <!-- 方案1：CTC肿瘤纳米检测+NK免疫 -->
+    <div class="sol-card-detail">
+      <div class="sd-head">
+        <div>
+          <div class="sd-name">中科院CTC肿瘤纳米检测+NK免疫细胞早治</div>
+          <div class="sd-price">"纳米医学" — 将肿瘤消灭在萌芽里：CTC早诊+NK早治</div>
+        </div>
+      </div>
+      <div class="sd-img-placeholder"><svg class="lucide xl ph-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span class="ph-label">PDF 截图：中科院CTC肿瘤纳米检测+NK免疫细胞早治</span><span class="ph-hint">（请从产品手册第 11 页截取）</span></div>
+      <div class="sd-text">
+        <p><strong>肿瘤捕手 CTC 检测技术</strong>，灵敏度相较传统体检提升 10 倍，可精准发现 1 毫米早期肿瘤；相较于 CT 等影像检查（检出阈值约 10 毫米），能将肿瘤筛查时间提前 3-5 年。</p>
+        <p>覆盖肺癌、胃癌等 <strong>98% 中国高发癌种</strong>，是目前比医院常规体检灵敏度更高、更具有临床价值的新一代早诊技术，已经与协和医院、北大肿瘤医院、北医三院等合作多年，进入国家级临床指南。</p>
+        <p><strong>NK 免疫细胞治疗</strong> — 自然杀伤细胞无需抗原激活，直接杀伤肿瘤细胞，联合 CTC 检测实现"早筛-早治"闭环，在机体的抗肿瘤、抗病毒感染和免疫调节等过程中发挥着关键作用。</p>
+      </div>
+    </div>
+
+    <!-- 方案2：阿尔兹海默检测+FDA新药 -->
+    <div class="sol-card-detail">
+      <div class="sd-head">
+        <div>
+          <div class="sd-name">阿尔兹海默检测+美国FDA新药治疗</div>
+          <div class="sd-price">提前十年预警并逆转</div>
+        </div>
+      </div>
+      <div class="sd-img-placeholder"><svg class="lucide xl ph-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span class="ph-label">PDF 截图：阿尔兹海默检测+美国FDA新药治疗</span><span class="ph-hint">（请从产品手册第 12 页截取）</span></div>
+      <div class="sd-text">
+        <p><strong>APOE4 基因筛查 + pTau217 血液蛋白检测</strong> — 携带 2 个 APOE4 等位基因者 AD 风险升高 12 倍，通过 pTau217 检测提前 10 年预警，为干预争取关键时间，有助于在症状出现前的临床前期阶段发现病变，实现早期诊断。</p>
+        <p><strong>美国 FDA 新药单抗疗法 Oloctinebart</strong> — 靶向 Gal-3 蛋白，阻断神经炎症与毒性蛋白聚集，减少小胶质细胞的激活，使神经元能够恢复神经传导。2023 年获 FDA 突破性疗法认定，临床试验显示认知功能改善显著。</p>
+      </div>
+    </div>
+
+    <!-- 方案3：心血管健康+血管修复 -->
+    <div class="sol-card-detail">
+      <div class="sd-head">
+        <div>
+          <div class="sd-name">心血管健康+血管修复方案</div>
+          <div class="sd-price">读懂血管无声警报，护心脑血管无恙</div>
+        </div>
+      </div>
+      <div class="sd-img-placeholder"><svg class="lucide xl ph-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span class="ph-label">PDF 截图：心血管健康+血管修复方案</span><span class="ph-hint">（请从产品手册第 13 页截取）</span></div>
+      <div class="sd-text">
+        <p>血管是人类第一个衰老的器官，而炎症会加速衰老。</p>
+        <p><strong>MPO：血管炎症早期标志物</strong> — 由炎症细胞释放，会氧化损伤血管内皮、加速脂质沉积、削弱血管保护功能，是动脉炎症超早期信号，可提前预判斑块形成与心肌早期损伤，在肌钙蛋白升高前捕捉急性冠脉风险。可反应近期（30天到6个月）的急性风险。</p>
+        <p><strong>Lp-PLA₂：冠心病和缺血性卒中风险预测</strong> — 新近出现的反映动脉粥样硬化斑块破裂及血栓形成事件的高度一致性、精确性的独立风险因子（2012 ESC 欧洲心血管疾病预防临床实践指南）。美国 FDA 批准其用于预测冠心病和缺血性卒中风险。</p>
+      </div>
+    </div>
+
+    <!-- 方案4：多组学检测+精准营养 -->
+    <div class="sol-card-detail">
+      <div class="sd-head">
+        <div>
+          <div class="sd-name">多组学检测（基因检测+生物年龄）+精准营养方案</div>
+          <div class="sd-price">提前、全面地改善营养失衡，有效预防代谢性疾病</div>
+        </div>
+      </div>
+      <div class="sd-img-placeholder"><svg class="lucide xl ph-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span class="ph-label">PDF 截图：多组学检测+精准营养方案</span><span class="ph-hint">（请从产品手册第 14 页截取）</span></div>
+      <div class="sd-text">
+        <p><strong>个性化基因多维度评估 + 私人订制营养补剂</strong> — 结合个人基因特征、营养代谢、生活方式等多因素，私人量身定制最适合个人 365 天营养素组合。</p>
+        <p>从多种维生素、矿物质、氨基酸、植物提取物等大量营养素中，挑选出符合个体需求的成分，科学配比、靶向补充、定量摄入、个体适配，达到精细化营养的目的。</p>
+        <p><strong>服务流程：三步闭环</strong> — 检测（基因+多组学）→ 干预（营养+运动+生活方式）→ 随访（动态监测），形成持续优化的健康管理闭环。</p>
+      </div>
+    </div>
+
+    <div class="bottom-safe"></div>
+  </div>
+
+  <!-- ═══════════ 企业微信 ═══════════ -->
+  <div class="page forward" id="pageContact">
+    <div class="page-header">
+      <button class="h-back" onclick="goBack('pageContact')">
+        <svg class="lucide sm" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      </button>
+      <span class="h-title">企业微信</span>
+    </div>
+
+    <div class="contact-img-wrap">
+      <img src="联系我.jpg" alt="联系我" onerror="this.style.display='none';document.getElementById('fbContact').style.display='block';">
+    </div>
+
+    <div class="ci-card" id="fbContact" style="display:none;">
+      <div class="ci-row">
+        <div class="ci-ico" style="background:#e8f4fd; color:#3b8fd4;">
+          <svg class="lucide sm" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </div>
+        <span>咨询热线：400-xxx-xxxx</span>
+      </div>
+      <div class="ci-row">
+        <div class="ci-ico" style="background:#fef0e8; color:#e88330;">
+          <svg class="lucide sm" viewBox="0 0 24 24"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 7.05 11.5 7.35 11.76.18.14.36.24.65.24s.47-.1.65-.24C13.05 21.5 20 15.4 20 10a8 8 0 0 0-8-8z"/></svg>
+        </div>
+        <span>地址：北京市朝阳区xxx大厦</span>
+      </div>
+      <div class="ci-row">
+        <div class="ci-ico" style="background:#f2edfc; color:#7c5ce0;">
+          <svg class="lucide sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <span>服务时间：周一至周日 8:00-20:00</span>
+      </div>
+    </div>
+
+    <div class="bottom-safe"></div>
+  </div>
+
+</div><!-- /phone -->
+
+<!-- Toast -->
+<div id="toast" style="
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0.8);
+  background: rgba(0,0,0,0.78); color: #fff; padding: 12px 28px; border-radius: 22px;
+  font-size: 14px; font-weight: 500; pointer-events: none; opacity: 0;
+  transition: opacity 0.2s, transform 0.2s; z-index: 9999; white-space: nowrap;
+"></div>
+
+<script>
+function goTo(id) {
+  var t = document.getElementById(id); if (!t) return;
+  var c = document.querySelector('.page.active');
+  if (c) { c.classList.remove('active'); void c.offsetWidth; c.classList.add('behind'); }
+  t.classList.remove('behind','forward'); void t.offsetWidth;
+  t.classList.add('active'); t.scrollTop = 0;
+}
+function goBack(id) {
+  var l = document.getElementById(id), m = document.getElementById('pageMain');
+  if (!l || !m) return;
+  l.classList.remove('active'); void l.offsetWidth; l.classList.add('forward');
+  m.classList.remove('behind','forward'); void m.offsetWidth; m.classList.add('active');
+}
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.style.opacity = '1'; t.style.transform = 'translate(-50%,-50%) scale(1)';
+  clearTimeout(t._tid);
+  t._tid = setTimeout(function() { t.style.opacity = '0'; t.style.transform = 'translate(-50%,-50%) scale(0.8)'; }, 1500);
+}
+</script>
+</body>
+</html>
