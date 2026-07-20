@@ -696,10 +696,98 @@
       <p class="text-xs text-white/60 mt-0.5" id="onboardSubtitle">首次使用，请先完成企业信息登记</p>
     </header>
 
+    <!-- ===== CHOICE VIEW (注册方式选择) ===== -->
+    <div id="onboardChoiceView" class="flex-1 overflow-y-auto">
+      <div class="px-5 pt-10 pb-8">
+        <h2 class="text-base font-bold text-slate-800 mb-1">请选择注册方式</h2>
+        <p class="text-[13px] text-slate-400 mb-6">两种方式均需提交监管审核，审核通过后可使用全部功能</p>
+        <div class="space-y-4">
+          <button onclick="selectOnboardPath('bind')" class="w-full bg-white rounded-2xl p-5 shadow-card border border-slate-100 text-left hover:border-blue-300 active:bg-blue-50/40 transition-all group">
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center shrink-0 group-hover:bg-blue-100 transition-colors">
+                <i data-lucide="link" class="w-6 h-6 text-blue-600"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="text-[15px] font-semibold text-slate-800 block">绑定已有商户</span>
+                <span class="text-[13px] text-slate-400 mt-1 block leading-relaxed">平台已录入您的商户信息，搜索并选择后直接绑定</span>
+              </div>
+              <i data-lucide="chevron-right" class="w-5 h-5 text-slate-300 shrink-0 mt-3"></i>
+            </div>
+          </button>
+          <button onclick="selectOnboardPath('new')" class="w-full bg-white rounded-2xl p-5 shadow-card border border-slate-100 text-left hover:border-blue-300 active:bg-blue-50/40 transition-all group">
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center shrink-0 group-hover:bg-blue-100 transition-colors">
+                <i data-lucide="file-plus-2" class="w-6 h-6 text-blue-600"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="text-[15px] font-semibold text-slate-800 block">新增商户信息</span>
+                <span class="text-[13px] text-slate-400 mt-1 block leading-relaxed">平台暂无您的商户信息，填写企业信息创建新档案</span>
+              </div>
+              <i data-lucide="chevron-right" class="w-5 h-5 text-slate-300 shrink-0 mt-3"></i>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== BIND VIEW (绑定已有商户) ===== -->
+    <div id="onboardBindView" class="hidden flex-1 flex flex-col min-h-0">
+      <div class="flex-1 overflow-y-auto">
+        <!-- Step indicator -->
+        <div class="px-5 pt-4 pb-2">
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-bold shrink-0">1</div>
+            <span class="text-sm font-semibold text-slate-800">选择绑定商户</span>
+            <div class="flex-1 h-px bg-slate-200 mx-1"></div>
+            <div class="w-6 h-6 rounded-full bg-slate-200 text-slate-400 text-xs flex items-center justify-center font-bold shrink-0">2</div>
+            <span class="text-sm text-slate-400">等待审批</span>
+          </div>
+        </div>
+
+        <div class="px-5 pt-3 pb-6 space-y-4">
+          <button onclick="selectOnboardPath('choice')" class="text-[13px] text-slate-400 flex items-center gap-1 hover:text-slate-600 transition-colors">
+            <i data-lucide="chevron-left" class="w-4 h-4"></i> 返回选择注册方式
+          </button>
+
+          <!-- 搜索 -->
+          <div class="relative">
+            <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+            <input type="text" id="bindSearch" placeholder="搜索商户名称 / 信用代码..." oninput="renderBindList()"
+              class="w-full pl-10 pr-4 py-2.5 text-[13px] text-slate-800 bg-white rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+          </div>
+
+          <!-- 商户列表 -->
+          <div class="space-y-3" id="bindMerchantList"></div>
+
+          <!-- 验证码 -->
+          <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100">
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">验证码 <span class="text-red-500">*</span></label>
+            <input type="text" id="bindVerifyCode" placeholder="请输入验证码"
+              class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+            <p class="text-[11px] text-slate-300 mt-2">验证码由监管人员线下提供，用于核验商户身份</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bind Bottom Bar -->
+      <div class="shrink-0 px-5 pt-3 pb-[max(24px,env(safe-area-inset-bottom))] bg-white border-t border-slate-200">
+        <button onclick="submitBinding()" class="w-full py-3.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">
+          提交绑定申请
+        </button>
+        <p class="text-[11px] text-slate-400 text-center mt-2">提交后信息将交由监管人员审核，审核通过后方可使用全部功能</p>
+      </div>
+    </div>
+
     <!-- ===== FORM VIEW ===== -->
-    <div id="onboardFormView" class="flex-1 overflow-y-auto">
+    <div id="onboardFormView" class="flex-1 overflow-y-auto" style="display:none;">
+      <!-- Back to choice -->
+      <div class="px-5 pt-3">
+        <button onclick="selectOnboardPath('choice')" class="text-[13px] text-slate-400 flex items-center gap-1 hover:text-slate-600 transition-colors">
+          <i data-lucide="chevron-left" class="w-4 h-4"></i> 返回选择注册方式
+        </button>
+      </div>
       <!-- Step indicator -->
-      <div class="px-5 pt-4 pb-2">
+      <div class="px-5 pt-2 pb-2">
         <div class="flex items-center gap-2">
           <div class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-bold shrink-0">1</div>
           <span class="text-sm font-semibold text-slate-800">填写企业信息</span>
@@ -1672,6 +1760,117 @@ let currentOrderId = null;
 let photoCount = 0;
 let appealPhotoCount = 0;
 let onboardingState = 'unregistered'; // 'unregistered' | 'pending' | 'rejected' | 'approved'
+let onboardPath = 'choice'; // 'choice' | 'bind' | 'new'
+let bindSelectedIdx = -1;
+
+// 平台已有商户（供绑定选择）
+const existingMerchants = [
+  { name: '好味道餐饮管理有限公司', creditCode: '91110108MA01XXXXX', bizType: '餐饮服务经营者', town: '中关村街道', address: '北京市海淀区中关村大街1号' },
+  { name: '鲜味源快餐店', creditCode: '92110108MA02YYYYY', bizType: '餐饮服务经营者', town: '中关村街道', address: '北京市海淀区中关村大街15号' },
+  { name: '绿野生鲜超市', creditCode: '92110108MA03ZZZZZ', bizType: '食品销售经营者', town: '海淀街道', address: '北京市海淀区海淀大街8号' },
+  { name: '朝晖职工食堂', creditCode: '52110108MA04AAAAA', bizType: '单位食堂', town: '学院路街道', address: '北京市海淀区学院路30号' },
+  { name: '麦香坊食品小作坊', creditCode: '92110108MA05BBBBB', bizType: '食品生产加工小作坊', town: '清河街道', address: '北京市海淀区清河中街12号' },
+];
+
+function selectOnboardPath(path) {
+  onboardPath = path;
+  if (path !== 'bind') bindSelectedIdx = -1;
+  renderUnregisteredView();
+}
+
+function renderUnregisteredView() {
+  const choiceView = document.getElementById('onboardChoiceView');
+  const bindView = document.getElementById('onboardBindView');
+  const formView = document.getElementById('onboardFormView');
+  const bottomBar = document.getElementById('onboardBottomBar');
+  const subtitle = document.getElementById('onboardSubtitle');
+
+  choiceView.classList.add('hidden');
+  bindView.classList.add('hidden');
+  formView.style.display = 'none';
+  bottomBar.style.display = 'none';
+
+  if (onboardPath === 'choice') {
+    choiceView.classList.remove('hidden');
+    subtitle.textContent = '首次使用，请选择注册方式';
+  } else if (onboardPath === 'bind') {
+    bindView.classList.remove('hidden');
+    subtitle.textContent = '从平台已有商户中选择并绑定';
+    renderBindList();
+  } else {
+    formView.style.display = '';
+    bottomBar.style.display = '';
+    subtitle.textContent = '首次使用，请先完成企业信息登记';
+  }
+  setTimeout(() => lucide.createIcons(), 50);
+}
+
+function renderBindList() {
+  const keyword = (document.getElementById('bindSearch').value || '').trim().toLowerCase();
+  const list = document.getElementById('bindMerchantList');
+  const filtered = existingMerchants.filter(m =>
+    !keyword || m.name.toLowerCase().includes(keyword) || m.creditCode.toLowerCase().includes(keyword)
+  );
+
+  if (filtered.length === 0) {
+    list.innerHTML = `
+      <div class="bg-white rounded-2xl p-8 shadow-card border border-slate-100 text-center">
+        <i data-lucide="search-x" class="w-8 h-8 text-slate-300 mx-auto mb-2"></i>
+        <p class="text-[13px] text-slate-400">未找到匹配商户</p>
+        <p class="text-[12px] text-slate-300 mt-1">可返回选择「新增商户信息」创建档案</p>
+      </div>`;
+  } else {
+    list.innerHTML = filtered.map(m => {
+      const idx = existingMerchants.indexOf(m);
+      const selected = idx === bindSelectedIdx;
+      return `
+      <div onclick="bindSelectMerchant(${idx})" class="bg-white rounded-2xl p-4 shadow-card border cursor-pointer transition-all ${selected ? 'border-blue-500 ring-2 ring-blue-400/20' : 'border-slate-100 hover:border-blue-200'}">
+        <div class="flex items-start gap-3">
+          <div class="w-10 h-10 rounded-xl ${selected ? 'bg-blue-600' : 'bg-blue-50'} flex items-center justify-center shrink-0 transition-colors">
+            <i data-lucide="store" class="w-5 h-5 ${selected ? 'text-white' : 'text-blue-600'}"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-[14px] font-semibold text-slate-800">${m.name}</h3>
+            <p class="text-[12px] text-slate-400 mt-0.5 font-mono tracking-wide">${m.creditCode}</p>
+            <p class="text-[12px] text-slate-400 mt-0.5">${m.bizType} · ${m.town}</p>
+            <p class="text-[12px] text-slate-400 mt-0.5 truncate">${m.address}</p>
+          </div>
+          <div class="w-5 h-5 rounded-full shrink-0 mt-2 flex items-center justify-center transition-all ${selected ? 'bg-blue-600' : 'border-2 border-slate-200'}">
+            ${selected ? '<i data-lucide="check" class="w-3 h-3 text-white"></i>' : ''}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  setTimeout(() => lucide.createIcons(), 50);
+}
+
+function bindSelectMerchant(idx) {
+  bindSelectedIdx = idx;
+  renderBindList();
+}
+
+function submitBinding() {
+  if (bindSelectedIdx < 0) {
+    showToast('请选择要绑定的商户');
+    return;
+  }
+  const codeEl = document.getElementById('bindVerifyCode');
+  if (!codeEl.value.trim()) {
+    showToast('请填写所有必填项（验证码）');
+    codeEl.classList.add('border-red-300', 'bg-red-50');
+    codeEl.focus();
+    return;
+  }
+  codeEl.classList.remove('border-red-300', 'bg-red-50');
+
+  const m = existingMerchants[bindSelectedIdx];
+  if (!confirm('确认绑定「' + m.name + '」？提交后将交由监管人员审核，期间无法修改。')) return;
+
+  onboardingState = 'pending';
+  updateOnboardingUI();
+  showToast('绑定申请已提交，请等待审核', 'success');
+}
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', () => {
@@ -1883,6 +2082,9 @@ function updateOnboardingUI() {
   mainApp.style.display = 'none';
   tabBar.style.display = 'none';
 
+  const choiceView = document.getElementById('onboardChoiceView');
+  const bindView = document.getElementById('onboardBindView');
+
   // Status icon, title, desc
   const iconDiv = document.getElementById('onboardStatusIcon');
   const iconEl = document.getElementById('onboardStatusIconEl');
@@ -1899,11 +2101,11 @@ function updateOnboardingUI() {
   const subtitle = document.getElementById('onboardSubtitle');
 
   if (onboardingState === 'unregistered') {
-    formView.style.display = '';
     statusView.classList.add('hidden');
-    bottomBar.style.display = '';
-    subtitle.textContent = '首次使用，请先完成企业信息登记';
+    renderUnregisteredView();
   } else if (onboardingState === 'pending') {
+    choiceView.classList.add('hidden');
+    bindView.classList.add('hidden');
     formView.style.display = 'none';
     statusView.classList.remove('hidden');
     bottomBar.style.display = 'none';
@@ -1933,6 +2135,8 @@ function updateOnboardingUI() {
     debugLabel.textContent = '待审批';
     subtitle.textContent = '建档申请审核中';
   } else if (onboardingState === 'rejected') {
+    choiceView.classList.add('hidden');
+    bindView.classList.add('hidden');
     formView.style.display = 'none';
     statusView.classList.remove('hidden');
     bottomBar.style.display = 'none';
@@ -2061,6 +2265,8 @@ function toggleOnboardingDemo() {
   if (onboardingState === 'approved') {
     // Switch to unbound
     onboardingState = 'unregistered';
+    onboardPath = 'choice';
+    bindSelectedIdx = -1;
     btn.textContent = '未绑用户';
     btn.className = 'absolute top-[max(28px,env(safe-area-inset-top))] left-1/2 -translate-x-1/2 z-[70] px-3 py-1.5 rounded-full text-[11px] font-semibold shadow-lg border transition-all active:scale-95 bg-orange-50 text-orange-700 border-orange-200';
   } else {
