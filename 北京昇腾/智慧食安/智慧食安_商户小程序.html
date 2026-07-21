@@ -1675,86 +1675,11 @@
       </div>
 
       <!-- ========== TAB: MY ========== -->
-      <div id="tab-my" class="hidden">
-        <!-- Profile card (compact) -->
-        <div class="px-5 mb-5">
-          <div class="bg-white rounded-2xl p-4 shadow-card border border-slate-100 flex items-center gap-4">
-            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-800 flex items-center justify-center text-white text-lg font-bold shadow-sm shrink-0">
-              食
-            </div>
-            <div class="flex-1 min-w-0">
-              <h2 class="text-sm font-semibold text-slate-900">好味道餐饮管理有限公司</h2>
-              <p class="text-xs text-slate-400 truncate">管理员 · 138****6789</p>
-            </div>
-            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
-          </div>
-        </div>
-
-        <!-- Settings list -->
-        <div class="px-5 mb-4">
-          <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3 px-0.5">通知设置</h2>
-          <div class="bg-white rounded-2xl shadow-card border border-slate-100 overflow-hidden">
-            <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
-              <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center">
-                  <i data-lucide="bell" class="w-4 h-4 text-blue-600"></i>
-                </div>
-                <div>
-                  <p class="text-sm font-medium text-slate-800">消息推送通知</p>
-                  <p class="text-xs text-slate-400">工单状态变更、换证提醒等消息</p>
-                </div>
-              </div>
-              <button onclick="toggleSwitch(this)" class="w-11 h-6 rounded-full bg-blue-400 relative transition-colors duration-200" aria-label="消息通知开关">
-                <span class="absolute top-0.5 right-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200"></span>
-              </button>
-            </div>
-            <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
-              <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-orange-50 flex items-center justify-center">
-                  <i data-lucide="vibrate" class="w-4 h-4 text-orange-600"></i>
-                </div>
-                <div>
-                  <p class="text-sm font-medium text-slate-800">震动提醒</p>
-                  <p class="text-xs text-slate-400">紧急工单到达时手机震动</p>
-                </div>
-              </div>
-              <button onclick="toggleSwitch(this)" class="w-11 h-6 rounded-full bg-blue-400 relative transition-colors duration-200" aria-label="震动提醒开关">
-                <span class="absolute top-0.5 right-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200"></span>
-              </button>
-            </div>
-            <div class="flex items-center justify-between px-5 py-4">
-              <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-green-50 flex items-center justify-center">
-                  <i data-lucide="volume-2" class="w-4 h-4 text-green-600"></i>
-                </div>
-                <div>
-                  <p class="text-sm font-medium text-slate-800">声音提醒</p>
-                  <p class="text-xs text-slate-400">收到新工单时播放提示音</p>
-                </div>
-              </div>
-              <button onclick="toggleSwitch(this)" class="w-11 h-6 rounded-full bg-slate-300 relative transition-colors duration-200" aria-label="声音提醒开关">
-                <span class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200"></span>
-              </button>
-            </div>
-          </div>
-        </div>
-
+      <div id="tab-my" class="hidden flex flex-col min-h-full">
         <!-- Account & General -->
-        <div class="px-5 mb-4">
+        <div class="px-5 pt-4 mb-4">
           <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3 px-0.5">通用</h2>
           <div class="bg-white rounded-2xl shadow-card border border-slate-100 overflow-hidden">
-            <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 cursor-pointer active:bg-slate-50 transition-colors">
-              <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-purple-50 flex items-center justify-center">
-                  <i data-lucide="shield" class="w-4 h-4 text-purple-600"></i>
-                </div>
-                <div>
-                  <p class="text-sm font-medium text-slate-800">账号安全</p>
-                  <p class="text-xs text-slate-400">修改密码、绑定手机</p>
-                </div>
-              </div>
-              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300"></i>
-            </div>
             <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 cursor-pointer active:bg-slate-50 transition-colors">
               <div class="flex items-center gap-3">
                 <div class="w-9 h-9 rounded-xl bg-orange-50 flex items-center justify-center">
@@ -1796,8 +1721,8 @@
           </button>
         </div>
 
-        <!-- Logout -->
-        <div class="px-5 pb-24">
+        <!-- Logout (沉底) -->
+        <div class="mt-auto px-5 pb-8">
           <button onclick="handleLogout()" class="w-full py-3.5 bg-white text-red-500 text-sm font-semibold rounded-2xl border border-red-200 hover:bg-red-50 active:bg-red-100 active:scale-[0.98] transition-all shadow-card">
             退出登录
           </button>
