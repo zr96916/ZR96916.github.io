@@ -688,6 +688,23 @@
     </div>
   </div>
 
+  <!-- ===== DEACTIVATE ACCOUNT MODAL ===== -->
+  <div id="deactivateModal" class="hidden absolute inset-0 z-[80] flex items-center justify-center p-6">
+    <div class="absolute inset-0 bg-black/40" onclick="closeDeactivateModal()"></div>
+    <div class="relative bg-white rounded-2xl w-full max-w-xs p-6 shadow-elevated" style="animation: scaleIn 0.25s ease-out both;">
+      <div class="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
+        <i data-lucide="alert-triangle" class="w-7 h-7 text-red-500"></i>
+      </div>
+      <h3 class="text-base font-bold text-slate-900 text-center mb-2">确认注销账号？</h3>
+      <p class="text-[13px] text-slate-500 text-center leading-relaxed">注销后将永久删除当前账号信息，并解除与管理后台的商户信息关联。</p>
+      <p class="text-[13px] text-red-500 font-semibold text-center mt-2 mb-5">该操作不可恢复</p>
+      <div class="flex gap-3">
+        <button onclick="closeDeactivateModal()" class="flex-1 py-3 bg-slate-100 text-slate-600 text-sm font-semibold rounded-xl hover:bg-slate-200 active:scale-[0.98] transition-all">取消</button>
+        <button onclick="confirmDeactivate()" class="flex-1 py-3 bg-red-500 text-white text-sm font-semibold rounded-xl hover:bg-red-600 active:bg-red-700 active:scale-[0.98] transition-all">确认注销</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ===== ONBOARDING OVERLAY (首次建档) ===== -->
   <div id="onboardingOverlay" class="absolute inset-0 z-[60] bg-slate-50 flex flex-col">
     <!-- Onboarding Header -->
@@ -733,8 +750,14 @@
     <!-- ===== BIND VIEW (绑定已有商户) ===== -->
     <div id="onboardBindView" class="hidden flex-1 flex flex-col min-h-0">
       <div class="flex-1 overflow-y-auto">
+        <!-- Back to choice -->
+        <div class="px-5 pt-3 pb-1">
+          <button onclick="selectOnboardPath('choice')" class="text-[13px] text-slate-400 flex items-center gap-1 hover:text-slate-600 transition-colors">
+            <i data-lucide="chevron-left" class="w-4 h-4"></i> 返回选择注册方式
+          </button>
+        </div>
         <!-- Step indicator -->
-        <div class="px-5 pt-4 pb-2">
+        <div class="px-5 pt-2 pb-2">
           <div class="flex items-center gap-2">
             <div class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-bold shrink-0">1</div>
             <span class="text-sm font-semibold text-slate-800">选择绑定商户</span>
@@ -745,10 +768,6 @@
         </div>
 
         <div class="px-5 pt-3 pb-6 space-y-4">
-          <button onclick="selectOnboardPath('choice')" class="text-[13px] text-slate-400 flex items-center gap-1 hover:text-slate-600 transition-colors">
-            <i data-lucide="chevron-left" class="w-4 h-4"></i> 返回选择注册方式
-          </button>
-
           <!-- 搜索 -->
           <div class="relative">
             <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
@@ -1720,6 +1739,20 @@
               <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300"></i>
             </div>
           </div>
+        </div>
+
+        <!-- Deactivate Account -->
+        <div class="px-5 mb-4">
+          <button onclick="openDeactivateModal()" class="w-full bg-white rounded-2xl shadow-card border border-slate-100 px-5 py-4 flex items-center gap-3 active:bg-red-50/50 transition-colors">
+            <div class="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center shrink-0">
+              <i data-lucide="user-x" class="w-4 h-4 text-red-500"></i>
+            </div>
+            <div class="flex-1 text-left min-w-0">
+              <p class="text-sm font-medium text-red-600">注销账号</p>
+              <p class="text-xs text-slate-400">删除当前账号信息，解除与管理后台的信息关联</p>
+            </div>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
+          </button>
         </div>
 
         <!-- Logout -->
@@ -3104,6 +3137,29 @@ function handleLogout() {
   if (confirm('确定要退出登录吗？')) {
     showToast('已退出登录', 'success');
   }
+}
+
+// ===== DEACTIVATE ACCOUNT =====
+function openDeactivateModal() {
+  document.getElementById('deactivateModal').classList.remove('hidden');
+  setTimeout(() => lucide.createIcons(), 50);
+}
+
+function closeDeactivateModal() {
+  document.getElementById('deactivateModal').classList.add('hidden');
+}
+
+function confirmDeactivate() {
+  closeDeactivateModal();
+  // 删除账号信息并解除后台关联 → 回到未注册（未绑）状态
+  onboardingState = 'unregistered';
+  onboardPath = 'choice';
+  bindSelectedIdx = -1;
+  const btn = document.getElementById('demoToggleBtn');
+  btn.textContent = '未绑用户';
+  btn.className = 'absolute top-[max(28px,env(safe-area-inset-top))] left-1/2 -translate-x-1/2 z-[70] px-3 py-1.5 rounded-full text-[11px] font-semibold shadow-lg border transition-all active:scale-95 bg-orange-50 text-orange-700 border-orange-200';
+  updateOnboardingUI();
+  showToast('账号已注销，商户关联已解除', 'success');
 }
 </script>
 </body>

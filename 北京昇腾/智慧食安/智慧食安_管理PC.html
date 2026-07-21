@@ -1083,6 +1083,7 @@ function RiskWarning({ userRole, roleTown }) {
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-200">
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">编号</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">报警时间</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">企业名称</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">所属镇</th>
@@ -1096,6 +1097,7 @@ function RiskWarning({ userRole, roleTown }) {
             <tbody>
               {filteredAlarms.map((a, i) => (
                 <tr key={a.id} className="table-row border-b border-slate-100 last:border-0">
+                  <td className="px-4 py-3 text-[11px] font-mono text-gov-600 font-medium">{a.id}</td>
                   <td className="px-4 py-3 text-xs font-mono text-ink-secondary">{a.time}</td>
                   <td className="px-4 py-3 text-xs font-medium text-ink">{a.enterprise}</td>
                   <td className="px-4 py-3 text-xs text-ink-secondary">{a.town}</td>
@@ -1115,7 +1117,7 @@ function RiskWarning({ userRole, roleTown }) {
                 </tr>
               ))}
               {filteredAlarms.length === 0 && (
-                <tr><td colSpan="8" className="text-center py-12 text-ink-muted text-xs">该状态下暂无报警记录</td></tr>
+                <tr><td colSpan="9" className="text-center py-12 text-ink-muted text-xs">该状态下暂无报警记录</td></tr>
               )}
             </tbody>
           </table>
@@ -1125,6 +1127,7 @@ function RiskWarning({ userRole, roleTown }) {
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-200">
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">编号</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">企业名称</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">证照类型</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">证照编号</th>
@@ -1137,6 +1140,7 @@ function RiskWarning({ userRole, roleTown }) {
             <tbody>
               {certExpiryData.map(c => (
                 <tr key={c.id} className="table-row border-b border-slate-100 last:border-0">
+                  <td className="px-4 py-3 text-[11px] font-mono text-gov-600 font-medium">{c.id}</td>
                   <td className="px-4 py-3 text-xs font-medium text-ink">{c.enterprise}</td>
                   <td className="px-4 py-3 text-xs text-ink-secondary">{c.certType}</td>
                   <td className="px-4 py-3 text-xs font-mono text-ink-secondary">{c.certNo}</td>
