@@ -1031,75 +1031,116 @@
     <div class="flex-1 overflow-y-auto scroll-area" id="tabContent">
       <!-- ========== TAB: HOME ========== -->
       <div id="tab-home" class="anim-stagger reveal">
-        <!-- Business Overview Card -->
-        <div class="px-5 mb-5 pt-4">
-          <div class="relative overflow-hidden bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-6 shadow-elevated">
-            <!-- Decorative circles -->
-            <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/5"></div>
-            <div class="absolute -bottom-6 -left-6 w-28 h-28 rounded-full bg-white/5"></div>
-            <div class="relative">
-              <div class="flex items-center gap-2 mb-4">
-                <span class="text-[11px] font-semibold text-white/70 uppercase tracking-widest">经营概况</span>
-              </div>
-              <div class="flex items-end gap-4">
-                <span class="text-7xl font-bold text-white leading-none tabular-nums" style="font-size: 5rem;">5</span>
-                <div class="pb-2">
-                  <span class="text-base text-white/80 font-medium">条待审核工单</span>
-                  <div class="flex items-center gap-2 mt-1.5">
-                    <span class="w-2 h-2 rounded-full bg-orange-400 animate-pulse"></span>
-                    <span class="text-sm text-orange-300 font-medium">需要关注</span>
-                  </div>
+        <!-- 吸顶公告滚动 -->
+        <div class="sticky top-0 z-10 bg-slate-50/95 backdrop-blur-sm px-5 pt-2.5 pb-1.5">
+          <div class="bg-amber-50 border border-amber-100 rounded-xl px-3.5 py-2.5 flex items-center gap-2.5">
+            <i data-lucide="megaphone" class="w-4 h-4 text-amber-600 shrink-0"></i>
+            <div class="flex-1 min-w-0 overflow-hidden h-5">
+              <p id="noticeText" class="text-[12px] text-amber-800 truncate transition-opacity duration-200 leading-5">【通知】关于开展夏季食品安全专项检查工作的通知</p>
+            </div>
+            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-amber-400 shrink-0"></i>
+          </div>
+        </div>
+
+        <!-- 风险预警概览卡片 -->
+        <div class="px-5 mb-4 pt-1.5">
+          <div class="bg-white rounded-2xl p-4 shadow-card border border-slate-100">
+            <div class="flex items-center justify-between mb-3">
+              <h2 class="text-sm font-semibold text-slate-800">风险预警概览</h2>
+              <span class="text-[11px] text-slate-400">今日</span>
+            </div>
+            <!-- 预警数量 -->
+            <div class="grid grid-cols-2 gap-3 mb-3">
+              <div class="bg-red-50/60 rounded-xl px-3 py-2.5 flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-red-100 flex items-center justify-center shrink-0">
+                  <i data-lucide="alert-triangle" class="w-4.5 h-4.5 text-red-500"></i>
+                </div>
+                <div>
+                  <span class="text-xl font-bold text-slate-800 tabular-nums leading-none">1</span>
+                  <p class="text-[11px] text-slate-500 mt-0.5">报警记录</p>
                 </div>
               </div>
-              <!-- Mini stat row -->
-              <div class="flex gap-8 mt-5 pt-5 border-t border-white/15">
-                <div class="flex items-center gap-2">
-                  <div class="w-8 h-8 rounded-lg bg-white/15 flex items-center justify-center">
-                    <i data-lucide="alert-triangle" class="w-4 h-4 text-white"></i>
-                  </div>
-                  <div>
-                    <span class="text-xl font-bold text-white">3</span>
-                    <span class="text-xs text-white/60 ml-1">报警工单</span>
-                  </div>
+              <div class="bg-blue-50/60 rounded-xl px-3 py-2.5 flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-blue-100 flex items-center justify-center shrink-0">
+                  <i data-lucide="file-clock" class="w-4.5 h-4.5 text-blue-600"></i>
                 </div>
-                <div class="flex items-center gap-2">
-                  <div class="w-8 h-8 rounded-lg bg-white/15 flex items-center justify-center">
-                    <i data-lucide="refresh-cw" class="w-4 h-4 text-white"></i>
-                  </div>
-                  <div>
-                    <span class="text-xl font-bold text-white">2</span>
-                    <span class="text-xs text-white/60 ml-1">换证提醒</span>
-                  </div>
+                <div>
+                  <span class="text-xl font-bold text-slate-800 tabular-nums leading-none">2</span>
+                  <p class="text-[11px] text-slate-500 mt-0.5">证照到期预警</p>
                 </div>
               </div>
+            </div>
+            <!-- 预警时段分布（平滑折线图） -->
+            <div>
+              <h3 class="text-[12px] font-medium text-slate-500 mb-1">预警时段分布</h3>
+              <svg viewBox="0 0 280 98" class="w-full" style="height: 96px;">
+                <defs>
+                  <linearGradient id="lineAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#378ADD" stop-opacity="0.20"/>
+                    <stop offset="100%" stop-color="#378ADD" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <!-- 面积填充 -->
+                <path d="M 35 62 C 46.67 58, 81.67 42, 105 38 C 128.33 31.33, 151.67 18.67, 175 20 C 198.33 21.33, 233.33 45, 245 50 L 245 78 L 35 78 Z" fill="url(#lineAreaGrad)"/>
+                <!-- 平滑折线 -->
+                <path d="M 35 62 C 46.67 58, 81.67 42, 105 38 C 128.33 31.33, 151.67 18.67, 175 20 C 198.33 21.33, 233.33 45, 245 50" fill="none" stroke="#185FA5" stroke-width="2" stroke-linecap="round"/>
+                <!-- 数据点 -->
+                <circle cx="35" cy="62" r="3" fill="#185FA5" stroke="#fff" stroke-width="1.5"/>
+                <circle cx="105" cy="38" r="3" fill="#185FA5" stroke="#fff" stroke-width="1.5"/>
+                <circle cx="175" cy="20" r="3" fill="#185FA5" stroke="#fff" stroke-width="1.5"/>
+                <circle cx="245" cy="50" r="3" fill="#185FA5" stroke="#fff" stroke-width="1.5"/>
+                <!-- 数值 -->
+                <text x="35" y="52" text-anchor="middle" font-size="9" font-weight="600" fill="#475569">1</text>
+                <text x="105" y="28" text-anchor="middle" font-size="9" font-weight="600" fill="#475569">5</text>
+                <text x="175" y="10" text-anchor="middle" font-size="9" font-weight="600" fill="#475569">8</text>
+                <text x="245" y="40" text-anchor="middle" font-size="9" font-weight="600" fill="#475569">3</text>
+                <!-- 时段标签 -->
+                <text x="35" y="92" text-anchor="middle" font-size="9" fill="#94A3B8">00-06</text>
+                <text x="105" y="92" text-anchor="middle" font-size="9" fill="#94A3B8">06-12</text>
+                <text x="175" y="92" text-anchor="middle" font-size="9" fill="#94A3B8">12-18</text>
+                <text x="245" y="92" text-anchor="middle" font-size="9" fill="#94A3B8">18-24</text>
+              </svg>
             </div>
           </div>
         </div>
 
-        <!-- Quick Actions -->
-        <div class="px-5 mb-6">
-          <div class="grid grid-cols-2 gap-3">
-            <button onclick="openQuickResponse('correction')" class="group relative bg-white rounded-2xl p-5 shadow-card border border-slate-100 text-left hover:shadow-elevated hover:border-blue-200 active:bg-blue-50/30 transition-all duration-200">
-              <div class="w-11 h-11 rounded-2xl bg-blue-50 flex items-center justify-center mb-3.5 group-hover:bg-blue-100 transition-colors">
-                <i data-lucide="file-edit" class="w-5 h-5 text-blue-600"></i>
-              </div>
-              <span class="text-[15px] font-semibold text-slate-800 block">提交整改</span>
-              <span class="text-[13px] text-slate-400 mt-1 block leading-tight">上传文字及照片反馈</span>
-            </button>
-            <button onclick="openQuickResponse('appeal')" class="group relative bg-white rounded-2xl p-5 shadow-card border border-slate-100 text-left hover:shadow-elevated hover:border-orange-200 active:bg-orange-50/30 transition-all duration-200">
-              <div class="w-11 h-11 rounded-2xl bg-orange-50 flex items-center justify-center mb-3.5 group-hover:bg-orange-100 transition-colors">
-                <i data-lucide="message-square-warning" class="w-5 h-5 text-orange-600"></i>
-              </div>
-              <span class="text-[15px] font-semibold text-slate-800 block">发起申诉</span>
-              <span class="text-[13px] text-slate-400 mt-1 block leading-tight">上传文字及照片佐证</span>
-            </button>
+        <!-- 办事服务（快捷功能） -->
+        <div class="px-5 mb-4">
+          <h2 class="text-[13px] font-semibold text-slate-400 uppercase tracking-wider mb-2.5">办事服务</h2>
+          <div class="bg-white rounded-2xl px-4 py-3.5 shadow-card border border-slate-100">
+            <div class="grid grid-cols-4">
+              <button onclick="showToast('预约指导功能建设中')" class="flex flex-col items-center gap-1.5 active:opacity-70 transition-opacity">
+                <div class="w-10 h-10 rounded-2xl bg-blue-50 flex items-center justify-center">
+                  <i data-lucide="calendar-check" class="w-5 h-5 text-blue-600"></i>
+                </div>
+                <span class="text-[12px] text-slate-700">预约指导</span>
+              </button>
+              <button onclick="showToast('培训学习功能建设中')" class="flex flex-col items-center gap-1.5 active:opacity-70 transition-opacity">
+                <div class="w-10 h-10 rounded-2xl bg-amber-50 flex items-center justify-center">
+                  <i data-lucide="graduation-cap" class="w-5 h-5 text-amber-600"></i>
+                </div>
+                <span class="text-[12px] text-slate-700">培训学习</span>
+              </button>
+              <button onclick="showToast('检查记录功能建设中')" class="flex flex-col items-center gap-1.5 active:opacity-70 transition-opacity">
+                <div class="w-10 h-10 rounded-2xl bg-rose-50 flex items-center justify-center">
+                  <i data-lucide="clipboard-check" class="w-5 h-5 text-rose-600"></i>
+                </div>
+                <span class="text-[12px] text-slate-700">检查记录</span>
+              </button>
+              <button onclick="showToast('更多功能建设中')" class="flex flex-col items-center gap-1.5 active:opacity-70 transition-opacity">
+                <div class="w-10 h-10 rounded-2xl bg-slate-100 flex items-center justify-center">
+                  <i data-lucide="layout-grid" class="w-5 h-5 text-slate-500"></i>
+                </div>
+                <span class="text-[12px] text-slate-700">更多</span>
+              </button>
+            </div>
           </div>
         </div>
 
-        <!-- Recent Work Orders -->
+        <!-- 最新工单动态 -->
         <div class="px-5 pb-24">
-          <div class="flex items-center justify-between mb-3.5">
-            <h2 class="text-[13px] font-semibold text-slate-400 uppercase tracking-wider">最近工单动态</h2>
+          <div class="flex items-center justify-between mb-2.5">
+            <h2 class="text-[13px] font-semibold text-slate-400 uppercase tracking-wider">最新工单动态</h2>
             <button onclick="switchTab('orders')" class="text-[13px] text-blue-600 font-semibold hover:text-blue-800 transition-colors">查看全部 →</button>
           </div>
           <div class="space-y-3">
@@ -1912,6 +1953,24 @@ document.addEventListener('DOMContentLoaded', () => {
   // Trigger staggered animation on visible content
   document.querySelectorAll('.anim-stagger.reveal').forEach(el => el.classList.add('reveal'));
 });
+
+// ===== NOTICE TICKER =====
+const homeNotices = [
+  '【通知】关于开展夏季食品安全专项检查工作的通知',
+  '【提醒】请各商户及时完成从业人员健康证年度更新',
+  '【公告】明厨亮灶设备在线率已纳入月度考核指标',
+];
+let noticeIdx = 0;
+setInterval(() => {
+  const el = document.getElementById('noticeText');
+  if (!el) return;
+  noticeIdx = (noticeIdx + 1) % homeNotices.length;
+  el.style.opacity = '0';
+  setTimeout(() => {
+    el.textContent = homeNotices[noticeIdx];
+    el.style.opacity = '1';
+  }, 200);
+}, 4000);
 
 // ===== TAB SWITCHING =====
 function switchTab(tab) {
