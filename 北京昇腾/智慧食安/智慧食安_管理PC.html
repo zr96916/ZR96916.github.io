@@ -287,16 +287,16 @@ const MOCK = {
     return cams;
   })(),
   enterprises: [
-    { id:'ENT001', name:'永和豆浆（城东店）', creditCode:'91310115MA1K3XXXXX', town:'城东镇', entityType:'餐饮服务', riskLevel:'高', bizStatus:'营业', recentOrders:12, legalPerson:'张明华' },
-    { id:'ENT002', name:'老重庆火锅（南桥店）', creditCode:'91310115MA1K3YYYYY', town:'南桥镇', entityType:'餐饮服务', riskLevel:'中', bizStatus:'营业', recentOrders:5, legalPerson:'李建国' },
-    { id:'ENT003', name:'味多美烘焙坊', creditCode:'91310115MA1K3ZZZZZ', town:'城东镇', entityType:'食品销售', riskLevel:'低', bizStatus:'营业', recentOrders:2, legalPerson:'王芳' },
-    { id:'ENT004', name:'沙县小吃（中心店）', creditCode:'91310115MA1K3AAAAA', town:'中心镇', entityType:'餐饮服务', riskLevel:'中', bizStatus:'营业', recentOrders:8, legalPerson:'陈志强' },
-    { id:'ENT005', name:'肯德基（万达店）', creditCode:'91310115MA1K3BBBBB', town:'城东镇', entityType:'餐饮服务', riskLevel:'低', bizStatus:'营业', recentOrders:1, legalPerson:'赵丽' },
-    { id:'ENT006', name:'老乡鸡（北关店）', creditCode:'91310115MA1K3CCCCC', town:'北关镇', entityType:'餐饮服务', riskLevel:'高', bizStatus:'营业', recentOrders:15, legalPerson:'刘伟' },
-    { id:'ENT007', name:'黄焖鸡米饭（学院店）', creditCode:'91310115MA1K3DDDDD', town:'南桥镇', entityType:'餐饮服务', riskLevel:'高', bizStatus:'营业', recentOrders:9, legalPerson:'孙磊' },
-    { id:'ENT008', name:'海底捞（中心广场店）', creditCode:'91310115MA1K3EEEEE', town:'中心镇', entityType:'餐饮服务', riskLevel:'中', bizStatus:'营业', recentOrders:3, legalPerson:'周杰' },
-    { id:'ENT009', name:'第一中学食堂', creditCode:'91310115MA1K3FFFFF', town:'北关镇', entityType:'单位食堂', riskLevel:'中', bizStatus:'营业', recentOrders:6, legalPerson:'吴刚' },
-    { id:'ENT010', name:'华联超市（食品区）', creditCode:'91310115MA1K3GGGGG', town:'城东镇', entityType:'食品销售', riskLevel:'低', bizStatus:'营业', recentOrders:0, legalPerson:'郑小红' },
+    { id:'ENT001', name:'永和豆浆（城东店）', creditCode:'91310115MA1K3XXXXX', town:'城东镇', entityType:'餐饮服务', bizStatus:'营业', recentOrders:12, legalPerson:'张明华' },
+    { id:'ENT002', name:'老重庆火锅（南桥店）', creditCode:'91310115MA1K3YYYYY', town:'南桥镇', entityType:'餐饮服务', bizStatus:'营业', recentOrders:5, legalPerson:'李建国' },
+    { id:'ENT003', name:'味多美烘焙坊', creditCode:'91310115MA1K3ZZZZZ', town:'城东镇', entityType:'食品销售', bizStatus:'营业', recentOrders:2, legalPerson:'王芳' },
+    { id:'ENT004', name:'沙县小吃（中心店）', creditCode:'91310115MA1K3AAAAA', town:'中心镇', entityType:'餐饮服务', bizStatus:'营业', recentOrders:8, legalPerson:'陈志强' },
+    { id:'ENT005', name:'肯德基（万达店）', creditCode:'91310115MA1K3BBBBB', town:'城东镇', entityType:'餐饮服务', bizStatus:'营业', recentOrders:1, legalPerson:'赵丽' },
+    { id:'ENT006', name:'老乡鸡（北关店）', creditCode:'91310115MA1K3CCCCC', town:'北关镇', entityType:'餐饮服务', bizStatus:'营业', recentOrders:15, legalPerson:'刘伟' },
+    { id:'ENT007', name:'黄焖鸡米饭（学院店）', creditCode:'91310115MA1K3DDDDD', town:'南桥镇', entityType:'餐饮服务', bizStatus:'营业', recentOrders:9, legalPerson:'孙磊' },
+    { id:'ENT008', name:'海底捞（中心广场店）', creditCode:'91310115MA1K3EEEEE', town:'中心镇', entityType:'餐饮服务', bizStatus:'营业', recentOrders:3, legalPerson:'周杰' },
+    { id:'ENT009', name:'第一中学食堂', creditCode:'91310115MA1K3FFFFF', town:'北关镇', entityType:'单位食堂', bizStatus:'营业', recentOrders:6, legalPerson:'吴刚' },
+    { id:'ENT010', name:'华联超市（食品区）', creditCode:'91310115MA1K3GGGGG', town:'城东镇', entityType:'食品销售', bizStatus:'营业', recentOrders:0, legalPerson:'郑小红' },
   ],
   notifications: [
     { id:'NTF001', type:'warning', title:'工单超时预警', content:'永和豆浆（城东店）整改工单已超过截止时间24小时未处理', time:'2026-07-03 14:30', read:false },
@@ -506,12 +506,12 @@ function downloadCSV(filename, rows) {
 }
 
 function exportMerchantCSV(enterprises) {
-  const headers = ['企业名称','统一社会信用代码','许可证号','所属镇','主体业态','法人姓名','风险等级','营业状态','最近工单数','导出时间'];
+  const headers = ['企业名称','统一社会信用代码','许可证号','所属镇','主体业态','法人姓名','营业状态','最近工单数','导出时间'];
   const rows = [headers];
   enterprises.forEach(e => {
-    rows.push([e.name, e.creditCode, e.licenseNo || '', e.town, e.entityType, e.legalPerson, e.riskLevel, e.bizStatus, String(e.recentOrders), new Date().toLocaleString('zh-CN')]);
+    rows.push([e.name, e.creditCode, e.licenseNo || '', e.town, e.entityType, e.legalPerson, e.bizStatus, String(e.recentOrders), new Date().toLocaleString('zh-CN')]);
   });
-  const totalRow = ['','','','','','','','合计企业数',String(enterprises.length),''];
+  const totalRow = ['','','','','','','合计企业数',String(enterprises.length),''];
   rows.push(totalRow);
   downloadCSV(`商户台账_${new Date().toISOString().slice(0,10)}.csv`, rows);
 }
@@ -1734,7 +1734,7 @@ function ApprovalRecords({ showDetail, setShowDetail, userRole, roleTown }) {
 const EMPTY_FORM = {
   name:'', creditCode:'', licenseNo:'', entityType:'餐饮服务', legalPerson:'', phone:'',
   brandName:'', bizScope:'', areaSqm:'', address:'', bizAddress:'', orgId:'城东镇',
-  bizStatus:'营业', riskLevel:'中', remark:'',
+  bizStatus:'营业', remark:'',
 };
 
 const INIT_STAFF = [
@@ -1751,7 +1751,6 @@ function EntityManagement({ userRole, roleTown }) {
   const [search, setSearch] = useState('');
   const [filterTown, setFilterTown] = useState('all');
   const [filterType, setFilterType] = useState('all');
-  const [filterRisk, setFilterRisk] = useState('all');
   const [expanded, setExpanded] = useState(null);
   const [enterprises, setEnterprises] = useState(MOCK.enterprises);
 
@@ -1804,7 +1803,6 @@ function EntityManagement({ userRole, roleTown }) {
     if (search && !e.name.includes(search) && !e.creditCode.includes(search)) return false;
     if (filterTown !== 'all' && e.town !== filterTown) return false;
     if (filterType !== 'all' && e.entityType !== filterType) return false;
-    if (filterRisk !== 'all' && e.riskLevel !== filterRisk) return false;
     return true;
   });
 
@@ -1833,7 +1831,7 @@ function EntityManagement({ userRole, roleTown }) {
       name:e.name, creditCode:e.creditCode, licenseNo:e.licenseNo || '', entityType:e.entityType,
       legalPerson:e.legalPerson, phone:e.phone || '', brandName:e.brandName || '',
       bizScope:e.bizScope || '', areaSqm:e.areaSqm || '', address:e.address || '',
-      bizAddress:e.bizAddress || '', orgId:e.town, bizStatus:e.bizStatus, riskLevel:e.riskLevel, remark:e.remark || '',
+      bizAddress:e.bizAddress || '', orgId:e.town, bizStatus:e.bizStatus, remark:e.remark || '',
     });
     setFormStaff([...INIT_STAFF.map(s=>({...s}))]);
     setFormLicenses([...INIT_LICENSES.map(l=>({...l}))]);
@@ -1862,7 +1860,6 @@ function EntityManagement({ userRole, roleTown }) {
         licenseNo: formData.licenseNo,
         town: formData.orgId,
         entityType: formData.entityType,
-        riskLevel: formData.riskLevel,
         bizStatus: formData.bizStatus,
         recentOrders: 0,
         legalPerson: formData.legalPerson,
@@ -1876,7 +1873,6 @@ function EntityManagement({ userRole, roleTown }) {
         licenseNo: formData.licenseNo,
         town: formData.orgId,
         entityType: formData.entityType,
-        riskLevel: formData.riskLevel,
         bizStatus: formData.bizStatus,
         legalPerson: formData.legalPerson,
       } : ent));
@@ -2000,11 +1996,6 @@ function EntityManagement({ userRole, roleTown }) {
           <option value="all">全部主体业态</option>
           <option value="餐饮服务">餐饮服务</option><option value="食品销售">食品销售</option><option value="单位食堂">单位食堂</option>
         </select>
-        <select value={filterRisk} onChange={e => setFilterRisk(e.target.value)}
-          className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
-          <option value="all">全部风险等级</option>
-          <option value="高">高风险</option><option value="中">中风险</option><option value="低">低风险</option>
-        </select>
         <span className="ml-auto text-[11px] text-ink-muted">共 {filtered.length} 家企业</span>
       </div>
 
@@ -2018,7 +2009,6 @@ function EntityManagement({ userRole, roleTown }) {
               <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">统一社会信用代码</th>
               <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">所属镇</th>
               <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">主体业态</th>
-              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">风险等级</th>
               <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">营业状态</th>
               <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">最近工单</th>
               <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">操作</th>
@@ -2038,9 +2028,6 @@ function EntityManagement({ userRole, roleTown }) {
                   <td className="px-4 py-3 text-xs font-mono text-ink-secondary">{e.creditCode}</td>
                   <td className="px-4 py-3 text-xs text-ink-secondary">{e.town}</td>
                   <td className="px-4 py-3 text-xs text-ink-secondary">{e.entityType}</td>
-                  <td className="px-4 py-3">
-                    <Badge color={e.riskLevel==='高'?'red':e.riskLevel==='中'?'yellow':'green'}>{e.riskLevel}风险</Badge>
-                  </td>
                   <td className="px-4 py-3">
                     <span className="flex items-center gap-1 text-xs">
                       <span className={`w-1.5 h-1.5 rounded-full ${e.bizStatus === '营业' ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
@@ -2204,12 +2191,6 @@ function EntityManagement({ userRole, roleTown }) {
                         <label className={labelClass}>营业状态</label>
                         <select className={selectClass} value={formData.bizStatus} onChange={e => updateForm('bizStatus',e.target.value)}>
                           <option value="营业">营业</option><option value="停业">停业</option><option value="注销">注销</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className={labelClass}>风险等级</label>
-                        <select className={selectClass} value={formData.riskLevel} onChange={e => updateForm('riskLevel',e.target.value)}>
-                          <option value="高">高风险</option><option value="中">中风险</option><option value="低">低风险</option>
                         </select>
                       </div>
                       <div className="col-span-3">
@@ -3154,7 +3135,7 @@ function DeviceAssociation({ userRole, roleTown }) {
                     >
                       <div>
                         <div className="text-xs font-medium text-ink group-hover:text-gov-700">{e.name}</div>
-                        <div className="text-[10px] text-ink-muted">{e.town} · {e.entityType} · 风险{e.riskLevel}</div>
+                        <div className="text-[10px] text-ink-muted">{e.town} · {e.entityType}</div>
                       </div>
                       {e.town === showManualModal.town && (
                         <span className="text-[9px] bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded">同镇</span>
