@@ -3769,7 +3769,7 @@ function FeedbackHandling({ userRole, roleTown }) {
             <div className="space-y-2 text-xs">
               <div className="flex justify-between"><span className="text-ink-muted">企业名称</span><span className="text-ink font-medium">{selectedFeedback.enterprise}</span></div>
               <div className="flex justify-between"><span className="text-ink-muted">所属镇</span><span className="text-ink">{selectedFeedback.town}</span></div>
-              <div className="flex justify-between items-center"><span className="text-ink-muted">反馈类型</span><Badge color={selectedFeedback.type==='系统问题'?'red':selectedFeedback.type==='业务咨询'?'blue':'purple'}>{selectedFeedback.type}</Badge></div>
+              <div className="flex justify-between items-center"><span className="text-ink-muted">反馈类型</span><Badge color={selectedFeedback.type==='系统问题'?'red':selectedFeedback.type==='咨询'?'blue':'purple'}>{selectedFeedback.type}</Badge></div>
               <div className="flex justify-between"><span className="text-ink-muted">联系人</span><span className="text-ink">{selectedFeedback.contact}</span></div>
               <div className="flex justify-between"><span className="text-ink-muted">联系电话</span><span className="text-ink font-mono">{selectedFeedback.phone}</span></div>
               <div className="flex justify-between"><span className="text-ink-muted">提交时间</span><span className="text-ink">{selectedFeedback.createTime}</span></div>
