@@ -276,6 +276,45 @@
     border-radius: 50%;
     display: inline-block;
   }
+
+  /* Chat bubbles */
+  .chat-bubble {
+    max-width: 80%;
+    padding: 10px 14px;
+    border-radius: 16px;
+    font-size: 13px;
+    line-height: 1.5;
+    position: relative;
+    word-break: break-word;
+  }
+  .chat-bubble.merchant {
+    background: #185FA5;
+    color: white;
+    border-bottom-right-radius: 4px;
+    align-self: flex-end;
+  }
+  .chat-bubble.admin {
+    background: #F1F5F9;
+    color: #1E293B;
+    border-bottom-left-radius: 4px;
+    align-self: flex-start;
+  }
+  .chat-time {
+    font-size: 11px;
+    color: #94A3B8;
+    margin-top: 4px;
+  }
+  .chat-row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+  }
+  .chat-row.merchant {
+    align-items: flex-end;
+  }
+  .chat-row.admin {
+    align-items: flex-start;
+  }
 </style>
 </head>
 <body>
@@ -284,8 +323,8 @@
   <div class="toast" id="toast"></div>
 
   <!-- Demo toggle: switch between unbound/bound user -->
-  <button onclick="toggleOnboardingDemo()" id="demoToggleBtn" class="absolute top-[max(28px,env(safe-area-inset-top))] left-1/2 -translate-x-1/2 z-[70] px-3 py-1.5 rounded-full text-[11px] font-semibold shadow-lg border transition-all active:scale-95 bg-orange-50 text-orange-700 border-orange-200">
-    未绑用户
+  <button onclick="toggleLoginDemo()" id="demoToggleBtn" class="absolute top-[max(28px,env(safe-area-inset-top))] left-1/2 -translate-x-1/2 z-[70] px-3 py-1.5 rounded-full text-[11px] font-semibold shadow-lg border transition-all active:scale-95 bg-orange-50 text-orange-700 border-orange-200">
+    未登录
   </button>
 
   <!-- ===== ORDER DETAIL OVERLAY ===== -->
@@ -688,29 +727,236 @@
     </div>
   </div>
 
-  <!-- ===== DEACTIVATE ACCOUNT MODAL ===== -->
-  <div id="deactivateModal" class="hidden absolute inset-0 z-[80] flex items-center justify-center p-6">
-    <div class="absolute inset-0 bg-black/40" onclick="closeDeactivateModal()"></div>
-    <div class="relative bg-white rounded-2xl w-full max-w-xs p-6 shadow-elevated" style="animation: scaleIn 0.25s ease-out both;">
-      <div class="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
-        <i data-lucide="alert-triangle" class="w-7 h-7 text-red-500"></i>
+  <!-- ===== UNBIND MODAL ===== -->
+  <div id="unbindModal" class="hidden absolute inset-0 z-[80] flex items-center justify-center p-5">
+    <div class="absolute inset-0 bg-black/40" onclick="closeUnbindModal()"></div>
+    <div class="relative bg-white rounded-2xl w-full max-w-sm p-5 shadow-elevated max-h-[90%] overflow-y-auto">
+      <h3 class="text-base font-bold text-slate-900 mb-1">申请解绑账号</h3>
+      <p class="text-[13px] text-slate-400 mb-4">解绑后仅解除微信与商户的绑定关系，历史数据保留在监管平台</p>
+      <div class="space-y-3 mb-4">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">解绑原因 <span class="text-red-500">*</span></label>
+          <select id="unbindReason"
+            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all appearance-none">
+            <option value="">请选择解绑原因</option>
+            <option value="主体转让">主体转让</option>
+            <option value="员工离职">员工离职</option>
+            <option value="更换微信">更换微信</option>
+            <option value="其他">其他</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">补充说明</label>
+          <textarea id="unbindDesc" rows="3" placeholder="请简要说明解绑原因..."
+            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all resize-none"></textarea>
+        </div>
       </div>
-      <h3 class="text-base font-bold text-slate-900 text-center mb-2">确认注销账号？</h3>
-      <p class="text-[13px] text-slate-500 text-center leading-relaxed">注销后将永久删除当前账号信息，并解除与管理后台的商户信息关联。</p>
-      <p class="text-[13px] text-red-500 font-semibold text-center mt-2 mb-5">该操作不可恢复</p>
+      <div class="bg-amber-50 border border-amber-100 rounded-xl p-3 mb-4 flex items-start gap-2">
+        <i data-lucide="info" class="w-4 h-4 text-amber-500 shrink-0 mt-0.5"></i>
+        <p class="text-[12px] text-amber-700 leading-relaxed">解绑审批通过后，您将回到登录页面，可使用其他微信重新绑定该商户主体。历史工单仍保留原账号信息。</p>
+      </div>
       <div class="flex gap-3">
-        <button onclick="closeDeactivateModal()" class="flex-1 py-3 bg-slate-100 text-slate-600 text-sm font-semibold rounded-xl hover:bg-slate-200 active:scale-[0.98] transition-all">取消</button>
-        <button onclick="confirmDeactivate()" class="flex-1 py-3 bg-red-500 text-white text-sm font-semibold rounded-xl hover:bg-red-600 active:bg-red-700 active:scale-[0.98] transition-all">确认注销</button>
+        <button onclick="closeUnbindModal()" class="flex-1 py-3 bg-slate-100 text-slate-600 text-sm font-semibold rounded-xl hover:bg-slate-200 active:scale-[0.98] transition-all">取消</button>
+        <button onclick="submitUnbindApplication()" class="flex-1 py-3 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">提交解绑申请</button>
       </div>
     </div>
   </div>
 
-  <!-- ===== ONBOARDING OVERLAY (首次建档) ===== -->
-  <div id="onboardingOverlay" class="absolute inset-0 z-[60] bg-slate-50 flex flex-col">
+  <!-- ===== UNBIND STATUS MODAL ===== -->
+  <div id="unbindStatusModal" class="hidden absolute inset-0 z-[80] flex items-center justify-center p-6">
+    <div class="absolute inset-0 bg-black/40" onclick="closeUnbindStatusModal()"></div>
+    <div class="relative bg-white rounded-2xl w-full max-w-xs p-6 shadow-elevated">
+      <h3 class="text-base font-bold text-slate-900 text-center mb-4">解绑申请进度</h3>
+      <div class="flex items-start justify-between relative mb-6">
+        <div class="absolute top-5 left-5 right-5 h-0.5 bg-slate-200"></div>
+        <div class="relative z-10 flex flex-col items-center">
+          <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center">
+            <i data-lucide="check" class="w-5 h-5"></i>
+          </div>
+          <span class="text-[11px] font-semibold text-blue-600 mt-2">提交申请</span>
+        </div>
+        <div class="relative z-10 flex flex-col items-center">
+          <div id="unbindStep2Circle" class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center">
+            <i data-lucide="search-check" class="w-5 h-5"></i>
+          </div>
+          <span id="unbindStep2Label" class="text-[11px] font-semibold text-blue-600 mt-2">监管审核</span>
+        </div>
+        <div class="relative z-10 flex flex-col items-center">
+          <div id="unbindStep3Circle" class="w-10 h-10 rounded-full bg-slate-100 text-slate-300 flex items-center justify-center">
+            <i data-lucide="check-circle" class="w-5 h-5"></i>
+          </div>
+          <span class="text-[11px] font-medium text-slate-300 mt-2">已解绑</span>
+        </div>
+      </div>
+      <p id="unbindStatusText" class="text-sm text-slate-500 text-center mb-5">监管人员将在 1-3 个工作日内完成审核</p>
+      <button id="unbindCompleteBtn" onclick="confirmUnbindComplete()" class="hidden w-full mb-3 py-3 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">确认解绑完成</button>
+      <button onclick="closeUnbindStatusModal()" class="w-full py-3 bg-slate-100 text-slate-600 text-sm font-semibold rounded-xl hover:bg-slate-200 active:scale-[0.98] transition-all">关闭</button>
+      <p class="text-[11px] text-slate-300 cursor-pointer select-none mt-3 text-center" onclick="cycleUnbindState()">
+        演示切换：当前状态 — <span id="unbindDebugLabel">待审批</span>（点击切换）
+      </p>
+    </div>
+  </div>
+
+  <!-- ===== FEEDBACK OVERLAY ===== -->
+  <div class="overlay-panel" id="feedbackOverlay">
+    <div class="flex items-center gap-3 px-5 py-4 border-b border-slate-200 bg-white shrink-0">
+      <button onclick="closeFeedback()" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-slate-100 transition-colors">
+        <i data-lucide="arrow-left" class="w-5 h-5 text-slate-700"></i>
+      </button>
+      <span class="text-base font-semibold text-slate-900 flex-1" id="feedbackHeaderTitle">意见反馈</span>
+      <button onclick="showNewFeedbackForm()" id="feedbackNewBtn" class="text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors">新建</button>
+      <button onclick="backToFeedbackList()" id="feedbackBackBtn" class="hidden text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors">返回列表</button>
+    </div>
+
+    <!-- List View -->
+    <div id="feedbackListView" class="flex-1 overflow-y-auto px-5 pt-4 pb-6 bg-slate-50">
+      <div class="space-y-3" id="feedbackList"></div>
+    </div>
+
+    <!-- Thread View -->
+    <div id="feedbackThreadView" class="hidden flex-1 flex flex-col min-h-0">
+      <div class="flex-1 overflow-y-auto px-5 pt-4 pb-4 bg-slate-50" id="feedbackThreadContent"></div>
+      <div class="shrink-0 px-5 pt-3 pb-[max(16px,env(safe-area-inset-bottom))] bg-white border-t border-slate-200">
+        <div class="flex gap-2">
+          <input type="text" id="feedbackReplyInput" placeholder="输入追问内容..."
+            class="flex-1 px-4 py-2.5 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+          <button onclick="submitFeedbackReply()" class="px-4 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">
+            发送
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- New Feedback Form -->
+    <div id="newFeedbackForm" class="hidden absolute inset-x-0 bottom-0 z-10 bg-white rounded-t-2xl shadow-overlay p-5" style="top: auto; max-height: 85%;">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-slate-900">新建反馈</h3>
+        <button onclick="hideNewFeedbackForm()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100">
+          <i data-lucide="x" class="w-4 h-4 text-slate-400"></i>
+        </button>
+      </div>
+      <div class="space-y-3 mb-4">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">反馈主题 <span class="text-red-500">*</span></label>
+          <input type="text" id="newFeedbackSubject" placeholder="请简要描述反馈主题"
+            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">详细描述 <span class="text-red-500">*</span></label>
+          <textarea id="newFeedbackContent" rows="4" placeholder="请详细描述您遇到的问题或建议..."
+            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all resize-none"></textarea>
+        </div>
+      </div>
+      <button onclick="submitNewFeedback()" class="w-full py-3.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">
+        提交反馈
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== LOGIN OVERLAY ===== -->
+  <div id="loginOverlay" class="absolute inset-0 z-[60] bg-blue-600 flex flex-col">
+    <!-- Demo toggle -->
+    <button onclick="toggleLoginDemo()" id="loginDemoToggleBtn" class="absolute top-[max(28px,env(safe-area-inset-top))] left-1/2 -translate-x-1/2 z-[70] px-3 py-1.5 rounded-full text-[11px] font-semibold shadow-lg border transition-all active:scale-95 bg-orange-50 text-orange-700 border-orange-200">
+      未登录
+    </button>
+
+    <div class="flex-1 flex flex-col items-center justify-center px-6">
+      <!-- Brand -->
+      <div class="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center mb-4 backdrop-blur-sm">
+        <i data-lucide="shield-check" class="w-8 h-8 text-white"></i>
+      </div>
+      <h1 class="text-2xl font-bold text-white mb-1">智慧食安</h1>
+      <p class="text-sm text-white/70 mb-8">商户端</p>
+
+      <!-- Login card -->
+      <div class="w-full bg-white rounded-2xl p-6 shadow-elevated">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">许可证号</label>
+            <input type="text" id="loginLicense" placeholder="请输入许可证号" value="JY111050XXXXXX"
+              class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">密码</label>
+            <input type="password" id="loginPassword" placeholder="请输入密码" value="******"
+              class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+          </div>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="loginAutoLogin" checked class="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
+            <span class="text-[13px] text-slate-500">30天内自动登录</span>
+          </label>
+        </div>
+        <button onclick="handleLogin()" class="w-full mt-5 py-3.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">
+          登录
+        </button>
+      </div>
+
+      <button onclick="goToNewMerchant()" class="mt-5 px-6 py-3 text-sm font-semibold text-white border border-white/40 rounded-xl hover:bg-white/10 active:bg-white/20 active:scale-[0.98] transition-all">
+        新增商户
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== FIRST LOGIN VERIFY MODAL ===== -->
+  <div id="firstLoginVerifyModal" class="hidden absolute inset-0 z-[65] bg-black/40 flex items-center justify-center p-5">
+    <div class="relative bg-white rounded-2xl w-full max-w-sm p-5 shadow-elevated max-h-[90%] overflow-y-auto">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-slate-900">首次登录验证</h3>
+        <button onclick="closeFirstLoginVerify()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100">
+          <i data-lucide="x" class="w-4 h-4 text-slate-400"></i>
+        </button>
+      </div>
+      <p class="text-[13px] text-slate-500 mb-4">请补全商户信息并完成微信授权</p>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">验证码 <span class="text-red-500">*</span></label>
+          <input type="text" id="firstVerifyCode" placeholder="请输入验证码"
+            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">主体名称 <span class="text-red-500">*</span></label>
+          <input type="text" id="firstVerifyName" placeholder="请输入主体名称"
+            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">统一社会信用代码 <span class="text-red-500">*</span></label>
+          <input type="text" id="firstVerifyCreditCode" placeholder="18位信用代码" maxlength="18"
+            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all font-mono tracking-wider" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">法人姓名 <span class="text-red-500">*</span></label>
+          <input type="text" id="firstVerifyLegalPerson" placeholder="请输入法人姓名"
+            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">联系电话 <span class="text-red-500">*</span></label>
+          <input type="tel" id="firstVerifyPhone" placeholder="请输入联系电话"
+            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+        </div>
+        <!-- WeChat auth -->
+        <div id="wechatAuthBox" onclick="mockWechatAuth()" class="bg-green-50 border border-green-100 rounded-xl p-4 flex items-center gap-3 cursor-pointer active:opacity-70 transition-opacity">
+          <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center shrink-0">
+            <i data-lucide="message-circle" class="w-5 h-5 text-white"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-green-700">微信一键授权</p>
+            <p class="text-[11px] text-green-500">授权后账号将与当前微信绑定</p>
+          </div>
+          <i data-lucide="check-circle-2" id="wechatAuthCheck" class="w-5 h-5 text-green-500 shrink-0 hidden"></i>
+        </div>
+      </div>
+      <button onclick="submitFirstLoginVerify()" class="w-full mt-5 py-3.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">
+        确认并进入
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== ONBOARDING OVERLAY (新增企业) ===== -->
+  <div id="onboardingOverlay" class="absolute inset-0 z-[60] bg-slate-50 flex flex-col hidden">
     <!-- Onboarding Header -->
     <header class="px-5 pt-[max(22px,env(safe-area-inset-top))] pb-3 shrink-0 bg-blue-600">
-      <h1 class="text-lg font-bold text-white">商户建档</h1>
-      <p class="text-xs text-white/60 mt-0.5" id="onboardSubtitle">首次使用，请先完成企业信息登记</p>
+      <h1 class="text-lg font-bold text-white">新增企业信息</h1>
+      <p class="text-xs text-white/60 mt-0.5" id="onboardSubtitle">填写企业信息并上传许可证，提交后等待审批</p>
     </header>
 
     <!-- ===== CHOICE VIEW (注册方式选择) ===== -->
@@ -799,17 +1045,17 @@
 
     <!-- ===== FORM VIEW ===== -->
     <div id="onboardFormView" class="flex-1 overflow-y-auto" style="display:none;">
-      <!-- Back to choice -->
+      <!-- Back to login -->
       <div class="px-5 pt-3">
-        <button onclick="selectOnboardPath('choice')" class="text-[13px] text-slate-400 flex items-center gap-1 hover:text-slate-600 transition-colors">
-          <i data-lucide="chevron-left" class="w-4 h-4"></i> 返回选择注册方式
+        <button onclick="backToLogin()" class="text-[13px] text-slate-400 flex items-center gap-1 hover:text-slate-600 transition-colors">
+          <i data-lucide="chevron-left" class="w-4 h-4"></i> 返回登录页
         </button>
       </div>
       <!-- Step indicator -->
       <div class="px-5 pt-2 pb-2">
         <div class="flex items-center gap-2">
           <div class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-bold shrink-0">1</div>
-          <span class="text-sm font-semibold text-slate-800">填写企业信息</span>
+          <span class="text-sm font-semibold text-slate-800">填写新增企业信息</span>
           <div class="flex-1 h-px bg-slate-200 mx-1"></div>
           <div class="w-6 h-6 rounded-full bg-slate-200 text-slate-400 text-xs flex items-center justify-center font-bold shrink-0">2</div>
           <span class="text-sm text-slate-400">等待审批</span>
@@ -818,6 +1064,23 @@
 
       <!-- Form fields -->
       <div class="px-5 pt-3 pb-8 space-y-5">
+        <!-- 许可证文件上传 -->
+        <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100 space-y-3">
+          <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide">许可证文件 <span class="text-red-400 text-[11px] normal-case tracking-normal">（png / jpeg / pdf）</span></h3>
+          <div class="photo-upload-zone flex flex-col items-center justify-center gap-1 py-6 cursor-pointer" onclick="uploadLicenseFile()">
+            <i data-lucide="upload-cloud" class="w-6 h-6 text-slate-300"></i>
+            <span class="text-xs text-slate-300">点击上传许可证文件</span>
+            <span class="text-[10px] text-slate-300">支持 png、jpeg、pdf</span>
+          </div>
+          <div id="licenseFileRow" class="hidden items-center gap-2 bg-blue-50 rounded-xl px-4 py-3">
+            <i data-lucide="file-text" class="w-5 h-5 text-blue-600 shrink-0"></i>
+            <span id="licenseFileName" class="text-[13px] text-slate-700 flex-1 truncate">许可证.pdf</span>
+            <button onclick="removeLicenseFile()" class="w-6 h-6 flex items-center justify-center rounded-full hover:bg-blue-100">
+              <i data-lucide="x" class="w-3.5 h-3.5 text-slate-400"></i>
+            </button>
+          </div>
+        </div>
+
         <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100 space-y-4">
           <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">主体信息 <span class="text-red-400 text-[11px] normal-case tracking-normal">（带 * 为必填项）</span></h3>
 
@@ -1007,9 +1270,23 @@
     <!-- ===== Bottom Submit Bar (form view) ===== -->
     <div id="onboardBottomBar" class="shrink-0 px-5 pt-3 pb-[max(24px,env(safe-area-inset-bottom))] bg-white border-t border-slate-200">
       <button onclick="submitOnboarding()" id="onboardSubmitBtn" class="w-full py-3.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">
-        提交建档申请
+        提交新增企业申请
       </button>
       <p class="text-[11px] text-slate-400 text-center mt-2">提交后信息将交由监管人员审核，审核通过后方可使用全部功能</p>
+    </div>
+  </div>
+
+  <!-- ===== UNBIND PENDING OVERLAY ===== -->
+  <div id="unbindPendingOverlay" class="hidden absolute inset-0 z-[55] bg-slate-50 flex flex-col">
+    <div class="flex-1 flex flex-col items-center justify-center px-8">
+      <div class="w-20 h-20 rounded-full bg-blue-50 flex items-center justify-center mb-6">
+        <i data-lucide="clock" class="w-10 h-10 text-blue-600"></i>
+      </div>
+      <h2 class="text-lg font-bold text-slate-800 mb-2">解绑申请审核中</h2>
+      <p class="text-sm text-slate-500 text-center leading-relaxed mb-6">监管人员将在 1-3 个工作日内完成审核，审批期间暂不可使用其他功能。</p>
+      <button onclick="openUnbindStatusModal()" class="px-6 py-3 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">
+        查看进度
+      </button>
     </div>
   </div>
 
@@ -1126,6 +1403,12 @@
                   <i data-lucide="clipboard-check" class="w-5 h-5 text-rose-600"></i>
                 </div>
                 <span class="text-[12px] text-slate-700">检查记录</span>
+              </button>
+              <button onclick="openFeedbackOverlay()" class="flex flex-col items-center gap-1.5 active:opacity-70 transition-opacity">
+                <div class="w-10 h-10 rounded-2xl bg-green-50 flex items-center justify-center">
+                  <i data-lucide="message-square-plus" class="w-5 h-5 text-green-600"></i>
+                </div>
+                <span class="text-[12px] text-slate-700">意见反馈</span>
               </button>
               <button onclick="showToast('更多功能建设中')" class="flex flex-col items-center gap-1.5 active:opacity-70 transition-opacity">
                 <div class="w-10 h-10 rounded-2xl bg-slate-100 flex items-center justify-center">
@@ -1569,48 +1852,76 @@
           </div>
         </div>
 
-        <!-- Employees Section -->
-        <div class="px-5 mb-4">
-        </div>
+        <!-- Personnel Info Section -->
         <div class="px-5 mb-2 pt-2">
-          <button onclick="toggleSection('employees')" class="w-full flex items-center justify-between mb-2">
-            <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide">从业人员</h2>
-            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform" id="employeesChevron"></i>
+          <button onclick="toggleSection('personnel')" class="w-full flex items-center justify-between mb-3">
+            <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide">人员信息</h2>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform" id="personnelChevron"></i>
           </button>
-          <div id="employeesContent" class="bg-white rounded-2xl shadow-card border border-slate-100 overflow-hidden">
-            <div onclick="showItemDetail('emp1')" class="p-4 flex items-center justify-between border-b border-slate-100 active:bg-slate-50 cursor-pointer">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-800 font-semibold text-sm">张</div>
-                <div>
-                  <p class="text-sm font-semibold text-slate-800">张三</p>
-                  <p class="text-xs text-slate-400">法定代表人 · 健康证有效期至 2025-03-15</p>
-                </div>
+
+          <div id="personnelContent">
+            <!-- 从业人员 -->
+            <div class="mb-3">
+              <div class="flex items-center mb-2 pl-1">
+                <h3 class="text-sm font-medium text-slate-600">从业人员</h3>
               </div>
-              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
-            </div>
-            <div onclick="showItemDetail('emp2')" class="p-4 flex items-center justify-between border-b border-slate-100 active:bg-slate-50 cursor-pointer">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-semibold text-sm">李</div>
-                <div>
-                  <p class="text-sm font-semibold text-slate-800">李丽</p>
-                  <p class="text-xs text-slate-400">厨师长 · 健康证有效期至 2024-08-20</p>
+              <div class="bg-white rounded-2xl shadow-card border border-slate-100 overflow-hidden">
+                <div onclick="showItemDetail('emp1')" class="p-4 flex items-center justify-between border-b border-slate-100 active:bg-slate-50 cursor-pointer">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-800 font-semibold text-sm overflow-hidden">
+                      <img src="" alt="" class="hidden w-full h-full object-cover emp-avatar" data-emp="emp1">
+                      <span class="emp-avatar-fallback">张</span>
+                    </div>
+                    <div>
+                      <p class="text-sm font-semibold text-slate-800">张三</p>
+                      <p class="text-xs text-slate-400">法定代表人 · 健康证有效期至 2025-03-15</p>
+                    </div>
+                  </div>
+                  <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
                 </div>
-              </div>
-              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
-            </div>
-            <div onclick="showItemDetail('emp3')" class="p-4 flex items-center justify-between active:bg-slate-50 cursor-pointer">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold text-sm">王</div>
-                <div>
-                  <p class="text-sm font-semibold text-slate-800">王芳</p>
-                  <p class="text-xs text-slate-400">食品安全员 · 健康证有效期至 2025-01-10</p>
+                <div onclick="showItemDetail('emp2')" class="p-4 flex items-center justify-between border-b border-slate-100 active:bg-slate-50 cursor-pointer">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-semibold text-sm overflow-hidden">
+                      <img src="" alt="" class="hidden w-full h-full object-cover emp-avatar" data-emp="emp2">
+                      <span class="emp-avatar-fallback">李</span>
+                    </div>
+                    <div>
+                      <p class="text-sm font-semibold text-slate-800">李丽</p>
+                      <p class="text-xs text-slate-400">厨师长 · 健康证有效期至 2024-08-20</p>
+                    </div>
+                  </div>
+                  <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
                 </div>
+                <button onclick="showItemDetail('empNew')" class="ent-editable-show hidden w-full py-3 text-sm font-medium text-blue-600 bg-blue-50/50 hover:bg-blue-50 active:bg-blue-100 transition-colors flex items-center justify-center gap-1.5">
+                  <i data-lucide="plus" class="w-4 h-4"></i> 添加从业人员
+                </button>
               </div>
-              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
             </div>
-            <button onclick="showItemDetail('empNew')" class="ent-editable-show hidden w-full py-3 text-sm font-medium text-blue-600 bg-blue-50/50 hover:bg-blue-50 active:bg-blue-100 transition-colors flex items-center justify-center gap-1.5">
-              <i data-lucide="plus" class="w-4 h-4"></i> 添加从业人员
-            </button>
+
+            <!-- 食品安全管理员 -->
+            <div>
+              <div class="flex items-center mb-2 pl-1">
+                <h3 class="text-sm font-medium text-slate-600">食品安全管理员</h3>
+              </div>
+              <div class="bg-white rounded-2xl shadow-card border border-slate-100 overflow-hidden">
+                <div onclick="showItemDetail('admin1')" class="p-4 flex items-center justify-between border-b border-slate-100 active:bg-slate-50 cursor-pointer">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-semibold text-sm overflow-hidden">
+                      <img src="" alt="" class="hidden w-full h-full object-cover admin-avatar" data-admin="admin1">
+                      <span class="admin-avatar-fallback">王</span>
+                    </div>
+                    <div>
+                      <p class="text-sm font-semibold text-slate-800">王芳</p>
+                      <p class="text-xs text-slate-400">食品安全管理员 · 培训证书编号 SP2024****</p>
+                    </div>
+                  </div>
+                  <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
+                </div>
+                <button onclick="showItemDetail('adminNew')" class="ent-editable-show hidden w-full py-3 text-sm font-medium text-blue-600 bg-blue-50/50 hover:bg-blue-50 active:bg-blue-100 transition-colors flex items-center justify-center gap-1.5">
+                  <i data-lucide="plus" class="w-4 h-4"></i> 添加食品安全管理员
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1648,7 +1959,7 @@
                 <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 font-semibold text-sm shrink-0">健</div>
                 <div>
                   <p class="text-sm font-semibold text-slate-800">从业人员健康证</p>
-                  <p class="text-xs text-slate-400">3人持有有效证件 · 有效期内</p>
+                  <p class="text-xs text-slate-400">2人持有有效证件 · 有效期内</p>
                 </div>
               </div>
               <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
@@ -1707,15 +2018,27 @@
           </div>
         </div>
 
-        <!-- Deactivate Account -->
-        <div class="px-5 mb-4">
-          <button onclick="openDeactivateModal()" class="w-full bg-white rounded-2xl shadow-card border border-slate-100 px-5 py-4 flex items-center gap-3 active:bg-red-50/50 transition-colors">
-            <div class="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center shrink-0">
-              <i data-lucide="user-x" class="w-4 h-4 text-red-500"></i>
+      <!-- Unbind approval status banner -->
+        <div id="unbindStatusBanner" class="hidden px-5 mb-4">
+          <div class="bg-blue-50 border border-blue-100 rounded-2xl p-4 flex items-center gap-3">
+            <i data-lucide="clock" class="w-5 h-5 text-blue-600"></i>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold text-blue-800">解绑申请审核中</p>
+              <p class="text-xs text-blue-600">监管人员将在1-3个工作日内完成审核</p>
+            </div>
+            <button onclick="openUnbindStatusModal()" class="text-xs font-semibold text-blue-600 bg-white px-3 py-1.5 rounded-lg border border-blue-200 hover:bg-blue-50 transition-colors">查看进度</button>
+          </div>
+        </div>
+
+        <!-- Unbind Account -->
+        <div id="unbindBtnSection" class="px-5 mb-4">
+          <button onclick="openUnbindModal()" class="w-full bg-white rounded-2xl shadow-card border border-slate-100 px-5 py-4 flex items-center gap-3 active:bg-slate-50 transition-colors">
+            <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
+              <i data-lucide="unlink" class="w-4 h-4 text-slate-500"></i>
             </div>
             <div class="flex-1 text-left min-w-0">
-              <p class="text-sm font-medium text-red-600">注销账号</p>
-              <p class="text-xs text-slate-400">删除当前账号信息，解除与管理后台的信息关联</p>
+              <p class="text-sm font-medium text-slate-700">解绑账号</p>
+              <p class="text-xs text-slate-400">解除当前微信与商户主体的绑定关系</p>
             </div>
             <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
           </button>
@@ -1761,6 +2084,9 @@ let appealPhotoCount = 0;
 let onboardingState = 'unregistered'; // 'unregistered' | 'pending' | 'rejected' | 'approved'
 let onboardPath = 'choice'; // 'choice' | 'bind' | 'new'
 let bindSelectedIdx = -1;
+let appEntryState = 'login'; // 'login' | 'firstVerify' | 'onboarding' | 'approved'
+let approvalFlowType = 'newMerchant'; // 'newMerchant' | 'bindExisting'
+let wechatAuthed = false;
 
 // 平台已有商户（供绑定选择）
 const existingMerchants = [
@@ -1874,7 +2200,7 @@ function submitBinding() {
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', () => {
   lucide.createIcons();
-  updateOnboardingUI();
+  updateLoginUI();
   // Trigger staggered animation on visible content
   document.querySelectorAll('.anim-stagger.reveal').forEach(el => el.classList.add('reveal'));
 });
@@ -1899,9 +2225,9 @@ setInterval(() => {
 
 // ===== TAB SWITCHING =====
 function switchTab(tab) {
-  // Block tab switching if onboarding not approved
-  if (onboardingState !== 'approved') {
-    showToast('请先完成企业建档并通过审批', '');
+  // Block tab switching if not logged in / not approved
+  if (appEntryState !== 'approved') {
+    showToast('请先登录并通过审批', '');
     return;
   }
   // Close any open overlays first
@@ -1963,6 +2289,11 @@ function switchTab(tab) {
 
   // Scroll to top
   document.getElementById('tabContent').scrollTop = 0;
+
+  // Update unbind UI when on My tab
+  if (tab === 'my') {
+    updateUnbindUI();
+  }
 }
 
 function updateHeader(tab) {
@@ -2130,7 +2461,7 @@ function updateOnboardingUI() {
     iconDiv.className = 'w-20 h-20 rounded-full flex items-center justify-center mb-6 bg-blue-50';
     iconEl.setAttribute('data-lucide', 'clock');
     iconEl.className = 'w-10 h-10 text-blue-600';
-    titleEl.textContent = '建档申请已提交';
+    titleEl.textContent = approvalFlowType === 'newMerchant' ? '新增企业申请已提交' : '绑定申请已提交';
     titleEl.className = 'text-lg font-bold text-slate-800 mb-2';
     descEl.innerHTML = '监管人员将在 1-3 个工作日内<br>完成信息审核，请耐心等待';
     descEl.className = 'text-sm text-slate-500 text-center leading-relaxed';
@@ -2150,7 +2481,7 @@ function updateOnboardingUI() {
     step3Label.className = 'text-[11px] font-medium text-slate-300 mt-2 whitespace-nowrap';
 
     debugLabel.textContent = '待审批';
-    subtitle.textContent = '建档申请审核中';
+    subtitle.textContent = approvalFlowType === 'newMerchant' ? '新增企业申请审核中' : '绑定申请审核中';
   } else if (onboardingState === 'rejected') {
     choiceView.classList.add('hidden');
     bindView.classList.add('hidden');
@@ -2161,7 +2492,7 @@ function updateOnboardingUI() {
     iconDiv.className = 'w-20 h-20 rounded-full flex items-center justify-center mb-6 bg-orange-50';
     iconEl.setAttribute('data-lucide', 'alert-triangle');
     iconEl.className = 'w-10 h-10 text-orange-500';
-    titleEl.textContent = '建档申请被驳回';
+    titleEl.textContent = approvalFlowType === 'newMerchant' ? '新增企业申请被驳回' : '绑定申请被驳回';
     titleEl.className = 'text-lg font-bold text-slate-800 mb-2';
     descEl.innerHTML = '<span class="text-orange-600 font-medium">驳回原因：</span>请核实统一社会信用代码的准确性，并补充经营场所的详细地址信息';
     descEl.className = 'text-sm text-slate-500 text-center leading-relaxed bg-orange-50 rounded-xl p-4 mt-2';
@@ -2181,7 +2512,7 @@ function updateOnboardingUI() {
 
     reeditBtn.classList.remove('hidden');
     debugLabel.textContent = '已驳回';
-    subtitle.textContent = '建档申请未通过，请重新填写';
+    subtitle.textContent = approvalFlowType === 'newMerchant' ? '新增企业申请未通过，请重新填写' : '绑定申请未通过，请重新填写';
   }
 
   setTimeout(() => lucide.createIcons(), 50);
@@ -2235,11 +2566,18 @@ function submitOnboarding() {
     return;
   }
 
-  if (!confirm('确认提交建档申请？提交后将交由监管人员审核，期间无法修改。')) return;
+  // Validate license file upload for new merchant flow
+  if (approvalFlowType === 'newMerchant' && !licenseFileUploaded) {
+    showToast('请上传许可证文件');
+    return;
+  }
 
+  if (!confirm('确认提交新增企业申请？提交后将交由监管人员审核，期间无法修改。')) return;
+
+  approvalFlowType = 'newMerchant';
   onboardingState = 'pending';
   updateOnboardingUI();
-  showToast('建档申请已提交，请等待审核', 'success');
+  showToast('新增企业申请已提交，请等待审核', 'success');
 }
 
 function onboardSelectChip(btn, group) {
@@ -2268,6 +2606,8 @@ function cycleOnboardingState() {
   }
   updateOnboardingUI();
   if (onboardingState === 'approved') {
+    appEntryState = 'approved';
+    updateLoginUI();
     showToast('审批已通过，欢迎使用智慧食安', 'success');
   }
 }
@@ -2278,21 +2618,7 @@ function onboardReedit() {
 }
 
 function toggleOnboardingDemo() {
-  const btn = document.getElementById('demoToggleBtn');
-  if (onboardingState === 'approved') {
-    // Switch to unbound
-    onboardingState = 'unregistered';
-    onboardPath = 'choice';
-    bindSelectedIdx = -1;
-    btn.textContent = '未绑用户';
-    btn.className = 'absolute top-[max(28px,env(safe-area-inset-top))] left-1/2 -translate-x-1/2 z-[70] px-3 py-1.5 rounded-full text-[11px] font-semibold shadow-lg border transition-all active:scale-95 bg-orange-50 text-orange-700 border-orange-200';
-  } else {
-    // Switch to bound (approved)
-    onboardingState = 'approved';
-    btn.textContent = '已绑用户';
-    btn.className = 'absolute top-[max(28px,env(safe-area-inset-top))] left-1/2 -translate-x-1/2 z-[70] px-3 py-1.5 rounded-full text-[11px] font-semibold shadow-lg border transition-all active:scale-95 bg-green-50 text-green-700 border-green-200';
-  }
-  updateOnboardingUI();
+  toggleLoginDemo();
 }
 
 // ===== ORDER FILTER =====
@@ -2962,19 +3288,22 @@ function toggleSwitch(btn) {
 function showItemDetail(key) {
   const items = {
     emp1: { title: '张三', meta: '法定代表人', fields: [
+      { label: '照片', value: '', type: 'photo' },
       { label: '姓名', value: '张三' }, { label: '职位', value: '法定代表人' }, { label: '身份证号', value: '110108****1234' },
       { label: '联系电话', value: '138****6789' }, { label: '健康证编号', value: 'JK2023****' },
       { label: '健康证有效期', value: '2024-03-15 至 2025-03-15' }, { label: '入职日期', value: '2020-03-01' }
     ]},
     emp2: { title: '李丽', meta: '厨师长', fields: [
+      { label: '照片', value: '', type: 'photo' },
       { label: '姓名', value: '李丽' }, { label: '职位', value: '厨师长' }, { label: '身份证号', value: '110108****5678' },
       { label: '联系电话', value: '139****8901' }, { label: '健康证编号', value: 'JK2023****' },
       { label: '健康证有效期', value: '2023-08-20 至 2024-08-20' }, { label: '入职日期', value: '2021-06-15' }
     ]},
-    emp3: { title: '王芳', meta: '食品安全员', fields: [
-      { label: '姓名', value: '王芳' }, { label: '职位', value: '食品安全员' }, { label: '身份证号', value: '110108****9012' },
-      { label: '联系电话', value: '137****3456' }, { label: '健康证编号', value: 'JK2024****' },
-      { label: '健康证有效期', value: '2024-01-10 至 2025-01-10' }, { label: '入职日期', value: '2022-09-01' }
+    admin1: { title: '王芳', meta: '食品安全管理员', fields: [
+      { label: '照片', value: '', type: 'photo' },
+      { label: '姓名', value: '王芳' }, { label: '职务', value: '食品安全管理员' }, { label: '联系电话', value: '137****3456' },
+      { label: '有效培训证书编号', value: 'SP2024****' },
+      { label: '职责清单', value: '1. 负责食品安全自查与整改跟踪；\n2. 组织从业人员食品安全培训；\n3. 监督原料采购、加工、留样等环节；\n4. 对接监管部门检查与问题整改。' }
     ]},
     license1: { title: '食品经营许可证', meta: 'JY111050XXXXXX', fields: [
       { label: '许可证编号', value: 'JY111050XXXXXX' }, { label: '发证机关', value: '北京市海淀区市场监督管理局' },
@@ -2987,9 +3316,16 @@ function showItemDetail(key) {
       { label: '认证范围', value: '餐饮服务全过程食品安全管理' }
     ]},
     empNew: { title: '新增从业人员', meta: '请填写信息', fields: [
+      { label: '照片', value: '', type: 'photo' },
       { label: '姓名', value: '' }, { label: '职位', value: '' }, { label: '身份证号', value: '' },
       { label: '联系电话', value: '' }, { label: '健康证编号', value: '' },
       { label: '健康证有效期', value: '' }, { label: '入职日期', value: '' }
+    ]},
+    adminNew: { title: '新增食品安全管理员', meta: '请填写信息', fields: [
+      { label: '照片', value: '', type: 'photo' },
+      { label: '姓名', value: '' }, { label: '职务', value: '食品安全管理员' }, { label: '联系电话', value: '' },
+      { label: '有效培训证书编号', value: '' },
+      { label: '职责清单', value: '' }
     ]},
     changeLog: { title: '变更记录', meta: '最近更新 2024-06-15', fields: [
       { label: '2024-06-15 14:30', value: '提交审批 — 更新经营面积、联系电话' },
@@ -3001,10 +3337,9 @@ function showItemDetail(key) {
       { label: '证照名称', value: '' }, { label: '证照编号', value: '' }, { label: '发证机关', value: '' },
       { label: '发证日期', value: '' }, { label: '有效期至', value: '' }, { label: '备注', value: '' }
     ]},
-    license3: { title: '从业人员健康证', meta: '3人持有有效证件', fields: [
-      { label: '持证人员', value: '张三、李丽、王芳' }, { label: '发证机构', value: '北京市海淀区疾病预防控制中心' },
-      { label: '张三健康证', value: 'JK2023**** 至 2025-03-15' }, { label: '李丽健康证', value: 'JK2023**** 至 2024-08-20' },
-      { label: '王芳健康证', value: 'JK2024**** 至 2025-01-10' }
+    license3: { title: '从业人员健康证', meta: '2人持有有效证件', fields: [
+      { label: '持证人员', value: '张三、李丽' }, { label: '发证机构', value: '北京市海淀区疾病预防控制中心' },
+      { label: '张三健康证', value: 'JK2023**** 至 2025-03-15' }, { label: '李丽健康证', value: 'JK2023**** 至 2024-08-20' }
     ]},
   };
   const data = items[key];
@@ -3012,12 +3347,12 @@ function showItemDetail(key) {
   document.getElementById('itemDetailTitle').textContent = data.title;
   document.getElementById('itemDetailMeta').textContent = data.meta;
 
-  const isNew = key === 'empNew' || key === 'licenseNew';
+  const isNew = key === 'empNew' || key === 'licenseNew' || key === 'adminNew';
   const isEditing = isNew || entApprovalState === 'editing';
   const isEmployee = key.startsWith('emp');
   document.getElementById('itemDetailSaveBtn').classList.toggle('hidden', !isEditing);
 
-  // Store current key for OCR callback
+  // Store current key for OCR/photo callback
   window._currentItemKey = key;
 
   // Build field rows
@@ -3032,15 +3367,47 @@ function showItemDetail(key) {
     `;
   }
   container.innerHTML = ocrHTML + data.fields.map((f, i) => {
+    const valAttr = (f.value || '').replace(/"/g, '&quot;');
+    if (f.type === 'photo' || f.label === '照片') {
+      if (isEditing) {
+        const hasPhoto = !!f.value;
+        return `<div class="flex justify-between items-start">
+          <span class="text-sm text-slate-400 shrink-0 mr-3">${f.label}</span>
+          <div class="flex-1 flex justify-end">
+            <button type="button" onclick="simulatePhotoUpload(this)" class="relative w-20 h-20 rounded-xl border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden bg-slate-50 active:bg-slate-100">
+              <img src="${f.value}" class="photo-preview absolute inset-0 w-full h-full object-cover ${hasPhoto ? '' : 'hidden'}" alt="">
+              <span class="photo-icon-wrap absolute inset-0 flex items-center justify-center ${hasPhoto ? 'hidden' : ''}"><i data-lucide="plus" class="w-6 h-6 text-slate-400"></i></span>
+              <span class="photo-camera-wrap absolute bottom-1 right-1 ${hasPhoto ? '' : 'hidden'}"><i data-lucide="camera" class="w-4 h-4 text-white drop-shadow"></i></span>
+            </button>
+            <input type="hidden" class="photo-input" value="${valAttr}" data-field="${i}" />
+          </div>
+        </div>`;
+      } else {
+        const src = f.value || 'https://placehold.co/64x64/e2e8f0/94a3b8?text=%E6%97%A0%E7%85%A7%E7%89%87';
+        return `<div class="flex justify-between items-center">
+          <span class="text-sm text-slate-400">${f.label}</span>
+          <img src="${src}" class="w-14 h-14 rounded-lg object-cover border border-slate-200 bg-slate-50" alt="">
+        </div>`;
+      }
+    }
     if (isEditing) {
+      if (f.label === '职责清单') {
+        return `<div class="flex flex-col gap-2">
+          <span class="text-sm text-slate-400">${f.label}</span>
+          <textarea class="w-full px-3 py-2 text-sm text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all resize-none" rows="4" data-field="${i}">${f.value}</textarea>
+        </div>`;
+      }
       return `<div class="flex justify-between items-center">
         <span class="text-sm text-slate-400 shrink-0 mr-3">${f.label}</span>
-        <input type="text" class="flex-1 px-3 py-2 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="${f.value.replace(/"/g, '&quot;')}" data-field="${i}" />
+        <input type="text" class="flex-1 px-3 py-2 text-sm text-right text-slate-800 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" value="${valAttr}" data-field="${i}" />
       </div>`;
     } else {
-      return `<div class="flex justify-between items-center">
-        <span class="text-sm text-slate-400">${f.label}</span>
-        <span class="text-sm font-medium text-slate-800 text-right">${f.value}</span>
+      const displayValue = f.label === '职责清单'
+        ? f.value.replace(/\n/g, '<br>')
+        : f.value;
+      return `<div class="flex justify-between items-start">
+        <span class="text-sm text-slate-400 shrink-0 mr-3">${f.label}</span>
+        <span class="text-sm font-medium text-slate-800 text-right">${displayValue}</span>
       </div>`;
     }
   }).join('');
@@ -3063,14 +3430,15 @@ function simulateEmpOCR() {
     scanOverlay.classList.add('hidden');
 
     // Mock recognized data from health certificate
+    // Index 0 is photo, so text fields start at 1
     const mockData = [
-      { field: 0, value: '赵六' },
-      { field: 1, value: '食品安全员' },
-      { field: 2, value: '110108****9012' },
-      { field: 3, value: '136****7890' },
-      { field: 4, value: 'JK2026****' },
-      { field: 5, value: '2026-03-01 至 2027-03-01' },
-      { field: 6, value: '2025-09-01' },
+      { field: 1, value: '赵六' },
+      { field: 2, value: '食品安全员' },
+      { field: 3, value: '110108****9012' },
+      { field: 4, value: '136****7890' },
+      { field: 5, value: 'JK2026****' },
+      { field: 6, value: '2026-03-01 至 2027-03-01' },
+      { field: 7, value: '2025-09-01' },
     ];
 
     // Populate input fields
@@ -3089,6 +3457,22 @@ function simulateEmpOCR() {
     showToast('健康证识别完成，信息已填入', 'success');
     setTimeout(() => lucide.createIcons(), 50);
   }, 1800);
+}
+
+function simulatePhotoUpload(btn) {
+  const placeholderUrl = 'https://placehold.co/120x120/3b82f6/ffffff?text=%E7%85%A7%E7%89%87';
+  const preview = btn.querySelector('.photo-preview');
+  const iconWrap = btn.querySelector('.photo-icon-wrap');
+  const cameraWrap = btn.querySelector('.photo-camera-wrap');
+  const hiddenInput = btn.parentElement.querySelector('.photo-input');
+
+  preview.src = placeholderUrl;
+  preview.classList.remove('hidden');
+  if (iconWrap) iconWrap.classList.add('hidden');
+  if (cameraWrap) cameraWrap.classList.remove('hidden');
+  if (hiddenInput) hiddenInput.value = placeholderUrl;
+
+  showToast('照片上传成功', 'success');
 }
 
 function openEnterpriseEdit() {
@@ -3123,28 +3507,433 @@ function handleLogout() {
   }
 }
 
-// ===== DEACTIVATE ACCOUNT =====
-function openDeactivateModal() {
-  document.getElementById('deactivateModal').classList.remove('hidden');
+// ===== UNBIND ACCOUNT =====
+let unbindApprovalState = 'none'; // 'none' | 'pending' | 'approved'
+
+function hasPendingOrders() {
+  return Object.values(orderData).some(o => o.status === '待审核' || o.status === '已驳回');
+}
+
+function openUnbindModal() {
+  document.getElementById('unbindModal').classList.remove('hidden');
   setTimeout(() => lucide.createIcons(), 50);
 }
 
-function closeDeactivateModal() {
-  document.getElementById('deactivateModal').classList.add('hidden');
+function closeUnbindModal() {
+  document.getElementById('unbindModal').classList.add('hidden');
 }
 
-function confirmDeactivate() {
-  closeDeactivateModal();
-  // 删除账号信息并解除后台关联 → 回到未注册（未绑）状态
+function submitUnbindApplication() {
+  closeUnbindModal();
+  unbindApprovalState = 'pending';
+  updateLoginUI();
+  showToast('解绑申请已提交，请等待审核', 'success');
+}
+
+function updateUnbindUI() {
+  const banner = document.getElementById('unbindStatusBanner');
+  const btnSection = document.getElementById('unbindBtnSection');
+  if (!banner || !btnSection) return;
+  if (unbindApprovalState === 'pending') {
+    banner.classList.remove('hidden');
+    btnSection.classList.add('hidden');
+  } else {
+    banner.classList.add('hidden');
+    btnSection.classList.remove('hidden');
+  }
+}
+
+function openUnbindStatusModal() {
+  const modal = document.getElementById('unbindStatusModal');
+  modal.classList.remove('hidden');
+  const step2 = document.getElementById('unbindStep2Circle');
+  const step2Label = document.getElementById('unbindStep2Label');
+  const step3 = document.getElementById('unbindStep3Circle');
+  const completeBtn = document.getElementById('unbindCompleteBtn');
+  const statusText = document.getElementById('unbindStatusText');
+  if (unbindApprovalState === 'pending') {
+    step2.className = 'w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center';
+    step2Label.className = 'text-[11px] font-semibold text-blue-600 mt-2';
+    step3.className = 'w-10 h-10 rounded-full bg-slate-100 text-slate-300 flex items-center justify-center';
+    statusText.textContent = '监管人员将在 1-3 个工作日内完成审核';
+    completeBtn.classList.add('hidden');
+  } else if (unbindApprovalState === 'approved') {
+    step2.className = 'w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center';
+    step2Label.className = 'text-[11px] font-semibold text-green-600 mt-2';
+    step3.className = 'w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center';
+    statusText.textContent = '审核已通过，点击下方按钮完成解绑';
+    completeBtn.classList.remove('hidden');
+  }
+  setTimeout(() => lucide.createIcons(), 50);
+}
+
+function closeUnbindStatusModal() {
+  document.getElementById('unbindStatusModal').classList.add('hidden');
+}
+
+function confirmUnbindComplete() {
+  closeUnbindStatusModal();
+  unbindApprovalState = 'none';
+  updateUnbindUI();
+  // 回到登录页
+  appEntryState = 'login';
   onboardingState = 'unregistered';
   onboardPath = 'choice';
   bindSelectedIdx = -1;
-  const btn = document.getElementById('demoToggleBtn');
-  btn.textContent = '未绑用户';
-  btn.className = 'absolute top-[max(28px,env(safe-area-inset-top))] left-1/2 -translate-x-1/2 z-[70] px-3 py-1.5 rounded-full text-[11px] font-semibold shadow-lg border transition-all active:scale-95 bg-orange-50 text-orange-700 border-orange-200';
-  updateOnboardingUI();
-  showToast('账号已注销，商户关联已解除', 'success');
+  wechatAuthed = false;
+  const btn = document.getElementById('loginDemoToggleBtn');
+  if (btn) {
+    btn.textContent = '未登录';
+    btn.className = 'absolute top-[max(28px,env(safe-area-inset-top))] left-1/2 -translate-x-1/2 z-[70] px-3 py-1.5 rounded-full text-[11px] font-semibold shadow-lg border transition-all active:scale-95 bg-orange-50 text-orange-700 border-orange-200';
+  }
+  const oldBtn = document.getElementById('demoToggleBtn');
+  if (oldBtn) { oldBtn.textContent = '未登录'; oldBtn.className = btn.className; }
+  updateLoginUI();
+  showToast('解绑完成，已解除微信与商户的绑定关系', 'success');
 }
+
+function cycleUnbindState() {
+  if (unbindApprovalState === 'pending') {
+    unbindApprovalState = 'approved';
+    document.getElementById('unbindDebugLabel').textContent = '已通过';
+  } else {
+    unbindApprovalState = 'pending';
+    document.getElementById('unbindDebugLabel').textContent = '待审批';
+  }
+  openUnbindStatusModal();
+}
+
+// ===== LOGIN & ENTRY =====
+function updateLoginUI() {
+  const loginOverlay = document.getElementById('loginOverlay');
+  const mainApp = document.getElementById('mainApp');
+  const tabBar = document.getElementById('bottomTabBar');
+  const onboardingOverlay = document.getElementById('onboardingOverlay');
+  const unbindOverlay = document.getElementById('unbindPendingOverlay');
+
+  if (appEntryState === 'login' || appEntryState === 'firstVerify') {
+    loginOverlay.style.display = '';
+    mainApp.style.display = 'none';
+    tabBar.style.display = 'none';
+    onboardingOverlay.classList.add('hidden');
+    unbindOverlay.classList.add('hidden');
+  } else if (appEntryState === 'onboarding') {
+    loginOverlay.style.display = 'none';
+    onboardingOverlay.classList.remove('hidden');
+    mainApp.style.display = 'none';
+    tabBar.style.display = 'none';
+    unbindOverlay.classList.add('hidden');
+    updateOnboardingUI();
+  } else if (appEntryState === 'approved') {
+    loginOverlay.style.display = 'none';
+    onboardingOverlay.classList.add('hidden');
+    if (unbindApprovalState === 'pending') {
+      mainApp.style.display = 'none';
+      tabBar.style.display = 'none';
+      unbindOverlay.classList.remove('hidden');
+    } else {
+      mainApp.style.display = '';
+      tabBar.style.display = '';
+      unbindOverlay.classList.add('hidden');
+      switchTab('home');
+    }
+  }
+  setTimeout(() => lucide.createIcons(), 50);
+}
+
+function handleLogin() {
+  // Mock: always first-time login for demo
+  document.getElementById('firstLoginVerifyModal').classList.remove('hidden');
+  setTimeout(() => lucide.createIcons(), 50);
+}
+
+function closeFirstLoginVerify() {
+  document.getElementById('firstLoginVerifyModal').classList.add('hidden');
+}
+
+function mockWechatAuth() {
+  wechatAuthed = true;
+  const check = document.getElementById('wechatAuthCheck');
+  check.classList.remove('hidden');
+  showToast('微信授权成功', 'success');
+}
+
+function submitFirstLoginVerify() {
+  const required = [
+    { id: 'firstVerifyCode', label: '验证码' },
+    { id: 'firstVerifyName', label: '主体名称' },
+    { id: 'firstVerifyCreditCode', label: '统一社会信用代码' },
+    { id: 'firstVerifyLegalPerson', label: '法人姓名' },
+    { id: 'firstVerifyPhone', label: '联系电话' },
+  ];
+  let hasError = false;
+  let firstError = null;
+  required.forEach(f => {
+    const el = document.getElementById(f.id);
+    if (!el.value.trim()) {
+      el.classList.add('border-red-300', 'bg-red-50');
+      if (!firstError) firstError = f;
+      hasError = true;
+    } else {
+      el.classList.remove('border-red-300', 'bg-red-50');
+    }
+  });
+  if (hasError) {
+    showToast('请填写所有必填项（' + firstError.label + '）');
+    document.getElementById(firstError.id).focus();
+    return;
+  }
+  if (!wechatAuthed) {
+    showToast('请先完成微信授权');
+    return;
+  }
+  closeFirstLoginVerify();
+  appEntryState = 'approved';
+  onboardingState = 'approved';
+  updateLoginUI();
+  showToast('登录成功', 'success');
+}
+
+function goToNewMerchant() {
+  appEntryState = 'onboarding';
+  approvalFlowType = 'newMerchant';
+  onboardingState = 'unregistered';
+  onboardPath = 'new';
+  wechatAuthed = false;
+  updateLoginUI();
+}
+
+function backToLogin() {
+  appEntryState = 'login';
+  onboardingState = 'unregistered';
+  onboardPath = 'choice';
+  wechatAuthed = false;
+  updateLoginUI();
+}
+
+function toggleLoginDemo() {
+  const btn = document.getElementById('loginDemoToggleBtn');
+  const oldBtn = document.getElementById('demoToggleBtn');
+  if (appEntryState !== 'approved') {
+    // Switch to approved (logged in)
+    appEntryState = 'approved';
+    onboardingState = 'approved';
+    btn.textContent = '已登录';
+    btn.className = 'absolute top-[max(28px,env(safe-area-inset-top))] left-1/2 -translate-x-1/2 z-[70] px-3 py-1.5 rounded-full text-[11px] font-semibold shadow-lg border transition-all active:scale-95 bg-green-50 text-green-700 border-green-200';
+    if (oldBtn) { oldBtn.textContent = '已登录'; oldBtn.className = btn.className; }
+  } else {
+    // Switch to login
+    appEntryState = 'login';
+    onboardingState = 'unregistered';
+    onboardPath = 'choice';
+    bindSelectedIdx = -1;
+    wechatAuthed = false;
+    btn.textContent = '未登录';
+    btn.className = 'absolute top-[max(28px,env(safe-area-inset-top))] left-1/2 -translate-x-1/2 z-[70] px-3 py-1.5 rounded-full text-[11px] font-semibold shadow-lg border transition-all active:scale-95 bg-orange-50 text-orange-700 border-orange-200';
+    if (oldBtn) { oldBtn.textContent = '未登录'; oldBtn.className = btn.className; }
+  }
+  updateLoginUI();
+}
+
+// ===== LICENSE FILE UPLOAD =====
+let licenseFileUploaded = false;
+function uploadLicenseFile() {
+  licenseFileUploaded = true;
+  document.getElementById('licenseFileRow').classList.remove('hidden');
+  document.getElementById('licenseFileRow').classList.add('flex');
+  showToast('许可证文件已上传', 'success');
+}
+function removeLicenseFile() {
+  licenseFileUploaded = false;
+  document.getElementById('licenseFileRow').classList.add('hidden');
+  document.getElementById('licenseFileRow').classList.remove('flex');
+}
+
+// ===== FEEDBACK SYSTEM =====
+let currentFeedbackId = null;
+
+const feedbackData = [
+  {
+    id: 'fb1',
+    subject: '后厨摄像头频繁离线',
+    status: '待回复',
+    createTime: '2024-07-20 10:30',
+    messages: [
+      { role: 'merchant', text: '后厨摄像头最近三天频繁显示离线，但检查电源和网线都是正常的，请协助排查。', time: '2024-07-20 10:30' },
+      { role: 'admin', text: '已收到您的反馈，我们已安排技术人员在24小时内上门检查设备。请保持电话畅通。', time: '2024-07-20 11:15' },
+      { role: 'merchant', text: '追问：请问大概什么时候能来？我们需要提前安排人员配合。', time: '2024-07-20 14:20' },
+    ]
+  },
+  {
+    id: 'fb2',
+    subject: '食品安全培训证书上传失败',
+    status: '已回复',
+    createTime: '2024-07-18 09:15',
+    messages: [
+      { role: 'merchant', text: '在从业人员管理页面上传食品安全培训证书时，系统提示"文件格式不支持"，但我上传的是PDF文件，请问是什么原因？', time: '2024-07-18 09:15' },
+      { role: 'admin', text: '经排查，系统对PDF文件的版本兼容性存在问题。建议您将证书截图保存为PNG格式后重新上传。如仍有问题请联系技术支持。', time: '2024-07-18 16:30' },
+    ]
+  },
+  {
+    id: 'fb3',
+    subject: '误报整改工单申诉',
+    status: '已关闭',
+    createTime: '2024-07-15 16:00',
+    messages: [
+      { role: 'merchant', text: '系统生成的整改工单"未佩戴厨师帽"为误报，当时工作人员正在更换帽子，请核实并撤销该工单。', time: '2024-07-15 16:00' },
+      { role: 'admin', text: '经调取当日监控录像复核，确认该告警为短暂性误报。已为您撤销该整改工单，感谢您的反馈。', time: '2024-07-16 09:00' },
+      { role: 'merchant', text: '收到，谢谢处理。', time: '2024-07-16 10:30' },
+      { role: 'admin', text: '不客气，如有其他问题欢迎随时反馈。该工单已关闭。', time: '2024-07-16 10:35' },
+    ]
+  }
+];
+
+function openFeedbackOverlay() {
+  document.getElementById('feedbackOverlay').classList.add('open');
+  document.getElementById('bottomTabBar').style.display = 'none';
+  backToFeedbackList();
+  renderFeedbackList();
+  setTimeout(() => lucide.createIcons(), 50);
+}
+
+function closeFeedback() {
+  document.getElementById('feedbackOverlay').classList.remove('open');
+  document.getElementById('bottomTabBar').style.display = '';
+}
+
+function renderFeedbackList() {
+  const list = document.getElementById('feedbackList');
+  if (feedbackData.length === 0) {
+    list.innerHTML = `
+      <div class="bg-white rounded-2xl p-8 shadow-card border border-slate-100 text-center">
+        <i data-lucide="message-square-plus" class="w-8 h-8 text-slate-300 mx-auto mb-2"></i>
+        <p class="text-[13px] text-slate-400">暂无反馈记录</p>
+        <p class="text-[12px] text-slate-300 mt-1">点击右上角"新建"提交您的第一条反馈</p>
+      </div>`;
+  } else {
+    list.innerHTML = feedbackData.map(fb => {
+      const lastMsg = fb.messages[fb.messages.length - 1];
+      const statusClass = fb.status === '待回复' ? 'text-orange-600 bg-orange-50' : fb.status === '已回复' ? 'text-blue-600 bg-blue-50' : 'text-slate-500 bg-slate-100';
+      return `
+      <div onclick="openFeedbackThread('${fb.id}')" class="bg-white rounded-2xl p-4 shadow-card border border-slate-100 cursor-pointer active:bg-slate-50 transition-all">
+        <div class="flex items-start justify-between gap-2 mb-2">
+          <h3 class="text-[14px] font-semibold text-slate-800 flex-1 leading-snug">${fb.subject}</h3>
+          <span class="text-[11px] font-medium px-2 py-0.5 rounded-full shrink-0 ${statusClass}">${fb.status}</span>
+        </div>
+        <p class="text-[12px] text-slate-400 truncate leading-relaxed mb-2">${lastMsg.text}</p>
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] text-slate-300">${fb.createTime}</span>
+          <span class="text-[11px] text-blue-600 font-medium">${fb.messages.length} 条对话</span>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  setTimeout(() => lucide.createIcons(), 50);
+}
+
+function openFeedbackThread(id) {
+  currentFeedbackId = id;
+  const fb = feedbackData.find(f => f.id === id);
+  if (!fb) return;
+
+  document.getElementById('feedbackListView').classList.add('hidden');
+  document.getElementById('feedbackThreadView').classList.remove('hidden');
+  document.getElementById('feedbackNewBtn').classList.add('hidden');
+  document.getElementById('feedbackBackBtn').classList.remove('hidden');
+  document.getElementById('feedbackHeaderTitle').textContent = fb.subject;
+
+  renderFeedbackThread();
+}
+
+function renderFeedbackThread() {
+  const fb = feedbackData.find(f => f.id === currentFeedbackId);
+  if (!fb) return;
+
+  const container = document.getElementById('feedbackThreadContent');
+  container.innerHTML = fb.messages.map(msg => {
+    const isMerchant = msg.role === 'merchant';
+    return `
+    <div class="chat-row ${isMerchant ? 'merchant' : 'admin'}">
+      <div class="chat-bubble ${isMerchant ? 'merchant' : 'admin'}">${msg.text}</div>
+      <div class="chat-time ${isMerchant ? 'text-right' : 'text-left'}">${msg.time} · ${isMerchant ? '我' : '监管人员'}</div>
+    </div>`;
+  }).join('');
+
+  // Scroll to bottom
+  setTimeout(() => {
+    container.scrollTop = container.scrollHeight;
+  }, 50);
+}
+
+function backToFeedbackList() {
+  currentFeedbackId = null;
+  document.getElementById('feedbackListView').classList.remove('hidden');
+  document.getElementById('feedbackThreadView').classList.add('hidden');
+  document.getElementById('feedbackNewBtn').classList.remove('hidden');
+  document.getElementById('feedbackBackBtn').classList.add('hidden');
+  document.getElementById('feedbackHeaderTitle').textContent = '意见反馈';
+  hideNewFeedbackForm();
+}
+
+function showNewFeedbackForm() {
+  document.getElementById('newFeedbackForm').classList.remove('hidden');
+  document.getElementById('newFeedbackSubject').value = '';
+  document.getElementById('newFeedbackContent').value = '';
+}
+
+function hideNewFeedbackForm() {
+  document.getElementById('newFeedbackForm').classList.add('hidden');
+}
+
+function submitNewFeedback() {
+  const subject = document.getElementById('newFeedbackSubject').value.trim();
+  const content = document.getElementById('newFeedbackContent').value.trim();
+
+  if (!subject) {
+    showToast('请填写反馈主题');
+    document.getElementById('newFeedbackSubject').focus();
+    return;
+  }
+  if (!content) {
+    showToast('请填写详细描述');
+    document.getElementById('newFeedbackContent').focus();
+    return;
+  }
+
+  const now = new Date();
+  const timeStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+
+  feedbackData.unshift({
+    id: 'fb' + Date.now(),
+    subject: subject,
+    status: '待回复',
+    createTime: timeStr,
+    messages: [
+      { role: 'merchant', text: content, time: timeStr }
+    ]
+  });
+
+  hideNewFeedbackForm();
+  renderFeedbackList();
+  showToast('反馈提交成功', 'success');
+}
+
+function submitFeedbackReply() {
+  const input = document.getElementById('feedbackReplyInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const fb = feedbackData.find(f => f.id === currentFeedbackId);
+  if (!fb) return;
+
+  const now = new Date();
+  const timeStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+
+  fb.messages.push({ role: 'merchant', text: text, time: timeStr });
+  input.value = '';
+  renderFeedbackThread();
+}
+
 </script>
 </body>
 </html>
