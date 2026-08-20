@@ -507,6 +507,67 @@
     </div>
   </div>
 
+  <!-- ===== ENTERPRISE CHANGE DETAIL OVERLAY ===== -->
+  <div class="overlay-panel" id="entChangeDetailOverlay">
+    <div class="flex items-center gap-3 px-5 py-4 border-b border-slate-200 bg-white shrink-0">
+      <button onclick="closeEntChangeDetail()" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-slate-100 transition-colors">
+        <i data-lucide="arrow-left" class="w-5 h-5 text-slate-700"></i>
+      </button>
+      <span class="text-base font-semibold text-slate-900 flex-1">工单详情</span>
+      <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-orange-50 text-orange-600" id="entChangeHeaderBadge">待审核</span>
+    </div>
+
+    <div class="flex-1 overflow-y-auto px-5 pt-5 pb-8">
+      <!-- 工单信息 -->
+      <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100 mb-4">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
+            <i data-lucide="building-2" class="w-5 h-5 text-blue-600"></i>
+          </div>
+          <div class="min-w-0">
+            <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">企业信息修改申请</h3>
+            <p class="text-[12px] text-slate-400 mt-0.5" id="entChangeOrderNo"></p>
+          </div>
+        </div>
+        <div class="space-y-0">
+          <div class="flex items-center py-2.5 border-b border-slate-50">
+            <span class="text-[13px] text-slate-400 w-20 shrink-0">工单类型</span>
+            <span class="text-[13px] text-slate-700 font-medium">企业信息修改</span>
+          </div>
+          <div class="flex items-center py-2.5 border-b border-slate-50">
+            <span class="text-[13px] text-slate-400 w-20 shrink-0">提交时间</span>
+            <span class="text-[13px] text-slate-700 font-medium" id="entChangeDate"></span>
+          </div>
+          <div class="flex items-center py-2.5">
+            <span class="text-[13px] text-slate-400 w-20 shrink-0">流转状态</span>
+            <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-orange-50 text-orange-600" id="entChangeStatus">待审核</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 驳回原因（仅已驳回显示） -->
+      <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100 mb-4 hidden" id="entChangeRejectSection">
+        <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">驳回原因</h3>
+        <p class="text-[13px] text-slate-700 leading-relaxed" id="entChangeRejectReason"></p>
+      </div>
+
+      <!-- 修改内容 -->
+      <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100">
+        <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">修改内容</h3>
+        <div id="entChangeFields" class="space-y-0"></div>
+      </div>
+
+      <!-- 去修改按钮（仅已驳回显示） -->
+      <button
+        onclick="goEditEnterprise()"
+        id="entChangeGoEditBtn"
+        class="hidden w-full mt-5 py-3.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all"
+      >
+        去企业信息修改
+      </button>
+    </div>
+  </div>
+
   <!-- ===== APPEAL OVERLAY ===== -->
   <div class="overlay-panel" id="appealOverlay">
     <div class="flex items-center gap-3 px-5 py-4 border-b border-slate-200 bg-white">
@@ -544,6 +605,70 @@
           提交申诉
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- ===== REMINDER CENTER OVERLAY ===== -->
+  <div class="overlay-panel" id="reminderCenterOverlay">
+    <div class="flex items-center gap-3 px-5 py-4 border-b border-slate-200 bg-white shrink-0">
+      <button onclick="closeReminderCenter()" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-slate-100 transition-colors">
+        <i data-lucide="arrow-left" class="w-5 h-5 text-slate-700"></i>
+      </button>
+      <span class="text-base font-semibold text-slate-900 flex-1">公告</span>
+    </div>
+
+    <div class="flex-1 overflow-y-auto px-5 pt-5 pb-8 space-y-3" id="reminderCenterList">
+      <!-- 列表由 JS 渲染 -->
+    </div>
+  </div>
+
+  <!-- ===== HOME REMINDER DETAIL OVERLAY ===== -->
+  <div class="overlay-panel" id="reminderDetailOverlay">
+    <div class="flex items-center gap-3 px-5 py-4 border-b border-slate-200 bg-white shrink-0">
+      <button onclick="closeReminderDetail()" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-slate-100 transition-colors">
+        <i data-lucide="arrow-left" class="w-5 h-5 text-slate-700"></i>
+      </button>
+      <span class="text-base font-semibold text-slate-900 flex-1" id="reminderDetailTitle">公告详情</span>
+    </div>
+
+    <div class="flex-1 overflow-y-auto px-5 pt-5 pb-8">
+      <!-- 摘要卡片 -->
+      <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100 mb-4">
+        <div class="flex items-start gap-3">
+          <div class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 bg-red-100" id="reminderIconWrap">
+            <i data-lucide="alert-triangle" class="w-5 h-5 text-red-500"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h2 class="text-base font-semibold text-slate-800 leading-snug" id="reminderTitle"></h2>
+            <p class="text-[12px] text-slate-400 mt-1" id="reminderTime"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 详情字段 -->
+      <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100">
+        <div class="flex items-start py-2.5 border-b border-slate-50">
+          <span class="text-[13px] text-slate-400 w-20 shrink-0 pt-0.5">提醒类型</span>
+          <span class="text-[13px] text-slate-700 font-medium" id="reminderType"></span>
+        </div>
+        <div class="flex items-start py-2.5 border-b border-slate-50">
+          <span class="text-[13px] text-slate-400 w-20 shrink-0 pt-0.5">来源</span>
+          <span class="text-[13px] text-slate-700 font-medium leading-relaxed" id="reminderSource"></span>
+        </div>
+        <div class="py-2.5">
+          <span class="text-[13px] text-slate-400 block mb-1.5">详情说明</span>
+          <p class="text-[13px] text-slate-700 leading-relaxed" id="reminderContent"></p>
+        </div>
+      </div>
+
+      <!-- 操作按钮 -->
+      <button
+        onclick="reminderPrimaryAction()"
+        id="reminderActionBtn"
+        class="hidden w-full mt-5 py-3.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all"
+      >
+        查看相关工单
+      </button>
     </div>
   </div>
 
@@ -804,13 +929,17 @@
         <i data-lucide="arrow-left" class="w-5 h-5 text-slate-700"></i>
       </button>
       <span class="text-base font-semibold text-slate-900 flex-1" id="feedbackHeaderTitle">意见反馈</span>
-      <button onclick="showNewFeedbackForm()" id="feedbackNewBtn" class="text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors">新建</button>
       <button onclick="backToFeedbackList()" id="feedbackBackBtn" class="hidden text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors">返回列表</button>
     </div>
 
     <!-- List View -->
-    <div id="feedbackListView" class="flex-1 overflow-y-auto px-5 pt-4 pb-6 bg-slate-50">
+    <div id="feedbackListView" class="flex-1 overflow-y-auto px-5 pt-4 pb-6 bg-slate-50 relative">
       <div class="space-y-3" id="feedbackList"></div>
+      <!-- Floating New Button -->
+      <button onclick="showNewFeedbackForm()" id="feedbackFabBtn"
+        class="fixed right-5 bottom-24 w-14 h-14 rounded-full bg-blue-600 text-white shadow-lg shadow-blue-600/30 flex items-center justify-center active:bg-blue-800 active:scale-[0.95] transition-all z-20">
+        <i data-lucide="plus" class="w-6 h-6"></i>
+      </button>
     </div>
 
     <!-- Thread View -->
@@ -1310,7 +1439,7 @@
       <div id="tab-home" class="anim-stagger reveal">
         <!-- 吸顶公告滚动 -->
         <div class="sticky top-0 z-10 bg-slate-50/95 backdrop-blur-sm px-5 pt-2.5 pb-1.5">
-          <div class="bg-amber-50 border border-amber-100 rounded-xl px-3.5 py-2.5 flex items-center gap-2.5">
+          <div onclick="openCurrentNotice()" class="bg-amber-50 border border-amber-100 rounded-xl px-3.5 py-2.5 flex items-center gap-2.5 cursor-pointer active:bg-amber-100 transition-colors">
             <i data-lucide="megaphone" class="w-4 h-4 text-amber-600 shrink-0"></i>
             <div class="flex-1 min-w-0 overflow-hidden h-5">
               <p id="noticeText" class="text-[12px] text-amber-800 truncate transition-opacity duration-200 leading-5">【通知】关于开展夏季食品安全专项检查工作的通知</p>
@@ -1328,7 +1457,7 @@
             </div>
             <!-- 预警数量 -->
             <div class="grid grid-cols-2 gap-3 mb-3">
-              <div class="bg-red-50/60 rounded-xl px-3 py-2.5 flex items-center gap-3">
+              <div onclick="openReminderDetail('alarm')" class="bg-red-50/60 rounded-xl px-3 py-2.5 flex items-center gap-3 cursor-pointer active:bg-red-100/70 transition-colors">
                 <div class="w-9 h-9 rounded-xl bg-red-100 flex items-center justify-center shrink-0">
                   <i data-lucide="alert-triangle" class="w-4.5 h-4.5 text-red-500"></i>
                 </div>
@@ -1337,7 +1466,7 @@
                   <p class="text-[11px] text-slate-500 mt-0.5">报警记录</p>
                 </div>
               </div>
-              <div class="bg-blue-50/60 rounded-xl px-3 py-2.5 flex items-center gap-3">
+              <div onclick="openReminderDetail('cert')" class="bg-blue-50/60 rounded-xl px-3 py-2.5 flex items-center gap-3 cursor-pointer active:bg-blue-100/70 transition-colors">
                 <div class="w-9 h-9 rounded-xl bg-blue-100 flex items-center justify-center shrink-0">
                   <i data-lucide="file-clock" class="w-4.5 h-4.5 text-blue-600"></i>
                 </div>
@@ -1409,6 +1538,12 @@
                   <i data-lucide="message-square-plus" class="w-5 h-5 text-green-600"></i>
                 </div>
                 <span class="text-[12px] text-slate-700">意见反馈</span>
+              </button>
+              <button onclick="openReminderCenter()" class="flex flex-col items-center gap-1.5 active:opacity-70 transition-opacity">
+                <div class="w-10 h-10 rounded-2xl bg-amber-50 flex items-center justify-center">
+                  <i data-lucide="megaphone" class="w-5 h-5 text-amber-600"></i>
+                </div>
+                <span class="text-[12px] text-slate-700">公告</span>
               </button>
               <button onclick="showToast('更多功能建设中')" class="flex flex-col items-center gap-1.5 active:opacity-70 transition-opacity">
                 <div class="w-10 h-10 rounded-2xl bg-slate-100 flex items-center justify-center">
@@ -1500,8 +1635,8 @@
         <div class="sticky top-0 z-10 bg-slate-50 px-5 pt-3 pb-3 -mx-0">
           <!-- Filter tabs -->
           <div class="flex gap-2 overflow-x-auto scrollbar-hide mb-3" id="orderFilterBar">
-            <button onclick="filterOrders('pending', this)" class="shrink-0 px-4 py-2 text-[13px] font-semibold rounded-xl bg-blue-600 text-white transition-all">待审核 <span class="opacity-70 ml-0.5">3</span></button>
-            <button onclick="filterOrders('rejected', this)" class="shrink-0 px-4 py-2 text-[13px] font-medium rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all">已驳回 <span class="opacity-50 ml-0.5">1</span></button>
+            <button onclick="filterOrders('pending', this)" class="shrink-0 px-4 py-2 text-[13px] font-semibold rounded-xl bg-blue-600 text-white transition-all">待审核 <span id="pendingOrderCount" class="opacity-70 ml-0.5">3</span></button>
+            <button onclick="filterOrders('rejected', this)" class="shrink-0 px-4 py-2 text-[13px] font-medium rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all">已驳回 <span id="rejectedOrderCount" class="opacity-50 ml-0.5">2</span></button>
             <button onclick="filterOrders('passed', this)" class="shrink-0 px-4 py-2 text-[13px] font-medium rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all">已通过 <span class="opacity-50 ml-0.5">4</span></button>
           </div>
 
@@ -1528,6 +1663,28 @@
 
         <!-- Unified Order List -->
         <div class="px-5 pb-24 space-y-3 anim-stagger reveal" id="orderList">
+          <!-- 企业信息修改申请 - 已驳回 -->
+          <div onclick="openEntChangeRejected()" class="order-card group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated" data-status="rejected" data-date="2024-06-18">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0 mt-0.5">
+                <i data-lucide="building-2" class="w-5 h-5 text-blue-600"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-0.5">
+                  <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600">信息变更</span>
+                  <span class="text-[11px] text-slate-400">EC240618</span>
+                </div>
+                <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">企业信息修改申请</h3>
+                <p class="text-[12px] text-slate-400 mt-1 leading-relaxed">
+                  提交时间：2024-06-18 09:40 · 驳回原因：营业执照复印件不清晰
+                </p>
+              </div>
+              <div class="flex flex-col items-end gap-1.5 shrink-0">
+                <span class="text-[11px] font-semibold text-red-600 bg-red-50 px-2.5 py-1 rounded-full whitespace-nowrap">已驳回</span>
+              </div>
+            </div>
+          </div>
+
           <!-- Order 1: 报警 - 待审核 -->
           <div onclick="openOrderDetail('order1')" class="order-card group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated" data-status="pending" data-date="2024-06-01">
             <div class="flex items-start gap-3">
@@ -2223,6 +2380,156 @@ setInterval(() => {
   }, 200);
 }, 4000);
 
+// ===== HOME REMINDER DETAIL =====
+const reminderData = {
+  alarm: {
+    detailTitle: '报警详情',
+    typeTag: '报警提醒', typeClass: 'bg-red-50 text-red-600',
+    icon: 'alert-triangle', iconBg: 'bg-red-100', iconColor: 'text-red-500',
+    title: '后厨卫生整改通知',
+    time: '2024-06-01 09:30',
+    source: '明厨亮灶专用智能摄像头 · 后厨烹饪区摄像头',
+    content: '后厨烹饪区摄像头检测到厨师未佩戴厨师帽，可能存在卫生安全隐患。请在整改期限（2024-06-15）内完成整改，并提交整改反馈材料。',
+    actionText: '查看相关工单', actionOrder: 'order1'
+  },
+  cert: {
+    detailTitle: '证照详情',
+    typeTag: '证照预警', typeClass: 'bg-blue-50 text-blue-600',
+    icon: 'file-clock', iconBg: 'bg-blue-100', iconColor: 'text-blue-600',
+    title: '食品经营许可证即将到期',
+    time: '2024-05-28 08:00',
+    source: '企业证照 · 食品经营许可证（JY111050XXXXXX）',
+    content: '你单位的食品经营许可证（编号：JY111050XXXXXX）将于2024年7月20日到期。请在有效期届满前30个工作日内向原发证机关申请延续，并按要求提交相关材料。',
+    actionText: '查看相关工单', actionOrder: 'order2'
+  },
+  notice0: {
+    detailTitle: '公告详情',
+    typeTag: '通知公告', typeClass: 'bg-amber-50 text-amber-600',
+    icon: 'megaphone', iconBg: 'bg-amber-100', iconColor: 'text-amber-600',
+    title: '关于开展夏季食品安全专项检查工作的通知',
+    time: '2024-06-20 10:00',
+    source: '市场监督管理局',
+    content: '为加强夏季高温天气下的食品安全监管，现定于本月开展食品安全专项检查。请各商户对照检查要点开展自查自纠，重点检查冷链食品储存、从业人员健康管理、餐具消毒等环节，并配合做好迎检准备。',
+    actionText: null, actionOrder: null
+  },
+  notice1: {
+    detailTitle: '提醒详情',
+    typeTag: '提醒', typeClass: 'bg-sky-50 text-sky-600',
+    icon: 'shield-check', iconBg: 'bg-sky-100', iconColor: 'text-sky-600',
+    title: '请及时完成从业人员健康证年度更新',
+    time: '2024-06-18 09:00',
+    source: '企业人员管理',
+    content: '你单位部分从业人员的健康证即将到期，请及时安排体检并完成健康证年度更新，确保所有从业人员持有效健康证上岗。',
+    actionText: null, actionOrder: null
+  },
+  notice2: {
+    detailTitle: '公告详情',
+    typeTag: '公告', typeClass: 'bg-violet-50 text-violet-600',
+    icon: 'wifi', iconBg: 'bg-violet-100', iconColor: 'text-violet-600',
+    title: '明厨亮灶设备在线率已纳入月度考核指标',
+    time: '2024-06-15 10:00',
+    source: '市场监督管理局',
+    content: '自本月起，明厨亮灶设备在线率将正式纳入月度考核指标。请各商户确保后厨摄像头、传感器等设备24小时在线运行，如遇设备故障请及时报修，避免影响考核结果。',
+    actionText: null, actionOrder: null
+  }
+};
+
+let currentReminderAction = null;
+let reminderDetailFromCenter = false;
+
+function openCurrentNotice() {
+  openReminderDetail('notice' + noticeIdx);
+}
+
+function openReminderDetail(key, fromCenter) {
+  const data = reminderData[key];
+  if (!data) return;
+  reminderDetailFromCenter = !!fromCenter;
+
+  document.getElementById('reminderDetailTitle').textContent = data.detailTitle || '详情';
+  document.getElementById('reminderType').textContent = data.typeTag;
+  document.getElementById('reminderTitle').textContent = data.title;
+  document.getElementById('reminderTime').textContent = data.time;
+  document.getElementById('reminderSource').textContent = data.source;
+  document.getElementById('reminderContent').textContent = data.content;
+
+  // 图标
+  const iconWrap = document.getElementById('reminderIconWrap');
+  iconWrap.className = 'w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ' + data.iconBg;
+  iconWrap.innerHTML = '<i data-lucide="' + data.icon + '" class="w-5 h-5 ' + data.iconColor + '"></i>';
+
+  // 操作按钮
+  const actionBtn = document.getElementById('reminderActionBtn');
+  currentReminderAction = data.actionOrder || null;
+  if (data.actionOrder) {
+    actionBtn.textContent = data.actionText || '查看相关工单';
+    actionBtn.classList.remove('hidden');
+  } else {
+    actionBtn.classList.add('hidden');
+  }
+
+  document.getElementById('reminderDetailOverlay').classList.add('open');
+  document.getElementById('bottomTabBar').style.display = 'none';
+  setTimeout(() => lucide.createIcons(), 100);
+}
+
+function reminderPrimaryAction() {
+  const order = currentReminderAction;
+  reminderDetailFromCenter = false;
+  closeReminderDetail();
+  if (order) openOrderDetail(order);
+}
+
+function closeReminderDetail() {
+  document.getElementById('reminderDetailOverlay').classList.remove('open');
+  if (reminderDetailFromCenter) {
+    reminderDetailFromCenter = false;
+    document.getElementById('reminderCenterOverlay').classList.add('open');
+    document.getElementById('bottomTabBar').style.display = 'none';
+  } else {
+    document.getElementById('bottomTabBar').style.display = '';
+  }
+}
+
+// ===== REMINDER CENTER =====
+// 公告列表仅展示来源于市场监管局的公告
+const reminderCenterKeys = ['notice0', 'notice2'];
+
+function renderReminderCenter() {
+  const listEl = document.getElementById('reminderCenterList');
+  listEl.innerHTML = reminderCenterKeys.map(key => {
+    const d = reminderData[key];
+    return `
+      <div onclick="openReminderDetail('${key}', true)" class="bg-white rounded-2xl p-4 shadow-card border border-slate-100 cursor-pointer active:bg-slate-50 transition-colors">
+        <div class="flex items-start gap-3">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${d.iconBg}">
+            <i data-lucide="${d.icon}" class="w-5 h-5 ${d.iconColor}"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-0.5">
+              <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-md ${d.typeClass}">${d.typeTag}</span>
+              <span class="text-[11px] text-slate-400">${d.time.split(' ')[0]}</span>
+            </div>
+            <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">${d.title}</h3>
+            <p class="text-[12px] text-slate-400 mt-1 truncate">${d.source}</p>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function openReminderCenter() {
+  renderReminderCenter();
+  document.getElementById('reminderCenterOverlay').classList.add('open');
+  document.getElementById('bottomTabBar').style.display = 'none';
+  setTimeout(() => lucide.createIcons(), 100);
+}
+
+function closeReminderCenter() {
+  document.getElementById('reminderCenterOverlay').classList.remove('open');
+  document.getElementById('bottomTabBar').style.display = '';
+}
+
 // ===== TAB SWITCHING =====
 function switchTab(tab) {
   // Block tab switching if not logged in / not approved
@@ -2233,11 +2540,23 @@ function switchTab(tab) {
   // Close any open overlays first
   const orderOverlay = document.getElementById('orderDetailOverlay');
   const appealOverlay = document.getElementById('appealOverlay');
+  const reminderOverlay = document.getElementById('reminderDetailOverlay');
+  const reminderCenterOverlay = document.getElementById('reminderCenterOverlay');
+  const entChangeOverlay = document.getElementById('entChangeDetailOverlay');
   if (orderOverlay.classList.contains('open')) {
     orderOverlay.classList.remove('open');
   }
   if (appealOverlay.classList.contains('open')) {
     appealOverlay.classList.remove('open');
+  }
+  if (reminderOverlay.classList.contains('open')) {
+    reminderOverlay.classList.remove('open');
+  }
+  if (reminderCenterOverlay.classList.contains('open')) {
+    reminderCenterOverlay.classList.remove('open');
+  }
+  if (entChangeOverlay.classList.contains('open')) {
+    entChangeOverlay.classList.remove('open');
   }
   document.getElementById('bottomTabBar').style.display = '';
 
@@ -2396,7 +2715,166 @@ function submitForApproval() {
   const now = new Date();
   document.getElementById('entLastUpdate').textContent = now.toISOString().slice(0, 16).replace('T', ' ');
 
+  // 生成企业信息修改工单（提交后自动带进工单列表）
+  createEntChangeOrder();
+
   showToast('已提交审批，请等待监管审核', 'success');
+}
+
+// ===== ENTERPRISE CHANGE ORDER =====
+let entChangeOrder = null;
+
+// 预置一条「已驳回」的企业信息修改申请
+const entChangeRejectedOrder = {
+  orderNo: 'EC240618',
+  date: '2024-06-18 09:40',
+  status: '已驳回',
+  rejectReason: '提交的营业执照复印件不清晰，无法核实经营场所信息。请重新上传清晰的营业执照复印件，并补充经营场所实景照片。',
+  changes: [
+    { label: '主体名称', value: '好味道餐饮管理有限公司' },
+    { label: '联系电话', value: '138****6789' },
+    { label: '经营场所', value: '北京市海淀区中关村大街1号' },
+    { label: '扩展备注', value: '补充经营场所实景照片' }
+  ]
+};
+
+function collectEntChangeContent() {
+  const rows = document.querySelectorAll('#enterpriseInfoContent .ent-row');
+  const changes = [];
+  rows.forEach(row => {
+    const labelEl = row.querySelector('span.text-slate-400');
+    const input = row.querySelector('.ent-field-input');
+    if (!labelEl || !input) return;
+    const label = labelEl.textContent.trim();
+    let value = '';
+    if (input.tagName === 'INPUT' || input.tagName === 'TEXTAREA') {
+      value = input.value.trim();
+    } else {
+      const active = input.querySelector('.bg-blue-600');
+      value = active ? (active.getAttribute('data-value') || active.textContent.trim()) : '';
+    }
+    if (value) changes.push({ label, value });
+  });
+  return changes;
+}
+
+function createEntChangeOrder() {
+  const now = new Date();
+  const dateStr = now.toISOString().slice(0, 16).replace('T', ' ');
+  const isFirst = entChangeOrder === null;
+  entChangeOrder = {
+    orderNo: 'EC' + now.toISOString().slice(0, 10).replace(/-/g, ''),
+    date: dateStr,
+    status: '待审核',
+    changes: collectEntChangeContent()
+  };
+
+  const card = document.getElementById('entChangeOrderCard');
+  if (card) {
+    // 重复提交时更新已有卡片
+    card.querySelector('.ent-change-no').textContent = entChangeOrder.orderNo;
+    card.querySelector('.ent-change-date').textContent = '提交时间：' + entChangeOrder.date;
+  } else {
+    insertEntChangeCard();
+    if (isFirst) {
+      const countEl = document.getElementById('pendingOrderCount');
+      countEl.textContent = (parseInt(countEl.textContent, 10) + 1);
+    }
+  }
+}
+
+function insertEntChangeCard() {
+  const list = document.getElementById('orderList');
+  const card = document.createElement('div');
+  card.id = 'entChangeOrderCard';
+  card.className = 'order-card group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated';
+  card.setAttribute('data-status', 'pending');
+  card.setAttribute('data-date', entChangeOrder.date);
+  card.setAttribute('onclick', 'openEntChangeDetail()');
+  card.innerHTML = `
+    <div class="flex items-start gap-3">
+      <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0 mt-0.5">
+        <i data-lucide="building-2" class="w-5 h-5 text-blue-600"></i>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 mb-0.5">
+          <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600">信息变更</span>
+          <span class="text-[11px] text-slate-400 ent-change-no">${entChangeOrder.orderNo}</span>
+        </div>
+        <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">企业信息修改申请</h3>
+        <p class="text-[12px] text-slate-400 mt-1 leading-relaxed ent-change-date">提交时间：${entChangeOrder.date}</p>
+      </div>
+      <div class="flex flex-col items-end gap-1.5 shrink-0">
+        <span class="text-[11px] font-semibold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-full whitespace-nowrap">待审核</span>
+      </div>
+    </div>`;
+  list.insertBefore(card, list.firstChild);
+  setTimeout(() => lucide.createIcons(), 50);
+}
+
+function openEntChangeDetail() {
+  renderEntChangeDetail(entChangeOrder);
+}
+
+function openEntChangeRejected() {
+  renderEntChangeDetail(entChangeRejectedOrder);
+}
+
+function renderEntChangeDetail(data) {
+  if (!data) return;
+  const isRejected = data.status === '已驳回';
+  const badgeClass = isRejected ? 'bg-red-50 text-red-600' : 'bg-orange-50 text-orange-600';
+
+  document.getElementById('entChangeOrderNo').textContent = data.orderNo;
+  document.getElementById('entChangeDate').textContent = data.date;
+
+  // 状态徽章（header + 流转状态）
+  const headerBadge = document.getElementById('entChangeHeaderBadge');
+  headerBadge.textContent = data.status;
+  headerBadge.className = 'text-xs font-medium px-2.5 py-1 rounded-full ' + badgeClass;
+  const statusEl = document.getElementById('entChangeStatus');
+  statusEl.textContent = data.status;
+  statusEl.className = 'text-xs font-medium px-2.5 py-1 rounded-full ' + badgeClass;
+
+  // 修改内容
+  const fieldsEl = document.getElementById('entChangeFields');
+  fieldsEl.innerHTML = data.changes.map((c, i) => `
+    <div class="flex items-start py-2.5 ${i < data.changes.length - 1 ? 'border-b border-slate-50' : ''}">
+      <span class="text-[13px] text-slate-400 w-28 shrink-0">${c.label}</span>
+      <span class="text-[13px] text-slate-700 font-medium flex-1 leading-relaxed">${c.value}</span>
+    </div>`).join('');
+
+  // 驳回原因（仅已驳回）
+  const rejectSection = document.getElementById('entChangeRejectSection');
+  if (isRejected && data.rejectReason) {
+    rejectSection.classList.remove('hidden');
+    document.getElementById('entChangeRejectReason').textContent = data.rejectReason;
+  } else {
+    rejectSection.classList.add('hidden');
+  }
+
+  // 去修改按钮（仅已驳回）
+  const goEditBtn = document.getElementById('entChangeGoEditBtn');
+  if (isRejected) {
+    goEditBtn.classList.remove('hidden');
+  } else {
+    goEditBtn.classList.add('hidden');
+  }
+
+  document.getElementById('entChangeDetailOverlay').classList.add('open');
+  document.getElementById('bottomTabBar').style.display = 'none';
+  setTimeout(() => lucide.createIcons(), 100);
+}
+
+function goEditEnterprise() {
+  closeEntChangeDetail();
+  switchTab('enterprise');
+  enterEditMode();
+}
+
+function closeEntChangeDetail() {
+  document.getElementById('entChangeDetailOverlay').classList.remove('open');
+  document.getElementById('bottomTabBar').style.display = '';
 }
 
 // ===== ONBOARDING =====
@@ -3808,7 +4286,7 @@ function renderFeedbackList() {
       <div class="bg-white rounded-2xl p-8 shadow-card border border-slate-100 text-center">
         <i data-lucide="message-square-plus" class="w-8 h-8 text-slate-300 mx-auto mb-2"></i>
         <p class="text-[13px] text-slate-400">暂无反馈记录</p>
-        <p class="text-[12px] text-slate-300 mt-1">点击右上角"新建"提交您的第一条反馈</p>
+        <p class="text-[12px] text-slate-300 mt-1">点击下方按钮提交您的第一条反馈</p>
       </div>`;
   } else {
     list.innerHTML = feedbackData.map(fb => {
@@ -3838,7 +4316,7 @@ function openFeedbackThread(id) {
 
   document.getElementById('feedbackListView').classList.add('hidden');
   document.getElementById('feedbackThreadView').classList.remove('hidden');
-  document.getElementById('feedbackNewBtn').classList.add('hidden');
+  document.getElementById('feedbackFabBtn').classList.add('hidden');
   document.getElementById('feedbackBackBtn').classList.remove('hidden');
   document.getElementById('feedbackHeaderTitle').textContent = fb.subject;
 
@@ -3869,7 +4347,7 @@ function backToFeedbackList() {
   currentFeedbackId = null;
   document.getElementById('feedbackListView').classList.remove('hidden');
   document.getElementById('feedbackThreadView').classList.add('hidden');
-  document.getElementById('feedbackNewBtn').classList.remove('hidden');
+  document.getElementById('feedbackFabBtn').classList.remove('hidden');
   document.getElementById('feedbackBackBtn').classList.add('hidden');
   document.getElementById('feedbackHeaderTitle').textContent = '意见反馈';
   hideNewFeedbackForm();

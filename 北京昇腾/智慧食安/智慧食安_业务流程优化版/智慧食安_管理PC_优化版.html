@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>智慧食安 · 管理端（业务闭环优化版）</title>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="assets/mock-data.js"></script>
+<script src="assets/business-flow.js"></script>
+<style>
+:root{--bg:#eef1e9;--paper:#fffdf7;--ink:#18342b;--muted:#6b766f;--line:#dcd5c4;--green:#0f4b3a;--green2:#dce9df;--orange:#d97706;--amber:#b45309;--red:#b42318;--blue:#1f6f6b;--side:212px}
+*{box-sizing:border-box}body{margin:0;font-family:"Source Han Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;color:var(--ink);background:var(--bg);height:100vh;display:flex}
+a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}
+.side{width:var(--side);background:#12352b;color:#d6e4db;display:flex;flex-direction:column;flex-shrink:0}
+.brand{display:flex;align-items:center;gap:10px;padding:18px 16px;border-bottom:1px solid rgba(255,255,255,.08)}.brand .logo{width:36px;height:36px;border-radius:10px;background:var(--green2);color:var(--green);display:grid;place-items:center;font-weight:900}.brand b{color:#fff;font-size:15px}.brand small{display:block;font-size:10px;color:#8fb0a2}
+.nav{flex:1;overflow-y:auto;padding:10px 0}.nav .item{display:flex;align-items:center;gap:11px;padding:11px 16px;margin:2px 10px;border-radius:12px;color:#bcd3c7;cursor:pointer;font-size:14px;transition:.16s}.nav .item:hover{background:rgba(255,255,255,.06)}.nav .item.on{background:var(--green2);color:var(--green);font-weight:700}.nav .item i{width:18px;height:18px}.nav .cnt{margin-left:auto;background:var(--red);color:#fff;font-size:11px;font-weight:800;border-radius:99px;padding:1px 7px}.nav .item.on .cnt{background:var(--red)}
+.rolebox{padding:12px;border-top:1px solid rgba(255,255,255,.08)}.rolebox .lbl{font-size:10px;color:#8fb0a2;margin-bottom:7px}.roleseg{display:flex;background:rgba(255,255,255,.08);border-radius:10px;padding:3px}.roleseg button{flex:1;border:0;background:transparent;color:#bcd3c7;border-radius:8px;padding:7px;font-size:12px;font-weight:700}.roleseg button.on{background:var(--green2);color:var(--green)}
+.main{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 26px;background:rgba(255,253,247,.7);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;backdrop-filter:blur(6px)}
+.crumb{font-size:14px}.crumb b{font-size:16px}
+.wrap{padding:22px 26px 40px;max-width:1240px;width:100%;margin:0 auto}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.stat{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px}.stat .top{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:13px}.stat .top i{width:20px;height:20px}.stat b{font-size:30px;display:block;margin-top:8px}.stat span{font-size:12px;color:var(--muted)}.stat.hot .top i,.stat.hot b{color:var(--orange)}.stat.warn .top i,.stat.warn b{color:var(--red)}.stat.ok .top i,.stat.ok b{color:var(--green)}
+.cols{display:grid;grid-template-columns:1.45fr .9fr;gap:16px;margin-top:16px;align-items:start}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:20px}.panel h3{margin:0 0 4px;font-size:15px}.panel .sub{font-size:12px;color:var(--muted);margin-bottom:14px}
+.tag{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;background:#f1ede0;color:var(--muted)}
+.tag.st-pending{background:#fff1de;color:var(--amber)}.tag.st-reject{background:#fde8e6;color:var(--red)}.tag.st-review{background:#e3f0ee;color:var(--blue)}.tag.st-done{background:#e3efe3;color:var(--green)}.tag.lvl-high{background:#fde8e6;color:var(--red)}.tag.lvl-mid{background:#fff1de;color:var(--amber)}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}.tbl th{text-align:left;color:var(--muted);font-weight:600;font-size:12px;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}.tbl td{padding:11px 10px;border-bottom:1px solid #eee7d8;vertical-align:middle}.tbl tr:last-child td{border-bottom:0}.tbl tr.click{cursor:pointer}.tbl tr.click:hover{background:#faf7ee}
+.btn{border:0;border-radius:11px;padding:8px 14px;font-weight:800;font-size:13px;background:var(--green);color:#fff;display:inline-flex;align-items:center;gap:6px}.btn.sec{background:#fff;color:var(--green);border:1px solid var(--green)}.btn.danger{background:var(--red)}.btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}.btn.sm{padding:6px 10px;font-size:12px}
+.filters{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}.chip{display:inline-flex;align-items:center;gap:6px;background:#f4f0e4;border:1px solid var(--line);border-radius:11px;padding:7px 12px;font-size:12px}.chip.on{background:var(--green);color:#fff;border-color:var(--green)}
+.overlay{position:fixed;inset:0;background:rgba(16,24,20,.4);display:none;z-index:50;align-items:center;justify-content:center}.overlay.show{display:flex}
+.dlg{width:660px;max-width:94vw;max-height:88vh;overflow-y:auto;background:var(--paper);border-radius:22px;padding:24px;animation:up .22s ease}.dlg h3{margin:0 0 4px;font-size:18px}
+@keyframes up{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
+.kv{display:grid;grid-template-columns:110px 1fr;gap:8px;padding:9px 0;border-top:1px dashed var(--line);font-size:13px}.kv .k{color:var(--muted)}
+.field{margin-bottom:12px}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:600}.field input,.field textarea,.field select{width:100%;border:1px solid var(--line);border-radius:11px;padding:10px 12px;font:inherit;background:#fff}.field textarea{min-height:84px;resize:vertical}
+.btns{display:flex;gap:10px;margin-top:16px}.btns .btn{flex:1;justify-content:center}
+.time{position:relative;padding-left:20px;margin-top:6px}.time::before{content:"";position:absolute;left:5px;top:12px;bottom:-4px;width:2px;background:var(--line)}.time .dot{position:absolute;left:0;top:6px;width:12px;height:12px;border-radius:50%;background:var(--green2);border:2px solid var(--green)}.time b{font-size:13px}.time p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+.notice{background:#fff7e6;border:1px solid #f0dcae;border-radius:13px;padding:11px 13px;font-size:13px;color:var(--amber);margin-bottom:12px}
+.empty{text-align:center;padding:50px 16px;color:var(--muted)}.empty i{width:44px;height:44px;opacity:.35}
+.toast{position:fixed;top:22px;left:50%;transform:translate(-50%,-14px);background:var(--ink);color:#fff;border-radius:13px;padding:12px 20px;font-size:13px;opacity:0;transition:.25s;z-index:70}.toast.show{opacity:1;transform:translate(-50%,0)}.toast.err{background:var(--red)}
+.legend{display:flex;gap:16px;font-size:12px;color:var(--muted);align-items:center}.legend .sw{width:11px;height:11px;border-radius:3px;display:inline-block;margin-right:5px}
+@media(max-width:960px){.grid4{grid-template-columns:repeat(2,1fr)}.cols{grid-template-columns:1fr}.side{width:70px}.side .brand b,.side .brand small,.side .nav .item span,.side .nav .cnt,.side .rolebox .lbl{display:none}.side .nav .item{justify-content:center}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<aside class="side">
+  <div class="brand"><div class="logo">食</div><div><b>智慧食安</b><small>管理平台 · 闭环版</small></div></div>
+  <nav class="nav" id="nav"></nav>
+  <div class="rolebox"><div class="lbl">当前角色</div><div class="roleseg"><button id="rDistrict" class="on" onclick="setRole('district')">区级</button><button id="rTown" onclick="setRole('town')">镇级</button></div></div>
+</aside>
+<main class="main">
+  <div class="topbar"><div class="crumb"><b id="crumbTitle">监管工作台</b><br><span id="crumbSub" style="font-size:12px;color:var(--muted)">区级 · 全区视角</span></div>
+  <div class="row" style="gap:8px;display:flex;align-items:center"><span id="clock" style="font-size:12px;color:var(--muted)"></span><button class="btn ghost sm" onclick="resetAll()"><i data-lucide="rotate-ccw"></i>重置演示</button></div></div>
+  <div class="wrap" id="content"></div>
+</main>
+<div class="overlay" id="ov"></div>
+<div id="toast" class="toast"></div>
+<script>
+var SFS=window.SFSFlow, SD=window.SFSData;
+var nav='dashboard', role='district', town='东桥镇', filter='all', dlg=null;
+var db=()=>SD.getDB();
+var toast=(t,err)=>{var el=document.getElementById('toast');el.textContent=t;el.className='toast show'+(err?' err':'');clearTimeout(toast._t);toast._t=setTimeout(()=>el.className='toast',2400)};
+function resetAll(){SD.resetDB();toast('演示数据已重置');}
+function setRole(r){role=r;nav='dashboard';render();}
+function scoped(fn){ return role==='town' ? (x)=>fn(x)&&x.town===town : fn; }
+function goto(n){nav=n;filter='all';render();}
+function openDlg(html){var o=document.getElementById('ov');o.innerHTML='<div class="dlg">'+html+'</div>';o.classList.add('show');lucide.createIcons();}
+function closeDlg(){document.getElementById('ov').classList.remove('show');document.getElementById('ov').innerHTML='';}
+
+var NAV=[
+  {key:'dashboard',label:'工作台',icon:'layout-dashboard'},
+  {key:'risk',label:'风险中心',icon:'shield-alert'},
+  {key:'approval',label:'审批中心',icon:'clipboard-check'},
+  {key:'entity',label:'主体档案',icon:'store'},
+  {key:'device',label:'设备治理',icon:'camera'}
+];
+function statusTag(s){
+  if(s==='待复核')return '<span class="tag st-pending">待复核</span>';
+  if(s==='已采纳')return '<span class="tag st-review">已采纳</span>';
+  if(s==='已忽略')return '<span class="tag">已忽略</span>';
+  if(s==='待整改')return '<span class="tag st-pending">待整改</span>';
+  if(s==='驳回待补正')return '<span class="tag st-reject">待补正</span>';
+  if(['整改待审核','申诉审核中'].includes(s))return '<span class="tag st-review">'+s+'</span>';
+  if(s==='已办结')return '<span class="tag st-done">已办结</span>';
+  if(s==='待镇级审核')return '<span class="tag st-pending">待审核</span>';
+  if(s==='已通过')return '<span class="tag st-done">已通过</span>';
+  if(s==='已驳回')return '<span class="tag st-reject">已驳回</span>';
+  if(s==='在线')return '<span class="tag st-done">在线</span>';
+  if(s==='离线')return '<span class="tag st-reject">离线</span>';
+  if(s==='待关联')return '<span class="tag st-pending">待关联</span>';
+  return '<span class="tag">'+s+'</span>';
+}
+function lvlTag(l){return l==='高'?'<span class="tag lvl-high">高</span>':l==='中'?'<span class="tag lvl-mid">中</span>':'<span class="tag">低</span>';}
+
+function render(){
+  var st=SFS.stats(role, town);
+  var navHtml=NAV.map(n=>{var c=0;
+    if(n.key==='risk')c=st.pendingAlerts; if(n.key==='approval')c=st.pendingApprovals;
+    return `<div class="item ${nav===n.key?'on':''}" onclick="goto('${n.key}')"><i data-lucide="${n.icon}"></i><span>${n.label}</span>${c?`<span class="cnt">${c}</span>`:''}</div>`;}).join('');
+  document.getElementById('nav').innerHTML=navHtml;
+  document.getElementById('rDistrict').classList.toggle('on',role==='district');
+  document.getElementById('rTown').classList.toggle('on',role==='town');
+  var cur=NAV.find(n=>n.key===nav);
+  document.getElementById('crumbTitle').textContent=cur.label;
+  document.getElementById('crumbSub').textContent=(role==='district'?'区级 · 全区视角':'镇级 · '+town+'视角')+'（镇级可审核，区级督查看全区）';
+  document.getElementById('clock').textContent=new Date().toLocaleString('zh-CN',{hour12:false});
+  var c=document.getElementById('content');
+  c.innerHTML = nav==='dashboard'?dash(st):nav==='risk'?risk(st):nav==='approval'?approval(st):nav==='entity'?entity(st):device(st);
+  lucide.createIcons();
+}
+
+/* ---- 工作台 ---- */
+function dash(st){
+  return `
+  <div class="grid4">
+    <div class="stat hot"><div class="top">待复核告警<i data-lucide="shield-alert"></i></div><b>${st.pendingAlerts}</b><span>AI / 物联风险待处置</span></div>
+    <div class="stat warn"><div class="top">待审核审批<i data-lucide="clipboard-check"></i></div><b>${st.pendingApprovals}</b><span>${role==='district'?'全区待镇级审核':'本镇待审核'}</span></div>
+    <div class="stat"><div class="top">在办工单<i data-lucide="clipboard-list"></i></div><b>${st.merchantTodo+st.inReview}</b><span>待处理 ${st.merchantTodo} · 审核中 ${st.inReview}</span></div>
+    <div class="stat ok"><div class="top">已办结<i data-lucide="check-circle-2"></i></div><b>${st.closed}</b><span>整改 / 申诉已闭环</span></div>
+  </div>
+  <div class="grid4" style="margin-top:14px">
+    <div class="stat"><div class="top">证照临期<i data-lucide="file-warning"></i></div><b>${st.licenseExpiring}</b><span>30 日内到期</span></div>
+    <div class="stat"><div class="top">未关联设备<i data-lucide="camera-off"></i></div><b>${st.unboundDevices}</b><span>待关联 / 离线</span></div>
+    <div class="stat"><div class="top">监管主体<i data-lucide="store"></i></div><b>${st.totalMerchants}</b><span>${role==='district'?'全区':'本镇'}在管主体</span></div>
+    <div class="stat ok"><div class="top">今日趋势<i data-lucide="trending-up"></i></div><b>${st.trend[st.trend.length-1].risks}</b><span>今日新增风险</span></div>
+  </div>
+  <div class="cols">
+    <div class="panel">
+      <h3>近 7 日风险与闭环</h3><div class="sub">风险发现 vs 已办结（条）</div>
+      <div class="legend"><span><span class="sw" style="background:var(--orange)"></span>风险发现</span><span><span class="sw" style="background:var(--green)"></span>已办结</span></div>
+      ${trendChart(st.trend)}
+      <table class="tbl" style="margin-top:14px"><caption style="text-align:left;font-size:11px;color:var(--muted);margin-bottom:6px">数据明细</caption><thead><tr><th>日期</th><th>风险发现</th><th>已办结</th></tr></thead><tbody>${st.trend.map(t=>`<tr><td>${t.day}</td><td>${t.risks}</td><td>${t.closed}</td></tr>`).join('')}</tbody></table>
+    </div>
+    <div class="panel">
+      <h3>待办队列</h3><div class="sub">点击进入对应处置</div>
+      ${todoRow('风险复核','risk',st.pendingAlerts,'shield-alert','hot')}
+      ${todoRow('审批审核','approval',st.pendingApprovals,'clipboard-check','warn')}
+      ${todoRow('设备治理','device',st.unboundDevices,'camera-off','')}
+      ${todoRow('证照临期','entity',st.licenseExpiring,'file-warning','')}
+      <div style="border-top:1px solid var(--line);margin-top:12px;padding-top:12px;font-size:12px;color:var(--muted)">${role==='district'?'区级角色可查看全区并督办，具体审核由镇级执行。':'镇级角色可审核本镇事项并复核本镇风险。'}</div>
+    </div>
+  </div>`;
+}
+function todoRow(label,navKey,count,icon,cls){return `<div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid #eee7d8;cursor:pointer" onclick="goto('${navKey}')"><span style="display:flex;align-items:center;gap:10px"><i data-lucide="${icon}" style="width:18px;height:18px;color:${cls==='hot'?'var(--orange)':cls==='warn'?'var(--red)':'var(--muted)'}"></i>${label}</span><b style="font-size:18px;${cls==='hot'?'color:var(--orange)':cls==='warn'?'color:var(--red)':''}">${count}</b></div>`;}
+function trendChart(rows){
+  var W=520,H=200,pad=28,gap=14,innerH=H-pad*2-16;
+  var max=Math.max.apply(null,rows.map(r=>Math.max(r.risks,r.closed)))+2;
+  var bw=(W-pad*2)/rows.length - gap;
+  var bars=rows.map((r,i)=>{var x=pad+i*(bw+gap);
+    var hr=r.risks/max*innerH, hc=r.closed/max*innerH;
+    return `<rect x="${x}" y="${pad+innerH-hr}" width="${bw/2-2}" height="${hr}" rx="2" fill="#d97706"/><rect x="${x+bw/2}" y="${pad+innerH-hc}" width="${bw/2-2}" height="${hc}" rx="2" fill="#0f4b3a"/><text x="${x+bw/2}" y="${H-8}" text-anchor="middle" font-size="10" fill="#6b766f">${r.day.slice(3)}</text>`;}).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="近7日风险发现与已办结柱状图"><line x1="${pad}" y1="${pad+innerH}" x2="${W-pad}" y2="${pad+innerH}" stroke="#dcd5c4"/><line x1="${pad}" y1="${pad}" x2="${pad}" y2="${pad+innerH}" stroke="#dcd5c4"/>${bars}</svg>`;
+}
+
+/* ---- 风险中心 ---- */
+function risk(st){
+  var alerts=db().alerts.filter(scoped(a=>true));
+  return `
+  <div class="filters">${['all','待复核','已采纳','已忽略'].map(f=>`<span class="chip ${filter===f?'on':''}" onclick="setF('${f}')">${f==='all'?'全部':f}</span>`).join('')}</div>
+  ${alerts.length? alerts.map(a=>`
+    <div class="panel" style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+        <div><div style="display:flex;gap:8px;align-items:center">${lvlTag(a.level)}${statusTag(a.status)}<span style="font-size:12px;color:var(--muted)">${a.source}</span></div>
+        <h3 style="margin:8px 0 2px">${a.type}</h3>
+        <div style="font-size:12px;color:var(--muted)">${a.merchantName} · ${a.town} · ${a.createdAt} · 置信度 ${Math.round(a.confidence*100)}%</div></div>
+        ${a.status==='待复核'?`<div style="display:flex;gap:8px;flex-shrink:0"><button class="btn sm" onclick="acceptRisk('${a.id}')"><i data-lucide="check"></i>采纳派单</button><button class="btn ghost sm" onclick="ignoreRisk('${a.id}')">忽略</button></div>`:''}
+      </div>
+      <div style="margin-top:12px;font-size:13px;color:#415149">${a.evidence.map(e=>`<div style="padding:4px 0"><i data-lucide="dot" style="width:14px;height:14px"></i> ${e}</div>`).join('')}</div>
+      ${a.status==='待复核'?`<div class="notice" style="margin:12px 0 0"><i data-lucide="lightbulb" style="width:14px;height:14px"></i> ${a.suggestion}</div>`:a.status==='已采纳'?`<div class="notice" style="background:#eef5ef;border-color:#cfe3d2;color:var(--green);margin:12px 0 0"><i data-lucide="check" style="width:14px;height:14px"></i> 已生成工单 ${a.workOrderId}</div>`:a.ignoredReason?`<div class="notice" style="margin:12px 0 0"><i data-lucide="info" style="width:14px;height:14px"></i> 忽略原因：${a.ignoredReason}</div>`:''}
+    </div>`).join('') : '<div class="panel"><div class="empty"><i data-lucide="shield-check"></i><p>暂无风险记录</p></div></div>'}`;
+}
+function setF(f){filter=f;render();}
+function acceptRisk(id){var r=SFS.acceptRisk(id);toast(r.message, !r.ok);}
+function ignoreRisk(id){openDlg(`<h3>忽略告警</h3><div class="sub" style="font-size:12px;color:var(--muted);margin-bottom:14px">忽略后该风险不再派发工单，需填写原因留痕。</div><div class="field"><label>忽略原因</label><textarea id="ig_reason" placeholder="请说明忽略原因"></textarea></div><div class="btns"><button class="btn sec" onclick="closeDlg()">取消</button><button class="btn danger" onclick="doIgnore('${id}')">确认忽略</button></div>`);}
+function doIgnore(id){var reason=document.getElementById('ig_reason').value;var r=SFS.ignoreRisk(id,reason);if(!r.ok)return toast(r.message,true);closeDlg();toast(r.message);}
+
+/* ---- 审批中心 ---- */
+function approval(st){
+  var list=db().approvals.filter(scoped(a=>true));
+  var types=['all','整改审核','申诉审核','主体变更','绑定审核','解绑审核'];
+  var cur=filter==='all'?list:list.filter(a=>a.type===filter);
+  return `
+  <div class="filters">${types.map(t=>`<span class="chip ${filter===t?'on':''}" onclick="setF('${t}')">${t==='all'?'全部':t}</span>`).join('')}</div>
+  <div class="panel">
+  <table class="tbl"><thead><tr><th>审批编号</th><th>类型</th><th>对象</th><th>镇街</th><th>状态</th><th>提交时间</th><th></th></tr></thead>
+  <tbody>${cur.map(a=>`<tr class="click" onclick="openApproval('${a.id}')">
+    <td>${a.id}</td><td><span class="tag st-review">${a.type}</span></td><td>${a.merchantName}</td><td>${a.town}</td><td>${statusTag(a.status)}</td><td>${a.submittedAt}</td><td>${a.status.startsWith('待')?'<span style="color:var(--orange);font-weight:700">待处理</span>':'<span style="color:var(--muted)">'+a.status+'</span>'}</td>
+  </tr>`).join('')||'<tr><td colspan="7"><div class="empty"><i data-lucide="clipboard-check"></i><p>暂无审批记录</p></div></td></tr>'}</tbody></table>
+  </div>`;
+}
+function openApproval(id){
+  var a=db().approvals.find(x=>x.id===id); if(!a)return;
+  var wo=db().workOrders.find(w=>w.id===a.objectId);
+  var body='';
+  if(a.type==='整改审核'&&wo){body=`<div class="kv"><span class="k">整改内容</span><span>${wo.correction?wo.correction.text:'（无）'}</span></div><div class="kv"><span class="k">整改照片</span><span>${wo.correction&&wo.correction.images?wo.correction.images.join('、'):'—'}</span></div><div class="kv"><span class="k">整改要求</span><span>${wo.requirement}</span></div>`;
+    if(wo.timeline) body+=`<div style="margin-top:12px"><b style="font-size:13px">流转记录</b>${wo.timeline.map(t=>`<div class="time"><span class="dot"></span><b>${t.action} · ${t.actor}</b><p>${t.note}</p></div>`).join('')}</div>`;}
+  if(a.type==='申诉审核'&&wo){body=`<div class="kv"><span class="k">申诉理由</span><span>${wo.appeal?wo.appeal.reason:'—'}</span></div><div class="kv"><span class="k">佐证材料</span><span>${wo.appeal&&wo.appeal.files?wo.appeal.files.join('、'):'—'}</span></div><div class="kv"><span class="k">原整改要求</span><span>${wo.requirement}</span></div>`;}
+  if(a.type==='主体变更'){body=`<div class="kv"><span class="k">变更说明</span><span>${a.summary}</span></div><div class="kv"><span class="k">负责人</span><span>${a.payload.owner||'—'}</span></div><div class="kv"><span class="k">联系电话</span><span>${a.payload.phone||'—'}</span></div>`;}
+  if(a.type==='绑定审核'){body=`<div class="kv"><span class="k">申请主体</span><span>${a.merchantName}</span></div><div class="kv"><span class="k">待关联设备</span><span>${a.payload.deviceId}</span></div><div class="notice"><i data-lucide="info" style="width:14px;height:14px"></i> 通过后将设备关联至主体并置为在线。</div>`;}
+  if(a.type==='解绑审核'){body=`<div class="kv"><span class="k">申请主体</span><span>${a.merchantName}</span></div><div class="kv"><span class="k">解绑设备</span><span>${a.payload.deviceId}</span></div><div class="kv"><span class="k">解绑原因</span><span>${a.payload.reason||'设备迁移'}</span></div>`;}
+  var action=a.status.startsWith('待')?(role==='district'?'<div class="notice"><i data-lucide="eye" style="width:14px;height:14px"></i> 区级角色仅督办，请切换镇级角色执行审核。</div>':`<div class="btns"><button class="btn" onclick="doApprove('${a.id}')"><i data-lucide="check"></i>审核通过</button><button class="btn danger" onclick="doReject('${a.id}')"><i data-lucide="x"></i>驳回</button></div>`):`<div class="notice" style="${a.status==='已通过'?'background:#eef5ef;border-color:#cfe3d2;color:var(--green)':'background:#fdeeec;border-color:#f2c6c0;color:var(--red)'}"><i data-lucide="${a.status==='已通过'?'check':'x-circle'}" style="width:14px;height:14px"></i> ${a.status}${a.comment?' · '+a.comment:''}${a.rejectReason?' · 原因：'+a.rejectReason:''}</div>`;
+  openDlg(`<h3>${a.type} · ${a.id}</h3><div style="font-size:12px;color:var(--muted);margin-bottom:8px">${a.merchantName} · ${a.town} · ${a.submittedAt}</div>${body}${action}<div style="margin-top:14px"><button class="btn ghost" onclick="closeDlg()">关闭</button></div>`);
+}
+function doApprove(id){var r=SFS.approve(id,'');toast(r.message,!r.ok);closeDlg();}
+function doReject(id){openDlg(`<h3>驳回审批</h3><div class="sub" style="font-size:12px;color:var(--muted);margin-bottom:14px">驳回原因必填，商户端将看到并进入补正。</div><div class="field"><label>驳回原因</label><textarea id="rj_reason" placeholder="请填写驳回原因"></textarea></div><div class="btns"><button class="btn sec" onclick="closeDlg()">取消</button><button class="btn danger" onclick="doReject2('${id}')">确认驳回</button></div>`);}
+function doReject2(id){var reason=document.getElementById('rj_reason').value;var r=SFS.reject(id,reason);if(!r.ok)return toast(r.message,true);closeDlg();toast(r.message);}
+
+/* ---- 主体档案 ---- */
+function entity(st){
+  var list=db().merchants.filter(scoped(m=>true));
+  return `<div class="panel"><table class="tbl"><thead><tr><th>主体名称</th><th>许可证号</th><th>镇街</th><th>风险等级</th><th>绑定状态</th><th>设备</th><th>证照到期</th><th></th></tr></thead>
+  <tbody>${list.map(m=>`<tr class="click" onclick="openEntity('${m.id}')">
+    <td><b>${m.name}</b></td><td>${m.licenseNo}</td><td>${m.town}</td><td>${lvlTag(m.riskLevel)}</td><td>${m.bindStatus}</td><td>${m.devices.length} 台</td><td>${m.licenseExpire}</td><td><span class="btn ghost sm">查看</span></td>
+  </tr>`).join('')||'<tr><td colspan="8"><div class="empty"><i data-lucide="store"></i><p>暂无主体</p></div></td></tr>'}</tbody></table></div>`;
+}
+function openEntity(id){
+  var m=db().merchants.find(x=>x.id===id); if(!m)return;
+  var devs=db().devices.filter(x=>m.devices.includes(x.id));
+  var wos=db().workOrders.filter(w=>w.merchantId===id);
+  var ap=db().approvals.filter(a=>a.merchantId===id && a.status.startsWith('待'));
+  openDlg(`<h3>${m.name}</h3><div style="font-size:12px;color:var(--muted);margin-bottom:10px">${m.town} · ${m.address}</div>
+    <div class="kv"><span class="k">许可证号</span><span>${m.licenseNo}（${m.licenseExpire} 到期）</span></div>
+    <div class="kv"><span class="k">负责人</span><span>${m.owner} · ${m.phone}</span></div>
+    <div class="kv"><span class="k">风险等级</span><span>${m.riskLevel} · 最近检查 ${m.lastInspection} · 评分 ${m.score}</span></div>
+    <div class="kv"><span class="k">绑定状态</span><span>${m.bindStatus}</span></div>
+    <div style="margin-top:14px"><b style="font-size:13px">关联设备</b>${devs.length?devs.map(x=>`<div class="kv"><span class="k">${x.id}</span><span>${x.name} · ${statusTag(x.status)} · 健康度 ${x.health}%</span></div>`).join(''):'<div style="font-size:12px;color:var(--muted);padding:8px 0">暂无关联设备</div>'}</div>
+    <div style="margin-top:14px"><b style="font-size:13px">工单历史</b>${wos.length?wos.map(w=>`<div class="kv"><span class="k">${w.id}</span><span>${w.title} · ${statusTag(w.status)}</span></div>`).join(''):'<div style="font-size:12px;color:var(--muted);padding:8px 0">暂无工单</div>'}</div>
+    ${ap.length?`<div class="notice" style="margin-top:14px"><i data-lucide="loader" style="width:14px;height:14px"></i> 有 ${ap.length} 项待审申请。</div>`:''}
+    <div style="margin-top:14px"><button class="btn ghost" onclick="closeDlg()">关闭</button></div>`);
+}
+
+/* ---- 设备治理 ---- */
+function device(st){
+  var list=db().devices.filter(scoped(d=>true));
+  return `<div class="panel"><table class="tbl"><thead><tr><th>设备编号</th><th>名称</th><th>所属主体</th><th>镇街</th><th>状态</th><th>健康度</th><th>最后心跳</th><th></th></tr></thead>
+  <tbody>${list.map(d=>{var m=db().merchants.find(x=>x.id===d.merchantId);
+    return `<tr class="click" onclick="openDevice('${d.id}')"><td>${d.id}</td><td>${d.name}</td><td>${m?m.name:'未关联'}</td><td>${d.town}</td><td>${statusTag(d.status)}</td><td>${d.health}%</td><td>${d.lastHeartbeat}</td><td>${d.status==='待关联'?`<button class="btn sm" onclick="event.stopPropagation();openBind('${d.id}')">关联</button>`:''}</td></tr>`;}).join('')||'<tr><td colspan="8"><div class="empty"><i data-lucide="camera-off"></i><p>暂无设备</p></div></td></tr>'}</tbody></table></div>`;
+}
+function openDevice(id){
+  var d=db().devices.find(x=>x.id===id); if(!d)return;
+  var m=db().merchants.find(x=>x.id===d.merchantId);
+  var alerts=db().alerts.filter(a=>a.merchantId===d.merchantId);
+  openDlg(`<h3>${d.name}</h3><div style="font-size:12px;color:var(--muted);margin-bottom:10px">${d.id} · ${d.town}</div>
+    <div class="kv"><span class="k">状态</span><span>${statusTag(d.status)}</span></div>
+    <div class="kv"><span class="k">健康度</span><span>${d.health}%</span></div>
+    <div class="kv"><span class="k">所属主体</span><span>${m?m.name:'未关联'}${d.issue?'（'+d.issue+'）':''}</span></div>
+    <div class="kv"><span class="k">最后心跳</span><span>${d.lastHeartbeat}</span></div>
+    ${alerts.length?`<div style="margin-top:14px"><b style="font-size:13px">相关告警</b>${alerts.map(a=>`<div class="kv"><span class="k">${a.id}</span><span>${a.type} · ${statusTag(a.status)}</span></div>`).join('')}</div>`:''}
+    <div style="margin-top:14px"><button class="btn ghost" onclick="closeDlg()">关闭</button></div>`);
+}
+function openBind(deviceId){
+  openDlg(`<h3>关联设备到主体</h3><div class="sub" style="font-size:12px;color:var(--muted);margin-bottom:14px">选择要关联的主体后提交绑定审批。</div><div class="field"><label>目标主体</label><select id="b_merchant">${db().merchants.filter(m=>m.town===town||role==='district').map(m=>`<option value="${m.id}">${m.name}（${m.town}）</option>`).join('')}</select></div><div class="btns"><button class="btn sec" onclick="closeDlg()">取消</button><button class="btn" onclick="doBind('${deviceId}')">提交绑定申请</button></div>`);
+}
+function doBind(deviceId){var mid=document.getElementById('b_merchant').value;var d=db();var m=d.merchants.find(x=>x.id===mid);d.approvals.unshift({id:'AP-BIND-'+Date.now(),type:'绑定审核',objectId:mid,merchantId:mid,merchantName:m.name,town:m.town,status:'待镇级审核',submittedAt:new Date().toLocaleString('zh-CN',{hour12:false}),summary:'申请绑定设备 '+deviceId,payload:{deviceId}});SD.saveDB(d);closeDlg();toast('绑定申请已提交');}
+
+SD.subscribe(()=>render());
+render();
+</script>
+</body>
+</html>
