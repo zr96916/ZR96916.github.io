@@ -648,10 +648,6 @@
       <!-- 详情字段 -->
       <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100">
         <div class="flex items-start py-2.5 border-b border-slate-50">
-          <span class="text-[13px] text-slate-400 w-20 shrink-0 pt-0.5">提醒类型</span>
-          <span class="text-[13px] text-slate-700 font-medium" id="reminderType"></span>
-        </div>
-        <div class="flex items-start py-2.5 border-b border-slate-50">
           <span class="text-[13px] text-slate-400 w-20 shrink-0 pt-0.5">来源</span>
           <span class="text-[13px] text-slate-700 font-medium leading-relaxed" id="reminderSource"></span>
         </div>
@@ -1006,7 +1002,10 @@
               class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1.5">密码</label>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="block text-sm font-medium text-slate-700">密码</label>
+              <button onclick="openForgotPwd()" class="text-[13px] text-blue-600 hover:text-blue-700">忘记密码？</button>
+            </div>
             <input type="password" id="loginPassword" placeholder="请输入密码" value="******"
               class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
           </div>
@@ -1023,6 +1022,105 @@
       <button onclick="goToNewMerchant()" class="mt-5 px-6 py-3 text-sm font-semibold text-white border border-white/40 rounded-xl hover:bg-white/10 active:bg-white/20 active:scale-[0.98] transition-all">
         新增商户
       </button>
+    </div>
+  </div>
+
+  <!-- ===== CHANGE PASSWORD MODAL ===== -->
+  <div id="changePwdModal" class="hidden absolute inset-0 z-[80] bg-black/40 flex items-center justify-center p-5">
+    <div class="relative bg-white rounded-2xl w-full max-w-sm p-5 shadow-elevated max-h-[90%] overflow-y-auto">
+      <div class="flex items-center justify-between mb-4">
+        <h3 id="changePwdTitle" class="text-base font-bold text-slate-900">修改密码</h3>
+        <button id="changePwdCloseBtn" onclick="closeChangePwd()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100">
+          <i data-lucide="x" class="w-4 h-4 text-slate-400"></i>
+        </button>
+      </div>
+      <p id="changePwdDesc" class="text-[13px] text-slate-500 mb-4">请输入当前密码并设置新密码</p>
+      <div class="space-y-3">
+        <div id="changePwdOldRow">
+          <label class="block text-sm font-medium text-slate-700 mb-1">当前密码 <span class="text-red-500">*</span></label>
+          <input type="password" id="changePwdOld" placeholder="请输入当前密码"
+            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">新密码 <span class="text-red-500">*</span></label>
+          <input type="password" id="changePwdNew" placeholder="请输入新密码"
+            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">确认新密码 <span class="text-red-500">*</span></label>
+          <input type="password" id="changePwdConfirm" placeholder="请再次输入新密码"
+            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+        </div>
+      </div>
+      <button onclick="submitChangePwd()" class="w-full mt-5 py-3.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">确认修改</button>
+    </div>
+  </div>
+
+  <!-- ===== BIND PHONE MODAL ===== -->
+  <div id="bindPhoneModal" class="hidden absolute inset-0 z-[80] bg-black/40 flex items-center justify-center p-5">
+    <div class="relative bg-white rounded-2xl w-full max-w-sm p-5 shadow-elevated max-h-[90%] overflow-y-auto">
+      <div class="flex items-center justify-between mb-4">
+        <h3 id="bindPhoneTitle" class="text-base font-bold text-slate-900">绑定手机</h3>
+        <button id="bindPhoneCloseBtn" onclick="closeBindPhone()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100">
+          <i data-lucide="x" class="w-4 h-4 text-slate-400"></i>
+        </button>
+      </div>
+      <p id="bindPhoneDesc" class="text-[13px] text-slate-500 mb-4">绑定手机号，用于找回登录密码</p>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">手机号 <span class="text-red-500">*</span></label>
+          <input type="tel" id="bindPhone" placeholder="请输入手机号"
+            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">短信验证码 <span class="text-red-500">*</span></label>
+          <div class="flex items-center gap-2">
+            <input type="text" id="bindPhoneCode" placeholder="请输入短信验证码" inputmode="numeric" maxlength="6"
+              class="flex-1 px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+            <button id="bindSendSmsBtn" onclick="sendBindSms()" class="shrink-0 px-4 py-3 text-[13px] font-semibold text-blue-600 bg-blue-50 rounded-xl border border-blue-100 hover:bg-blue-100 active:bg-blue-200 active:scale-[0.98] transition-all">获取验证码</button>
+          </div>
+        </div>
+      </div>
+      <button id="bindPhoneSubmitBtn" onclick="submitBindPhone()" class="w-full mt-5 py-3.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">确认绑定</button>
+    </div>
+  </div>
+
+  <!-- ===== FORGOT PASSWORD MODAL ===== -->
+  <div id="forgotPwdModal" class="hidden absolute inset-0 z-[80] bg-black/40 flex items-center justify-center p-5">
+    <div class="relative bg-white rounded-2xl w-full max-w-sm p-5 shadow-elevated max-h-[90%] overflow-y-auto">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-slate-900">找回密码</h3>
+        <button onclick="closeForgotPwd()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100">
+          <i data-lucide="x" class="w-4 h-4 text-slate-400"></i>
+        </button>
+      </div>
+      <p class="text-[13px] text-slate-500 mb-4">通过注册手机号接收短信验证码，重置登录密码</p>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">手机号 <span class="text-red-500">*</span></label>
+          <input type="tel" id="forgotPhone" placeholder="请输入注册手机号"
+            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">短信验证码 <span class="text-red-500">*</span></label>
+          <div class="flex items-center gap-2">
+            <input type="text" id="forgotCode" placeholder="请输入短信验证码" inputmode="numeric" maxlength="6"
+              class="flex-1 px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+            <button id="forgotSendSmsBtn" onclick="sendForgotSms()" class="shrink-0 px-4 py-3 text-[13px] font-semibold text-blue-600 bg-blue-50 rounded-xl border border-blue-100 hover:bg-blue-100 active:bg-blue-200 active:scale-[0.98] transition-all">获取验证码</button>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">新密码 <span class="text-red-500">*</span></label>
+          <input type="password" id="forgotNewPwd" placeholder="请输入新密码"
+            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">确认新密码 <span class="text-red-500">*</span></label>
+          <input type="password" id="forgotConfirmPwd" placeholder="请再次输入新密码"
+            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+        </div>
+      </div>
+      <button onclick="submitForgotPwd()" class="w-full mt-5 py-3.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">重置密码</button>
     </div>
   </div>
 
@@ -1261,9 +1359,12 @@
 
           <!-- 验证码 -->
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1.5">验证码 <span class="text-red-500">*</span></label>
-            <input type="text" id="onboardVerifyCode" placeholder="请输入验证码"
-              class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">手机验证码 <span class="text-red-500">*</span></label>
+            <div class="flex items-center gap-2">
+              <input type="text" id="onboardVerifyCode" placeholder="请输入短信验证码" inputmode="numeric" maxlength="6"
+                class="flex-1 px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+              <button id="onboardSendSmsBtn" onclick="sendOnboardSms()" class="shrink-0 px-4 py-3 text-[13px] font-semibold text-blue-600 bg-blue-50 rounded-xl border border-blue-100 hover:bg-blue-100 active:bg-blue-200 active:scale-[0.98] transition-all">获取验证码</button>
+            </div>
           </div>
         </div>
 
@@ -1287,12 +1388,8 @@
           <!-- 经营面积 -->
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-1.5">经营面积(㎡) <span class="text-red-500">*</span></label>
-            <div class="flex items-center gap-3">
-              <button onclick="onboardAdjustArea(-1)" class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 active:bg-slate-300 transition-colors text-lg font-semibold">−</button>
-              <input type="number" id="onboardArea" value="" min="0" inputmode="numeric" pattern="[0-9]*" placeholder="请输入经营面积"
-                class="flex-1 px-4 py-3 text-sm text-center text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
-              <button onclick="onboardAdjustArea(1)" class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 active:bg-slate-300 transition-colors text-lg font-semibold">+</button>
-            </div>
+            <input type="number" id="onboardArea" value="" min="0" inputmode="numeric" pattern="[0-9]*" placeholder="请输入经营面积"
+              class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
           </div>
 
           <!-- 住所 + 所属镇 -->
@@ -1386,6 +1483,7 @@
         </div>
         <!-- Rejected re-edit button (hidden in pending, shown in rejected) -->
         <button id="onboardReeditBtn" class="hidden mt-8 w-full max-w-xs py-3.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 transition-all" onclick="onboardReedit()">重新填写</button>
+        <button id="onboardGoLoginBtn" class="hidden mt-8 w-full max-w-xs py-3.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 transition-all" onclick="backToLogin()">去登录</button>
       </div>
 
       <!-- Demo toggle hint -->
@@ -2148,6 +2246,30 @@
         <div class="px-5 pt-4 mb-4">
           <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3 px-0.5">通用</h2>
           <div class="bg-white rounded-2xl shadow-card border border-slate-100 overflow-hidden">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 cursor-pointer active:bg-slate-50 transition-colors" onclick="openChangePwd()">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center">
+                  <i data-lucide="key-round" class="w-4 h-4 text-blue-600"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-slate-800">修改密码</p>
+                  <p class="text-xs text-slate-400">定期修改密码，保障账号安全</p>
+                </div>
+              </div>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300"></i>
+            </div>
+            <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 cursor-pointer active:bg-slate-50 transition-colors" onclick="openBindPhone('rebind')">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-green-50 flex items-center justify-center">
+                  <i data-lucide="smartphone" class="w-4 h-4 text-green-600"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-slate-800">绑定/换绑手机</p>
+                  <p class="text-xs text-slate-400">绑定手机号，用于找回登录密码</p>
+                </div>
+              </div>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300"></i>
+            </div>
             <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 cursor-pointer active:bg-slate-50 transition-colors">
               <div class="flex items-center gap-3">
                 <div class="w-9 h-9 rounded-xl bg-orange-50 flex items-center justify-center">
@@ -2194,7 +2316,7 @@
               <i data-lucide="unlink" class="w-4 h-4 text-slate-500"></i>
             </div>
             <div class="flex-1 text-left min-w-0">
-              <p class="text-sm font-medium text-slate-700">解绑账号</p>
+              <p class="text-sm font-medium text-slate-700">解绑微信</p>
               <p class="text-xs text-slate-400">解除当前微信与商户主体的绑定关系</p>
             </div>
             <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
@@ -2244,6 +2366,12 @@ let bindSelectedIdx = -1;
 let appEntryState = 'login'; // 'login' | 'firstVerify' | 'onboarding' | 'approved'
 let approvalFlowType = 'newMerchant'; // 'newMerchant' | 'bindExisting'
 let wechatAuthed = false;
+let needForceResetPwd = true; // 首次登录用初始密码，需强制改密
+let needBindPhone = true; // 首次登录需绑定手机（找回密码用）
+let boundPhone = ''; // 当前绑定手机号
+let bindPhoneMode = 'first'; // 'first' 首次绑定 | 'rebind' 换绑
+let bindSmsTimer = null;
+let changePwdMode = 'normal'; // 'normal' 主动改密 | 'force' 首次强制改密
 
 // 平台已有商户（供绑定选择）
 const existingMerchants = [
@@ -2447,7 +2575,6 @@ function openReminderDetail(key, fromCenter) {
   reminderDetailFromCenter = !!fromCenter;
 
   document.getElementById('reminderDetailTitle').textContent = data.detailTitle || '详情';
-  document.getElementById('reminderType').textContent = data.typeTag;
   document.getElementById('reminderTitle').textContent = data.title;
   document.getElementById('reminderTime').textContent = data.time;
   document.getElementById('reminderSource').textContent = data.source;
@@ -2887,19 +3014,56 @@ function updateOnboardingUI() {
   const tabBar = document.getElementById('bottomTabBar');
 
   if (onboardingState === 'approved') {
-    overlay.style.display = 'none';
-    mainApp.style.display = '';
-    tabBar.style.display = '';
-    // Ensure home tab is shown and header is correct
-    if (currentTab !== 'home') {
-      document.getElementById('tab-home').classList.remove('hidden');
-      document.getElementById('tab-orders').classList.add('hidden');
-      document.getElementById('tab-enterprise').classList.add('hidden');
-      document.getElementById('tab-my').classList.add('hidden');
-      currentTab = 'home';
-    }
-    updateHeader('home');
-    setTimeout(() => lucide.createIcons(), 100);
+    overlay.style.display = '';
+    mainApp.style.display = 'none';
+    tabBar.style.display = 'none';
+
+    const choiceView = document.getElementById('onboardChoiceView');
+    const bindView = document.getElementById('onboardBindView');
+    const iconDiv = document.getElementById('onboardStatusIcon');
+    const iconEl = document.getElementById('onboardStatusIconEl');
+    const titleEl = document.getElementById('onboardStatusTitle');
+    const descEl = document.getElementById('onboardStatusDesc');
+    const progressSteps = document.getElementById('onboardProgressSteps');
+    const reeditBtn = document.getElementById('onboardReeditBtn');
+    const goLoginBtn = document.getElementById('onboardGoLoginBtn');
+    const step1 = document.getElementById('onboardStep1Circle');
+    const step2 = document.getElementById('onboardStep2Circle');
+    const step3 = document.getElementById('onboardStep3Circle');
+    const step2Label = document.getElementById('onboardStep2Label');
+    const step3Label = document.getElementById('onboardStep3Label');
+    const debugLabel = document.getElementById('onboardDebugLabel');
+    const subtitle = document.getElementById('onboardSubtitle');
+
+    choiceView.classList.add('hidden');
+    bindView.classList.add('hidden');
+    formView.style.display = 'none';
+    statusView.classList.remove('hidden');
+    bottomBar.style.display = 'none';
+
+    iconDiv.className = 'w-20 h-20 rounded-full flex items-center justify-center mb-6 bg-green-50';
+    iconEl.setAttribute('data-lucide', 'check-circle');
+    iconEl.className = 'w-10 h-10 text-green-600';
+    titleEl.textContent = approvalFlowType === 'newMerchant' ? '新增企业申请已通过' : '绑定申请已通过';
+    titleEl.className = 'text-lg font-bold text-slate-800 mb-2';
+    descEl.innerHTML = '初始密码已通过短信发送至您注册的手机号<br>请使用「许可证号 + 初始密码」登录';
+    descEl.className = 'text-sm text-slate-500 text-center leading-relaxed';
+    progressSteps.style.display = '';
+    reeditBtn.classList.add('hidden');
+    goLoginBtn.classList.remove('hidden');
+
+    step1.className = 'w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center';
+    step1.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i>';
+    step2.className = 'w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center';
+    step2.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i>';
+    step2Label.className = 'text-[11px] font-semibold text-green-600 mt-2 whitespace-nowrap';
+    step3.className = 'w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center';
+    step3.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i>';
+    step3Label.className = 'text-[11px] font-semibold text-green-600 mt-2 whitespace-nowrap';
+
+    debugLabel.textContent = '已通过';
+    subtitle.textContent = approvalFlowType === 'newMerchant' ? '新增企业申请已通过' : '绑定申请已通过';
+    setTimeout(() => lucide.createIcons(), 50);
     return;
   }
 
@@ -2918,6 +3082,7 @@ function updateOnboardingUI() {
   const descEl = document.getElementById('onboardStatusDesc');
   const progressSteps = document.getElementById('onboardProgressSteps');
   const reeditBtn = document.getElementById('onboardReeditBtn');
+  const goLoginBtn = document.getElementById('onboardGoLoginBtn');
   const step1 = document.getElementById('onboardStep1Circle');
   const step2 = document.getElementById('onboardStep2Circle');
   const step3 = document.getElementById('onboardStep3Circle');
@@ -2945,6 +3110,7 @@ function updateOnboardingUI() {
     descEl.className = 'text-sm text-slate-500 text-center leading-relaxed';
     progressSteps.style.display = '';
     reeditBtn.classList.add('hidden');
+    goLoginBtn.classList.add('hidden');
 
     // Step 1: completed
     step1.className = 'w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center';
@@ -2989,6 +3155,7 @@ function updateOnboardingUI() {
     step3Label.className = 'text-[11px] font-medium text-slate-300 mt-2 whitespace-nowrap';
 
     reeditBtn.classList.remove('hidden');
+    goLoginBtn.classList.add('hidden');
     debugLabel.textContent = '已驳回';
     subtitle.textContent = approvalFlowType === 'newMerchant' ? '新增企业申请未通过，请重新填写' : '绑定申请未通过，请重新填写';
   }
@@ -3004,7 +3171,7 @@ function submitOnboarding() {
     { id: 'onboardLicense', label: '许可证号' },
     { id: 'onboardLegalPerson', label: '法人姓名' },
     { id: 'onboardPhone', label: '联系电话' },
-    { id: 'onboardVerifyCode', label: '验证码' },
+    { id: 'onboardVerifyCode', label: '手机验证码' },
     { id: 'onboardBizScope', label: '经营项目' },
     { id: 'onboardArea', label: '经营面积' },
     { id: 'onboardDomicile', label: '住所' },
@@ -3058,6 +3225,47 @@ function submitOnboarding() {
   showToast('新增企业申请已提交，请等待审核', 'success');
 }
 
+let onboardSmsTimer = null;
+
+function sendOnboardSms() {
+  const phoneEl = document.getElementById('onboardPhone');
+  const phone = phoneEl.value.trim();
+  if (!phone) {
+    showToast('请先填写联系电话');
+    phoneEl.classList.add('border-red-300', 'bg-red-50');
+    phoneEl.focus();
+    return;
+  }
+  if (!/^1\d{10}$/.test(phone)) {
+    showToast('请输入正确的 11 位手机号');
+    phoneEl.classList.add('border-red-300', 'bg-red-50');
+    phoneEl.focus();
+    return;
+  }
+  phoneEl.classList.remove('border-red-300', 'bg-red-50');
+
+  const btn = document.getElementById('onboardSendSmsBtn');
+  let count = 60;
+  btn.disabled = true;
+  btn.textContent = count + 's 后重发';
+  btn.className = 'shrink-0 px-4 py-3 text-[13px] font-semibold text-slate-400 bg-slate-100 rounded-xl border border-slate-100 transition-all';
+  if (onboardSmsTimer) clearInterval(onboardSmsTimer);
+  onboardSmsTimer = setInterval(() => {
+    count--;
+    if (count <= 0) {
+      clearInterval(onboardSmsTimer);
+      onboardSmsTimer = null;
+      btn.disabled = false;
+      btn.textContent = '获取验证码';
+      btn.className = 'shrink-0 px-4 py-3 text-[13px] font-semibold text-blue-600 bg-blue-50 rounded-xl border border-blue-100 hover:bg-blue-100 active:bg-blue-200 active:scale-[0.98] transition-all';
+    } else {
+      btn.textContent = count + 's 后重发';
+    }
+  }, 1000);
+
+  showToast('验证码已发送至 ' + phone, 'success');
+}
+
 function onboardSelectChip(btn, group) {
   document.querySelectorAll('.chip-' + group).forEach(b => {
     b.classList.remove('bg-blue-600', 'text-white');
@@ -3067,26 +3275,19 @@ function onboardSelectChip(btn, group) {
   btn.classList.add('bg-blue-600', 'text-white');
 }
 
-function onboardAdjustArea(delta) {
-  const input = document.getElementById('onboardArea');
-  let val = parseInt(input.value) || 0;
-  val = Math.max(0, val + delta);
-  input.value = val;
-}
-
 function cycleOnboardingState() {
   if (onboardingState === 'pending') {
     onboardingState = 'rejected';
   } else if (onboardingState === 'rejected') {
     onboardingState = 'approved';
+    needForceResetPwd = true;
+    needBindPhone = false; // 新商户注册时已绑定手机
   } else if (onboardingState === 'unregistered') {
     onboardingState = 'pending';
   }
   updateOnboardingUI();
   if (onboardingState === 'approved') {
-    appEntryState = 'approved';
-    updateLoginUI();
-    showToast('审批已通过，欢迎使用智慧食安', 'success');
+    showToast('审批已通过，初始密码已短信发送至注册手机号', 'success');
   }
 }
 
@@ -4120,13 +4321,319 @@ function updateLoginUI() {
 }
 
 function handleLogin() {
-  // Mock: always first-time login for demo
-  document.getElementById('firstLoginVerifyModal').classList.remove('hidden');
+  if (needForceResetPwd) {
+    openForceChangePwd();
+  } else if (needBindPhone) {
+    openBindPhone('first');
+  } else {
+    appEntryState = 'approved';
+    onboardingState = 'approved';
+    updateLoginUI();
+    showToast('登录成功', 'success');
+  }
+}
+
+// ===== FORGOT PASSWORD =====
+let forgotSmsTimer = null;
+
+function openForgotPwd() {
+  document.getElementById('forgotPhone').value = '';
+  document.getElementById('forgotCode').value = '';
+  document.getElementById('forgotNewPwd').value = '';
+  document.getElementById('forgotConfirmPwd').value = '';
+  document.getElementById('forgotPwdModal').classList.remove('hidden');
   setTimeout(() => lucide.createIcons(), 50);
+}
+
+function closeForgotPwd() {
+  document.getElementById('forgotPwdModal').classList.add('hidden');
+}
+
+function sendForgotSms() {
+  const phoneEl = document.getElementById('forgotPhone');
+  const phone = phoneEl.value.trim();
+  if (!phone) {
+    showToast('请输入注册手机号');
+    phoneEl.classList.add('border-red-300', 'bg-red-50');
+    phoneEl.focus();
+    return;
+  }
+  if (!/^1\d{10}$/.test(phone)) {
+    showToast('请输入正确的 11 位手机号');
+    phoneEl.classList.add('border-red-300', 'bg-red-50');
+    phoneEl.focus();
+    return;
+  }
+  phoneEl.classList.remove('border-red-300', 'bg-red-50');
+
+  const btn = document.getElementById('forgotSendSmsBtn');
+  let count = 60;
+  btn.disabled = true;
+  btn.textContent = count + 's 后重发';
+  btn.className = 'shrink-0 px-4 py-3 text-[13px] font-semibold text-slate-400 bg-slate-100 rounded-xl border border-slate-100 transition-all';
+  if (forgotSmsTimer) clearInterval(forgotSmsTimer);
+  forgotSmsTimer = setInterval(() => {
+    count--;
+    if (count <= 0) {
+      clearInterval(forgotSmsTimer);
+      forgotSmsTimer = null;
+      btn.disabled = false;
+      btn.textContent = '获取验证码';
+      btn.className = 'shrink-0 px-4 py-3 text-[13px] font-semibold text-blue-600 bg-blue-50 rounded-xl border border-blue-100 hover:bg-blue-100 active:bg-blue-200 active:scale-[0.98] transition-all';
+    } else {
+      btn.textContent = count + 's 后重发';
+    }
+  }, 1000);
+
+  showToast('验证码已发送至 ' + phone, 'success');
+}
+
+function submitForgotPwd() {
+  const phoneEl = document.getElementById('forgotPhone');
+  const codeEl = document.getElementById('forgotCode');
+  const newEl = document.getElementById('forgotNewPwd');
+  const confirmEl = document.getElementById('forgotConfirmPwd');
+
+  if (!phoneEl.value.trim()) {
+    showToast('请输入注册手机号');
+    phoneEl.classList.add('border-red-300', 'bg-red-50');
+    phoneEl.focus();
+    return;
+  }
+  phoneEl.classList.remove('border-red-300', 'bg-red-50');
+
+  if (!codeEl.value.trim()) {
+    showToast('请输入短信验证码');
+    codeEl.classList.add('border-red-300', 'bg-red-50');
+    codeEl.focus();
+    return;
+  }
+  codeEl.classList.remove('border-red-300', 'bg-red-50');
+
+  if (!newEl.value.trim()) {
+    showToast('请输入新密码');
+    newEl.classList.add('border-red-300', 'bg-red-50');
+    newEl.focus();
+    return;
+  }
+  newEl.classList.remove('border-red-300', 'bg-red-50');
+
+  if (newEl.value.trim().length < 6) {
+    showToast('新密码长度不能少于 6 位');
+    newEl.focus();
+    return;
+  }
+
+  if (confirmEl.value.trim() !== newEl.value.trim()) {
+    showToast('两次输入的新密码不一致');
+    confirmEl.classList.add('border-red-300', 'bg-red-50');
+    confirmEl.focus();
+    return;
+  }
+  confirmEl.classList.remove('border-red-300', 'bg-red-50');
+
+  closeForgotPwd();
+  showToast('密码已重置，请使用新密码登录', 'success');
+}
+
+// ===== CHANGE PASSWORD =====
+function openChangePwd() {
+  changePwdMode = 'normal';
+  document.getElementById('changePwdTitle').textContent = '修改密码';
+  document.getElementById('changePwdDesc').textContent = '请输入当前密码并设置新密码';
+  document.getElementById('changePwdOldRow').style.display = '';
+  document.getElementById('changePwdCloseBtn').style.display = '';
+  document.getElementById('changePwdOld').value = '';
+  document.getElementById('changePwdNew').value = '';
+  document.getElementById('changePwdConfirm').value = '';
+  document.getElementById('changePwdModal').classList.remove('hidden');
+  setTimeout(() => lucide.createIcons(), 50);
+}
+
+function openForceChangePwd() {
+  changePwdMode = 'force';
+  document.getElementById('changePwdTitle').textContent = '首次登录修改密码';
+  document.getElementById('changePwdDesc').textContent = '为保障账号安全，请设置新密码后使用';
+  document.getElementById('changePwdOldRow').style.display = 'none';
+  document.getElementById('changePwdCloseBtn').style.display = 'none';
+  document.getElementById('changePwdOld').value = '';
+  document.getElementById('changePwdNew').value = '';
+  document.getElementById('changePwdConfirm').value = '';
+  document.getElementById('changePwdModal').classList.remove('hidden');
+  setTimeout(() => lucide.createIcons(), 50);
+}
+
+function closeChangePwd() {
+  if (changePwdMode === 'force') return;
+  document.getElementById('changePwdModal').classList.add('hidden');
+}
+
+function submitChangePwd() {
+  const oldEl = document.getElementById('changePwdOld');
+  const newEl = document.getElementById('changePwdNew');
+  const confirmEl = document.getElementById('changePwdConfirm');
+
+  if (changePwdMode === 'normal') {
+    if (!oldEl.value.trim()) {
+      showToast('请输入当前密码');
+      oldEl.classList.add('border-red-300', 'bg-red-50');
+      oldEl.focus();
+      return;
+    }
+    oldEl.classList.remove('border-red-300', 'bg-red-50');
+  }
+
+  if (!newEl.value.trim()) {
+    showToast('请输入新密码');
+    newEl.classList.add('border-red-300', 'bg-red-50');
+    newEl.focus();
+    return;
+  }
+  newEl.classList.remove('border-red-300', 'bg-red-50');
+
+  if (newEl.value.trim().length < 6) {
+    showToast('新密码长度不能少于 6 位');
+    newEl.focus();
+    return;
+  }
+
+  if (confirmEl.value.trim() !== newEl.value.trim()) {
+    showToast('两次输入的新密码不一致');
+    confirmEl.classList.add('border-red-300', 'bg-red-50');
+    confirmEl.focus();
+    return;
+  }
+  confirmEl.classList.remove('border-red-300', 'bg-red-50');
+
+  document.getElementById('changePwdModal').classList.add('hidden');
+  if (changePwdMode === 'force') {
+    needForceResetPwd = false;
+    if (needBindPhone) {
+      openBindPhone('first');
+    } else {
+      appEntryState = 'approved';
+      onboardingState = 'approved';
+      updateLoginUI();
+      showToast('密码修改成功，欢迎使用智慧食安', 'success');
+    }
+  } else {
+    showToast('密码修改成功', 'success');
+  }
 }
 
 function closeFirstLoginVerify() {
   document.getElementById('firstLoginVerifyModal').classList.add('hidden');
+}
+
+// ===== BIND PHONE =====
+function openBindPhone(mode) {
+  bindPhoneMode = mode;
+  const title = document.getElementById('bindPhoneTitle');
+  const desc = document.getElementById('bindPhoneDesc');
+  const closeBtn = document.getElementById('bindPhoneCloseBtn');
+  const submitBtn = document.getElementById('bindPhoneSubmitBtn');
+  if (mode === 'first') {
+    title.textContent = '绑定手机';
+    desc.textContent = '绑定手机号，用于找回登录密码';
+    closeBtn.style.display = 'none';
+    submitBtn.textContent = '确认绑定';
+  } else {
+    title.textContent = '更换手机号';
+    desc.textContent = boundPhone ? ('当前绑定：' + boundPhone + '，更换后请使用新手机号找回密码') : '绑定手机号，用于找回登录密码';
+    closeBtn.style.display = '';
+    submitBtn.textContent = '确认更换';
+  }
+  document.getElementById('bindPhone').value = '';
+  document.getElementById('bindPhoneCode').value = '';
+  document.getElementById('bindPhoneModal').classList.remove('hidden');
+  setTimeout(() => lucide.createIcons(), 50);
+}
+
+function closeBindPhone() {
+  if (bindPhoneMode === 'first' && needBindPhone) return; // 首次绑定不可关闭
+  document.getElementById('bindPhoneModal').classList.add('hidden');
+}
+
+function sendBindSms() {
+  const phoneEl = document.getElementById('bindPhone');
+  const phone = phoneEl.value.trim();
+  if (!phone) {
+    showToast('请输入手机号');
+    phoneEl.classList.add('border-red-300', 'bg-red-50');
+    phoneEl.focus();
+    return;
+  }
+  if (!/^1\d{10}$/.test(phone)) {
+    showToast('请输入正确的 11 位手机号');
+    phoneEl.classList.add('border-red-300', 'bg-red-50');
+    phoneEl.focus();
+    return;
+  }
+  phoneEl.classList.remove('border-red-300', 'bg-red-50');
+
+  const btn = document.getElementById('bindSendSmsBtn');
+  let count = 60;
+  btn.disabled = true;
+  btn.textContent = count + 's 后重发';
+  btn.className = 'shrink-0 px-4 py-3 text-[13px] font-semibold text-slate-400 bg-slate-100 rounded-xl border border-slate-100 transition-all';
+  if (bindSmsTimer) clearInterval(bindSmsTimer);
+  bindSmsTimer = setInterval(() => {
+    count--;
+    if (count <= 0) {
+      clearInterval(bindSmsTimer);
+      bindSmsTimer = null;
+      btn.disabled = false;
+      btn.textContent = '获取验证码';
+      btn.className = 'shrink-0 px-4 py-3 text-[13px] font-semibold text-blue-600 bg-blue-50 rounded-xl border border-blue-100 hover:bg-blue-100 active:bg-blue-200 active:scale-[0.98] transition-all';
+    } else {
+      btn.textContent = count + 's 后重发';
+    }
+  }, 1000);
+
+  showToast('验证码已发送至 ' + phone, 'success');
+}
+
+function submitBindPhone() {
+  const phoneEl = document.getElementById('bindPhone');
+  const codeEl = document.getElementById('bindPhoneCode');
+  const phone = phoneEl.value.trim();
+  const code = codeEl.value.trim();
+
+  if (!phone) {
+    showToast('请输入手机号');
+    phoneEl.classList.add('border-red-300', 'bg-red-50');
+    phoneEl.focus();
+    return;
+  }
+  phoneEl.classList.remove('border-red-300', 'bg-red-50');
+
+  if (!/^1\d{10}$/.test(phone)) {
+    showToast('请输入正确的 11 位手机号');
+    phoneEl.classList.add('border-red-300', 'bg-red-50');
+    phoneEl.focus();
+    return;
+  }
+
+  if (!code) {
+    showToast('请输入短信验证码');
+    codeEl.classList.add('border-red-300', 'bg-red-50');
+    codeEl.focus();
+    return;
+  }
+  codeEl.classList.remove('border-red-300', 'bg-red-50');
+
+  boundPhone = phone;
+  document.getElementById('bindPhoneModal').classList.add('hidden');
+
+  if (bindPhoneMode === 'first') {
+    needBindPhone = false;
+    appEntryState = 'approved';
+    onboardingState = 'approved';
+    updateLoginUI();
+    showToast('绑定成功，欢迎使用智慧食安', 'success');
+  } else {
+    showToast('手机号更换成功', 'success');
+  }
 }
 
 function mockWechatAuth() {
@@ -4196,6 +4703,8 @@ function toggleLoginDemo() {
     // Switch to approved (logged in)
     appEntryState = 'approved';
     onboardingState = 'approved';
+    needForceResetPwd = false;
+    needBindPhone = false;
     btn.textContent = '已登录';
     btn.className = 'absolute top-[max(28px,env(safe-area-inset-top))] left-1/2 -translate-x-1/2 z-[70] px-3 py-1.5 rounded-full text-[11px] font-semibold shadow-lg border transition-all active:scale-95 bg-green-50 text-green-700 border-green-200';
     if (oldBtn) { oldBtn.textContent = '已登录'; oldBtn.className = btn.className; }
