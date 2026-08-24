@@ -1503,6 +1503,81 @@
     </div>
   </div>
 
+  <!-- ===== FIRST LOGIN SETUP OVERLAY ===== -->
+  <div id="firstSetupOverlay" class="absolute inset-0 z-[60] bg-slate-50 flex flex-col hidden">
+    <!-- Header -->
+    <header class="px-5 pt-[max(22px,env(safe-area-inset-top))] pb-3 shrink-0 bg-blue-600">
+      <h1 class="text-lg font-bold text-white">首次登录设置</h1>
+      <p class="text-xs text-white/60 mt-0.5">为保障账号安全，请完成以下设置后使用</p>
+    </header>
+
+    <!-- Step indicator -->
+    <div class="px-5 pt-3 pb-2">
+      <div class="flex items-center gap-2">
+        <div id="firstSetupStep1Num" class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-bold shrink-0">1</div>
+        <span id="firstSetupStep1Label" class="text-sm font-semibold text-slate-800">设置新密码</span>
+        <div id="firstSetupStepDivider" class="flex-1 h-px bg-slate-200 mx-1"></div>
+        <div id="firstSetupStep2Num" class="w-6 h-6 rounded-full bg-slate-200 text-slate-400 text-xs flex items-center justify-center font-bold shrink-0">2</div>
+        <span id="firstSetupStep2Label" class="text-sm text-slate-400">绑定手机号</span>
+      </div>
+    </div>
+
+    <!-- Step 1: 修改密码 -->
+    <div id="firstSetupStep1View" class="flex-1 overflow-y-auto">
+      <div class="px-5 pt-4 pb-8">
+        <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100 space-y-4">
+          <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide">设置新密码</h3>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">新密码 <span class="text-red-500">*</span></label>
+            <input type="password" id="firstSetupNewPwd" placeholder="请输入新密码（至少 6 位）"
+              class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">确认新密码 <span class="text-red-500">*</span></label>
+            <input type="password" id="firstSetupConfirmPwd" placeholder="请再次输入新密码"
+              class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+          </div>
+          <div class="bg-amber-50 border border-amber-100 rounded-xl px-4 py-3 flex items-start gap-2">
+            <i data-lucide="lock" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
+            <p class="text-xs text-amber-700 leading-relaxed">当前使用的是初始密码，为保障账号安全，请设置专属新密码。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: 绑定手机 -->
+    <div id="firstSetupStep2View" class="hidden flex-1 overflow-y-auto">
+      <div class="px-5 pt-4 pb-8">
+        <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100 space-y-4">
+          <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide">绑定手机号</h3>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">手机号 <span class="text-red-500">*</span></label>
+            <input type="tel" id="firstSetupPhone" placeholder="请输入手机号"
+              class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">短信验证码 <span class="text-red-500">*</span></label>
+            <div class="flex items-center gap-2">
+              <input type="text" id="firstSetupCode" placeholder="请输入短信验证码" inputmode="numeric" maxlength="6"
+                class="flex-1 px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+              <button id="firstSetupSendSmsBtn" onclick="sendFirstSetupSms()" class="shrink-0 px-4 py-3 text-[13px] font-semibold text-blue-600 bg-blue-50 rounded-xl border border-blue-100 hover:bg-blue-100 active:bg-blue-200 active:scale-[0.98] transition-all">获取验证码</button>
+            </div>
+          </div>
+          <div class="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 flex items-start gap-2">
+            <i data-lucide="smartphone" class="w-4 h-4 text-blue-600 shrink-0 mt-0.5"></i>
+            <p class="text-xs text-blue-700 leading-relaxed">绑定手机号后，忘记密码可通过短信验证码快速找回。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="shrink-0 px-5 pt-3 pb-[max(24px,env(safe-area-inset-bottom))] bg-white border-t border-slate-200 space-y-2">
+      <button id="firstSetupNextBtn" onclick="firstSetupNext()" class="w-full py-3.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">下一步</button>
+      <button id="firstSetupBackBtn" onclick="firstSetupBack()" class="hidden w-full py-2.5 text-[13px] text-slate-500 font-medium">上一步</button>
+    </div>
+  </div>
+
   <!-- ===== UNBIND PENDING OVERLAY ===== -->
   <div id="unbindPendingOverlay" class="hidden absolute inset-0 z-[55] bg-slate-50 flex flex-col">
     <div class="flex-1 flex flex-col items-center justify-center px-8">
@@ -2371,7 +2446,8 @@ let needBindPhone = true; // 首次登录需绑定手机（找回密码用）
 let boundPhone = ''; // 当前绑定手机号
 let bindPhoneMode = 'first'; // 'first' 首次绑定 | 'rebind' 换绑
 let bindSmsTimer = null;
-let changePwdMode = 'normal'; // 'normal' 主动改密 | 'force' 首次强制改密
+let firstSetupStep = 1; // 首次登录设置步骤 1=改密 2=绑手机
+let firstSetupSmsTimer = null;
 
 // 平台已有商户（供绑定选择）
 const existingMerchants = [
@@ -4289,6 +4365,7 @@ function updateLoginUI() {
   const tabBar = document.getElementById('bottomTabBar');
   const onboardingOverlay = document.getElementById('onboardingOverlay');
   const unbindOverlay = document.getElementById('unbindPendingOverlay');
+  const firstSetupOverlay = document.getElementById('firstSetupOverlay');
 
   if (appEntryState === 'login' || appEntryState === 'firstVerify') {
     loginOverlay.style.display = '';
@@ -4296,6 +4373,7 @@ function updateLoginUI() {
     tabBar.style.display = 'none';
     onboardingOverlay.classList.add('hidden');
     unbindOverlay.classList.add('hidden');
+    firstSetupOverlay.classList.add('hidden');
   } else if (appEntryState === 'onboarding') {
     loginOverlay.style.display = 'none';
     onboardingOverlay.classList.remove('hidden');
@@ -4306,6 +4384,7 @@ function updateLoginUI() {
   } else if (appEntryState === 'approved') {
     loginOverlay.style.display = 'none';
     onboardingOverlay.classList.add('hidden');
+    firstSetupOverlay.classList.add('hidden');
     if (unbindApprovalState === 'pending') {
       mainApp.style.display = 'none';
       tabBar.style.display = 'none';
@@ -4321,10 +4400,8 @@ function updateLoginUI() {
 }
 
 function handleLogin() {
-  if (needForceResetPwd) {
-    openForceChangePwd();
-  } else if (needBindPhone) {
-    openBindPhone('first');
+  if (needForceResetPwd || needBindPhone) {
+    openFirstSetup();
   } else {
     appEntryState = 'approved';
     onboardingState = 'approved';
@@ -4438,7 +4515,6 @@ function submitForgotPwd() {
 
 // ===== CHANGE PASSWORD =====
 function openChangePwd() {
-  changePwdMode = 'normal';
   document.getElementById('changePwdTitle').textContent = '修改密码';
   document.getElementById('changePwdDesc').textContent = '请输入当前密码并设置新密码';
   document.getElementById('changePwdOldRow').style.display = '';
@@ -4450,21 +4526,7 @@ function openChangePwd() {
   setTimeout(() => lucide.createIcons(), 50);
 }
 
-function openForceChangePwd() {
-  changePwdMode = 'force';
-  document.getElementById('changePwdTitle').textContent = '首次登录修改密码';
-  document.getElementById('changePwdDesc').textContent = '为保障账号安全，请设置新密码后使用';
-  document.getElementById('changePwdOldRow').style.display = 'none';
-  document.getElementById('changePwdCloseBtn').style.display = 'none';
-  document.getElementById('changePwdOld').value = '';
-  document.getElementById('changePwdNew').value = '';
-  document.getElementById('changePwdConfirm').value = '';
-  document.getElementById('changePwdModal').classList.remove('hidden');
-  setTimeout(() => lucide.createIcons(), 50);
-}
-
 function closeChangePwd() {
-  if (changePwdMode === 'force') return;
   document.getElementById('changePwdModal').classList.add('hidden');
 }
 
@@ -4473,15 +4535,13 @@ function submitChangePwd() {
   const newEl = document.getElementById('changePwdNew');
   const confirmEl = document.getElementById('changePwdConfirm');
 
-  if (changePwdMode === 'normal') {
-    if (!oldEl.value.trim()) {
-      showToast('请输入当前密码');
-      oldEl.classList.add('border-red-300', 'bg-red-50');
-      oldEl.focus();
-      return;
-    }
-    oldEl.classList.remove('border-red-300', 'bg-red-50');
+  if (!oldEl.value.trim()) {
+    showToast('请输入当前密码');
+    oldEl.classList.add('border-red-300', 'bg-red-50');
+    oldEl.focus();
+    return;
   }
+  oldEl.classList.remove('border-red-300', 'bg-red-50');
 
   if (!newEl.value.trim()) {
     showToast('请输入新密码');
@@ -4506,19 +4566,183 @@ function submitChangePwd() {
   confirmEl.classList.remove('border-red-300', 'bg-red-50');
 
   document.getElementById('changePwdModal').classList.add('hidden');
-  if (changePwdMode === 'force') {
-    needForceResetPwd = false;
-    if (needBindPhone) {
-      openBindPhone('first');
+  showToast('密码修改成功', 'success');
+}
+
+// ===== FIRST LOGIN SETUP =====
+function openFirstSetup() {
+  firstSetupStep = 1;
+  document.getElementById('firstSetupNewPwd').value = '';
+  document.getElementById('firstSetupConfirmPwd').value = '';
+  document.getElementById('firstSetupPhone').value = '';
+  document.getElementById('firstSetupCode').value = '';
+  document.getElementById('loginOverlay').style.display = 'none';
+  document.getElementById('firstSetupOverlay').classList.remove('hidden');
+  renderFirstSetup();
+  setTimeout(() => lucide.createIcons(), 50);
+}
+
+function renderFirstSetup() {
+  const ACTIVE = 'w-6 h-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-bold shrink-0';
+  const INACTIVE = 'w-6 h-6 rounded-full bg-slate-200 text-slate-400 text-xs flex items-center justify-center font-bold shrink-0';
+  const step1Num = document.getElementById('firstSetupStep1Num');
+  const step1Label = document.getElementById('firstSetupStep1Label');
+  const divider = document.getElementById('firstSetupStepDivider');
+  const step2Num = document.getElementById('firstSetupStep2Num');
+  const step2Label = document.getElementById('firstSetupStep2Label');
+  const step1View = document.getElementById('firstSetupStep1View');
+  const step2View = document.getElementById('firstSetupStep2View');
+  const nextBtn = document.getElementById('firstSetupNextBtn');
+  const backBtn = document.getElementById('firstSetupBackBtn');
+
+  if (needBindPhone) {
+    divider.style.display = '';
+    step2Num.style.display = '';
+    step2Label.style.display = '';
+    if (firstSetupStep === 1) {
+      step1View.classList.remove('hidden');
+      step2View.classList.add('hidden');
+      nextBtn.textContent = '下一步';
+      backBtn.style.display = 'none';
+      step1Num.className = ACTIVE;
+      step1Label.className = 'text-sm font-semibold text-slate-800';
+      step2Num.className = INACTIVE;
+      step2Label.className = 'text-sm text-slate-400';
     } else {
-      appEntryState = 'approved';
-      onboardingState = 'approved';
-      updateLoginUI();
-      showToast('密码修改成功，欢迎使用智慧食安', 'success');
+      step1View.classList.add('hidden');
+      step2View.classList.remove('hidden');
+      nextBtn.textContent = '完成';
+      backBtn.style.display = '';
+      step1Num.className = ACTIVE;
+      step1Label.className = 'text-sm font-semibold text-slate-800';
+      step2Num.className = ACTIVE;
+      step2Label.className = 'text-sm font-semibold text-slate-800';
     }
   } else {
-    showToast('密码修改成功', 'success');
+    divider.style.display = 'none';
+    step2Num.style.display = 'none';
+    step2Label.style.display = 'none';
+    step1View.classList.remove('hidden');
+    step2View.classList.add('hidden');
+    nextBtn.textContent = '完成';
+    backBtn.style.display = 'none';
+    step1Num.className = ACTIVE;
+    step1Label.className = 'text-sm font-semibold text-slate-800';
   }
+}
+
+function firstSetupBack() {
+  firstSetupStep = 1;
+  renderFirstSetup();
+}
+
+function firstSetupNext() {
+  if (firstSetupStep === 1) {
+    const newEl = document.getElementById('firstSetupNewPwd');
+    const confirmEl = document.getElementById('firstSetupConfirmPwd');
+    if (!newEl.value.trim()) {
+      showToast('请输入新密码');
+      newEl.classList.add('border-red-300', 'bg-red-50');
+      newEl.focus();
+      return;
+    }
+    newEl.classList.remove('border-red-300', 'bg-red-50');
+    if (newEl.value.trim().length < 6) {
+      showToast('新密码长度不能少于 6 位');
+      newEl.focus();
+      return;
+    }
+    if (confirmEl.value.trim() !== newEl.value.trim()) {
+      showToast('两次输入的新密码不一致');
+      confirmEl.classList.add('border-red-300', 'bg-red-50');
+      confirmEl.focus();
+      return;
+    }
+    confirmEl.classList.remove('border-red-300', 'bg-red-50');
+
+    needForceResetPwd = false;
+    if (needBindPhone) {
+      firstSetupStep = 2;
+      renderFirstSetup();
+    } else {
+      completeFirstSetup();
+    }
+  } else {
+    const phoneEl = document.getElementById('firstSetupPhone');
+    const codeEl = document.getElementById('firstSetupCode');
+    const phone = phoneEl.value.trim();
+    const code = codeEl.value.trim();
+    if (!phone) {
+      showToast('请输入手机号');
+      phoneEl.classList.add('border-red-300', 'bg-red-50');
+      phoneEl.focus();
+      return;
+    }
+    phoneEl.classList.remove('border-red-300', 'bg-red-50');
+    if (!/^1\d{10}$/.test(phone)) {
+      showToast('请输入正确的 11 位手机号');
+      phoneEl.classList.add('border-red-300', 'bg-red-50');
+      phoneEl.focus();
+      return;
+    }
+    if (!code) {
+      showToast('请输入短信验证码');
+      codeEl.classList.add('border-red-300', 'bg-red-50');
+      codeEl.focus();
+      return;
+    }
+    codeEl.classList.remove('border-red-300', 'bg-red-50');
+    boundPhone = phone;
+    completeFirstSetup();
+  }
+}
+
+function completeFirstSetup() {
+  needBindPhone = false;
+  document.getElementById('firstSetupOverlay').classList.add('hidden');
+  appEntryState = 'approved';
+  onboardingState = 'approved';
+  updateLoginUI();
+  showToast('设置完成，欢迎使用智慧食安', 'success');
+}
+
+function sendFirstSetupSms() {
+  const phoneEl = document.getElementById('firstSetupPhone');
+  const phone = phoneEl.value.trim();
+  if (!phone) {
+    showToast('请输入手机号');
+    phoneEl.classList.add('border-red-300', 'bg-red-50');
+    phoneEl.focus();
+    return;
+  }
+  if (!/^1\d{10}$/.test(phone)) {
+    showToast('请输入正确的 11 位手机号');
+    phoneEl.classList.add('border-red-300', 'bg-red-50');
+    phoneEl.focus();
+    return;
+  }
+  phoneEl.classList.remove('border-red-300', 'bg-red-50');
+
+  const btn = document.getElementById('firstSetupSendSmsBtn');
+  let count = 60;
+  btn.disabled = true;
+  btn.textContent = count + 's 后重发';
+  btn.className = 'shrink-0 px-4 py-3 text-[13px] font-semibold text-slate-400 bg-slate-100 rounded-xl border border-slate-100 transition-all';
+  if (firstSetupSmsTimer) clearInterval(firstSetupSmsTimer);
+  firstSetupSmsTimer = setInterval(() => {
+    count--;
+    if (count <= 0) {
+      clearInterval(firstSetupSmsTimer);
+      firstSetupSmsTimer = null;
+      btn.disabled = false;
+      btn.textContent = '获取验证码';
+      btn.className = 'shrink-0 px-4 py-3 text-[13px] font-semibold text-blue-600 bg-blue-50 rounded-xl border border-blue-100 hover:bg-blue-100 active:bg-blue-200 active:scale-[0.98] transition-all';
+    } else {
+      btn.textContent = count + 's 后重发';
+    }
+  }, 1000);
+
+  showToast('验证码已发送至 ' + phone, 'success');
 }
 
 function closeFirstLoginVerify() {
