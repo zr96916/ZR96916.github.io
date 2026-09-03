@@ -315,6 +315,13 @@
   .chat-row.admin {
     align-items: flex-start;
   }
+  .voice-pulse {
+    animation: voicePulse 1.4s ease-in-out infinite;
+  }
+  @keyframes voicePulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(24, 95, 165, 0.35); }
+    50% { transform: scale(1.06); box-shadow: 0 0 0 14px rgba(24, 95, 165, 0); }
+  }
 </style>
 </head>
 <body>
@@ -848,83 +855,13 @@
     </div>
   </div>
 
-  <!-- ===== UNBIND MODAL ===== -->
-  <div id="unbindModal" class="hidden absolute inset-0 z-[80] flex items-center justify-center p-5">
-    <div class="absolute inset-0 bg-black/40" onclick="closeUnbindModal()"></div>
-    <div class="relative bg-white rounded-2xl w-full max-w-sm p-5 shadow-elevated max-h-[90%] overflow-y-auto">
-      <h3 class="text-base font-bold text-slate-900 mb-1">申请解绑账号</h3>
-      <p class="text-[13px] text-slate-400 mb-4">解绑后仅解除微信与商户的绑定关系，历史数据保留在监管平台</p>
-      <div class="space-y-3 mb-4">
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1.5">解绑原因 <span class="text-red-500">*</span></label>
-          <select id="unbindReason"
-            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all appearance-none">
-            <option value="">请选择解绑原因</option>
-            <option value="主体转让">主体转让</option>
-            <option value="员工离职">员工离职</option>
-            <option value="更换微信">更换微信</option>
-            <option value="其他">其他</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1.5">补充说明</label>
-          <textarea id="unbindDesc" rows="3" placeholder="请简要说明解绑原因..."
-            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all resize-none"></textarea>
-        </div>
-      </div>
-      <div class="bg-amber-50 border border-amber-100 rounded-xl p-3 mb-4 flex items-start gap-2">
-        <i data-lucide="info" class="w-4 h-4 text-amber-500 shrink-0 mt-0.5"></i>
-        <p class="text-[12px] text-amber-700 leading-relaxed">解绑审批通过后，您将回到登录页面，可使用其他微信重新绑定该商户主体。历史工单仍保留原账号信息。</p>
-      </div>
-      <div class="flex gap-3">
-        <button onclick="closeUnbindModal()" class="flex-1 py-3 bg-slate-100 text-slate-600 text-sm font-semibold rounded-xl hover:bg-slate-200 active:scale-[0.98] transition-all">取消</button>
-        <button onclick="submitUnbindApplication()" class="flex-1 py-3 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">提交解绑申请</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== UNBIND STATUS MODAL ===== -->
-  <div id="unbindStatusModal" class="hidden absolute inset-0 z-[80] flex items-center justify-center p-6">
-    <div class="absolute inset-0 bg-black/40" onclick="closeUnbindStatusModal()"></div>
-    <div class="relative bg-white rounded-2xl w-full max-w-xs p-6 shadow-elevated">
-      <h3 class="text-base font-bold text-slate-900 text-center mb-4">解绑申请进度</h3>
-      <div class="flex items-start justify-between relative mb-6">
-        <div class="absolute top-5 left-5 right-5 h-0.5 bg-slate-200"></div>
-        <div class="relative z-10 flex flex-col items-center">
-          <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center">
-            <i data-lucide="check" class="w-5 h-5"></i>
-          </div>
-          <span class="text-[11px] font-semibold text-blue-600 mt-2">提交申请</span>
-        </div>
-        <div class="relative z-10 flex flex-col items-center">
-          <div id="unbindStep2Circle" class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center">
-            <i data-lucide="search-check" class="w-5 h-5"></i>
-          </div>
-          <span id="unbindStep2Label" class="text-[11px] font-semibold text-blue-600 mt-2">监管审核</span>
-        </div>
-        <div class="relative z-10 flex flex-col items-center">
-          <div id="unbindStep3Circle" class="w-10 h-10 rounded-full bg-slate-100 text-slate-300 flex items-center justify-center">
-            <i data-lucide="check-circle" class="w-5 h-5"></i>
-          </div>
-          <span class="text-[11px] font-medium text-slate-300 mt-2">已解绑</span>
-        </div>
-      </div>
-      <p id="unbindStatusText" class="text-sm text-slate-500 text-center mb-5">监管人员将在 1-3 个工作日内完成审核</p>
-      <button id="unbindCompleteBtn" onclick="confirmUnbindComplete()" class="hidden w-full mb-3 py-3 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">确认解绑完成</button>
-      <button onclick="closeUnbindStatusModal()" class="w-full py-3 bg-slate-100 text-slate-600 text-sm font-semibold rounded-xl hover:bg-slate-200 active:scale-[0.98] transition-all">关闭</button>
-      <p class="text-[11px] text-slate-300 cursor-pointer select-none mt-3 text-center" onclick="cycleUnbindState()">
-        演示切换：当前状态 — <span id="unbindDebugLabel">待审批</span>（点击切换）
-      </p>
-    </div>
-  </div>
-
   <!-- ===== FEEDBACK OVERLAY ===== -->
   <div class="overlay-panel" id="feedbackOverlay">
     <div class="flex items-center gap-3 px-5 py-4 border-b border-slate-200 bg-white shrink-0">
       <button onclick="closeFeedback()" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-slate-100 transition-colors">
         <i data-lucide="arrow-left" class="w-5 h-5 text-slate-700"></i>
       </button>
-      <span class="text-base font-semibold text-slate-900 flex-1" id="feedbackHeaderTitle">意见反馈</span>
+      <span class="text-base font-semibold text-slate-900 flex-1" id="feedbackHeaderTitle">站内信</span>
       <button onclick="backToFeedbackList()" id="feedbackBackBtn" class="hidden text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors">返回列表</button>
     </div>
 
@@ -942,8 +879,15 @@
     <div id="feedbackThreadView" class="hidden flex-1 flex flex-col min-h-0">
       <div class="flex-1 overflow-y-auto px-5 pt-4 pb-4 bg-slate-50" id="feedbackThreadContent"></div>
       <div class="shrink-0 px-5 pt-3 pb-[max(16px,env(safe-area-inset-bottom))] bg-white border-t border-slate-200">
-        <div class="flex gap-2">
-          <input type="text" id="feedbackReplyInput" placeholder="输入追问内容..."
+        <div id="replyAttachments" class="hidden flex-wrap gap-1.5 mb-2"></div>
+        <div class="flex items-center gap-2">
+          <button onclick="openVoiceInput('reply')" class="w-10 h-10 shrink-0 flex items-center justify-center rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-colors">
+            <i data-lucide="mic" class="w-5 h-5"></i>
+          </button>
+          <button onclick="openAttachmentSheet('reply')" class="w-10 h-10 shrink-0 flex items-center justify-center rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-colors">
+            <i data-lucide="paperclip" class="w-5 h-5"></i>
+          </button>
+          <input type="text" id="feedbackReplyInput" placeholder="输入消息..."
             class="flex-1 px-4 py-2.5 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
           <button onclick="submitFeedbackReply()" class="px-4 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">
             发送
@@ -952,29 +896,80 @@
       </div>
     </div>
 
-    <!-- New Feedback Form -->
+    <!-- New Message Form (站内信) -->
     <div id="newFeedbackForm" class="hidden absolute inset-x-0 bottom-0 z-10 bg-white rounded-t-2xl shadow-overlay p-5" style="top: auto; max-height: 85%;">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-base font-bold text-slate-900">新建反馈</h3>
+        <h3 class="text-base font-bold text-slate-900">写站内信</h3>
         <button onclick="hideNewFeedbackForm()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100">
           <i data-lucide="x" class="w-4 h-4 text-slate-400"></i>
         </button>
       </div>
       <div class="space-y-3 mb-4">
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1.5">反馈主题 <span class="text-red-500">*</span></label>
-          <input type="text" id="newFeedbackSubject" placeholder="请简要描述反馈主题"
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">主题 <span class="text-red-500">*</span></label>
+          <input type="text" id="newFeedbackSubject" placeholder="请输入主题"
             class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1.5">详细描述 <span class="text-red-500">*</span></label>
-          <textarea id="newFeedbackContent" rows="4" placeholder="请详细描述您遇到的问题或建议..."
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">内容 <span class="text-red-500">*</span></label>
+          <textarea id="newFeedbackContent" rows="4" placeholder="请输入内容..."
             class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all resize-none"></textarea>
+        </div>
+        <div id="newFeedbackAttachments" class="hidden flex-wrap gap-1.5"></div>
+        <div class="flex items-center gap-2">
+          <button onclick="openVoiceInput('new')" class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-colors">
+            <i data-lucide="mic" class="w-5 h-5"></i>
+          </button>
+          <button onclick="openAttachmentSheet('new')" class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-colors">
+            <i data-lucide="paperclip" class="w-5 h-5"></i>
+          </button>
+          <span class="text-[11px] text-slate-400">可语音输入或上传附件</span>
         </div>
       </div>
       <button onclick="submitNewFeedback()" class="w-full py-3.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">
-        提交反馈
+        发送
       </button>
+    </div>
+  </div>
+
+  <!-- ===== VOICE INPUT OVERLAY (语音输入) ===== -->
+  <div id="voiceInputOverlay" class="hidden absolute inset-0 z-[95] bg-black/60 flex items-center justify-center p-6">
+    <div class="bg-white rounded-2xl w-full max-w-xs p-6 flex flex-col items-center text-center">
+      <div class="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mb-4 voice-pulse">
+        <i data-lucide="mic" class="w-7 h-7 text-blue-600"></i>
+      </div>
+      <p class="text-sm font-medium text-slate-800">正在聆听…</p>
+      <p class="text-xs text-slate-400 mt-1">点击下方按钮结束并转为文字</p>
+      <div class="w-full mt-5 flex gap-2">
+        <button onclick="cancelVoiceInput()" class="flex-1 py-3 text-slate-500 text-sm font-medium rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors">取消</button>
+        <button onclick="stopVoiceInput()" class="flex-1 py-3 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:scale-[0.98] transition-all">结束</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ATTACHMENT SHEET (附件选择) ===== -->
+  <div id="attachmentSheet" class="hidden absolute inset-0 z-[95] bg-black/40 flex items-end" onclick="closeAttachmentSheet()">
+    <div class="w-full bg-white rounded-t-2xl p-5 pb-8" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-slate-900">添加附件</h3>
+        <button onclick="closeAttachmentSheet()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100">
+          <i data-lucide="x" class="w-4 h-4 text-slate-400"></i>
+        </button>
+      </div>
+      <div class="grid grid-cols-3 gap-3">
+        <button onclick="addAttachment('拍照', 'IMG_20260722_1030.jpg', '1.2MB')" class="flex flex-col items-center gap-2 py-4 rounded-xl bg-slate-50 hover:bg-slate-100 active:scale-[0.97] transition-all">
+          <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center"><i data-lucide="camera" class="w-5 h-5 text-blue-600"></i></div>
+          <span class="text-xs text-slate-600">拍照</span>
+        </button>
+        <button onclick="addAttachment('相册', 'IMG_20260722_1030.jpg', '1.2MB')" class="flex flex-col items-center gap-2 py-4 rounded-xl bg-slate-50 hover:bg-slate-100 active:scale-[0.97] transition-all">
+          <div class="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center"><i data-lucide="image" class="w-5 h-5 text-green-600"></i></div>
+          <span class="text-xs text-slate-600">从相册选择</span>
+        </button>
+        <button onclick="addAttachment('文件', '整改材料.pdf', '356KB')" class="flex flex-col items-center gap-2 py-4 rounded-xl bg-slate-50 hover:bg-slate-100 active:scale-[0.97] transition-all">
+          <div class="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center"><i data-lucide="file-text" class="w-5 h-5 text-amber-600"></i></div>
+          <span class="text-xs text-slate-600">文件</span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1066,7 +1061,36 @@
         </button>
       </div>
       <p id="bindPhoneDesc" class="text-[13px] text-slate-500 mb-4">绑定手机号，用于找回登录密码</p>
-      <div class="space-y-3">
+
+      <!-- 步骤指示器（换绑时显示） -->
+      <div id="bindPhoneSteps" class="flex items-center gap-2 mb-4 hidden">
+        <span id="bindStepDot1" class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-semibold flex items-center justify-center shrink-0">1</span>
+        <span class="flex-1 h-0.5 bg-slate-200 rounded"></span>
+        <span id="bindStepDot2" class="w-6 h-6 rounded-full bg-slate-200 text-slate-400 text-xs font-semibold flex items-center justify-center shrink-0">2</span>
+      </div>
+
+      <!-- 第一步：验证原手机 -->
+      <div id="bindPhoneStep1" class="space-y-3 hidden">
+        <div class="bg-slate-50 rounded-xl px-4 py-3 flex items-center justify-between">
+          <div>
+            <p class="text-[11px] text-slate-400">当前绑定手机</p>
+            <p id="bindOldPhone" class="text-sm font-medium text-slate-800 mt-0.5"></p>
+          </div>
+          <i data-lucide="shield-check" class="w-5 h-5 text-green-500"></i>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">短信验证码 <span class="text-red-500">*</span></label>
+          <div class="flex items-center gap-2">
+            <input type="text" id="bindOldCode" placeholder="请输入验证码" inputmode="numeric" maxlength="6"
+              class="flex-1 px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+            <button id="bindOldSendSmsBtn" onclick="sendBindOldSms()" class="shrink-0 px-4 py-3 text-[13px] font-semibold text-blue-600 bg-blue-50 rounded-xl border border-blue-100 hover:bg-blue-100 active:bg-blue-200 active:scale-[0.98] transition-all">获取验证码</button>
+          </div>
+        </div>
+        <button onclick="verifyBindOldPhone()" class="w-full mt-1 py-3.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">下一步</button>
+      </div>
+
+      <!-- 第二步：绑定/更换新手机 -->
+      <div id="bindPhoneStep2" class="space-y-3">
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1">手机号 <span class="text-red-500">*</span></label>
           <input type="tel" id="bindPhone" placeholder="请输入手机号"
@@ -1080,8 +1104,8 @@
             <button id="bindSendSmsBtn" onclick="sendBindSms()" class="shrink-0 px-4 py-3 text-[13px] font-semibold text-blue-600 bg-blue-50 rounded-xl border border-blue-100 hover:bg-blue-100 active:bg-blue-200 active:scale-[0.98] transition-all">获取验证码</button>
           </div>
         </div>
+        <button id="bindPhoneSubmitBtn" onclick="submitBindPhone()" class="w-full mt-1 py-3.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">确认绑定</button>
       </div>
-      <button id="bindPhoneSubmitBtn" onclick="submitBindPhone()" class="w-full mt-5 py-3.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">确认绑定</button>
     </div>
   </div>
 
@@ -1578,17 +1602,116 @@
     </div>
   </div>
 
-  <!-- ===== UNBIND PENDING OVERLAY ===== -->
-  <div id="unbindPendingOverlay" class="hidden absolute inset-0 z-[55] bg-slate-50 flex flex-col">
-    <div class="flex-1 flex flex-col items-center justify-center px-8">
-      <div class="w-20 h-20 rounded-full bg-blue-50 flex items-center justify-center mb-6">
-        <i data-lucide="clock" class="w-10 h-10 text-blue-600"></i>
-      </div>
-      <h2 class="text-lg font-bold text-slate-800 mb-2">解绑申请审核中</h2>
-      <p class="text-sm text-slate-500 text-center leading-relaxed mb-6">监管人员将在 1-3 个工作日内完成审核，审批期间暂不可使用其他功能。</p>
-      <button onclick="openUnbindStatusModal()" class="px-6 py-3 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">
-        查看进度
+  <!-- ===== NOTIFY SETTING OVERLAY ===== -->
+  <div id="notifyOverlay" class="absolute inset-0 z-[60] bg-slate-50 flex flex-col hidden">
+    <header class="px-5 pt-[max(22px,env(safe-area-inset-top))] pb-3 shrink-0 bg-blue-600 flex items-center gap-2">
+      <button onclick="closeNotifySetting()" class="w-8 h-8 flex items-center justify-center -ml-2">
+        <i data-lucide="chevron-left" class="w-6 h-6 text-white"></i>
       </button>
+      <div>
+        <h1 class="text-lg font-bold text-white">通知接收</h1>
+        <p class="text-xs text-white/60 mt-0.5">绑定微信接收通知 · 管理接收人</p>
+      </div>
+    </header>
+
+    <div class="flex-1 overflow-y-auto px-5 pt-4 pb-8">
+      <!-- 我的微信接收 -->
+      <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100 mb-4">
+        <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">我的微信接收</h3>
+        <div id="myWechatArea"></div>
+      </div>
+
+      <!-- 通知接收人 -->
+      <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100 mb-4">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide">通知接收人</h3>
+          <span class="text-[11px] text-slate-400">已绑定 <span id="recipientCount" class="text-slate-600 font-medium">0</span>/10 个</span>
+        </div>
+        <div id="recipientListArea"></div>
+      </div>
+
+      <div class="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 mt-4 flex gap-2.5">
+        <i data-lucide="info" class="w-4 h-4 text-blue-500 shrink-0 mt-0.5"></i>
+        <p class="text-[11px] text-blue-600 leading-relaxed">成员登录后自行绑定微信即可接收通知；查看清单、移除成员等管理操作需<b>短信验证</b>（验证码发送至管理手机号）。单个账号最多绑定 10 个成员。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SMS VERIFY MODAL (短信验证 · 管理操作) ===== -->
+  <div id="smsVerifyModal" class="hidden absolute inset-0 z-[90] bg-black/40 flex items-center justify-center p-5">
+    <div class="relative bg-white rounded-2xl w-full max-w-sm p-5 shadow-elevated">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-slate-900" id="smsVerifyTitle">短信验证</h3>
+        <button onclick="closeSmsVerify()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100">
+          <i data-lucide="x" class="w-4 h-4 text-slate-400"></i>
+        </button>
+      </div>
+      <div class="flex items-start gap-3 bg-slate-50 rounded-xl px-4 py-3 mb-4">
+        <i data-lucide="shield-check" class="w-5 h-5 text-blue-500 shrink-0 mt-0.5"></i>
+        <div class="text-xs text-slate-500 leading-relaxed">
+          <span id="smsVerifyDesc"></span>
+          <span class="block mt-0.5">验证码已发送至管理手机号 <b class="text-slate-700" id="smsVerifyPhone">138****8000</b></span>
+        </div>
+      </div>
+      <input type="text" id="smsCodeInput" maxlength="6" inputmode="numeric" placeholder="请输入 6 位验证码"
+        class="w-full px-4 py-3 text-base tracking-[0.3em] text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all text-center" />
+      <div class="flex items-center justify-between mt-2">
+        <p class="text-[11px] text-slate-400">验证码 5 分钟内有效 · 单次有效</p>
+        <button onclick="resendSms()" class="text-xs font-medium text-blue-600 hover:underline">重新获取</button>
+      </div>
+      <p class="text-[10px] text-slate-300 text-center mt-2">演示环境验证码：<b class="text-slate-400">123456</b></p>
+      <button onclick="confirmSmsVerify()" class="w-full mt-4 py-3.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">验证</button>
+    </div>
+  </div>
+
+  <!-- ===== SUBSCRIBE AUTH MODAL (订阅消息授权模拟) ===== -->
+  <div id="subscribeModal" class="hidden absolute inset-0 z-[90] bg-black/40 flex items-center justify-center p-5">
+    <div class="relative bg-white rounded-2xl w-full max-w-xs p-5 shadow-elevated">
+      <div class="flex flex-col items-center text-center">
+        <div class="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center mb-3">
+          <i data-lucide="bell-ring" class="w-6 h-6 text-green-600"></i>
+        </div>
+        <h3 class="text-base font-bold text-slate-900">订阅消息授权</h3>
+        <p class="text-xs text-slate-400 mt-2 leading-relaxed">微信要求由你本人授权订阅消息，授权后即可接收本账号的通知</p>
+        <div class="mt-4 w-full bg-slate-50 rounded-xl p-3 text-left">
+          <p class="text-[11px] text-slate-500">通知类型：整改工单、证照到期、AI 告警等</p>
+        </div>
+        <div class="mt-5 w-full space-y-2">
+          <button onclick="allowSubscribe()" class="w-full py-3 bg-green-600 text-white text-sm font-semibold rounded-xl hover:bg-green-700 active:scale-[0.98] transition-all">允许</button>
+          <button onclick="denySubscribe()" class="w-full py-3 text-slate-400 text-sm font-medium rounded-xl">拒绝</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== EDIT REMARK MODAL ===== -->
+  <div id="remarkModal" class="hidden absolute inset-0 z-[80] bg-black/40 flex items-center justify-center p-5">
+    <div class="relative bg-white rounded-2xl w-full max-w-sm p-5 shadow-elevated">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-slate-900">编辑备注</h3>
+        <button onclick="closeRemarkModal()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100">
+          <i data-lucide="x" class="w-4 h-4 text-slate-400"></i>
+        </button>
+      </div>
+      <label class="block text-sm font-medium text-slate-700 mb-1">备注（如「店长老王」）</label>
+      <input type="text" id="remarkInput" placeholder="输入备注，便于识别接收人"
+        class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+      <button onclick="saveRemark()" class="w-full mt-5 py-3.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">保存</button>
+    </div>
+  </div>
+
+  <!-- ===== REMOVE RECIPIENT CONFIRM MODAL ===== -->
+  <div id="removeConfirmModal" class="hidden absolute inset-0 z-[80] bg-black/40 flex items-center justify-center p-5">
+    <div class="relative bg-white rounded-2xl w-full max-w-xs p-5 shadow-elevated text-center">
+      <div class="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-3">
+        <i data-lucide="user-x" class="w-6 h-6 text-red-500"></i>
+      </div>
+      <h3 class="text-base font-bold text-slate-900">移除成员？</h3>
+      <p class="text-xs text-slate-400 mt-2">移除后该成员将立即停止接收通知</p>
+      <div class="flex gap-2 mt-5">
+        <button onclick="closeRemoveConfirm()" class="flex-1 py-3 text-slate-500 text-sm font-medium rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors">取消</button>
+        <button onclick="confirmRemoveRecipient()" class="flex-1 py-3 bg-red-600 text-white text-sm font-semibold rounded-xl hover:bg-red-700 active:scale-[0.98] transition-all">移除</button>
+      </div>
     </div>
   </div>
 
@@ -1626,7 +1749,11 @@
           <div class="bg-white rounded-2xl p-4 shadow-card border border-slate-100">
             <div class="flex items-center justify-between mb-3">
               <h2 class="text-sm font-semibold text-slate-800">风险预警概览</h2>
-              <span class="text-[11px] text-slate-400">今日</span>
+              <div id="riskPeriodToggle" class="flex items-center bg-slate-100 rounded-lg p-0.5 text-xs">
+                <button id="riskPeriodDay" onclick="setRiskPeriod('day')" class="px-3 py-1.5 rounded-md font-semibold bg-white text-blue-600 shadow-sm transition-colors">日</button>
+                <button id="riskPeriodWeek" onclick="setRiskPeriod('week')" class="px-3 py-1.5 rounded-md font-medium text-slate-500 hover:text-slate-700 transition-colors">周</button>
+                <button id="riskPeriodMonth" onclick="setRiskPeriod('month')" class="px-3 py-1.5 rounded-md font-medium text-slate-500 hover:text-slate-700 transition-colors">月</button>
+              </div>
             </div>
             <!-- 预警数量 -->
             <div class="grid grid-cols-2 gap-3 mb-3">
@@ -1635,7 +1762,7 @@
                   <i data-lucide="alert-triangle" class="w-4.5 h-4.5 text-red-500"></i>
                 </div>
                 <div>
-                  <span class="text-xl font-bold text-slate-800 tabular-nums leading-none">1</span>
+                  <span id="riskAlarmCount" class="text-xl font-bold text-slate-800 tabular-nums leading-none">1</span>
                   <p class="text-[11px] text-slate-500 mt-0.5">报警记录</p>
                 </div>
               </div>
@@ -1644,41 +1771,43 @@
                   <i data-lucide="file-clock" class="w-4.5 h-4.5 text-blue-600"></i>
                 </div>
                 <div>
-                  <span class="text-xl font-bold text-slate-800 tabular-nums leading-none">2</span>
+                  <span id="riskCertCount" class="text-xl font-bold text-slate-800 tabular-nums leading-none">2</span>
                   <p class="text-[11px] text-slate-500 mt-0.5">证照到期预警</p>
                 </div>
               </div>
             </div>
-            <!-- 预警时段分布（平滑折线图） -->
+            <!-- 预警时段分布 / 趋势（平滑折线图） -->
             <div>
-              <h3 class="text-[12px] font-medium text-slate-500 mb-1">预警时段分布</h3>
-              <svg viewBox="0 0 280 98" class="w-full" style="height: 96px;">
-                <defs>
-                  <linearGradient id="lineAreaGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#378ADD" stop-opacity="0.20"/>
-                    <stop offset="100%" stop-color="#378ADD" stop-opacity="0"/>
-                  </linearGradient>
-                </defs>
-                <!-- 面积填充 -->
-                <path d="M 35 62 C 46.67 58, 81.67 42, 105 38 C 128.33 31.33, 151.67 18.67, 175 20 C 198.33 21.33, 233.33 45, 245 50 L 245 78 L 35 78 Z" fill="url(#lineAreaGrad)"/>
-                <!-- 平滑折线 -->
-                <path d="M 35 62 C 46.67 58, 81.67 42, 105 38 C 128.33 31.33, 151.67 18.67, 175 20 C 198.33 21.33, 233.33 45, 245 50" fill="none" stroke="#185FA5" stroke-width="2" stroke-linecap="round"/>
-                <!-- 数据点 -->
-                <circle cx="35" cy="62" r="3" fill="#185FA5" stroke="#fff" stroke-width="1.5"/>
-                <circle cx="105" cy="38" r="3" fill="#185FA5" stroke="#fff" stroke-width="1.5"/>
-                <circle cx="175" cy="20" r="3" fill="#185FA5" stroke="#fff" stroke-width="1.5"/>
-                <circle cx="245" cy="50" r="3" fill="#185FA5" stroke="#fff" stroke-width="1.5"/>
-                <!-- 数值 -->
-                <text x="35" y="52" text-anchor="middle" font-size="9" font-weight="600" fill="#475569">1</text>
-                <text x="105" y="28" text-anchor="middle" font-size="9" font-weight="600" fill="#475569">5</text>
-                <text x="175" y="10" text-anchor="middle" font-size="9" font-weight="600" fill="#475569">8</text>
-                <text x="245" y="40" text-anchor="middle" font-size="9" font-weight="600" fill="#475569">3</text>
-                <!-- 时段标签 -->
-                <text x="35" y="92" text-anchor="middle" font-size="9" fill="#94A3B8">00-06</text>
-                <text x="105" y="92" text-anchor="middle" font-size="9" fill="#94A3B8">06-12</text>
-                <text x="175" y="92" text-anchor="middle" font-size="9" fill="#94A3B8">12-18</text>
-                <text x="245" y="92" text-anchor="middle" font-size="9" fill="#94A3B8">18-24</text>
-              </svg>
+              <h3 id="riskChartTitle" class="text-[12px] font-medium text-slate-500 mb-1">预警时段分布</h3>
+              <div id="riskChartContainer">
+                <svg viewBox="0 0 280 98" class="w-full" style="height: 96px;">
+                  <defs>
+                    <linearGradient id="lineAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#378ADD" stop-opacity="0.20"/>
+                      <stop offset="100%" stop-color="#378ADD" stop-opacity="0"/>
+                    </linearGradient>
+                  </defs>
+                  <!-- 面积填充 -->
+                  <path d="M 35 62 C 46.67 58, 81.67 42, 105 38 C 128.33 31.33, 151.67 18.67, 175 20 C 198.33 21.33, 233.33 45, 245 50 L 245 78 L 35 78 Z" fill="url(#lineAreaGrad)"/>
+                  <!-- 平滑折线 -->
+                  <path d="M 35 62 C 46.67 58, 81.67 42, 105 38 C 128.33 31.33, 151.67 18.67, 175 20 C 198.33 21.33, 233.33 45, 245 50" fill="none" stroke="#185FA5" stroke-width="2" stroke-linecap="round"/>
+                  <!-- 数据点 -->
+                  <circle cx="35" cy="62" r="3" fill="#185FA5" stroke="#fff" stroke-width="1.5"/>
+                  <circle cx="105" cy="38" r="3" fill="#185FA5" stroke="#fff" stroke-width="1.5"/>
+                  <circle cx="175" cy="20" r="3" fill="#185FA5" stroke="#fff" stroke-width="1.5"/>
+                  <circle cx="245" cy="50" r="3" fill="#185FA5" stroke="#fff" stroke-width="1.5"/>
+                  <!-- 数值 -->
+                  <text x="35" y="52" text-anchor="middle" font-size="9" font-weight="600" fill="#475569">1</text>
+                  <text x="105" y="28" text-anchor="middle" font-size="9" font-weight="600" fill="#475569">5</text>
+                  <text x="175" y="10" text-anchor="middle" font-size="9" font-weight="600" fill="#475569">8</text>
+                  <text x="245" y="40" text-anchor="middle" font-size="9" font-weight="600" fill="#475569">3</text>
+                  <!-- 时段标签 -->
+                  <text x="35" y="92" text-anchor="middle" font-size="9" fill="#94A3B8">00-06</text>
+                  <text x="105" y="92" text-anchor="middle" font-size="9" fill="#94A3B8">06-12</text>
+                  <text x="175" y="92" text-anchor="middle" font-size="9" fill="#94A3B8">12-18</text>
+                  <text x="245" y="92" text-anchor="middle" font-size="9" fill="#94A3B8">18-24</text>
+                </svg>
+              </div>
             </div>
           </div>
         </div>
@@ -1708,9 +1837,9 @@
               </button>
               <button onclick="openFeedbackOverlay()" class="flex flex-col items-center gap-1.5 active:opacity-70 transition-opacity">
                 <div class="w-10 h-10 rounded-2xl bg-green-50 flex items-center justify-center">
-                  <i data-lucide="message-square-plus" class="w-5 h-5 text-green-600"></i>
+                  <i data-lucide="mail" class="w-5 h-5 text-green-600"></i>
                 </div>
-                <span class="text-[12px] text-slate-700">意见反馈</span>
+                <span class="text-[12px] text-slate-700">站内信</span>
               </button>
               <button onclick="openReminderCenter()" class="flex flex-col items-center gap-1.5 active:opacity-70 transition-opacity">
                 <div class="w-10 h-10 rounded-2xl bg-amber-50 flex items-center justify-center">
@@ -2352,7 +2481,7 @@
                 </div>
                 <div>
                   <p class="text-sm font-medium text-slate-800">帮助与反馈</p>
-                  <p class="text-xs text-slate-400">常见问题、意见反馈</p>
+                  <p class="text-xs text-slate-400">常见问题、站内信</p>
                 </div>
               </div>
               <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300"></i>
@@ -2372,30 +2501,23 @@
           </div>
         </div>
 
-      <!-- Unbind approval status banner -->
-        <div id="unbindStatusBanner" class="hidden px-5 mb-4">
-          <div class="bg-blue-50 border border-blue-100 rounded-2xl p-4 flex items-center gap-3">
-            <i data-lucide="clock" class="w-5 h-5 text-blue-600"></i>
-            <div class="flex-1 min-w-0">
-              <p class="text-sm font-semibold text-blue-800">解绑申请审核中</p>
-              <p class="text-xs text-blue-600">监管人员将在1-3个工作日内完成审核</p>
+      <!-- Notification -->
+        <div class="px-5 pt-1 mb-4">
+          <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3 px-0.5">通知</h2>
+          <div class="bg-white rounded-2xl shadow-card border border-slate-100 overflow-hidden">
+            <div class="flex items-center justify-between px-5 py-4 cursor-pointer active:bg-slate-50 transition-colors" onclick="openNotifySetting()">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-purple-50 flex items-center justify-center">
+                  <i data-lucide="bell-ring" class="w-4 h-4 text-purple-600"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-slate-800">通知接收</p>
+                  <p class="text-xs text-slate-400">绑定微信接收通知 · 管理接收人</p>
+                </div>
+              </div>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300"></i>
             </div>
-            <button onclick="openUnbindStatusModal()" class="text-xs font-semibold text-blue-600 bg-white px-3 py-1.5 rounded-lg border border-blue-200 hover:bg-blue-50 transition-colors">查看进度</button>
           </div>
-        </div>
-
-        <!-- Unbind Account -->
-        <div id="unbindBtnSection" class="px-5 mb-4">
-          <button onclick="openUnbindModal()" class="w-full bg-white rounded-2xl shadow-card border border-slate-100 px-5 py-4 flex items-center gap-3 active:bg-slate-50 transition-colors">
-            <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
-              <i data-lucide="unlink" class="w-4 h-4 text-slate-500"></i>
-            </div>
-            <div class="flex-1 text-left min-w-0">
-              <p class="text-sm font-medium text-slate-700">解绑微信</p>
-              <p class="text-xs text-slate-400">解除当前微信与商户主体的绑定关系</p>
-            </div>
-            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 shrink-0"></i>
-          </button>
         </div>
 
         <!-- Logout (沉底) -->
@@ -2445,7 +2567,9 @@ let needForceResetPwd = true; // 首次登录用初始密码，需强制改密
 let needBindPhone = true; // 首次登录需绑定手机（找回密码用）
 let boundPhone = ''; // 当前绑定手机号
 let bindPhoneMode = 'first'; // 'first' 首次绑定 | 'rebind' 换绑
+let bindPhoneStep = 1; // 换绑步骤 1=验证原手机 2=绑定新手机
 let bindSmsTimer = null;
+let bindOldSmsTimer = null;
 let firstSetupStep = 1; // 首次登录设置步骤 1=改密 2=绑手机
 let firstSetupSmsTimer = null;
 
@@ -2638,6 +2762,101 @@ const reminderData = {
   }
 };
 
+// ===== RISK OVERVIEW (首页风险预警概览 · 日/周/月筛选) =====
+const riskOverviewData = {
+  day: {
+    alarm: 1, cert: 2,
+    title: '预警时段分布',
+    labels: ['00-06', '06-12', '12-18', '18-24'],
+    values: [1, 5, 8, 3],
+  },
+  week: {
+    alarm: 7, cert: 11,
+    title: '预警趋势（近7日）',
+    labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+    values: [2, 1, 3, 4, 2, 1, 0],
+  },
+  month: {
+    alarm: 32, cert: 18,
+    title: '预警趋势（近4周）',
+    labels: ['第1周', '第2周', '第3周', '第4周'],
+    values: [9, 12, 15, 14],
+  }
+};
+let currentRiskPeriod = 'day';
+
+function setRiskPeriod(period) {
+  if (!riskOverviewData[period]) return;
+  currentRiskPeriod = period;
+  renderRiskOverview();
+}
+
+function renderRiskOverview() {
+  const d = riskOverviewData[currentRiskPeriod];
+  document.getElementById('riskAlarmCount').textContent = d.alarm;
+  document.getElementById('riskCertCount').textContent = d.cert;
+  document.getElementById('riskChartTitle').textContent = d.title;
+  document.getElementById('riskChartContainer').innerHTML = buildRiskChart(d.labels, d.values);
+
+  ['day', 'week', 'month'].forEach(p => {
+    const btn = document.getElementById('riskPeriod' + p.charAt(0).toUpperCase() + p.slice(1));
+    if (!btn) return;
+    if (p === currentRiskPeriod) {
+      btn.className = 'px-3 py-1.5 rounded-md font-semibold bg-white text-blue-600 shadow-sm transition-colors';
+    } else {
+      btn.className = 'px-3 py-1.5 rounded-md font-medium text-slate-500 hover:text-slate-700 transition-colors';
+    }
+  });
+}
+
+function buildRiskChart(labels, values) {
+  const W = 280, padL = 35, padR = 35;
+  const topY = 20, bottomY = 68;
+  const n = values.length;
+  const max = Math.max(1, ...values);
+  const xs = values.map((_, i) => n === 1 ? W / 2 : padL + i * (W - padL - padR) / (n - 1));
+  const ys = values.map(v => bottomY - (v / max) * (bottomY - topY));
+  const pts = xs.map((x, i) => ({ x, y: ys[i], v: values[i] }));
+
+  function smoothPath(p) {
+    if (p.length < 2) return p.length ? `M ${p[0].x.toFixed(1)} ${p[0].y.toFixed(1)}` : '';
+    let d = `M ${p[0].x.toFixed(1)} ${p[0].y.toFixed(1)}`;
+    for (let i = 0; i < p.length - 1; i++) {
+      const p0 = p[Math.max(0, i - 1)];
+      const p1 = p[i];
+      const p2 = p[i + 1];
+      const p3 = p[Math.min(p.length - 1, i + 2)];
+      const c1x = p1.x + (p2.x - p0.x) / 6;
+      const c1y = p1.y + (p2.y - p0.y) / 6;
+      const c2x = p2.x - (p3.x - p1.x) / 6;
+      const c2y = p2.y - (p3.y - p1.y) / 6;
+      d += ` C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
+    }
+    return d;
+  }
+
+  const line = smoothPath(pts);
+  const area = line + ` L ${pts[n - 1].x.toFixed(1)} ${bottomY} L ${pts[0].x.toFixed(1)} ${bottomY} Z`;
+
+  const dots = pts.map(p => `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3" fill="#185FA5" stroke="#fff" stroke-width="1.5"/>`).join('');
+  const valLabels = pts.map(p => `<text x="${p.x.toFixed(1)}" y="${(p.y - 10).toFixed(1)}" text-anchor="middle" font-size="9" font-weight="600" fill="#475569">${p.v}</text>`).join('');
+  const xLabels = labels.map((lb, i) => `<text x="${xs[i].toFixed(1)}" y="92" text-anchor="middle" font-size="9" fill="#94A3B8">${lb}</text>`).join('');
+
+  return `<svg viewBox="0 0 280 98" class="w-full" style="height: 96px;">
+    <defs>
+      <linearGradient id="lineAreaGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#378ADD" stop-opacity="0.20"/>
+        <stop offset="100%" stop-color="#378ADD" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <path d="${area}" fill="url(#lineAreaGrad)"/>
+    <path d="${line}" fill="none" stroke="#185FA5" stroke-width="2" stroke-linecap="round"/>
+    ${dots}
+    ${valLabels}
+    ${xLabels}
+  </svg>`;
+}
+
 let currentReminderAction = null;
 let reminderDetailFromCenter = false;
 
@@ -2811,11 +3030,6 @@ function switchTab(tab) {
 
   // Scroll to top
   document.getElementById('tabContent').scrollTop = 0;
-
-  // Update unbind UI when on My tab
-  if (tab === 'my') {
-    updateUnbindUI();
-  }
 }
 
 function updateHeader(tab) {
@@ -4262,109 +4476,12 @@ function handleLogout() {
   }
 }
 
-// ===== UNBIND ACCOUNT =====
-let unbindApprovalState = 'none'; // 'none' | 'pending' | 'approved'
-
-function hasPendingOrders() {
-  return Object.values(orderData).some(o => o.status === '待审核' || o.status === '已驳回');
-}
-
-function openUnbindModal() {
-  document.getElementById('unbindModal').classList.remove('hidden');
-  setTimeout(() => lucide.createIcons(), 50);
-}
-
-function closeUnbindModal() {
-  document.getElementById('unbindModal').classList.add('hidden');
-}
-
-function submitUnbindApplication() {
-  closeUnbindModal();
-  unbindApprovalState = 'pending';
-  updateLoginUI();
-  showToast('解绑申请已提交，请等待审核', 'success');
-}
-
-function updateUnbindUI() {
-  const banner = document.getElementById('unbindStatusBanner');
-  const btnSection = document.getElementById('unbindBtnSection');
-  if (!banner || !btnSection) return;
-  if (unbindApprovalState === 'pending') {
-    banner.classList.remove('hidden');
-    btnSection.classList.add('hidden');
-  } else {
-    banner.classList.add('hidden');
-    btnSection.classList.remove('hidden');
-  }
-}
-
-function openUnbindStatusModal() {
-  const modal = document.getElementById('unbindStatusModal');
-  modal.classList.remove('hidden');
-  const step2 = document.getElementById('unbindStep2Circle');
-  const step2Label = document.getElementById('unbindStep2Label');
-  const step3 = document.getElementById('unbindStep3Circle');
-  const completeBtn = document.getElementById('unbindCompleteBtn');
-  const statusText = document.getElementById('unbindStatusText');
-  if (unbindApprovalState === 'pending') {
-    step2.className = 'w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center';
-    step2Label.className = 'text-[11px] font-semibold text-blue-600 mt-2';
-    step3.className = 'w-10 h-10 rounded-full bg-slate-100 text-slate-300 flex items-center justify-center';
-    statusText.textContent = '监管人员将在 1-3 个工作日内完成审核';
-    completeBtn.classList.add('hidden');
-  } else if (unbindApprovalState === 'approved') {
-    step2.className = 'w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center';
-    step2Label.className = 'text-[11px] font-semibold text-green-600 mt-2';
-    step3.className = 'w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center';
-    statusText.textContent = '审核已通过，点击下方按钮完成解绑';
-    completeBtn.classList.remove('hidden');
-  }
-  setTimeout(() => lucide.createIcons(), 50);
-}
-
-function closeUnbindStatusModal() {
-  document.getElementById('unbindStatusModal').classList.add('hidden');
-}
-
-function confirmUnbindComplete() {
-  closeUnbindStatusModal();
-  unbindApprovalState = 'none';
-  updateUnbindUI();
-  // 回到登录页
-  appEntryState = 'login';
-  onboardingState = 'unregistered';
-  onboardPath = 'choice';
-  bindSelectedIdx = -1;
-  wechatAuthed = false;
-  const btn = document.getElementById('loginDemoToggleBtn');
-  if (btn) {
-    btn.textContent = '未登录';
-    btn.className = 'absolute top-[max(28px,env(safe-area-inset-top))] left-1/2 -translate-x-1/2 z-[70] px-3 py-1.5 rounded-full text-[11px] font-semibold shadow-lg border transition-all active:scale-95 bg-orange-50 text-orange-700 border-orange-200';
-  }
-  const oldBtn = document.getElementById('demoToggleBtn');
-  if (oldBtn) { oldBtn.textContent = '未登录'; oldBtn.className = btn.className; }
-  updateLoginUI();
-  showToast('解绑完成，已解除微信与商户的绑定关系', 'success');
-}
-
-function cycleUnbindState() {
-  if (unbindApprovalState === 'pending') {
-    unbindApprovalState = 'approved';
-    document.getElementById('unbindDebugLabel').textContent = '已通过';
-  } else {
-    unbindApprovalState = 'pending';
-    document.getElementById('unbindDebugLabel').textContent = '待审批';
-  }
-  openUnbindStatusModal();
-}
-
 // ===== LOGIN & ENTRY =====
 function updateLoginUI() {
   const loginOverlay = document.getElementById('loginOverlay');
   const mainApp = document.getElementById('mainApp');
   const tabBar = document.getElementById('bottomTabBar');
   const onboardingOverlay = document.getElementById('onboardingOverlay');
-  const unbindOverlay = document.getElementById('unbindPendingOverlay');
   const firstSetupOverlay = document.getElementById('firstSetupOverlay');
 
   if (appEntryState === 'login' || appEntryState === 'firstVerify') {
@@ -4372,29 +4489,20 @@ function updateLoginUI() {
     mainApp.style.display = 'none';
     tabBar.style.display = 'none';
     onboardingOverlay.classList.add('hidden');
-    unbindOverlay.classList.add('hidden');
     firstSetupOverlay.classList.add('hidden');
   } else if (appEntryState === 'onboarding') {
     loginOverlay.style.display = 'none';
     onboardingOverlay.classList.remove('hidden');
     mainApp.style.display = 'none';
     tabBar.style.display = 'none';
-    unbindOverlay.classList.add('hidden');
     updateOnboardingUI();
   } else if (appEntryState === 'approved') {
     loginOverlay.style.display = 'none';
     onboardingOverlay.classList.add('hidden');
     firstSetupOverlay.classList.add('hidden');
-    if (unbindApprovalState === 'pending') {
-      mainApp.style.display = 'none';
-      tabBar.style.display = 'none';
-      unbindOverlay.classList.remove('hidden');
-    } else {
-      mainApp.style.display = '';
-      tabBar.style.display = '';
-      unbindOverlay.classList.add('hidden');
-      switchTab('home');
-    }
+    mainApp.style.display = '';
+    tabBar.style.display = '';
+    switchTab('home');
   }
   setTimeout(() => lucide.createIcons(), 50);
 }
@@ -4756,26 +4864,108 @@ function openBindPhone(mode) {
   const desc = document.getElementById('bindPhoneDesc');
   const closeBtn = document.getElementById('bindPhoneCloseBtn');
   const submitBtn = document.getElementById('bindPhoneSubmitBtn');
+  const steps = document.getElementById('bindPhoneSteps');
+  const step1 = document.getElementById('bindPhoneStep1');
+  const step2 = document.getElementById('bindPhoneStep2');
+
+  // 重置表单
+  document.getElementById('bindPhone').value = '';
+  document.getElementById('bindPhoneCode').value = '';
+  document.getElementById('bindOldCode').value = '';
+
+  // 是否已有绑定手机：换绑且已绑定 → 需先验证原手机
+  const hasOld = mode === 'rebind' && boundPhone;
+
   if (mode === 'first') {
     title.textContent = '绑定手机';
     desc.textContent = '绑定手机号，用于找回登录密码';
     closeBtn.style.display = 'none';
     submitBtn.textContent = '确认绑定';
-  } else {
+  } else if (hasOld) {
     title.textContent = '更换手机号';
-    desc.textContent = boundPhone ? ('当前绑定：' + boundPhone + '，更换后请使用新手机号找回密码') : '绑定手机号，用于找回登录密码';
+    desc.textContent = '为保障账号安全，请先验证原手机，再绑定新手机号';
     closeBtn.style.display = '';
     submitBtn.textContent = '确认更换';
+  } else {
+    title.textContent = '绑定手机';
+    desc.textContent = '绑定手机号，用于找回登录密码';
+    closeBtn.style.display = '';
+    submitBtn.textContent = '确认绑定';
   }
-  document.getElementById('bindPhone').value = '';
-  document.getElementById('bindPhoneCode').value = '';
+
+  if (hasOld) {
+    document.getElementById('bindOldPhone').textContent = boundPhone.slice(0, 3) + '****' + boundPhone.slice(-4);
+    steps.classList.remove('hidden');
+    step1.classList.remove('hidden');
+    step2.classList.add('hidden');
+    bindPhoneStep = 1;
+    setBindStepDot(1);
+  } else {
+    steps.classList.add('hidden');
+    step1.classList.add('hidden');
+    step2.classList.remove('hidden');
+    bindPhoneStep = 2;
+  }
+
   document.getElementById('bindPhoneModal').classList.remove('hidden');
   setTimeout(() => lucide.createIcons(), 50);
+}
+
+function setBindStepDot(step) {
+  const d1 = document.getElementById('bindStepDot1');
+  const d2 = document.getElementById('bindStepDot2');
+  const active = 'w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-semibold flex items-center justify-center shrink-0';
+  const done = 'w-6 h-6 rounded-full bg-green-500 text-white text-xs font-semibold flex items-center justify-center shrink-0';
+  const todo = 'w-6 h-6 rounded-full bg-slate-200 text-slate-400 text-xs font-semibold flex items-center justify-center shrink-0';
+  d1.className = step === 1 ? active : done;
+  d2.className = step === 2 ? active : todo;
+}
+
+function sendBindOldSms() {
+  const btn = document.getElementById('bindOldSendSmsBtn');
+  let count = 60;
+  btn.disabled = true;
+  btn.textContent = count + 's 后重发';
+  btn.className = 'shrink-0 px-4 py-3 text-[13px] font-semibold text-slate-400 bg-slate-100 rounded-xl border border-slate-100 transition-all';
+  if (bindOldSmsTimer) clearInterval(bindOldSmsTimer);
+  bindOldSmsTimer = setInterval(() => {
+    count--;
+    if (count <= 0) {
+      clearInterval(bindOldSmsTimer);
+      bindOldSmsTimer = null;
+      btn.disabled = false;
+      btn.textContent = '获取验证码';
+      btn.className = 'shrink-0 px-4 py-3 text-[13px] font-semibold text-blue-600 bg-blue-50 rounded-xl border border-blue-100 hover:bg-blue-100 active:bg-blue-200 active:scale-[0.98] transition-all';
+    } else {
+      btn.textContent = count + 's 后重发';
+    }
+  }, 1000);
+  showToast('验证码已发送至 ' + (boundPhone.slice(0, 3) + '****' + boundPhone.slice(-4)), 'success');
+}
+
+function verifyBindOldPhone() {
+  const codeEl = document.getElementById('bindOldCode');
+  const code = codeEl.value.trim();
+  if (!/^\d{6}$/.test(code)) {
+    showToast('请输入 6 位短信验证码');
+    codeEl.classList.add('border-red-300', 'bg-red-50');
+    codeEl.focus();
+    return;
+  }
+  codeEl.classList.remove('border-red-300', 'bg-red-50');
+  bindPhoneStep = 2;
+  document.getElementById('bindPhoneStep1').classList.add('hidden');
+  document.getElementById('bindPhoneStep2').classList.remove('hidden');
+  setBindStepDot(2);
+  showToast('原手机验证通过', 'success');
 }
 
 function closeBindPhone() {
   if (bindPhoneMode === 'first' && needBindPhone) return; // 首次绑定不可关闭
   document.getElementById('bindPhoneModal').classList.add('hidden');
+  if (bindOldSmsTimer) { clearInterval(bindOldSmsTimer); bindOldSmsTimer = null; }
+  const oldBtn = document.getElementById('bindOldSendSmsBtn');
+  if (oldBtn) { oldBtn.disabled = false; oldBtn.textContent = '获取验证码'; oldBtn.className = 'shrink-0 px-4 py-3 text-[13px] font-semibold text-blue-600 bg-blue-50 rounded-xl border border-blue-100 hover:bg-blue-100 active:bg-blue-200 active:scale-[0.98] transition-all'; }
 }
 
 function sendBindSms() {
@@ -4946,6 +5136,226 @@ function toggleLoginDemo() {
   updateLoginUI();
 }
 
+// ===== NOTIFY RECEIVE (通知接收 · 微信多成员通知) =====
+const RECIPIENT_LIMIT = 10;
+const DEMO_SMS_CODE = '123456';
+let recipients = [
+  { id: 'r1', nickname: '张明华', remark: '店长', openid: 'oABCD1234efgh5678', phone: '138****8000', status: '有效', bindTime: '2026-08-30 14:23' },
+  { id: 'r2', nickname: '李芳', remark: '', openid: 'oWXYZ9876lmnop4321', phone: '', status: '有效', bindTime: '2026-09-01 09:10' },
+];
+const adminPhone = '138****8000';  // 管理手机号（短信验证发送目标，固定值）
+let myOpenid = null;              // 当前微信是否已绑定
+let myRecipientId = null;         // 当前微信在列表中的条目 id
+let smsVerified = false;          // 是否已通过短信验证（解锁接收人清单）
+let smsPendingAction = null;      // 'list' | 'remark' | 'remove'
+let smsPendingId = null;
+let smsFailCount = 0;
+let editingRemarkId = null;
+let removingRecipientId = null;
+
+function openNotifySetting() {
+  renderMyWechat();
+  renderRecipientListArea();
+  document.getElementById('notifyOverlay').classList.remove('hidden');
+}
+function closeNotifySetting() {
+  document.getElementById('notifyOverlay').classList.add('hidden');
+}
+
+function maskOpenid(openid) {
+  if (!openid) return '未绑定';
+  return openid.slice(0, 2) + '***' + openid.slice(-4);
+}
+function nowStamp() {
+  const d = new Date();
+  const p = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
+// ----- 我的微信接收（登录后绑定/解绑自己的微信）-----
+function renderMyWechat() {
+  const area = document.getElementById('myWechatArea');
+  if (myOpenid) {
+    area.innerHTML = `
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center">
+            <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-slate-800">已绑定</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">微信 ${maskOpenid(myOpenid)}</p>
+          </div>
+        </div>
+        <button onclick="confirmUnbindSelf()" class="text-xs font-medium text-red-500 px-3 py-1.5 rounded-lg border border-red-200 hover:bg-red-50 transition-colors">解绑</button>
+      </div>`;
+  } else {
+    area.innerHTML = `
+      <p class="text-sm text-slate-500 mb-3">你的微信尚未绑定，绑定后即可接收本账号下的通知。</p>
+      <button onclick="startBindSelf()" class="w-full py-3 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">绑定微信接收通知</button>`;
+  }
+  lucide.createIcons();
+}
+
+function startBindSelf() {
+  if (recipients.filter(r => r.status === '有效').length >= RECIPIENT_LIMIT) { showToast('已达上限，请先移除部分成员', 'error'); return; }
+  const openid = 'o' + Math.random().toString(36).slice(2, 12);
+  myOpenid = openid;
+  myRecipientId = 'r' + Date.now();
+  recipients.push({ id: myRecipientId, nickname: '我', remark: '本人', openid: openid, phone: '', status: '有效', bindTime: nowStamp() });
+  renderMyWechat();
+  renderRecipientListArea();
+  document.getElementById('subscribeModal').classList.remove('hidden'); // 绑定后拉起订阅授权
+}
+
+function confirmUnbindSelf() {
+  myOpenid = null;
+  if (myRecipientId) {
+    recipients = recipients.map(r => r.id === myRecipientId ? { ...r, status: '已解绑' } : r);
+    myRecipientId = null;
+  }
+  renderMyWechat();
+  renderRecipientListArea();
+  showToast('已解绑，立即停止接收通知', 'success');
+}
+
+function allowSubscribe() {
+  document.getElementById('subscribeModal').classList.add('hidden');
+  showToast('已绑定并授权订阅消息，将收到微信通知', 'success');
+}
+function denySubscribe() {
+  document.getElementById('subscribeModal').classList.add('hidden');
+  showToast('已绑定，但未授权微信推送，可登记手机号走短信兜底', 'error');
+}
+
+// ----- 通知接收人列表（查看需短信验证）-----
+function renderRecipientListArea() {
+  const area = document.getElementById('recipientListArea');
+  const countEl = document.getElementById('recipientCount');
+  const activeCount = recipients.filter(r => r.status === '有效').length;
+  if (countEl) countEl.textContent = activeCount;
+  if (!smsVerified) {
+    area.innerHTML = `
+      <div class="text-center py-5">
+        <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-3">
+          <i data-lucide="lock" class="w-6 h-6 text-slate-400"></i>
+        </div>
+        <p class="text-sm text-slate-600 font-medium">查看接收人清单需短信验证</p>
+        <p class="text-xs text-slate-400 mt-1">验证码将发送至管理手机号 ${adminPhone || '未绑定'}</p>
+        <button onclick="openSmsVerify('list')" class="mt-4 px-5 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">发送验证码并查看</button>
+      </div>`;
+    lucide.createIcons();
+    return;
+  }
+  if (recipients.length === 0) {
+    area.innerHTML = `
+      <div class="flex items-center gap-2 mb-3">
+        <span class="inline-flex items-center gap-1 text-[11px] text-green-600 bg-green-50 px-2 py-0.5 rounded-full"><i data-lucide="shield-check" class="w-3 h-3"></i> 已通过短信验证</span>
+      </div>
+      <div class="py-6 text-center text-slate-400 text-sm">暂无接收人（成员登录后自行绑定微信即可加入）</div>`;
+    lucide.createIcons();
+    return;
+  }
+  area.innerHTML = `
+    <div class="flex items-center gap-2 mb-3">
+      <span class="inline-flex items-center gap-1 text-[11px] text-green-600 bg-green-50 px-2 py-0.5 rounded-full"><i data-lucide="shield-check" class="w-3 h-3"></i> 已通过短信验证</span>
+    </div>
+    <div id="recipientList" class="space-y-2">${recipients.map(renderRecipientCard).join('')}</div>`;
+  lucide.createIcons();
+}
+
+function renderRecipientCard(r) {
+  const displayName = r.remark || r.nickname;
+  const statusBadge = r.status === '有效'
+    ? '<span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 text-[11px]">有效</span>'
+    : '<span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-400 text-[11px]">已解绑</span>';
+  const smsBadge = r.phone ? '<span class="px-2 py-0.5 rounded-full bg-slate-50 text-slate-400 text-[11px]">短信兜底</span>' : '';
+  return `
+    <div class="px-4 py-3 bg-white rounded-xl border border-slate-100">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 text-sm font-semibold">${displayName.slice(0, 1)}</div>
+          <div class="min-w-0">
+            <div class="text-sm font-medium text-slate-800">${displayName}${r.remark ? `<span class="text-xs text-slate-400 font-normal ml-1">${r.nickname}</span>` : ''}</div>
+            <div class="text-[11px] text-slate-400 mt-0.5">微信 ${maskOpenid(r.openid)}${r.phone ? ' · ' + r.phone : ''}</div>
+            <div class="text-[10px] text-slate-300 mt-0.5">绑定于 ${r.bindTime}</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-1 shrink-0">
+          <button onclick="openSmsVerify('remark','${r.id}')" class="p-1.5 text-slate-300 hover:text-blue-500 transition-colors"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
+          <button onclick="openSmsVerify('remove','${r.id}')" class="p-1.5 text-slate-300 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+        </div>
+      </div>
+      <div class="flex items-center gap-1.5 mt-2 pl-12 flex-wrap">${statusBadge}${smsBadge}</div>
+    </div>`;
+}
+
+// ----- 短信验证（管理操作）-----
+function openSmsVerify(action, id) {
+  if (!adminPhone) { showToast('请先绑定管理手机号', 'error'); return; }
+  smsPendingAction = action;
+  smsPendingId = id || null;
+  smsFailCount = 0;
+  document.getElementById('smsCodeInput').value = '';
+  document.getElementById('smsVerifyPhone').textContent = adminPhone;
+  const descMap = {
+    list: '为保护绑定关系，查看接收人清单需短信验证。',
+    remark: '编辑备注为账号管理操作，需短信验证。',
+    remove: '移除成员为账号管理操作，需短信验证。',
+  };
+  document.getElementById('smsVerifyDesc').textContent = descMap[action] || '';
+  document.getElementById('smsVerifyModal').classList.remove('hidden');
+}
+function closeSmsVerify() { document.getElementById('smsVerifyModal').classList.add('hidden'); }
+function resendSms() { showToast('验证码已重新发送', 'success'); }
+function confirmSmsVerify() {
+  const code = document.getElementById('smsCodeInput').value.trim();
+  if (code === DEMO_SMS_CODE) {
+    const action = smsPendingAction;
+    const id = smsPendingId;
+    smsPendingAction = null;
+    smsPendingId = null;
+    closeSmsVerify();
+    if (action === 'list') { smsVerified = true; renderRecipientListArea(); showToast('验证通过，已显示接收人清单', 'success'); }
+    else if (action === 'remark') { openRemarkModal(id); }
+    else if (action === 'remove') { openRemoveConfirm(id); }
+  } else {
+    smsFailCount++;
+    if (smsFailCount >= 5) { closeSmsVerify(); showToast('连续错误 5 次，已锁定 10 分钟', 'error'); }
+    else { showToast('验证码错误，请重试（' + smsFailCount + '/5）', 'error'); }
+  }
+}
+
+// ----- 编辑备注（需短信验证）-----
+function openRemarkModal(id) {
+  editingRemarkId = id;
+  const r = recipients.find(x => x.id === id);
+  document.getElementById('remarkInput').value = r ? r.remark : '';
+  document.getElementById('remarkModal').classList.remove('hidden');
+}
+function closeRemarkModal() { document.getElementById('remarkModal').classList.add('hidden'); }
+function saveRemark() {
+  const val = document.getElementById('remarkInput').value.trim();
+  recipients = recipients.map(r => r.id === editingRemarkId ? { ...r, remark: val } : r);
+  closeRemarkModal();
+  renderRecipientListArea();
+  showToast('备注已保存', 'success');
+}
+
+// ----- 移除成员（需短信验证 + 二次确认）-----
+function openRemoveConfirm(id) {
+  removingRecipientId = id;
+  document.getElementById('removeConfirmModal').classList.remove('hidden');
+}
+function closeRemoveConfirm() { document.getElementById('removeConfirmModal').classList.add('hidden'); }
+function confirmRemoveRecipient() {
+  if (removingRecipientId === myRecipientId) { myOpenid = null; myRecipientId = null; renderMyWechat(); }
+  recipients = recipients.filter(r => r.id !== removingRecipientId);
+  closeRemoveConfirm();
+  renderRecipientListArea();
+  showToast('成员已移除，立即停止接收通知', 'success');
+}
+
 // ===== LICENSE FILE UPLOAD =====
 let licenseFileUploaded = false;
 function uploadLicenseFile() {
@@ -4962,8 +5372,22 @@ function removeLicenseFile() {
 
 // ===== FEEDBACK SYSTEM =====
 let currentFeedbackId = null;
+let newFeedbackAttachments = [];
+let replyAttachments = [];
+let voiceTarget = null;       // 'new' | 'reply'
+let attachmentTarget = null;  // 'new' | 'reply'
 
 const feedbackData = [
+  {
+    id: 'fb0',
+    subject: '关于开展夏季食品安全专项检查的通知',
+    status: '待回复',
+    createTime: '2024-07-22 09:00',
+    initiatedBy: 'admin',
+    messages: [
+      { role: 'admin', text: '您好，接区市场监督管理局通知，本周将对你单位开展食品安全专项检查，请提前对照检查要点做好迎检准备，重点做好后厨卫生与从业人员健康证管理。', time: '2024-07-22 09:00' },
+    ]
+  },
   {
     id: 'fb1',
     subject: '后厨摄像头频繁离线',
@@ -5017,19 +5441,20 @@ function renderFeedbackList() {
   if (feedbackData.length === 0) {
     list.innerHTML = `
       <div class="bg-white rounded-2xl p-8 shadow-card border border-slate-100 text-center">
-        <i data-lucide="message-square-plus" class="w-8 h-8 text-slate-300 mx-auto mb-2"></i>
-        <p class="text-[13px] text-slate-400">暂无反馈记录</p>
-        <p class="text-[12px] text-slate-300 mt-1">点击下方按钮提交您的第一条反馈</p>
+        <i data-lucide="mail" class="w-8 h-8 text-slate-300 mx-auto mb-2"></i>
+        <p class="text-[13px] text-slate-400">暂无站内信</p>
+        <p class="text-[12px] text-slate-300 mt-1">点击下方按钮发起第一条站内信</p>
       </div>`;
   } else {
     list.innerHTML = feedbackData.map(fb => {
       const lastMsg = fb.messages[fb.messages.length - 1];
       const statusClass = fb.status === '待回复' ? 'text-orange-600 bg-orange-50' : fb.status === '已回复' ? 'text-blue-600 bg-blue-50' : 'text-slate-500 bg-slate-100';
+      const initBadge = fb.initiatedBy === 'admin' ? '<span class="text-[10px] font-medium px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-600 shrink-0">监管发起</span>' : '';
       return `
       <div onclick="openFeedbackThread('${fb.id}')" class="bg-white rounded-2xl p-4 shadow-card border border-slate-100 cursor-pointer active:bg-slate-50 transition-all">
         <div class="flex items-start justify-between gap-2 mb-2">
           <h3 class="text-[14px] font-semibold text-slate-800 flex-1 leading-snug">${fb.subject}</h3>
-          <span class="text-[11px] font-medium px-2 py-0.5 rounded-full shrink-0 ${statusClass}">${fb.status}</span>
+          <div class="flex items-center gap-1 shrink-0">${initBadge}<span class="text-[11px] font-medium px-2 py-0.5 rounded-full ${statusClass}">${fb.status}</span></div>
         </div>
         <p class="text-[12px] text-slate-400 truncate leading-relaxed mb-2">${lastMsg.text}</p>
         <div class="flex items-center justify-between">
@@ -5063,9 +5488,17 @@ function renderFeedbackThread() {
   const container = document.getElementById('feedbackThreadContent');
   container.innerHTML = fb.messages.map(msg => {
     const isMerchant = msg.role === 'merchant';
+    const attHtml = (msg.attachments && msg.attachments.length)
+      ? '<div class="flex flex-wrap gap-1.5 mt-1.5">' + msg.attachments.map(a =>
+          '<span class="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded ' + (isMerchant ? 'bg-white/20 text-white' : 'bg-white border border-slate-200 text-slate-500') + '"><i data-lucide="paperclip" class="w-3 h-3"></i>' + a.name + '</span>'
+        ).join('') + '</div>'
+      : '';
+    const voiceBadge = msg.voice
+      ? '<div class="text-[10px] mb-1 flex items-center gap-1 ' + (isMerchant ? 'text-white/70' : 'text-blue-500') + '"><i data-lucide="mic" class="w-3 h-3"></i>语音转文字</div>'
+      : '';
     return `
     <div class="chat-row ${isMerchant ? 'merchant' : 'admin'}">
-      <div class="chat-bubble ${isMerchant ? 'merchant' : 'admin'}">${msg.text}</div>
+      <div class="chat-bubble ${isMerchant ? 'merchant' : 'admin'}">${voiceBadge}${msg.text}${attHtml}</div>
       <div class="chat-time ${isMerchant ? 'text-right' : 'text-left'}">${msg.time} · ${isMerchant ? '我' : '监管人员'}</div>
     </div>`;
   }).join('');
@@ -5082,7 +5515,7 @@ function backToFeedbackList() {
   document.getElementById('feedbackThreadView').classList.add('hidden');
   document.getElementById('feedbackFabBtn').classList.remove('hidden');
   document.getElementById('feedbackBackBtn').classList.add('hidden');
-  document.getElementById('feedbackHeaderTitle').textContent = '意见反馈';
+  document.getElementById('feedbackHeaderTitle').textContent = '站内信';
   hideNewFeedbackForm();
 }
 
@@ -5090,6 +5523,8 @@ function showNewFeedbackForm() {
   document.getElementById('newFeedbackForm').classList.remove('hidden');
   document.getElementById('newFeedbackSubject').value = '';
   document.getElementById('newFeedbackContent').value = '';
+  newFeedbackAttachments = [];
+  renderNewFeedbackAttachments();
 }
 
 function hideNewFeedbackForm() {
@@ -5099,14 +5534,15 @@ function hideNewFeedbackForm() {
 function submitNewFeedback() {
   const subject = document.getElementById('newFeedbackSubject').value.trim();
   const content = document.getElementById('newFeedbackContent').value.trim();
+  const attachments = newFeedbackAttachments.slice();
 
   if (!subject) {
-    showToast('请填写反馈主题');
+    showToast('请填写主题');
     document.getElementById('newFeedbackSubject').focus();
     return;
   }
-  if (!content) {
-    showToast('请填写详细描述');
+  if (!content && attachments.length === 0) {
+    showToast('请填写内容或添加附件');
     document.getElementById('newFeedbackContent').focus();
     return;
   }
@@ -5120,19 +5556,22 @@ function submitNewFeedback() {
     status: '待回复',
     createTime: timeStr,
     messages: [
-      { role: 'merchant', text: content, time: timeStr }
+      { role: 'merchant', text: content, time: timeStr, attachments }
     ]
   });
 
+  newFeedbackAttachments = [];
+  renderNewFeedbackAttachments();
   hideNewFeedbackForm();
   renderFeedbackList();
-  showToast('反馈提交成功', 'success');
+  showToast('站内信已发送', 'success');
 }
 
 function submitFeedbackReply() {
   const input = document.getElementById('feedbackReplyInput');
   const text = input.value.trim();
-  if (!text) return;
+  const attachments = replyAttachments.slice();
+  if (!text && attachments.length === 0) return;
 
   const fb = feedbackData.find(f => f.id === currentFeedbackId);
   if (!fb) return;
@@ -5140,9 +5579,81 @@ function submitFeedbackReply() {
   const now = new Date();
   const timeStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
 
-  fb.messages.push({ role: 'merchant', text: text, time: timeStr });
+  fb.messages.push({ role: 'merchant', text: text, time: timeStr, attachments });
   input.value = '';
+  replyAttachments = [];
+  renderReplyAttachments();
   renderFeedbackThread();
+}
+
+// ----- 语音输入 -----
+function openVoiceInput(target) {
+  voiceTarget = target;
+  document.getElementById('voiceInputOverlay').classList.remove('hidden');
+  setTimeout(() => lucide.createIcons(), 50);
+}
+function cancelVoiceInput() {
+  document.getElementById('voiceInputOverlay').classList.add('hidden');
+  voiceTarget = null;
+}
+function stopVoiceInput() {
+  const text = '（语音转写）关于后厨摄像头离线的问题，我补充说明一下：检查发现是路由器重启导致的，现在已经恢复正常。';
+  if (voiceTarget === 'new') {
+    const ta = document.getElementById('newFeedbackContent');
+    ta.value = ta.value ? ta.value + ' ' + text : text;
+  } else if (voiceTarget === 'reply') {
+    const inp = document.getElementById('feedbackReplyInput');
+    inp.value = inp.value ? inp.value + ' ' + text : text;
+  }
+  document.getElementById('voiceInputOverlay').classList.add('hidden');
+  voiceTarget = null;
+  showToast('语音已转为文字', 'success');
+}
+
+// ----- 附件上传 -----
+function openAttachmentSheet(target) {
+  attachmentTarget = target;
+  document.getElementById('attachmentSheet').classList.remove('hidden');
+  setTimeout(() => lucide.createIcons(), 50);
+}
+function closeAttachmentSheet() {
+  document.getElementById('attachmentSheet').classList.add('hidden');
+  attachmentTarget = null;
+}
+function addAttachment(kind, name, size) {
+  const att = { name, size };
+  if (attachmentTarget === 'new') {
+    newFeedbackAttachments.push(att);
+    renderNewFeedbackAttachments();
+  } else if (attachmentTarget === 'reply') {
+    replyAttachments.push(att);
+    renderReplyAttachments();
+  }
+  closeAttachmentSheet();
+  showToast('已添加附件：' + name, 'success');
+}
+function renderNewFeedbackAttachments() {
+  renderAttachmentChips('newFeedbackAttachments', newFeedbackAttachments);
+}
+function renderReplyAttachments() {
+  renderAttachmentChips('replyAttachments', replyAttachments);
+}
+function renderAttachmentChips(containerId, list) {
+  const c = document.getElementById(containerId);
+  if (!c) return;
+  if (!list.length) { c.classList.add('hidden'); c.innerHTML = ''; return; }
+  c.classList.remove('hidden');
+  c.innerHTML = list.map((a, i) =>
+    '<span class="inline-flex items-center gap-1.5 text-[11px] px-2 py-1 rounded-lg bg-slate-50 border border-slate-200 text-slate-600">' +
+    '<i data-lucide="paperclip" class="w-3 h-3"></i>' + a.name +
+    '<button onclick="removeAttachment(\'' + containerId + '\',' + i + ')" class="text-slate-400 hover:text-red-500"><i data-lucide="x" class="w-3 h-3"></i></button>' +
+    '</span>'
+  ).join('');
+  lucide.createIcons();
+}
+function removeAttachment(containerId, idx) {
+  if (containerId === 'newFeedbackAttachments') { newFeedbackAttachments.splice(idx, 1); renderNewFeedbackAttachments(); }
+  else if (containerId === 'replyAttachments') { replyAttachments.splice(idx, 1); renderReplyAttachments(); }
 }
 
 </script>
