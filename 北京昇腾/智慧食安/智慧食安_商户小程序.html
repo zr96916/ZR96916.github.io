@@ -932,6 +932,62 @@
     </div>
   </div>
 
+  <!-- ===== GOODS INSPECT OVERLAY (进货查验) ===== -->
+  <div class="overlay-panel" id="goodsInspectOverlay">
+    <div class="flex items-center gap-3 px-5 py-4 border-b border-slate-200 bg-white shrink-0">
+      <button onclick="closeGoodsInspect()" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-slate-100 transition-colors">
+        <i data-lucide="arrow-left" class="w-5 h-5 text-slate-700"></i>
+      </button>
+      <span class="text-base font-semibold text-slate-900 flex-1">进货查验</span>
+    </div>
+
+    <!-- List View (默认) -->
+    <div id="goodsInspectListView" class="flex-1 overflow-y-auto px-5 pt-4 pb-6 bg-slate-50">
+      <div class="space-y-3" id="goodsList"></div>
+      <!-- Floating Add Button -->
+      <button onclick="openGoodsForm(null)" id="goodsFabBtn"
+        class="fixed right-5 bottom-24 w-14 h-14 rounded-full bg-blue-600 text-white shadow-lg shadow-blue-600/30 flex items-center justify-center active:bg-blue-800 active:scale-[0.95] transition-all z-20">
+        <i data-lucide="plus" class="w-6 h-6"></i>
+      </button>
+    </div>
+
+    <!-- Form Sheet (新增 / 详情) -->
+    <div id="goodsFormSheet" class="hidden absolute inset-x-0 bottom-0 z-10 bg-white rounded-t-2xl shadow-overlay p-5 max-h-[90%] overflow-y-auto">
+      <div class="flex items-center justify-between mb-1">
+        <h3 class="text-base font-bold text-slate-900" id="goodsFormTitle">新增货物</h3>
+        <button onclick="closeGoodsForm()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100">
+          <i data-lucide="x" class="w-4 h-4 text-slate-400"></i>
+        </button>
+      </div>
+      <p class="text-xs text-slate-400 mb-4">记录进货查验信息，货物描述可上传附件佐证。</p>
+      <div class="space-y-3 mb-5">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">货物名 <span class="text-red-500">*</span></label>
+          <input type="text" id="goodsNameInput" placeholder="请输入货物名称，如「大米」"
+            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">货物描述</label>
+          <textarea id="goodsDescInput" rows="4" placeholder="请输入货物描述，如规格、数量、供应商等..."
+            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all resize-none"></textarea>
+        </div>
+        <div id="goodsFormAttachments" class="hidden flex-wrap gap-1.5"></div>
+        <div class="flex items-center gap-2">
+          <button onclick="openAttachmentSheet('goods')" class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-colors">
+            <i data-lucide="paperclip" class="w-5 h-5"></i>
+          </button>
+          <span class="text-[11px] text-slate-400">上传附件（如质检报告、供应商资质）</span>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="deleteGoods(editingGoodsId)" id="goodsDeleteBtn" style="display:none" class="px-4 py-3.5 text-red-600 text-sm font-semibold rounded-xl border border-red-200 hover:bg-red-50 active:scale-[0.98] transition-all shrink-0 flex items-center justify-center gap-1">
+          <i data-lucide="trash-2" class="w-4 h-4"></i>删除
+        </button>
+        <button onclick="saveGoods()" class="flex-1 py-3.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">保存</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ===== VOICE INPUT OVERLAY (语音输入) ===== -->
   <div id="voiceInputOverlay" class="hidden absolute inset-0 z-[95] bg-black/60 flex items-center justify-center p-6">
     <div class="bg-white rounded-2xl w-full max-w-xs p-6 flex flex-col items-center text-center">
@@ -1684,6 +1740,23 @@
     </div>
   </div>
 
+  <!-- ===== BIND WECHAT NAME MODAL (绑定微信 · 强制录入名字标识) ===== -->
+  <div id="bindNameModal" class="hidden absolute inset-0 z-[90] bg-black/40 flex items-center justify-center p-5">
+    <div class="relative bg-white rounded-2xl w-full max-w-sm p-5 shadow-elevated">
+      <div class="flex items-center justify-between mb-1">
+        <h3 class="text-base font-bold text-slate-900">绑定微信</h3>
+        <button onclick="closeBindNameModal()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100">
+          <i data-lucide="x" class="w-4 h-4 text-slate-400"></i>
+        </button>
+      </div>
+      <p class="text-xs text-slate-400 mb-4 leading-relaxed">绑定微信接收通知，需填写你的名字作为标识，便于管理端识别接收人。</p>
+      <label class="block text-sm font-medium text-slate-700 mb-1">名字（标识）<span class="text-red-500">*</span></label>
+      <input type="text" id="bindNameInput" maxlength="12" placeholder="请输入真实姓名，如「张明华」"
+        class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all" />
+      <button onclick="confirmBindName()" class="w-full mt-5 py-3.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">确认绑定</button>
+    </div>
+  </div>
+
   <!-- ===== EDIT REMARK MODAL ===== -->
   <div id="remarkModal" class="hidden absolute inset-0 z-[80] bg-black/40 flex items-center justify-center p-5">
     <div class="relative bg-white rounded-2xl w-full max-w-sm p-5 shadow-elevated">
@@ -1834,6 +1907,12 @@
                   <i data-lucide="clipboard-check" class="w-5 h-5 text-rose-600"></i>
                 </div>
                 <span class="text-[12px] text-slate-700">检查记录</span>
+              </button>
+              <button onclick="openGoodsInspect()" class="flex flex-col items-center gap-1.5 active:opacity-70 transition-opacity">
+                <div class="w-10 h-10 rounded-2xl bg-cyan-50 flex items-center justify-center">
+                  <i data-lucide="clipboard-list" class="w-5 h-5 text-cyan-600"></i>
+                </div>
+                <span class="text-[12px] text-slate-700">进货查验</span>
               </button>
               <button onclick="openFeedbackOverlay()" class="flex flex-col items-center gap-1.5 active:opacity-70 transition-opacity">
                 <div class="w-10 h-10 rounded-2xl bg-green-50 flex items-center justify-center">
@@ -5176,6 +5255,8 @@ function nowStamp() {
 function renderMyWechat() {
   const area = document.getElementById('myWechatArea');
   if (myOpenid) {
+    const me = recipients.find(r => r.id === myRecipientId);
+    const myName = me ? me.nickname : '';
     area.innerHTML = `
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
@@ -5183,7 +5264,7 @@ function renderMyWechat() {
             <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
           </div>
           <div>
-            <p class="text-sm font-medium text-slate-800">已绑定</p>
+            <p class="text-sm font-medium text-slate-800">已绑定${myName ? ' · ' + myName : ''}</p>
             <p class="text-[11px] text-slate-400 mt-0.5">微信 ${maskOpenid(myOpenid)}</p>
           </div>
         </div>
@@ -5199,10 +5280,18 @@ function renderMyWechat() {
 
 function startBindSelf() {
   if (recipients.filter(r => r.status === '有效').length >= RECIPIENT_LIMIT) { showToast('已达上限，请先移除部分成员', 'error'); return; }
+  document.getElementById('bindNameInput').value = '';
+  document.getElementById('bindNameModal').classList.remove('hidden');
+}
+function closeBindNameModal() { document.getElementById('bindNameModal').classList.add('hidden'); }
+function confirmBindName() {
+  const name = document.getElementById('bindNameInput').value.trim();
+  if (!name) { showToast('请先录入名字（标识）', 'error'); return; }
   const openid = 'o' + Math.random().toString(36).slice(2, 12);
   myOpenid = openid;
   myRecipientId = 'r' + Date.now();
-  recipients.push({ id: myRecipientId, nickname: '我', remark: '本人', openid: openid, phone: '', status: '有效', bindTime: nowStamp() });
+  recipients.push({ id: myRecipientId, nickname: name, remark: '', openid: openid, phone: '', status: '有效', bindTime: nowStamp() });
+  closeBindNameModal();
   renderMyWechat();
   renderRecipientListArea();
   document.getElementById('subscribeModal').classList.remove('hidden'); // 绑定后拉起订阅授权
@@ -5375,7 +5464,17 @@ let currentFeedbackId = null;
 let newFeedbackAttachments = [];
 let replyAttachments = [];
 let voiceTarget = null;       // 'new' | 'reply'
-let attachmentTarget = null;  // 'new' | 'reply'
+let attachmentTarget = null;  // 'new' | 'reply' | 'goods'
+
+// ===== 进货查验 (GOODS INSPECT) =====
+let editingGoodsId = null;         // null = 新增；否则为编辑中的货物 id
+let goodsFormAttachments = [];
+
+let goodsData = [
+  { id: 'g1', name: '大米', desc: '东北五常大米，25kg/袋，供应商：北大荒米业', attachments: [{ name: '质检报告.pdf', size: '256KB' }], time: '2026-09-02 10:30' },
+  { id: 'g2', name: '食用油', desc: '一级大豆油 5L，供应商：金龙鱼', attachments: [], time: '2026-09-02 11:00' },
+  { id: 'g3', name: '鲜鸡蛋', desc: '散养土鸡蛋，30枚/箱，供应商：京郊养殖场', attachments: [{ name: '供应商资质.jpg', size: '1.1MB' }], time: '2026-09-01 15:20' },
+];
 
 const feedbackData = [
   {
@@ -5628,6 +5727,9 @@ function addAttachment(kind, name, size) {
   } else if (attachmentTarget === 'reply') {
     replyAttachments.push(att);
     renderReplyAttachments();
+  } else if (attachmentTarget === 'goods') {
+    goodsFormAttachments.push(att);
+    renderGoodsAttachments();
   }
   closeAttachmentSheet();
   showToast('已添加附件：' + name, 'success');
@@ -5654,6 +5756,115 @@ function renderAttachmentChips(containerId, list) {
 function removeAttachment(containerId, idx) {
   if (containerId === 'newFeedbackAttachments') { newFeedbackAttachments.splice(idx, 1); renderNewFeedbackAttachments(); }
   else if (containerId === 'replyAttachments') { replyAttachments.splice(idx, 1); renderReplyAttachments(); }
+  else if (containerId === 'goodsFormAttachments') { goodsFormAttachments.splice(idx, 1); renderGoodsAttachments(); }
+}
+
+// ----- 进货查验 (GOODS INSPECT) -----
+function openGoodsInspect() {
+  document.getElementById('goodsInspectOverlay').classList.add('open');
+  document.getElementById('bottomTabBar').style.display = 'none';
+  closeGoodsForm();
+  renderGoodsList();
+  setTimeout(() => lucide.createIcons(), 50);
+}
+function closeGoodsInspect() {
+  document.getElementById('goodsInspectOverlay').classList.remove('open');
+  document.getElementById('bottomTabBar').style.display = '';
+}
+
+function renderGoodsList() {
+  const list = document.getElementById('goodsList');
+  if (goodsData.length === 0) {
+    list.innerHTML = `
+      <div class="bg-white rounded-2xl p-8 shadow-card border border-slate-100 text-center">
+        <i data-lucide="package" class="w-8 h-8 text-slate-300 mx-auto mb-2"></i>
+        <p class="text-[13px] text-slate-400">暂无进货查验记录</p>
+        <p class="text-[12px] text-slate-300 mt-1">点击右上角「新增货物」添加</p>
+      </div>`;
+  } else {
+    list.innerHTML = goodsData.map(g => {
+      const attCount = (g.attachments && g.attachments.length)
+        ? '<span class="text-[11px] text-slate-400 inline-flex items-center gap-1"><i data-lucide="paperclip" class="w-3 h-3"></i>' + g.attachments.length + ' 个附件</span>'
+        : '';
+      return `
+      <div class="bg-white rounded-2xl p-4 shadow-card border border-slate-100">
+        <div class="flex items-start gap-3">
+          <div class="w-10 h-10 rounded-xl bg-cyan-50 flex items-center justify-center shrink-0">
+            <i data-lucide="package" class="w-5 h-5 text-cyan-600"></i>
+          </div>
+          <div class="flex-1 min-w-0 cursor-pointer active:opacity-70" onclick="openGoodsForm('${g.id}')">
+            <h3 class="text-[14px] font-semibold text-slate-800 leading-snug">${g.name}</h3>
+            <p class="text-[12px] text-slate-400 mt-1 leading-relaxed truncate">${g.desc || '暂无描述'}</p>
+            <div class="flex items-center gap-2 mt-2">
+              <span class="text-[11px] text-slate-300">${g.time}</span>${attCount}
+            </div>
+          </div>
+          <button onclick="deleteGoods('${g.id}')" class="w-8 h-8 shrink-0 flex items-center justify-center rounded-lg text-slate-300 hover:text-red-500 hover:bg-red-50 transition-colors">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  setTimeout(() => lucide.createIcons(), 50);
+}
+
+function openGoodsForm(id) {
+  editingGoodsId = id;
+  const g = id ? goodsData.find(x => x.id === id) : null;
+  document.getElementById('goodsFormTitle').textContent = g ? '货物详情' : '新增货物';
+  document.getElementById('goodsNameInput').value = g ? g.name : '';
+  document.getElementById('goodsDescInput').value = g ? g.desc : '';
+  goodsFormAttachments = g ? (g.attachments ? g.attachments.slice() : []) : [];
+  renderGoodsAttachments();
+  document.getElementById('goodsDeleteBtn').style.display = g ? 'flex' : 'none';
+  document.getElementById('goodsFormSheet').classList.remove('hidden');
+  document.getElementById('goodsFabBtn').classList.add('hidden');
+  setTimeout(() => lucide.createIcons(), 50);
+}
+function closeGoodsForm() {
+  document.getElementById('goodsFormSheet').classList.add('hidden');
+  document.getElementById('goodsFabBtn').classList.remove('hidden');
+  editingGoodsId = null;
+  goodsFormAttachments = [];
+  renderGoodsAttachments();
+}
+
+function saveGoods() {
+  const name = document.getElementById('goodsNameInput').value.trim();
+  const desc = document.getElementById('goodsDescInput').value.trim();
+  const attachments = goodsFormAttachments.slice();
+  if (!name) {
+    showToast('请填写货物名');
+    document.getElementById('goodsNameInput').focus();
+    return;
+  }
+  if (editingGoodsId) {
+    goodsData = goodsData.map(g => g.id === editingGoodsId ? { ...g, name: name, desc: desc, attachments: attachments } : g);
+    showToast('货物信息已保存', 'success');
+  } else {
+    const now = new Date();
+    const timeStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+    goodsData.unshift({ id: 'g' + Date.now(), name: name, desc: desc, attachments: attachments, time: timeStr });
+    showToast('货物已新增', 'success');
+  }
+  closeGoodsForm();
+  renderGoodsList();
+}
+
+function deleteGoods(id) {
+  if (!id) return;
+  const g = goodsData.find(x => x.id === id);
+  if (!g) return;
+  if (!confirm('确认删除货物「' + g.name + '」？')) return;
+  goodsData = goodsData.filter(x => x.id !== id);
+  if (editingGoodsId === id) closeGoodsForm();
+  renderGoodsList();
+  showToast('货物已删除', 'success');
+}
+
+function renderGoodsAttachments() {
+  renderAttachmentChips('goodsFormAttachments', goodsFormAttachments);
 }
 
 </script>

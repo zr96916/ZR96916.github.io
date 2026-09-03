@@ -2098,6 +2098,11 @@ const INIT_LICENSES = [
   { id:'l1', licenseType:'营业执照', licenseNo:'91310115MA1K3XXXXX', expiryDate:'2030-05-20', imageName:'' },
   { id:'l2', licenseType:'食品经营许可证', licenseNo:'JY20201015001', expiryDate:'2026-08-02', imageName:'' },
 ];
+const INIT_INSPECTIONS = [
+  { id:'insp1', goodsName:'冷冻鸡胸肉', detail:'供应商：上海××食品有限公司\n批次号：PC20260801\n数量：50kg\n保质期：2027-02-01\n索证索票：供应商营业执照、检验检疫合格证明已查验', attachments:['检验检疫证明.pdf','进货单.jpg'], editTime:'2026-08-15 10:30' },
+  { id:'insp2', goodsName:'食用植物油', detail:'供应商：××粮油集团\n批次号：SY20260720\n数量：20桶\n保质期：2027-07-20\n索证索票：出厂检验报告已查验', attachments:['出厂检验报告.pdf'], editTime:'2026-08-12 16:45' },
+  { id:'insp3', goodsName:'新鲜蔬菜（青菜）', detail:'供应商：城东农贸市场××摊位\n批次号：—\n数量：30kg\n索证索票：农残检测合格凭证已查验', attachments:['农残检测报告.jpg'], editTime:'2026-08-10 09:15' },
+];
 
 function EntityManagement({ userRole, roleTown }) {
   const isDistrict = userRole === 'R01';
@@ -2113,6 +2118,7 @@ function EntityManagement({ userRole, roleTown }) {
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [formStaff, setFormStaff] = useState([]);
   const [formLicenses, setFormLicenses] = useState([]);
+  const [formInspections, setFormInspections] = useState([]);
   const [activeTab, setActiveTab] = useState('basic');
   const [savedToast, setSavedToast] = useState(false);
   const [staffToast, setStaffToast] = useState(null);
@@ -2172,6 +2178,7 @@ function EntityManagement({ userRole, roleTown }) {
     setFormData({...EMPTY_FORM});
     setFormStaff([...INIT_STAFF.map(s=>({...s}))]);
     setFormLicenses([...INIT_LICENSES.map(l=>({...l}))]);
+    setFormInspections([...INIT_INSPECTIONS.map(i=>({...i}))]);
     setActiveTab('basic');
     setEditStaffId(null);
     setEditLicId(null);
@@ -2188,6 +2195,7 @@ function EntityManagement({ userRole, roleTown }) {
     });
     setFormStaff([...INIT_STAFF.map(s=>({...s}))]);
     setFormLicenses([...INIT_LICENSES.map(l=>({...l}))]);
+    setFormInspections([...INIT_INSPECTIONS.map(i=>({...i}))]);
     setActiveTab('basic');
     setEditStaffId(null);
     setEditLicId(null);
@@ -2544,6 +2552,7 @@ function EntityManagement({ userRole, roleTown }) {
                 { key:'basic', label:'基础信息', icon:'▦' },
                 { key:'staff', label:'人员信息', icon:'▲', count: formStaff.length },
                 { key:'license', label:'证照管理', icon:'◈', count: formLicenses.length },
+                { key:'inspection', label:'进货查验', icon:'▤', count: formInspections.length },
               ].map(t => (
                 <button key={t.key} onClick={() => { setActiveTab(t.key); setEditStaffId(null); setEditLicId(null); }}
                   className={`flex items-center gap-1.5 px-5 py-3 text-xs font-medium border-b-2 transition-colors ${activeTab === t.key ? 'border-gov-600 text-gov-600' : 'border-transparent text-ink-secondary hover:text-ink'}`}
@@ -2891,6 +2900,54 @@ function EntityManagement({ userRole, roleTown }) {
                   </div>
                 </div>
               )}
+
+              {/* ═══ TAB: 进货查验 ═══ */}
+              {activeTab === 'inspection' && (
+                <div className="animate-fade-in space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-sm font-semibold text-ink">进货查验</h4>
+                      <p className="text-[11px] text-ink-muted mt-0.5">商户上传的货物进货查验记录</p>
+                    </div>
+                    <span className="text-[11px] text-ink-muted">共 {formInspections.length} 条记录</span>
+                  </div>
+
+                  <div className="border border-slate-200 rounded-lg overflow-hidden">
+                    <table className="w-full text-xs">
+                      <thead>
+                        <tr className="bg-slate-50 border-b border-slate-200">
+                          <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider w-36">货物名</th>
+                          <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">详细介绍（含附件）</th>
+                          <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider w-40">编辑时间</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {formInspections.map(g => (
+                          <tr key={g.id} className="border-b border-slate-100 last:border-0">
+                            <td className="px-4 py-3 font-medium text-ink align-top">{g.goodsName}</td>
+                            <td className="px-4 py-3 align-top">
+                              <div className="text-ink-secondary whitespace-pre-line leading-relaxed">{g.detail}</div>
+                              {(g.attachments || []).length > 0 && (
+                                <div className="flex flex-wrap gap-1.5 mt-2">
+                                  {(g.attachments || []).map((a, ai) => (
+                                    <span key={ai} className="inline-flex items-center gap-1 text-[10px] bg-gov-50 text-gov-700 border border-gov-100 rounded px-1.5 py-0.5">
+                                      <span>📎</span>{a}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                            </td>
+                            <td className="px-4 py-3 text-ink-secondary font-mono align-top">{g.editTime}</td>
+                          </tr>
+                        ))}
+                        {formInspections.length === 0 && (
+                          <tr><td colSpan="3" className="text-center py-10 text-ink-muted">暂无进货查验记录</td></tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Drawer Footer */}
@@ -2901,6 +2958,8 @@ function EntityManagement({ userRole, roleTown }) {
                 <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-gov-500"></span>人员信息 ({formStaff.length})</span>
                 <span className="text-ink-disabled">→</span>
                 <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>证照管理 ({formLicenses.length})</span>
+                <span className="text-ink-disabled">→</span>
+                <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>进货查验 ({formInspections.length})</span>
               </div>
               <div className="flex gap-2">
                 <button onClick={closeModal} className="px-5 py-2 text-xs font-medium text-ink-secondary border border-slate-200 rounded-md hover:bg-slate-50 transition-colors">取消</button>
