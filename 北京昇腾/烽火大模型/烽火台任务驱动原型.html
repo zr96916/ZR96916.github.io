@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>非法金融活动烽火台 · 任务工作台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#dbe4ee; --bg-2:#e7edf4; --panel:#ffffff; --panel-2:#f5f8fb;
+    --ink:#1f2d3d; --ink-2:#5b6b7c; --ink-3:#8a99a9;
+    --line:#c9d5e2; --line-strong:#b0c0d2;
+    --primary:#1155aa; --primary-deep:#0d4790; --primary-soft:#e6eef7; --primary-ghost:#d4e3f4;
+    --risk-observe:#7d8b99; --risk-firefly:#5d8a3c; --risk-smoke:#c08a2e;
+    --risk-flame:#d9632a; --risk-kindling:#b4231f;
+    --ok:#3c7a3c; --warn:#c08a2e; --err:#b4231f; --info:#1155aa;
+    --font-sans:"Noto Sans SC","PingFang SC","Microsoft YaHei","Helvetica Neue",-apple-system,sans-serif;
+    --shadow-sm:0 1px 2px rgba(30,45,70,.06);
+    --shadow-md:0 2px 8px rgba(30,45,70,.08);
+    --shadow-lg:0 10px 30px rgba(30,45,70,.16);
+    --r:8px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--font-sans);color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.6}
+  ::selection{background:var(--primary-ghost)}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  .mono{font-variant-numeric:tabular-nums}
+
+  .seal{width:34px;height:34px;flex:0 0 auto;border-radius:8px;background:linear-gradient(135deg,#1a66c9,var(--primary-deep));color:#fff;font-weight:700;font-size:19px;line-height:34px;text-align:center;box-shadow:0 2px 6px rgba(17,85,170,.28)}
+  .seal.sm{width:28px;height:28px;font-size:15px;line-height:28px;border-radius:7px}
+
+  .btn{display:inline-flex;align-items:center;gap:6px;font-weight:500;font-size:13px;padding:8px 15px;border-radius:6px;border:1px solid transparent;transition:background .15s,border-color .15s,box-shadow .15s}
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{background:var(--primary);color:#fff;box-shadow:0 2px 6px rgba(17,85,170,.24)}
+  .btn-primary:hover{background:var(--primary-deep)}
+  .btn-ghost{border-color:var(--line-strong);color:var(--ink-2);background:#fff}
+  .btn-ghost:hover{border-color:var(--primary);color:var(--primary)}
+  .btn-soft{background:var(--primary-soft);color:var(--primary-deep)}
+  .btn-soft:hover{background:var(--primary-ghost)}
+  .btn[disabled]{opacity:.45;pointer-events:none}
+  .icon{width:15px;height:15px;flex:0 0 auto;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+  .arrow{width:17px;height:17px;color:var(--ink-3)}
+  .badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;padding:2px 9px;border-radius:4px;white-space:nowrap;line-height:1.7}
+  .badge .b-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+  .b-observing{color:#5f6b78;background:#eef1f5}
+  .b-firefly{color:var(--risk-firefly);background:#eef3e7}
+  .b-smoke{color:var(--risk-smoke);background:#f8f0e1}
+  .b-flame{color:var(--risk-flame);background:#fbeae1}
+  .b-kindling{color:var(--risk-kindling);background:#f9e3e1}
+  .b-neutral{color:var(--ink-2);background:#edf1f5}
+  .b-warn{color:var(--warn);background:#f8f0e1}
+  .b-err{color:var(--err);background:#f9e3e1}
+  .b-ok{color:var(--ok);background:#ecf3e6}
+  .b-info{color:var(--info);background:var(--primary-soft)}
+  .b-ai{color:#6a4bb8;background:#f0ebfb}
+  .round-pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--primary-deep);background:var(--primary-soft);padding:2px 9px;border-radius:4px}
+
+  /* ===== 大屏（占位） ===== */
+  .dash{min-height:100vh;background:radial-gradient(1200px 620px at 72% -10%,#10305a 0%,#08182c 46%,#040a14 100%);color:#cfe0f0;display:flex;flex-direction:column;position:relative;overflow:hidden}
+  .dash::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(80,140,220,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(80,140,220,.05) 1px,transparent 1px);background-size:44px 44px;pointer-events:none}
+  .dash-top{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:18px 32px}
+  .dash-brand{display:flex;align-items:center;gap:12px}
+  .dash-brand .t1{font-weight:700;font-size:18px;color:#eaf3ff}
+  .dash-brand .t2{font-size:11px;color:#7f9cc0;letter-spacing:.08em}
+  .dash-body{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 32px 70px;text-align:center}
+  .dash-title{font-size:30px;font-weight:700;color:#eaf3ff;letter-spacing:.02em}
+  .dash-sub{margin-top:10px;font-size:14px;color:#7f9cc0}
+  .dash-kpis{display:flex;gap:22px;margin-top:44px;flex-wrap:wrap;justify-content:center}
+  .dash-kpi{width:170px;padding:20px 18px;border:1px solid rgba(120,170,230,.18);border-radius:10px;background:rgba(16,48,90,.25);backdrop-filter:blur(2px)}
+  .dash-kpi .kv{font-size:30px;font-weight:700;color:#9fc4ee}
+  .dash-kpi .kl{margin-top:4px;font-size:12px;color:#7f9cc0}
+  .dash-hint{margin-top:40px;font-size:12px;color:#5f7d9f}
+
+  /* ===== 后台壳（顶部 tab 导航） ===== */
+  .backend{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+  .backend-top{display:flex;align-items:center;gap:22px;padding:0 24px;height:56px;background:var(--panel);border-bottom:1px solid var(--line);flex:0 0 auto}
+  .backend-top .brand{display:flex;align-items:center;gap:10px;margin-right:4px}
+  .backend-top .brand .t1{font-weight:700;font-size:15px;color:var(--ink)}
+  .backend-top .brand .t2{font-size:10.5px;color:var(--ink-3);letter-spacing:.06em;margin-top:1px}
+  .top-tabs{display:flex;align-items:stretch;gap:4px;height:100%}
+  .top-tab{display:flex;align-items:center;gap:8px;padding:0 18px;font-size:14px;font-weight:500;color:var(--ink-2);cursor:pointer;border-bottom:2px solid transparent;transition:color .13s,border-color .13s}
+  .top-tab:hover{color:var(--primary)}
+  .top-tab.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:600}
+  .top-tab .ti{width:15px;height:15px;flex:0 0 auto;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .backend-top .spacer{flex:1}
+  .backend-body{flex:1;overflow-y:auto;background:var(--bg)}
+
+  .wrap{max-width:1160px;margin:0 auto;padding:24px 26px 70px}
+  .page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px}
+  .page-head h1{font-weight:700;font-size:21px;color:var(--ink)}
+  .page-head .sub{color:var(--ink-3);font-size:13px;margin-top:3px}
+  .page-head .head-actions{display:flex;align-items:center;gap:10px;flex:0 0 auto;padding-top:2px}
+
+  .stat-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:15px 18px;box-shadow:var(--shadow-sm)}
+  .stat .k{font-size:12px;color:var(--ink-3)}
+  .stat .v{font-size:28px;font-weight:700;margin-top:1px;color:var(--ink)}
+  .stat .v small{font-size:13px;font-weight:500;color:var(--ink-3);margin-left:3px}
+
+  .task-tabs{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+  .task-tab{display:flex;align-items:baseline;gap:8px;padding:11px 18px;border:1px solid var(--line-strong);border-radius:8px;background:#fff;cursor:pointer;color:var(--ink-2);font-size:13.5px;transition:border-color .13s,background .13s,color .13s;box-shadow:var(--shadow-sm)}
+  .task-tab:hover{border-color:var(--primary)}
+  .task-tab .n{font-size:22px;font-weight:700;color:var(--ink);line-height:1}
+  .task-tab.active{background:var(--primary);border-color:var(--primary);color:#fff}
+  .task-tab.active .n{color:#fff}
+  .task-tabs .range-wrap{margin-left:auto;display:flex;align-items:center;gap:8px}
+
+  .list-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .list-head .t{font-weight:600;font-size:15px}
+  .task-card{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:18px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:15px 20px;margin-bottom:10px;cursor:pointer;box-shadow:var(--shadow-sm);transition:box-shadow .15s,border-color .15s,transform .13s}
+  .task-card:hover{box-shadow:var(--shadow-md);border-color:var(--primary-ghost)}
+  .task-card .nm{font-weight:600;font-size:14.5px;color:var(--ink)}
+  .task-card .mt{font-size:12px;color:var(--ink-3);margin-top:2px}
+  .task-card .tm{font-size:12px;color:var(--ink-3);white-space:nowrap}
+  .risk-legend{display:flex;gap:5px;align-items:center}
+  .risk-pip{width:9px;height:9px;border-radius:2px}
+
+  /* ===== 报告查看 ===== */
+  .filters{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;padding:15px 16px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);margin-bottom:14px;box-shadow:var(--shadow-sm)}
+  .filter{display:flex;flex-direction:column;gap:5px}
+  .filter label{font-size:11px;color:var(--ink-3);font-weight:600;letter-spacing:.02em}
+  .filter select,.filter input{padding:8px 11px;border:1px solid var(--line-strong);border-radius:6px;font-family:inherit;font-size:13px;background:#fff;color:var(--ink);min-width:130px;transition:border-color .15s,box-shadow .15s}
+  .filter input{min-width:200px}
+  .filter select:focus,.filter input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+  .filters .reset{align-self:flex-end;margin-bottom:1px}
+  .rep-row{display:grid;grid-template-columns:1.4fr 1.2fr .6fr .8fr .7fr .9fr auto;align-items:center;gap:14px;padding:12px 16px;border:1px solid var(--line);border-radius:7px;margin-bottom:8px;background:#fff;box-shadow:var(--shadow-sm)}
+  .rep-row .en{font-weight:600;font-size:13.5px;color:var(--ink)}
+  .rep-row .es{font-size:11.5px;color:var(--ink-3);margin-top:1px}
+  .rep-row .cell .lbl{font-size:10.5px;color:var(--ink-3)}
+  .rep-row .cell .val{font-size:13px;font-weight:600;margin-top:1px;color:var(--ink)}
+  .rep-row .cell .val.soft{font-weight:500;color:var(--ink-2)}
+  .score-big{font-size:20px;font-weight:700}
+  .empty{text-align:center;padding:50px 20px;color:var(--ink-3);font-size:13.5px}
+  .result-count{font-size:12px;color:var(--ink-3);margin:2px 3px 10px}
+
+  /* ===== 任务工作台（左侧流程 + 顶部标题栏） ===== */
+  .ws{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+  .ws-top{display:flex;align-items:center;gap:14px;padding:0 24px;height:56px;background:var(--panel);border-bottom:1px solid var(--line);flex:0 0 auto}
+  .ws-top .tt{font-weight:600;font-size:15px;color:var(--ink)}
+  .ws-top .crumb{font-size:12px;color:var(--ink-3);margin-top:1px}
+  .ws-top .spacer{flex:1}
+  .ws-top .prog{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--ink-2)}
+
+  .ws-body{flex:1;display:grid;grid-template-columns:240px 1fr;overflow:hidden}
+  .ws-nav{background:var(--panel);border-right:1px solid var(--line);padding:14px 12px;overflow-y:auto}
+  .ws-nav .nav-cap{font-size:11px;color:var(--ink-3);letter-spacing:.05em;padding:2px 8px 8px}
+  .stage{display:flex;gap:11px;padding:10px 11px;border-radius:7px;cursor:pointer;margin-bottom:3px;transition:background .13s}
+  .stage:hover{background:var(--panel-2)}
+  .stage.active{background:var(--primary-soft)}
+  .stage.lock{opacity:.42;pointer-events:none}
+  .stage .st-num{width:21px;height:21px;flex:0 0 auto;border-radius:50%;border:1.5px solid var(--line-strong);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;color:var(--ink-3);background:#fff;transition:.18s}
+  .stage.done .st-num{background:var(--ok);border-color:var(--ok);color:#fff}
+  .stage.active .st-num{background:var(--primary);border-color:var(--primary);color:#fff}
+  .stage .st-body .st-t{font-size:13.5px;font-weight:600;color:var(--ink)}
+  .stage.active .st-body .st-t{color:var(--primary-deep)}
+  .stage .st-body .st-s{font-size:11px;color:var(--ink-3);margin-top:1px}
+  .round-head{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:var(--ink-3);padding:10px 6px 4px;margin-top:8px;letter-spacing:.04em;border-top:1px solid var(--line)}
+  .round-head .rn{color:var(--primary);font-weight:700}
+  .round-head .hist{margin-left:auto;font-size:11px;color:var(--primary);cursor:pointer;font-weight:500;display:inline-flex;align-items:center;gap:3px}
+  .round-head .hist:hover{text-decoration:underline}
+  .ws-nav .foot{margin-top:auto;font-size:11px;color:var(--ink-3);padding:12px 6px 2px;line-height:1.7;border-top:1px solid var(--line)}
+  .ws-canvas{overflow-y:auto;padding:24px}
+
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-sm)}
+  .panel + .panel{margin-top:14px}
+  .panel-h{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .panel-h .t{font-weight:600;font-size:14px}
+  .panel-h .sub{font-size:12px;color:var(--ink-3)}
+  .panel-h .spacer{flex:1}
+  .panel-b{padding:10px 18px 18px}
+  .sec-label{font-size:11px;color:var(--ink-3);letter-spacing:.08em;margin:16px 3px 8px}
+  .flow-hint{background:var(--primary-soft);border:1px solid var(--primary-ghost);border-radius:var(--r);padding:13px 16px;font-size:12.5px;color:var(--ink-2);margin-bottom:14px;line-height:1.9}
+  .flow-hint b{color:var(--primary-deep)}
+
+  .mat{display:flex;align-items:center;gap:13px;padding:12px 14px;border:1px solid var(--line);border-radius:7px;margin-bottom:8px;background:#fff}
+  .mat .fico{width:36px;height:36px;flex:0 0 auto;border-radius:7px;display:flex;align-items:center;justify-content:center;background:var(--panel-2);color:var(--primary)}
+  .mat .fn{font-weight:600;font-size:13.5px;color:var(--ink)}
+  .mat .fm{font-size:11.5px;color:var(--ink-3);margin-top:1px}
+
+  .formfile{display:flex;align-items:center;gap:13px;padding:14px 16px;border:1px dashed var(--line-strong);border-radius:var(--r);background:var(--panel-2);cursor:pointer;transition:border-color .15s,background .15s}
+  .formfile:hover{border-color:var(--primary);background:var(--primary-soft)}
+  .formfile.done{border-style:solid;background:#fff;cursor:default}
+  .formfile .fico{width:38px;height:38px;flex:0 0 auto;border-radius:8px;display:flex;align-items:center;justify-content:center;background:var(--primary-soft);color:var(--primary)}
+
+  .cand{display:flex;align-items:center;gap:12px;padding:11px 13px;border:1px solid var(--line);border-radius:7px;margin-bottom:7px;background:#fff;cursor:pointer;transition:border-color .13s,background .13s}
+  .cand:hover{border-color:var(--primary-ghost)}
+  .cand.off{opacity:.55}
+  .cand .ck{width:17px;height:17px;flex:0 0 auto;border-radius:4px;border:1.5px solid var(--line-strong);display:flex;align-items:center;justify-content:center;color:transparent;background:#fff;transition:.13s;font-size:11px}
+  .cand.on .ck{background:var(--primary);border-color:var(--primary);color:#fff}
+  .cand .cn{font-weight:600;font-size:13.5px;color:var(--ink)}
+  .cand .cc{font-size:11.5px;color:var(--ink-3)}
+  .cand .spacer{flex:1}
+  .screen-note{font-size:11px;color:var(--warn);display:inline-flex;align-items:center;gap:4px}
+  .screen-note.dup{color:var(--ink-3)}
+
+  .sum{display:flex;gap:24px;flex-wrap:wrap;padding:2px 3px}
+  .sum .si{font-size:13px;color:var(--ink-2)}
+  .sum .si b{font-size:20px;font-weight:700;margin-right:3px;color:var(--ink)}
+  .sum .si .k{font-size:12px;color:var(--ink-3)}
+
+  .erow{display:grid;grid-template-columns:1.2fr .9fr .8fr .8fr .9fr auto;align-items:center;gap:15px;padding:13px 16px;border:1px solid var(--line);border-radius:7px;margin-bottom:8px;background:#fff;cursor:pointer;transition:box-shadow .13s,border-color .13s}
+  .erow:hover{box-shadow:var(--shadow-md);border-color:var(--primary-ghost)}
+  .erow .en{font-weight:600;font-size:13.5px;color:var(--ink)}
+  .erow .es{font-size:11.5px;color:var(--ink-3);margin-top:1px}
+  .erow .cell .lbl{font-size:10.5px;color:var(--ink-3)}
+  .erow .cell .val{font-size:13px;font-weight:600;margin-top:1px;color:var(--ink)}
+  .erow.rev{grid-template-columns:auto 1.2fr .8fr .7fr .8fr .9fr auto}
+  .rck{width:17px;height:17px;flex:0 0 auto;border-radius:4px;border:1.5px solid var(--line-strong);display:flex;align-items:center;justify-content:center;color:transparent;background:#fff;cursor:pointer;transition:.13s;font-size:11px;font-weight:700}
+  .rck.on{background:var(--primary);border-color:var(--primary);color:#fff}
+  .rck.dis{opacity:.35;cursor:not-allowed;background:var(--panel-2)}
+  .batch-bar{display:flex;align-items:center;gap:14px;padding:11px 14px;background:var(--panel-2);border:1px solid var(--line);border-radius:7px;margin-bottom:10px;flex-wrap:wrap}
+  .batch-bar .sel{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink-2);cursor:pointer;user-select:none}
+  .batch-bar .cnt{font-size:12px;color:var(--ink-3)}
+  .batch-bar .spacer{flex:1}
+
+  .dim{border:1px solid var(--line);border-radius:7px;margin-bottom:8px;background:#fff;overflow:hidden}
+  .dim-h{display:flex;align-items:center;gap:11px;padding:12px 15px;cursor:pointer}
+  .dim-h:hover{background:var(--panel-2)}
+  .dim .dcat{width:28px;height:28px;flex:0 0 auto;border-radius:6px;background:var(--primary-soft);color:var(--primary-deep);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600}
+  .dim .dn{font-weight:600;font-size:13.5px;color:var(--ink)}
+  .dim .dd{font-size:11px;color:var(--ink-3);margin-top:1px}
+  .dim .spacer{flex:1}
+  .dim .score{margin-left:10px;text-align:right}
+  .dim .score .sv{font-size:16px;font-weight:700}
+  .dim .score .sk{font-size:10px;color:var(--ink-3)}
+  .dim .chev{width:15px;height:15px;color:var(--ink-3);transition:transform .18s}
+  .dim.open .chev{transform:rotate(180deg)}
+  .dim-b{display:none;padding:2px 15px 14px;border-top:1px solid var(--line);background:var(--panel-2)}
+  .dim.open .dim-b{display:block}
+  .fact{padding:11px 13px;background:#fff;border:1px solid var(--line);border-radius:7px;margin-top:9px}
+  .fact .ft{font-size:13px;color:var(--ink)}
+  .fact .ev{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink-2);margin-top:6px;flex-wrap:wrap}
+  .fact .ev .pin{font-size:11px;font-weight:500;color:var(--primary-deep);background:var(--primary-soft);padding:1px 7px;border-radius:4px;font-family:ui-monospace,Consolas,monospace}
+  .fact .ev .conf{font-size:11px;color:var(--ink-3)}
+  .fact .act{margin-left:auto;display:flex;gap:8px}
+
+  .scorebar{position:sticky;bottom:0;display:flex;align-items:center;gap:20px;padding:14px 20px;margin-top:18px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-md)}
+  .scorebar .formula{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap}
+  .scorebar .part{font-size:13px;color:var(--ink-2)}
+  .scorebar .part b{font-size:17px;color:var(--ink)}
+  .scorebar .eq{color:var(--ink-3);font-weight:700}
+  .scorebar .total{font-size:28px;font-weight:700;color:var(--primary)}
+  .scorebar .spacer{flex:1}
+
+  .rep{display:flex;align-items:center;gap:14px;padding:13px 16px;border:1px solid var(--line);border-radius:7px;margin-bottom:8px;background:#fff}
+  .rep .en{font-weight:600;font-size:13.5px;color:var(--ink)}
+  .rep .es{font-size:11.5px;color:var(--ink-3);margin-top:2px}
+  .rep .spacer{flex:1}
+  .chapters{display:flex;gap:9px}
+  .chap{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--ink-2)}
+  .chap .ok{width:15px;height:15px;border-radius:50%;background:var(--ok);color:#fff;display:flex;align-items:center;justify-content:center;font-size:9px}
+
+  .step-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+  .round-summary{display:flex;align-items:center;gap:13px;background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r);padding:13px 16px;margin-top:14px}
+  .round-summary .big{font-size:26px;font-weight:700;color:var(--primary)}
+
+  .modal-mask{position:fixed;inset:0;background:rgba(31,45,61,.4);z-index:50;display:none;align-items:center;justify-content:center}
+  .modal-mask.show{display:flex}
+  .modal{width:520px;max-width:92vw;max-height:86vh;background:var(--panel);border-radius:10px;box-shadow:var(--shadow-lg);overflow:hidden;animation:pop .18s ease;display:flex;flex-direction:column}
+  @keyframes pop{from{opacity:0;transform:translateY(10px) scale(.99)}to{opacity:1;transform:none}}
+  .modal-h{padding:19px 24px 0;display:flex;align-items:flex-start;justify-content:space-between}
+  .modal-h .t{font-weight:700;font-size:17px;color:var(--ink)}
+  .modal-h .s{font-size:12px;color:var(--ink-3);margin-top:3px}
+  .modal-b{padding:18px 24px;overflow-y:auto}
+  .modal-f{display:flex;justify-content:flex-end;gap:10px;padding:0 24px 20px}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-2);margin-bottom:6px}
+  .field input,.field textarea,.field select{width:100%;padding:10px 12px;border:1px solid var(--line-strong);border-radius:6px;font-family:inherit;font-size:14px;background:#fff;color:var(--ink);transition:border-color .15s,box-shadow .15s}
+  .field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+  .field textarea{resize:none;height:68px}
+  .seg{display:flex;gap:6px;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:4px}
+  .seg button{flex:1;padding:8px 12px;border-radius:6px;border:none;background:transparent;font-size:13px;font-weight:600;color:var(--ink-2);cursor:pointer;transition:.15s;font-family:inherit}
+  .seg button.on{background:#fff;color:var(--primary-deep);box-shadow:0 1px 4px rgba(31,45,61,.12)}
+
+  .hist-row{border:1px solid var(--line);border-radius:7px;margin-bottom:9px;overflow:hidden;background:#fff}
+  .hist-row .hh{display:flex;align-items:center;gap:12px;padding:12px 15px;cursor:pointer}
+  .hist-row .hh:hover{background:var(--panel-2)}
+  .hist-row .hnum{width:30px;height:30px;flex:0 0 auto;border-radius:50%;background:var(--panel-2);color:var(--ink-2);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--line)}
+  .hist-row.cur .hnum{background:var(--primary);color:#fff;border-color:var(--primary)}
+  .hist-row .hmeta{flex:1}
+  .hist-row .hn{font-weight:600;font-size:13.5px;color:var(--ink)}
+  .hist-row .ht{font-size:11px;color:var(--ink-3);margin-top:1px}
+  .hist-row .hs{font-size:12px;color:var(--ink-2);text-align:right}
+  .hist-row .hs b{color:var(--ink)}
+  .hist-row .hb{display:none;padding:2px 15px 14px;border-top:1px solid var(--line);background:var(--panel-2)}
+  .hist-row.open .hb{display:block}
+  .mini-tbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}
+  .mini-tbl th,.mini-tbl td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--line)}
+  .mini-tbl th{color:var(--ink-3);font-weight:500;font-size:11px}
+  .mini-tbl td{color:var(--ink)}
+
+  .reveal{animation:rise .35s ease both}
+  @keyframes rise{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+  .reveal.d1{animation-delay:.02s}.reveal.d2{animation-delay:.06s}.reveal.d3{animation-delay:.1s}
+  .reveal.d4{animation-delay:.14s}.reveal.d5{animation-delay:.18s}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+  @media (max-width:760px){
+    .top-tab{padding:0 12px;font-size:13px}
+    .backend-top .brand .t2{display:none}
+    .ws-body{grid-template-columns:52px 1fr}
+    .stage .st-body,.ws-nav .nav-cap,.round-head span{display:none}
+    .stat-strip{grid-template-columns:repeat(2,1fr)}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ 大屏（默认首页 · 占位） ============ -->
+<div id="view-dashboard" class="view dash">
+  <div class="dash-top">
+    <div class="dash-brand">
+      <div class="seal">烽</div>
+      <div><div class="t1">非法金融活动烽火台</div><div class="t2">大数据监测预警平台 · 监控中心</div></div>
+    </div>
+    <button class="btn btn-primary" style="box-shadow:0 2px 10px rgba(26,102,201,.5)" data-action="goto-backend">
+      进入工作台<svg class="icon" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+  <div class="dash-body">
+    <div class="dash-title">监控中心 · 大数据可视化大屏</div>
+    <div class="dash-sub">占位符 · 大屏可视化待接入（此处不详细绘制）</div>
+    <div class="dash-kpis">
+      <div class="dash-kpi"><div class="kv">—</div><div class="kl">烽火企业总数</div></div>
+      <div class="dash-kpi"><div class="kv">—</div><div class="kl">高危企业</div></div>
+      <div class="dash-kpi"><div class="kv">—</div><div class="kl">涉案金额</div></div>
+      <div class="dash-kpi"><div class="kv">—</div><div class="kl">12345 投诉</div></div>
+    </div>
+    <div class="dash-hint">点击右上角「进入工作台」跳转业务操作后台</div>
+  </div>
+</div>
+
+<!-- ============ 后台（工作台） ============ -->
+<div id="view-backend" class="view" style="display:none">
+  <div class="backend">
+    <header class="backend-top">
+      <div class="brand">
+        <div class="seal sm">烽</div>
+        <div><div class="t1">烽火台</div><div class="t2">业务操作后台</div></div>
+      </div>
+      <div class="top-tabs">
+        <div class="top-tab active" data-action="tab-tasks">
+          <svg class="ti" viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>
+          任务中心
+        </div>
+        <div class="top-tab" data-action="tab-reports">
+          <svg class="ti" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
+          报告查看
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <button class="btn btn-ghost" style="padding:6px 11px" data-action="back-dash">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>返回大屏
+      </button>
+    </header>
+    <div class="backend-body">
+      <div id="panel-tasks"></div>
+      <div id="panel-reports" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 任务工作台（7 步流程） ============ -->
+<div id="view-ws" class="view" style="display:none">
+  <div class="ws">
+    <header class="ws-top">
+      <button class="btn btn-ghost" style="padding:6px 11px" data-action="back-tasks">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>返回任务中心
+      </button>
+      <div>
+        <div class="tt" id="ws-title">—</div>
+        <div class="crumb" id="ws-crumb">任务中心 / —</div>
+      </div>
+      <div class="spacer"></div>
+      <div id="ws-status"></div>
+      <div class="prog"><span id="ws-prog">阶段 1/7</span></div>
+    </header>
+    <div class="ws-body">
+      <aside class="ws-nav" id="stage-list"></aside>
+      <main class="ws-canvas" id="ws-canvas"></main>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 新建任务 ============ -->
+<div class="modal-mask" id="new-task-modal">
+  <div class="modal" style="width:460px">
+    <div class="modal-h">
+      <div><div class="t">新建任务</div><div class="s">第一步：命名任务。公司清单将在下一步上传表单后导入</div></div>
+      <button class="btn btn-ghost" style="padding:4px 9px" data-action="close-new-task">×</button>
+    </div>
+    <div class="modal-b">
+      <div class="field">
+        <label>任务名称</label>
+        <input id="nt-name" type="text" placeholder="例：2026年朝阳区涉非金融排查">
+      </div>
+      <div class="field">
+        <label>备注（可选）</label>
+        <textarea id="nt-note" placeholder="例：按××线索排查辖区企业"></textarea>
+      </div>
+    </div>
+    <div class="modal-f">
+      <button class="btn btn-ghost" data-action="close-new-task">取消</button>
+      <button class="btn btn-primary" data-action="submit-new-task">创建并进入任务</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 历史轮次 ============ -->
+<div class="modal-mask" id="history-modal">
+  <div class="modal" style="width:600px">
+    <div class="modal-h">
+      <div><div class="t">历史轮次</div><div class="s">上传材料 → 生成报告 可反复执行，每轮覆盖上轮结果，此处可溯源</div></div>
+      <button class="btn btn-ghost" style="padding:4px 9px" data-action="close-history">×</button>
+    </div>
+    <div class="modal-b" id="history-body"></div>
+  </div>
+</div>
+
+<!-- ============ 补充上传 ============ -->
+<div class="modal-mask" id="supplement-modal">
+  <div class="modal" style="width:480px">
+    <div class="modal-h">
+      <div><div class="t">补充上传</div><div class="s" id="sup-sub">向当前轮次补充材料，上传后可重新研判</div></div>
+      <button class="btn btn-ghost" style="padding:4px 9px" data-action="close-supplement">×</button>
+    </div>
+    <div class="modal-b">
+      <div class="field">
+        <label>上传方式</label>
+        <div class="seg">
+          <button type="button" data-action="sup-mode" data-mode="categorized">按类上传</button>
+          <button type="button" data-action="sup-mode" data-mode="uncategorized">不按类上传</button>
+        </div>
+      </div>
+      <div class="field" id="sup-cat-wrap">
+        <label>分析点类别</label>
+        <select id="sup-cat"></select>
+      </div>
+      <div class="field">
+        <label>选择文件</label>
+        <div class="formfile" data-action="sup-file">
+          <div class="fico"><svg class="icon" width="18" height="18" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div>
+          <div style="flex:1"><div id="sup-file-name" style="font-weight:600;font-size:13.5px">点击选择文件（演示）</div><div style="font-size:11.5px;color:var(--ink-3)">支持 PDF / XLSX / DOCX 等</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-f">
+      <button class="btn btn-ghost" data-action="close-supplement">取消</button>
+      <button class="btn btn-primary" data-action="submit-supplement">确认上传</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================= 数据 ================= */
+const RISK = {
+  '观察':{cls:'b-observing',hex:'#7d8b99'},
+  '萤火':{cls:'b-firefly',hex:'#5d8a3c'},
+  '燧烟':{cls:'b-smoke',hex:'#c08a2e'},
+  '岂火':{cls:'b-flame',hex:'#d9632a'},
+  '积薪':{cls:'b-kindling',hex:'#b4231f'},
+};
+const RISK_ORDER = ['观察','萤火','燧烟','岂火','积薪'];
+
+let TASKS = [
+  {id:'t1',name:'2026年朝阳区涉非金融排查',note:'按××线索筛查辖区企业',companies:9,status:'研判中',time:'2026-09-02 09:30',stage:5,round:2,
+   risk:{'观察':1,'萤火':2,'燧烟':3,'岂火':2,'积薪':1}},
+  {id:'t2',name:'2026年望京街道金融风险专项',note:'重点楼宇入驻机构',companies:0,status:'待初筛',time:'2026-09-06 14:20',stage:2,round:1,
+   risk:{'观察':0,'萤火':0,'燧烟':0,'岂火':0,'积薪':0}},
+  {id:'t3',name:'2026年「黄金投资」案件回溯',note:'关联案件涉案企业',companies:5,status:'已完成',time:'2026-08-28 16:45',stage:7,round:3,
+   risk:{'观察':1,'萤火':1,'燧烟':1,'岂火':1,'积薪':1}},
+  {id:'t4',name:'2026年CBD商务区楼宇排查',note:'工商+舆情交叉筛查',companies:14,status:'研判中',time:'2026-09-01 10:05',stage:4,round:1,
+   risk:{'观察':0,'萤火':0,'燧烟':0,'岂火':0,'积薪':0}},
+  {id:'t5',name:'2026年预付式消费风险排查',note:'12345投诉高发主体',companies:11,status:'已完成',time:'2026-08-25 11:40',stage:7,round:2,
+   risk:{'观察':2,'萤火':3,'燧烟':2,'岂火':3,'积薪':1}},
+  {id:'t6',name:'2026年养老领域金融排查',note:'涉老投资类企业',companies:8,status:'研判中',time:'2026-09-04 15:10',stage:6,round:2,
+   risk:{'观察':1,'萤火':2,'燧烟':2,'岂火':2,'积薪':1}},
+];
+
+// 历史报告（跨任务 · 跨轮次 · 供报告查看多维度筛选）
+const REPORTS = [
+  {company:'某某网络科技有限公司',credit:'91110105MA01XX1X1X',task:'2026年朝阳区涉非金融排查',score:72,risk:'岂火',round:2,time:'2026-09-05'},
+  {company:'某某投资咨询有限公司',credit:'91110105MA01XX2X2X',task:'2026年朝阳区涉非金融排查',score:58,risk:'燧烟',round:2,time:'2026-09-05'},
+  {company:'某某金融服务外包有限公司',credit:'91110105MA01XX3X3X',task:'2026年朝阳区涉非金融排查',score:86,risk:'积薪',round:2,time:'2026-09-05'},
+  {company:'某某黄金交易有限公司',credit:'待确认',task:'2026年「黄金投资」案件回溯',score:91,risk:'积薪',round:3,time:'2026-09-04'},
+  {company:'某某商贸有限公司',credit:'91110105MA01XX5X5X',task:'2026年预付式消费风险排查',score:47,risk:'萤火',round:2,time:'2026-09-03'},
+  {company:'某某信息咨询中心',credit:'待确认',task:'2026年CBD商务区楼宇排查',score:35,risk:'观察',round:1,time:'2026-09-03'},
+  {company:'某某理财顾问有限公司',credit:'91110105MA01XX7X7X',task:'2026年预付式消费风险排查',score:63,risk:'岂火',round:2,time:'2026-09-02'},
+  {company:'某某供应链管理有限公司',credit:'待确认',task:'2026年CBD商务区楼宇排查',score:44,risk:'萤火',round:1,time:'2026-09-02'},
+  {company:'某某电子商务有限公司',credit:'91110105MA01XX9X9X',task:'2026年预付式消费风险排查',score:52,risk:'燧烟',round:1,time:'2026-09-01'},
+  {company:'某某养老服务有限公司',credit:'91110105MA01XX11X1',task:'2026年养老领域金融排查',score:79,risk:'岂火',round:2,time:'2026-08-31'},
+  {company:'某某健康管理有限公司',credit:'91110105MA01XX12X2',task:'2026年养老领域金融排查',score:66,risk:'燧烟',round:2,time:'2026-08-30'},
+  {company:'某某科技信息咨询中心',credit:'91110105MA01XX13X3',task:'2026年CBD商务区楼宇排查',score:38,risk:'观察',round:1,time:'2026-08-29'},
+  {company:'某某贵金属贸易有限公司',credit:'91110105MA01XX14X4',task:'2026年「黄金投资」案件回溯',score:88,risk:'积薪',round:3,time:'2026-08-28'},
+];
+const TODAY = new Date('2026-09-08');
+
+const COMPANY_FORM = [
+  {n:'某某网络科技有限公司',cc:'91110105MA01XX1X1X',note:'',on:true},
+  {n:'某某投资咨询有限公司',cc:'91110105MA01XX2X2X',note:'',on:true},
+  {n:'某某金融服务外包有限公司',cc:'91110105MA01XX3X3X',note:'',on:true},
+  {n:'某某黄金交易有限公司',cc:'待确认',note:'疑似重复(与t3任务)',on:true},
+  {n:'某某商贸有限公司',cc:'91110105MA01XX5X5X',note:'',on:true},
+  {n:'某某信息咨询中心',cc:'待确认',note:'非本辖区',on:true},
+  {n:'某某理财顾问有限公司',cc:'91110105MA01XX7X7X',note:'',on:true},
+  {n:'某某供应链管理有限公司',cc:'待确认',note:'疑似重复',on:true},
+  {n:'某某电子商务有限公司',cc:'91110105MA01XX9X9X',note:'',on:true},
+  {n:'某某餐饮管理有限公司',cc:'91110105MA01XX10X0',note:'经营范围无关',on:true},
+];
+
+const MATERIALS = [
+  {f:'公安警务数据(朝阳经侦).xlsx',m:'XLSX · 刑事报案/受案 · 已解析',s:'ok',facts:12},
+  {f:'涉非企业名单-黄金投资类.pdf',m:'PDF · 反洗钱 · 已解析',s:'ok',facts:8},
+  {f:'12345投诉工单汇总.xlsx',m:'XLSX · 12345投诉 · 已解析',s:'ok',facts:9},
+  {f:'市场监管局登记信息.xls',m:'XLS · 工商登记 · 已解析',s:'ok',facts:15},
+];
+
+const ANALYSIS_CATS = ['公安警务数据','民事裁判数据','舆情投诉数据','行政监管数据','检察业务数据','其他'];
+const SUP_FILES = [
+  {f:'补充-税务处罚决定书.pdf',fmt:'PDF',facts:6},
+  {f:'补充-社保缴纳记录.xlsx',fmt:'XLSX',facts:5},
+  {f:'补充-涉诉裁判文书.pdf',fmt:'PDF',facts:7},
+  {f:'补充-舆情监测报告.docx',fmt:'DOCX',facts:4},
+];
+const SUP = {mode:'categorized',cat:'公安警务数据',fileIdx:0};
+
+const COMPANIES = [
+  {n:'某某网络科技有限公司',cc:'91110105MA01XX1X1X',score:72,risk:'岂火',facts:'14/14',review:'待审核'},
+  {n:'某某投资咨询有限公司',cc:'91110105MA01XX2X2X',score:58,risk:'燧烟',facts:'9/12',review:'已审核'},
+  {n:'某某金融服务外包有限公司',cc:'91110105MA01XX3X3X',score:86,risk:'积薪',facts:'16/16',review:'待审核'},
+  {n:'某某黄金交易有限公司',cc:'待确认',score:41,risk:'观察',facts:'3/3',review:'待审核'},
+  {n:'某某商贸有限公司',cc:'91110105MA01XX5X5X',score:47,risk:'萤火',facts:'6/6',review:'已审核'},
+  {n:'某某信息咨询中心',cc:'待确认',score:35,risk:'观察',facts:'2/5',review:'缺材料'},
+  {n:'某某理财顾问有限公司',cc:'91110105MA01XX7X7X',score:63,risk:'岂火',facts:'11/13',review:'待审核'},
+  {n:'某某供应链管理有限公司',cc:'待确认',score:0,risk:null,facts:'0/0',review:'缺材料'},
+  {n:'某某电子商务有限公司',cc:'91110105MA01XX9X9X',score:52,risk:'燧烟',facts:'8/8',review:'待审核'},
+];
+
+const ROUND1_SNAPSHOT = [
+  {n:'某某网络科技有限公司',score:68,risk:'燧烟'},
+  {n:'某某投资咨询有限公司',score:55,risk:'燧烟'},
+  {n:'某某金融服务外包有限公司',score:84,risk:'积薪'},
+  {n:'某某黄金交易有限公司',score:41,risk:'观察'},
+  {n:'某某商贸有限公司',score:47,risk:'萤火'},
+  {n:'某某信息咨询中心',score:33,risk:'观察'},
+  {n:'某某理财顾问有限公司',score:60,risk:'燧烟'},
+  {n:'某某供应链管理有限公司',score:0,risk:null},
+  {n:'某某电子商务有限公司',score:52,risk:'燧烟'},
+];
+
+const DIM_GROUPS = [
+  {g:'检察业务数据',dims:[
+    {n:'关联案件',code:'RELATED_CASE',type:'裁量分',v:0,st:'zero',stt:'未命中计分规则'},
+    {n:'人员前科',code:'PERSON_RECORD',type:'裁量分',v:0,st:'zero',stt:'未命中计分规则'},
+  ]},
+  {g:'公安警务数据',dims:[
+    {n:'刑事报案',code:'POLICE_REPORT',type:'裁量分',v:0,st:'miss',stt:'缺材料'},
+    {n:'关联立案',code:'RELATED_ENTERPRISE_CASE',type:'裁量分',v:0,st:'miss',stt:'缺材料'},
+    {n:'110接处警',code:'POLICE_110',type:'裁量分',v:0,st:'miss',stt:'缺材料'},
+    {n:'警情通报',code:'POLICE_BULLETIN',type:'裁量分',v:0,st:'zero',stt:'未命中计分规则'},
+  ]},
+  {g:'民事裁判数据',dims:[
+    {n:'民事涉诉',code:'CIVIL_LITIGATION',type:'裁量分',v:0,st:'zero',stt:'未命中计分规则'},
+    {n:'12345投诉',code:'COMPLAINT',type:'裁量分',v:0,st:'zero',stt:'未命中计分规则'},
+  ]},
+  {g:'舆情投诉数据',dims:[
+    {n:'信访举报',code:'PETITION',type:'裁量分',v:0,st:'zero',stt:'未命中计分规则'},
+    {n:'网信舆情',code:'INTERNET_SENTIMENT',type:'裁量分',v:0,st:'zero',stt:'未命中计分规则'},
+  ]},
+  {g:'行政监管数据',dims:[
+    {n:'反洗钱',code:'AML',type:'固定分',v:20,st:'hit',
+     fact:{t:'存在可能但不确定的非法金融活动风险',ev:'涉非企业名单-黄金投资类.pdf · 第2页',conf:90}},
+    {n:'行政处罚',code:'ADMIN_PENALTY',type:'裁量分',v:0,st:'zero',stt:'未命中计分规则'},
+    {n:'工商登记',code:'BUSINESS_REGISTRY',type:'裁量分',v:0,st:'zero',stt:'未命中计分规则'},
+    {n:'税务',code:'TAX',type:'裁量分',v:6,st:'hit',
+     fact:{t:'成立3年内，存在2条税务违法处罚记录',ev:'市场监管局登记信息.xls · Sheet1!row:6',conf:88}},
+    {n:'社保',code:'SOCIAL_SECURITY',type:'裁量分',v:0,st:'miss',stt:'缺材料'},
+  ]},
+  {g:'系统自动研判',dims:[
+    {n:'刑事违法性',code:'CRIMINAL_ILLEGALITY',type:'裁量分',v:7.5,st:'hit',
+     fact:{t:'四项构成要件中明确满足 3 项',ev:'公安警务数据(朝阳经侦).xlsx · Sheet1!row:3',conf:86}},
+    {n:'社会危害性',code:'SOCIAL_HARM',type:'裁量分',v:6,st:'hit',
+     fact:{t:'业务范围6分 · 涉及人数0 · 资金规模0',ev:'公安警务数据(朝阳经侦).xlsx · Sheet1!row:1',conf:82}},
+    {n:'风险存续性',code:'RISK_CONTINUITY',type:'裁量分',v:0,st:'zero',stt:'未命中计分规则'},
+  ]},
+];
+
+/* ================= 工具 ================= */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function riskBadge(r){
+  if(!r) return '<span class="badge b-neutral">待定</span>';
+  const m=RISK[r]||RISK['观察'];
+  return `<span class="badge ${m.cls}"><span class="b-dot"></span>${r}</span>`;
+}
+function riskPips(risk){
+  let h='';
+  RISK_ORDER.forEach(k=>{ if(risk[k]>0) h+=`<span class="risk-pip" style="background:${RISK[k].hex}" title="${k} ${risk[k]}家"></span>`; });
+  return h;
+}
+const statusBadge = s => ({
+  '研判中':'b-info','待初筛':'b-neutral','已完成':'b-ok'
+}[s]||'b-neutral');
+
+function toast(msg){
+  let t=document.createElement('div');
+  t.textContent=msg;
+  t.style.cssText='position:fixed;left:50%;bottom:34px;transform:translateX(-50%);background:#1f2d3d;color:#fff;padding:11px 20px;border-radius:7px;font-size:13.5px;box-shadow:0 10px 30px rgba(0,0,0,.2);z-index:99;animation:rise .25s ease';
+  document.body.appendChild(t);
+  setTimeout(()=>{t.style.transition='opacity .3s,transform .3s';t.style.opacity='0';t.style.transform='translateX(-50%) translateY(6px)';setTimeout(()=>t.remove(),300);},2200);
+}
+function fmtNow(){
+  const d=new Date(), p=n=>String(n).padStart(2,'0');
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+function rangeThreshold(days){
+  const d=new Date(TODAY.getTime()); d.setDate(d.getDate()-days);
+  const p=n=>String(n).padStart(2,'0');
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`;
+}
+
+/* ================= 状态 ================= */
+let UI = {tab:'tasks', taskFilter:'全部', selTasks:[], timeRange:'全部'};
+let FILTER = {task:'全部',risk:'全部',round:'全部',range:'全部',kw:''};
+let WS = {task:null,stage:1,round:1,company:0,inCompany:false,candidates:COMPANY_FORM.map(c=>({...c})),formUploaded:false,screened:false,selected:[]};
+
+const STAGES = [
+  {n:'新建任务',s:'任务命名与设定'},
+  {n:'传公司表单',s:'上传企业清单'},
+  {n:'初筛清单',s:'默认采纳 · 剔除多余'},
+  {n:'上传材料',s:'按分析点上传'},
+  {n:'研判',s:'系统事实抽取与评分'},
+  {n:'人工审核',s:'逐家确认修正'},
+  {n:'生成报告',s:'每企业一份'},
+];
+
+/* ================= 视图切换 ================= */
+function showView(name){
+  ['view-dashboard','view-backend','view-ws'].forEach(v=>{
+    $('#'+v).style.display = (v===name)?'block':'none';
+  });
+}
+function gotoBackend(tab){
+  UI.tab = tab;
+  document.querySelectorAll('.top-tab').forEach(n=>n.classList.remove('active'));
+  if(tab==='tasks') $('[data-action="tab-tasks"]').classList.add('active');
+  else $('[data-action="tab-reports"]').classList.add('active');
+  $('#panel-tasks').style.display = tab==='tasks'?'block':'none';
+  $('#panel-reports').style.display = tab==='reports'?'block':'none';
+  if(tab==='tasks') renderTasks();
+  else renderReports();
+  showView('view-backend');
+}
+
+/* ================= 渲染：任务中心 ================= */
+function renderTasks(){
+  const counts = {
+    '全部': TASKS.length,
+    '待初筛': TASKS.filter(t=>t.status==='待初筛').length,
+    '研判中': TASKS.filter(t=>t.status==='研判中').length,
+    '已完成': TASKS.filter(t=>t.status==='已完成').length,
+  };
+  const tabs = ['全部','待初筛','研判中','已完成'];
+  const filtered = UI.taskFilter==='全部' ? TASKS : TASKS.filter(t=>t.status===UI.taskFilter);
+  const ranged = UI.timeRange==='全部' ? filtered : filtered.filter(t=>(t.time||'') >= rangeThreshold(+UI.timeRange));
+
+  const cards = ranged.map(t=>{
+    const sel = UI.selTasks.includes(t.id);
+    return `
+    <div class="task-card reveal d2" data-action="open-task" data-id="${t.id}">
+      <div class="rck ${sel?'on':''}" data-action="toggle-select-task" data-id="${t.id}">${sel?'✓':''}</div>
+      <div>
+        <div class="nm">${esc(t.name)}</div>
+        <div class="mt">${esc(t.note)}</div>
+      </div>
+      <div class="tm">${esc(t.time||'—')}</div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="badge ${statusBadge(t.status)}"><span class="b-dot"></span>${t.status}</span>
+        <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>`;}).join('');
+
+  const selN = UI.selTasks.length;
+  $('#panel-tasks').innerHTML = `
+    <div class="wrap">
+      <div class="page-head reveal">
+        <div>
+          <h1>任务中心</h1>
+          <div class="sub">新建任务 → 传公司表单 → 初筛清单 → 上传材料 → 研判 → 人工审核 → 生成报告（后四步可多轮）</div>
+        </div>
+        <div class="head-actions">
+          <button class="btn btn-ghost" style="color:var(--err)" data-action="delete-tasks" ${selN?'':'disabled'}>删除任务${selN?'（'+selN+'）':''}</button>
+          <button class="btn btn-primary" data-action="new-task"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>新建任务</button>
+        </div>
+      </div>
+      <div class="task-tabs reveal d1">
+        ${tabs.map(t=>`
+          <div class="task-tab ${UI.taskFilter===t?'active':''}" data-action="filter-task" data-status="${t}">
+            <span class="n">${counts[t]}</span><span>${t}</span>
+          </div>`).join('')}
+        <div class="range-wrap">
+          <span style="font-size:12.5px;color:var(--ink-3)">时间</span>
+          <select data-task-range style="padding:10px 12px;border:1px solid var(--line-strong);border-radius:8px;font-family:inherit;font-size:13.5px;background:#fff;color:var(--ink-2);cursor:pointer">
+            <option value="全部">全部时间</option>
+            <option value="7" ${UI.timeRange==='7'?'selected':''}>近 7 天</option>
+            <option value="30" ${UI.timeRange==='30'?'selected':''}>近 30 天</option>
+          </select>
+        </div>
+      </div>
+      ${filtered.length ? cards : `<div class="empty">当前「${UI.taskFilter}」状态暂无任务</div>`}
+    </div>`;
+}
+
+/* ================= 渲染：报告查看 ================= */
+function renderReports(){
+  renderReportFilters();
+  renderReportList();
+}
+function renderReportFilters(){
+  const tasks = [...new Set(REPORTS.map(r=>r.task))];
+  const rounds = [...new Set(REPORTS.map(r=>r.round))].sort((a,b)=>a-b);
+  const opts = (list,all) => `<option value="全部">${all||'全部'}</option>` + list.map(x=>`<option ${FILTER.task===x||FILTER.risk===x||FILTER.round===String(x)||FILTER.range===String(x)?'selected':''}>${x}</option>`).join('');
+  // 上面 selected 逻辑太粗，改为精确匹配
+  const taskOpts = `<option value="全部">全部任务</option>` + tasks.map(x=>`<option value="${esc(x)}" ${FILTER.task===x?'selected':''}>${esc(x)}</option>`).join('');
+  const riskOpts = `<option value="全部">全部等级</option>` + RISK_ORDER.map(x=>`<option value="${x}" ${FILTER.risk===x?'selected':''}>${x}</option>`).join('');
+  const roundOpts = `<option value="全部">全部轮次</option>` + rounds.map(x=>`<option value="${x}" ${FILTER.round===String(x)?'selected':''}>第 ${x} 轮</option>`).join('');
+  const rangeOpts = `<option value="全部">全部时间</option><option value="7" ${FILTER.range==='7'?'selected':''}>近 7 天</option><option value="30" ${FILTER.range==='30'?'selected':''}>近 30 天</option>`;
+
+  $('#panel-reports').innerHTML = `
+    <div class="wrap">
+      <div class="page-head reveal">
+        <h1>报告查看</h1>
+        <div class="sub">跨任务查看历史生成的企业报告，支持多维度筛选</div>
+      </div>
+      <div class="filters reveal d1">
+        <div class="filter"><label>所属任务</label><select data-filter="task">${taskOpts}</select></div>
+        <div class="filter"><label>风险等级</label><select data-filter="risk">${riskOpts}</select></div>
+        <div class="filter"><label>研判轮次</label><select data-filter="round">${roundOpts}</select></div>
+        <div class="filter"><label>生成时间</label><select data-filter="range">${rangeOpts}</select></div>
+        <div class="filter" style="flex:1;min-width:220px"><label>关键字</label><input data-filter="kw" placeholder="企业名 / 信用代码 / 任务" value="${esc(FILTER.kw)}"></div>
+        <button class="btn btn-ghost reset" data-action="reset-filter">重置</button>
+      </div>
+      <div id="report-list"></div>
+    </div>`;
+}
+function renderReportList(){
+  let list = REPORTS.filter(r=>{
+    if(FILTER.task!=='全部' && r.task!==FILTER.task) return false;
+    if(FILTER.risk!=='全部' && r.risk!==FILTER.risk) return false;
+    if(FILTER.round!=='全部' && r.round!==+FILTER.round) return false;
+    if(FILTER.range!=='全部'){
+      const days=(TODAY - new Date(r.time))/86400000;
+      if(FILTER.range==='7' && days>7) return false;
+      if(FILTER.range==='30' && days>30) return false;
+    }
+    if(FILTER.kw && FILTER.kw.trim()){
+      const k=FILTER.kw.trim();
+      if(!r.company.includes(k) && !r.credit.includes(k) && !r.task.includes(k)) return false;
+    }
+    return true;
+  });
+
+  const html = list.length
+    ? list.map(r=>`
+      <div class="rep-row reveal">
+        <div><div class="en">${esc(r.company)}</div><div class="es">信用代码 ${esc(r.credit)}</div></div>
+        <div class="cell"><div class="lbl">所属任务</div><div class="val soft">${esc(r.task)}</div></div>
+        <div class="cell"><div class="lbl">烽火指数</div><div class="score-big" style="color:${RISK[r.risk].hex}">${r.score}</div></div>
+        <div class="cell"><div class="lbl">风险等级</div><div class="val">${riskBadge(r.risk)}</div></div>
+        <div class="cell"><div class="lbl">轮次</div><div class="val">第 ${r.round} 轮</div></div>
+        <div class="cell"><div class="lbl">生成时间</div><div class="val soft">${r.time}</div></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-soft" style="padding:5px 11px" data-action="view-report" data-company="${esc(r.company)}">查看</button>
+          <button class="btn btn-ghost" style="padding:5px 11px" data-action="download-report" data-company="${esc(r.company)}">PDF</button>
+        </div>
+      </div>`).join('')
+    : `<div class="empty">无匹配报告，请调整筛选条件</div>`;
+
+  $('#report-list').innerHTML = `<div class="result-count">共 ${list.length} 份报告</div>` + html;
+}
+
+/* ================= 渲染：任务工作台 ================= */
+function renderStageList(){
+  const screened = WS.screened || WS.task.companies>0;
+  let html = STAGES.slice(0,3).map((s,i)=>{
+    const num=i+1;
+    let cls='stage'; if(num===WS.stage) cls+=' active'; else if(num<WS.stage||screened) cls+=' done';
+    return stageItem(num,s,cls);
+  }).join('');
+  html += `<div class="round-head"><span>研判轮次</span> · <span class="rn">第 ${WS.round} 轮</span>
+    <button class="hist" data-action="round-history"><svg class="icon" width="13" height="13" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/></svg>历史</button></div>`;
+  html += STAGES.slice(3).map((s,i)=>{
+    const num=i+4;
+    let cls='stage'; if(num===WS.stage) cls+=' active';
+    if(!screened) cls+=' lock';
+    return stageItem(num,s,cls);
+  }).join('');
+  $('#stage-list').innerHTML = html;
+}
+function stageItem(num,s,cls){
+  return `<div class="${cls}" data-action="stage" data-stage="${num}">
+    <div class="st-num">${cls.includes('done')?'✓':num}</div>
+    <div class="st-body"><div class="st-t">${s.n}</div><div class="st-s">${s.s}</div></div>
+  </div>`;
+}
+
+function openTask(id){
+  WS.task = TASKS.find(t=>t.id===id);
+  WS.stage = WS.task.stage||1;
+  WS.round = WS.task.round||1;
+  WS.company = 0; WS.inCompany = false;
+  WS.candidates = COMPANY_FORM.map(c=>({...c}));
+  WS.formUploaded = WS.task.stage >= 3 || WS.task.companies>0;
+  WS.screened = WS.task.companies>0;
+  WS.selected = [];
+  $('#ws-title').textContent = WS.task.name;
+  showView('view-ws');
+  renderStageList(); renderCanvas();
+}
+
+function renderCanvas(){
+  const s = WS.stage;
+  let crumb = `任务中心 / ${WS.task.name} / ${STAGES[s-1].n}`;
+  if(s===6 && WS.inCompany) crumb += ` / ${COMPANIES[WS.company].n}`;
+  $('#ws-crumb').textContent = crumb;
+  $('#ws-prog').textContent = `阶段 ${s}/7`;
+  $('#ws-status').innerHTML = `<span class="badge ${statusBadge(WS.task.status)}"><span class="b-dot"></span>${WS.task.status}</span>`;
+
+  if(s===1){ WS.inCompany=false; renderTaskInfo(); }
+  else if(s===2){ WS.inCompany=false; renderCompanyForm(); }
+  else if(s===3){ WS.inCompany=false; renderScreen(); }
+  else if(s===4){ WS.inCompany=false; renderMaterials(); }
+  else if(s===5){ WS.inCompany=false; renderAnalysis(); }
+  else if(s===6){ WS.inCompany ? renderCompany() : renderReview(); }
+  else { WS.inCompany=false; renderReport(); }
+}
+
+/* ---------- 1 新建任务 ---------- */
+function renderTaskInfo(){
+  $('#ws-canvas').innerHTML = `
+    <div class="panel reveal">
+      <div class="panel-h"><div class="t">任务设定</div><div class="sub">第 1 步 / 共 7 步</div><div class="spacer"></div>
+        <button class="btn btn-primary" data-action="goto" data-stage="2">下一步：传公司表单<svg class="icon" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
+      <div class="panel-b">
+        <div class="flow-hint">流程：<b>新建任务 → 传公司表单 → 初筛清单 → 上传材料 → 研判 → 人工审核 → 生成报告</b>。其中「上传材料 → 生成报告」为<b>研判轮次</b>，可反复执行、每轮覆盖上轮结果并留痕。</div>
+        <div class="field">
+          <label>任务名称</label>
+          <input type="text" value="${esc(WS.task.name)}">
+        </div>
+        <div class="field">
+          <label>备注</label>
+          <textarea>${esc(WS.task.note)}</textarea>
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ---------- 2 传公司表单 ---------- */
+function renderCompanyForm(){
+  const uploaded = WS.formUploaded;
+  $('#ws-canvas').innerHTML = `
+    <div class="panel reveal">
+      <div class="panel-h"><div class="t">传公司表单</div><div class="sub">第 2 步 / 共 7 步 · 上传企业清单，系统自动解析</div><div class="spacer"></div>
+        <button class="btn btn-ghost" data-action="goto" data-stage="1">上一步</button>
+        <button class="btn btn-primary" ${uploaded?'':'disabled'} data-action="goto" data-stage="3">下一步：初筛清单<svg class="icon" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
+      <div class="panel-b">
+        <div class="flow-hint">上传<b>企业清单表单</b>（XLSX / XLS / CSV），系统识别「企业名称 / 信用代码」列。清单里的企业将作为本次任务的对象。</div>
+        ${uploaded
+          ? `<div class="formfile done">
+              <div class="fico"><svg class="icon" width="19" height="19" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div>
+              <div style="flex:1"><div class="fn" style="font-weight:600">企业清单_2026朝阳涉非.xlsx</div><div class="fm">已解析 <b style="color:var(--primary)">${COMPANY_FORM.length}</b> 家企业 · 2 条待确认信用代码</div></div>
+              <span class="badge b-ok"><span class="b-dot"></span>已解析</span>
+              <button class="btn btn-ghost" style="padding:5px 11px" data-action="reupload-form">重新上传</button>
+            </div>`
+          : `<div class="formfile" data-action="upload-form">
+              <div class="fico"><svg class="icon" width="19" height="19" viewBox="0 0 24 24"><path d="M12 16V4m0 0l-5 5m5-5l5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg></div>
+              <div><div class="fn" style="font-weight:600">点击上传企业清单表单</div><div class="fm">支持 XLSX / XLS / CSV，单文件 ≤ 20MB</div></div>
+            </div>`}
+      </div>
+    </div>`;
+}
+
+/* ---------- 3 初筛清单 ---------- */
+function renderScreen(){
+  const cands = WS.candidates.map((c,i)=>{
+    const note = c.note?`<span class="screen-note ${c.note.includes('重复')?'dup':''}"><svg class="icon" width="12" height="12" viewBox="0 0 24 24"><path d="M12 8v5m0 3h.01"/><circle cx="12" cy="12" r="9"/></svg>${esc(c.note)}</span>`:'';
+    return `<div class="cand ${c.on?'on':''}" data-action="toggle-cand" data-i="${i}">
+      <div class="ck">✓</div>
+      <div><div class="cn">${esc(c.n)}</div><div class="cc">信用代码 ${esc(c.cc)}</div></div>
+      <div class="spacer"></div>${note}
+    </div>`;
+  }).join('');
+  const checked = WS.candidates.filter(c=>c.on).length;
+
+  $('#ws-canvas').innerHTML = `
+    <div class="panel reveal">
+      <div class="panel-h"><div class="t">初筛公司清单</div><div class="sub">第 3 步 / 共 7 步</div><div class="spacer"></div>
+        <span class="badge b-neutral">已采纳 ${checked} / ${WS.candidates.length} 家</span>
+        <button class="btn btn-ghost" data-action="reset-cand">全部重置</button>
+        <button class="btn btn-ghost" data-action="goto" data-stage="2">上一步</button>
+        <button class="btn btn-primary" data-action="confirm-cand">确认清单（${checked} 家）</button>
+      </div>
+      <div class="panel-b">
+        <div class="flow-hint">清单<b>默认全部采纳</b>。如发现<b>多余数据</b>（重复 / 非本辖区 / 经营范围无关），点击该行<b>剔除</b>。被剔除的企业不会进入后续研判。</div>
+        ${cands}
+      </div>
+    </div>`;
+}
+
+/* ---------- 4 上传材料 ---------- */
+function renderMaterials(){
+  const mats = MATERIALS.map(m=>`
+    <div class="mat">
+      <div class="fico"><svg class="icon" width="18" height="18" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div>
+      <div><div class="fn">${esc(m.f)}</div><div class="fm">${esc(m.m)}</div></div>
+      <div style="margin-left:auto"><span class="badge b-ok"><span class="b-dot"></span>已解析</span></div>
+    </div>`).join('');
+
+  $('#ws-canvas').innerHTML = `
+    <div class="panel reveal">
+      <div class="panel-h"><div class="t">上传材料</div><div class="sub">第 4 步 / 共 7 步 · 第 ${WS.round} 轮材料</div><div class="spacer"></div>
+        <button class="btn btn-ghost" data-action="supplement-upload"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>补充上传</button>
+        <button class="btn btn-ghost" data-action="round-history">历史轮次</button>
+        <button class="btn btn-primary" data-action="start-analysis">开始研判<svg class="icon" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
+      <div class="panel-b">
+        <div class="flow-hint">按<b>分析点</b>上传材料（公安警务 / 民事裁判 / 舆情投诉 / 行政监管…）。这是<b>第 ${WS.round} 轮</b>，上传后将覆盖上一轮的材料与结果。</div>
+        ${mats}
+        <div class="round-summary">
+          <div class="big">${WS.round}</div>
+          <div style="font-size:13px;color:var(--ink-2)">当前研判轮次<br><span style="font-size:11.5px;color:var(--ink-3)">${MATERIALS.length} 份材料 · 已解析 ${MATERIALS.reduce((a,m)=>a+m.facts,0)} 条事实</span></div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function openSupplement(){
+  SUP.mode='categorized'; SUP.cat='公安警务数据'; SUP.fileIdx=0;
+  $('#sup-cat').innerHTML = ANALYSIS_CATS.map(c=>`<option ${c===SUP.cat?'selected':''}>${c}</option>`).join('');
+  const sub=$('#sup-sub'); if(sub) sub.textContent='向当前第 '+WS.round+' 轮补充材料，上传后可重新研判';
+  renderSupplementMode(); renderSupplementFile();
+  $('#supplement-modal').classList.add('show');
+}
+function renderSupplementMode(){
+  $('#sup-cat-wrap').style.display = SUP.mode==='categorized'?'':'none';
+  document.querySelectorAll('#supplement-modal .seg button').forEach(b=>b.classList.toggle('on', b.dataset.mode===SUP.mode));
+}
+function renderSupplementFile(){
+  $('#sup-file-name').textContent = SUP_FILES[SUP.fileIdx].f;
+}
+function submitSupplement(){
+  const f=SUP_FILES[SUP.fileIdx];
+  const cat = SUP.mode==='categorized' ? SUP.cat : '未分类';
+  MATERIALS.push({f:f.f, m:`${f.fmt} · ${cat} · 已解析`, s:'ok', facts:f.facts});
+  $('#supplement-modal').classList.remove('show');
+  renderCanvas();
+  toast('已补充上传：'+f.f+'（'+(SUP.mode==='categorized'?SUP.cat:'不按类')+'）');
+}
+
+/* ---------- 5 研判 ---------- */
+function renderAnalysis(){
+  const rows = COMPANIES.map((c,i)=>{
+    const stb = c.review==='已审核'?'b-ok':c.review==='缺材料'?'b-err':'b-warn';
+    return `<div class="erow" data-action="open-company" data-i="${i}">
+      <div><div class="en">${esc(c.n)}</div><div class="es">信用代码 ${esc(c.cc)}</div></div>
+      <div class="cell"><div class="lbl">抽取事实</div><div class="val">${c.facts}</div></div>
+      <div class="cell"><div class="lbl">烽火指数(系统)</div><div class="score-big" style="color:${c.risk?RISK[c.risk].hex:'var(--ink-3)'}">${c.score||'—'}</div></div>
+      <div class="cell"><div class="lbl">风险等级</div><div class="val">${riskBadge(c.risk)}</div></div>
+      <div class="cell"><div class="lbl">审核状态</div><div class="val"><span class="badge ${stb}"><span class="b-dot"></span>${c.review}</span></div></div>
+      <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>`;
+  }).join('');
+
+  $('#ws-canvas').innerHTML = `
+    <div class="panel reveal">
+      <div class="panel-h"><div class="t">研判结果</div><div class="sub">第 5 步 / 共 7 步 · 第 ${WS.round} 轮 · 系统已完成</div><div class="spacer"></div>
+        <span class="badge b-ai"><span class="b-dot"></span>Qwen 自动抽取</span>
+        <button class="btn btn-ghost" data-action="goto" data-stage="4">返回上传材料</button>
+        <button class="btn btn-primary" data-action="goto" data-stage="6">进入人工审核<svg class="icon" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
+      <div class="panel-b">
+        <div class="flow-hint">系统已完成<b>事实抽取与评分</b>，结果如下（<b>尚未人工确认</b>）。点击某行查看详情，随后进入「人工审核」逐家确认。</div>
+        <div class="sum reveal d1">
+          <div class="si"><b>${COMPANIES.length}</b><span class="k">家企业</span></div>
+          <div class="si"><b>${COMPANIES.reduce((a,c)=>a+(+c.facts.split('/')[0]||0),0)}</b><span class="k">条事实</span></div>
+          <div class="si"><b style="color:#6a4bb8">88%</b><span class="k">平均置信度</span></div>
+          <div class="si"><b>${COMPANIES.filter(c=>c.review==='已审核').length}</b><span class="k">已审核</span></div>
+        </div>
+        <div class="sec-label">系统研判清单（待人工审核）</div>
+        ${rows}
+      </div>
+    </div>`;
+}
+
+/* ---------- 6 人工审核 ---------- */
+function renderReview(){
+  const pending = COMPANIES.filter(c=>c.review==='待审核').length;
+  const rows = COMPANIES.map((c,i)=>{
+    const stb = c.review==='已审核'?'b-ok':c.review==='缺材料'?'b-err':'b-warn';
+    const sel = WS.selected.includes(i);
+    const ck = c.review==='待审核'
+      ? `<div class="rck ${sel?'on':''}" data-action="select-company" data-i="${i}">${sel?'✓':''}</div>`
+      : `<div class="rck dis"></div>`;
+    const quick = c.review==='待审核'
+      ? `<button class="btn btn-soft" style="padding:4px 10px" data-action="quick-pass" data-i="${i}">通过</button>`
+      : '';
+    return `<div class="erow rev" data-action="open-company" data-i="${i}">
+      ${ck}
+      <div><div class="en">${esc(c.n)}</div><div class="es">信用代码 ${esc(c.cc)}</div></div>
+      <div class="cell"><div class="lbl">事实(已/总)</div><div class="val">${c.facts}</div></div>
+      <div class="cell"><div class="lbl">烽火指数</div><div class="score-big" style="color:${c.risk?RISK[c.risk].hex:'var(--ink-3)'}">${c.score||'—'}</div></div>
+      <div class="cell"><div class="lbl">风险等级</div><div class="val">${riskBadge(c.risk)}</div></div>
+      <div class="cell"><div class="lbl">审核状态</div><div class="val"><span class="badge ${stb}"><span class="b-dot"></span>${c.review}</span></div></div>
+      <div style="display:flex;align-items:center;gap:9px">${quick}
+        <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>`;
+  }).join('');
+
+  const done = COMPANIES.filter(c=>c.review==='已审核').length;
+  const miss = COMPANIES.filter(c=>c.review==='缺材料').length;
+  const selN = WS.selected.length;
+  const allPendingIdx = COMPANIES.map((c,i)=>i).filter(i=>COMPANIES[i].review==='待审核');
+  const allSel = allPendingIdx.length>0 && allPendingIdx.every(i=>WS.selected.includes(i));
+
+  $('#ws-canvas').innerHTML = `
+    <div class="panel reveal">
+      <div class="panel-h"><div class="t">人工审核</div><div class="sub">第 6 步 / 共 7 步 · 第 ${WS.round} 轮 · 逐家确认</div><div class="spacer"></div>
+        <span class="badge b-neutral">已审核 ${done} / ${COMPANIES.length} 家</span>
+        <button class="btn btn-ghost" data-action="goto" data-stage="5">返回研判</button>
+        <button class="btn btn-primary" data-action="goto" data-stage="7">完成审核，生成报告<svg class="icon" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
+      <div class="panel-b">
+        <div class="flow-hint">对系统抽取的事实<b>逐条确认 / 修正</b>。可勾选多家<b>批量通过</b>，或点行尾「通过」快捷处理；缺材料的企业需补材料。</div>
+        <div class="batch-bar reveal d1">
+          <label class="sel" data-action="select-all"><span class="rck ${allSel?'on':''}">${allSel?'✓':''}</span>全选待审核</label>
+          <span class="cnt">已选 ${selN} 家</span>
+          <div class="spacer"></div>
+          <button class="btn btn-soft" style="padding:6px 13px" data-action="batch-pass" ${selN?'':'disabled'}>批量通过（${selN}）</button>
+          <button class="btn btn-ghost" style="padding:6px 13px" data-action="batch-miss" ${selN?'':'disabled'}>批量标缺材料</button>
+        </div>
+        <div class="sum reveal d1">
+          <div class="si"><b style="color:var(--ok)">${done}</b><span class="k">已审核</span></div>
+          <div class="si"><b style="color:var(--warn)">${pending}</b><span class="k">待审核</span></div>
+          <div class="si"><b style="color:var(--err)">${miss}</b><span class="k">缺材料</span></div>
+        </div>
+        <div class="sec-label">企业清单</div>
+        ${rows}
+      </div>
+    </div>`;
+}
+
+/* ---------- 6b 单企业人工审核 ---------- */
+function renderCompany(){
+  const c = COMPANIES[WS.company];
+  const prev = WS.company>0, next = WS.company<COMPANIES.length-1;
+
+  let groups = DIM_GROUPS.map(g=>{
+    const dims = g.dims.map(d=>{
+      const stb = d.st==='hit'?'b-ok':d.st==='miss'?'b-err':'b-neutral';
+      const sv = d.st==='hit'?`<span class="score"><div class="sv" style="color:${d.type==='固定分'?'var(--primary)':'var(--ink)'}">+${d.v}</div><div class="sk">${d.type}</div></span>`
+                :`<span class="score"><div class="sv" style="color:var(--ink-3)">0</div><div class="sk">${d.stt}</div></span>`;
+      const factHtml = d.fact?`
+        <div class="fact">
+          <div class="ft">${esc(d.fact.t)}</div>
+          <div class="ev"><span class="pin">${esc(d.fact.ev.split(' · ')[1]||d.fact.ev)}</span><span>${esc(d.fact.ev)}</span><span class="conf">置信度 ${d.fact.conf}%</span>
+            <span class="act"><button class="btn btn-ghost" style="padding:3px 10px">修正</button><button class="btn btn-soft" style="padding:3px 10px">确认</button></span>
+          </div>
+        </div>`:'';
+      return `<div class="dim ${d.fact?'open':''}" data-action="toggle-dim">
+        <div class="dim-h">
+          <div class="dcat">${d.code.slice(0,2)}</div>
+          <div><div class="dn">${d.n}</div><div class="dd">${d.code}</div></div>
+          <div class="spacer"></div>
+          <span class="badge ${stb}"><span class="b-dot"></span>${d.st==='hit'?'已命中':d.st==='miss'?'缺材料':'未命中'}</span>
+          ${sv}
+          <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        ${factHtml?`<div class="dim-b">${factHtml}</div>`:''}
+      </div>`;
+    }).join('');
+    return `<div class="sec-label">${g.g}</div>${dims}`;
+  }).join('');
+
+  const base=32.5, fixed=20, disc=19.5, total=base+fixed+disc;
+
+  $('#ws-canvas').innerHTML = `
+    <div style="display:flex;align-items:center;gap:11px;margin-bottom:15px" class="reveal">
+      <button class="btn btn-ghost" style="padding:6px 11px" data-action="back-review">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>返回企业清单
+      </button>
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:17px;color:var(--ink)">${esc(c.n)}</div>
+        <div style="font-size:12px;color:var(--ink-3)">信用代码 ${esc(c.cc)} · 事实 ${c.facts} · 第 ${WS.round} 轮</div>
+      </div>
+      ${riskBadge(c.risk)}
+      <button class="btn btn-ghost" style="padding:6px 11px" data-action="prev-company" ${prev?'':'disabled'}><svg class="icon" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>上一家</button>
+      <span class="mono" style="font-size:13px;color:var(--ink-2)">${WS.company+1}/${COMPANIES.length}</span>
+      <button class="btn btn-ghost" style="padding:6px 11px" data-action="next-company" ${next?'':'disabled'}>下一家<svg class="icon" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+    </div>
+
+    <div style="max-width:820px">
+      ${groups}
+      <div class="scorebar reveal">
+        <div class="formula">
+          <span class="part">基础分 <b>${base}</b></span><span class="eq">+</span>
+          <span class="part">固定分 <b>${fixed}</b></span><span class="eq">+</span>
+          <span class="part">裁量分 <b>${disc}</b></span><span class="eq">=</span>
+          <span class="total">${total}</span>
+          ${riskBadge(c.risk)}
+        </div>
+        <div class="spacer"></div>
+        <button class="btn btn-ghost" data-action="save-company">标记已审核</button>
+        <button class="btn btn-primary" data-action="score-company">确认并提交评分</button>
+      </div>
+    </div>`;
+}
+
+/* ---------- 7 生成报告 ---------- */
+function renderReport(){
+  const rows = COMPANIES.map((c,i)=>`
+    <div class="rep">
+      <div><div class="en">${esc(c.n)}</div><div class="es">信用代码 ${esc(c.cc)} · ${riskBadge(c.risk)}</div></div>
+      <div class="spacer"></div>
+      <div class="chapters">
+        <span class="chap"><span class="ok">✓</span>第一章 企业基本情况</span>
+        <span class="chap"><span class="ok">✓</span>第二章 烽火数据分析</span>
+        <span class="chap"><span class="ok">✓</span>第三章 指数级别评估</span>
+      </div>
+      <button class="btn btn-ghost" style="padding:6px 11px" data-action="export-report" data-i="${i}">导出</button>
+      <button class="btn btn-primary" style="padding:6px 12px" data-action="export-report" data-i="${i}">导出 PDF</button>
+    </div>`).join('');
+
+  $('#ws-canvas').innerHTML = `
+    <div class="panel reveal">
+      <div class="panel-h"><div class="t">生成报告</div><div class="sub">第 7 步 / 共 7 步 · 第 ${WS.round} 轮 · 每企业一份</div><div class="spacer"></div>
+        <button class="btn btn-ghost" data-action="round-history">历史轮次</button>
+        <button class="btn btn-ghost" data-action="goto" data-stage="6">返回审核</button>
+        <button class="btn btn-primary" data-action="new-round"><svg class="icon" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/></svg>开始新一轮</button>
+      </div>
+      <div class="panel-b">
+        <div class="flow-hint">本轮（第 ${WS.round} 轮）报告已就绪，每家企业一份（前三章）。如需补充材料重新研判，点击「<b>开始新一轮</b>」，本轮结果将被<b>覆盖</b>并存入历史。</div>
+        <div class="sec-label">${COMPANIES.length} 家企业报告</div>
+        ${rows}
+      </div>
+    </div>`;
+}
+
+/* ---------- 历史轮次 ---------- */
+function renderHistory(){
+  const rounds = [
+    {no:WS.round, time:'2026-09-05 16:40', note:WS.round===2?'补充12345投诉材料后复核':'本轮研判', cur:true,
+     companies:COMPANIES.map(c=>({n:c.n,score:c.score,risk:c.risk}))},
+    {no:1, time:'2026-09-02 10:11', note:'首次研判', cur:false, companies:ROUND1_SNAPSHOT},
+  ];
+  $('#history-body').innerHTML = rounds.map((r,i)=>`
+    <div class="hist-row ${r.cur?'cur':''} ${i===0?'open':''}">
+      <div class="hh" data-action="hist-view">
+        <div class="hnum">${r.no}</div>
+        <div class="hmeta"><div class="hn">第 ${r.no} 轮 ${r.cur?'<span class="badge b-info" style="margin-left:4px">当前</span>':''}</div>
+          <div class="ht">${r.time} · ${r.note}</div></div>
+        <div class="hs"><b>${r.companies.filter(c=>c.score>0).length}</b> 家已研判 · 最高 <b>${Math.max(...r.companies.map(c=>c.score))}</b> 分</div>
+        <svg class="chev" width="15" height="15" viewBox="0 0 24 24" fill="none" style="color:var(--ink-3)"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="hb">
+        <table class="mini-tbl">
+          <tr><th>企业</th><th>烽火指数</th><th>风险等级</th></tr>
+          ${r.companies.map(c=>`<tr><td>${esc(c.n)}</td><td style="font-weight:600">${c.score||'—'}</td><td>${riskBadge(c.risk)}</td></tr>`).join('')}
+        </table>
+        ${!r.cur?'<div style="font-size:11px;color:var(--ink-3);margin-top:9px">本结果已被第 '+(r.no+1)+' 轮覆盖，仅供溯源对比。</div>':''}
+      </div>
+    </div>`).join('');
+  $('#history-modal').classList.add('show');
+}
+
+/* ================= 事件 ================= */
+document.addEventListener('click', e=>{
+  const el = e.target.closest('[data-action]');
+  if(!el) return;
+  const a = el.dataset.action;
+  const id = el.dataset.id;
+
+  if(a==='goto-backend'){ gotoBackend('tasks'); }
+  else if(a==='tab-tasks'){ gotoBackend('tasks'); }
+  else if(a==='tab-reports'){ gotoBackend('reports'); }
+  else if(a==='back-dash'){ showView('view-dashboard'); }
+  else if(a==='new-task'){ $('#new-task-modal').classList.add('show'); $('#nt-name').focus(); }
+  else if(a==='close-new-task'){ $('#new-task-modal').classList.remove('show'); }
+  else if(a==='submit-new-task'){
+    const name = $('#nt-name').value.trim() || '未命名任务';
+    const note = $('#nt-note').value.trim() || '—';
+    TASKS.unshift({id:'t'+Date.now(),name,note,companies:0,status:'待初筛',time:fmtNow(),stage:1,round:1,risk:{'观察':0,'萤火':0,'燧烟':0,'岂火':0,'积薪':0}});
+    $('#new-task-modal').classList.remove('show');
+    $('#nt-name').value=''; $('#nt-note').value='';
+    UI.taskFilter='全部';
+    renderTasks(); openTask(TASKS[0].id);
+    toast('已创建任务：'+name);
+  }
+  else if(a==='open-task'){ openTask(id); }
+  else if(a==='filter-task'){ UI.taskFilter=el.dataset.status; UI.selTasks=[]; renderTasks(); }
+  else if(a==='toggle-select-task'){
+    const tid=el.dataset.id;
+    const p=UI.selTasks.indexOf(tid);
+    if(p>=0) UI.selTasks.splice(p,1); else UI.selTasks.push(tid);
+    const on=UI.selTasks.includes(tid);
+    el.classList.toggle('on', on);
+    el.textContent = on?'✓':'';
+    const del=$('#panel-tasks [data-action="delete-tasks"]');
+    if(del){ del.disabled = !UI.selTasks.length; del.textContent = '删除任务'+(UI.selTasks.length?'（'+UI.selTasks.length+'）':''); }
+  }
+  else if(a==='delete-tasks'){
+    const n=UI.selTasks.length; if(!n) return;
+    if(!confirm('确定删除选中的 '+n+' 个任务？此操作不可恢复。')) return;
+    TASKS = TASKS.filter(t=>!UI.selTasks.includes(t.id));
+    UI.selTasks=[];
+    renderTasks();
+    toast('已删除 '+n+' 个任务');
+  }
+  else if(a==='back-tasks'){ gotoBackend('tasks'); }
+  else if(a==='stage'){ const n=+el.dataset.stage; if(el.classList.contains('lock')) return; WS.stage=n; WS.company=0; WS.inCompany=false; WS.selected=[]; renderStageList(); renderCanvas(); }
+  else if(a==='goto'){
+    WS.stage=+el.dataset.stage;
+    if(WS.stage===7) WS.task.status='已完成';
+    else if(WS.stage<=6 && WS.task.status==='已完成') WS.task.status='研判中';
+    WS.company=0; WS.inCompany=false; WS.selected=[]; renderStageList(); renderCanvas();
+  }
+  else if(a==='upload-form'){ WS.formUploaded=true; renderCanvas(); toast('已上传企业清单，解析 '+COMPANY_FORM.length+' 家企业'); }
+  else if(a==='reupload-form'){ WS.formUploaded=false; renderCanvas(); }
+  else if(a==='toggle-cand'){
+    const i=+el.dataset.i; WS.candidates[i].on=!WS.candidates[i].on;
+    el.classList.toggle('on',WS.candidates[i].on);
+    const checked=WS.candidates.filter(c=>c.on).length;
+    const b=$('#ws-canvas .badge.b-neutral'); if(b) b.textContent=`已采纳 ${checked} / ${WS.candidates.length} 家`;
+    const btn=$('#ws-canvas [data-action="confirm-cand"]'); if(btn) btn.textContent=`确认清单（${checked} 家）并进入上传材料`;
+  }
+  else if(a==='reset-cand'){ WS.candidates.forEach(c=>c.on=true); renderCanvas(); }
+  else if(a==='confirm-cand'){
+    const n=WS.candidates.filter(c=>c.on).length;
+    if(n===0){ toast('请至少采纳一家企业'); return; }
+    WS.task.companies=n; WS.task.status='研判中'; WS.screened=true;
+    WS.stage=4; WS.company=0; WS.inCompany=false;
+    toast('已采纳 '+n+' 家企业（剔除 '+(WS.candidates.length-n)+' 家多余数据），进入上传材料');
+    renderStageList(); renderCanvas();
+  }
+  else if(a==='start-analysis'){ WS.stage=5; WS.company=0; renderStageList(); renderCanvas(); toast('研判作业已完成（第 '+WS.round+' 轮），共抽取 '+COMPANIES.reduce((x,c)=>x+(+c.facts.split('/')[0]||0),0)+' 条事实'); }
+  else if(a==='open-company'){ WS.company=+el.dataset.i; WS.inCompany=true; renderCanvas(); }
+  else if(a==='back-review'){ WS.inCompany=false; renderCanvas(); }
+  else if(a==='prev-company'){ if(WS.company>0){WS.company--;renderCanvas();} }
+  else if(a==='next-company'){ if(WS.company<COMPANIES.length-1){WS.company++;renderCanvas();} }
+  else if(a==='toggle-dim'){ el.classList.toggle('open'); }
+  else if(a==='select-company'){
+    const i=+el.dataset.i; if(COMPANIES[i].review!=='待审核') return;
+    const p=WS.selected.indexOf(i);
+    if(p>=0) WS.selected.splice(p,1); else WS.selected.push(i);
+    renderReview();
+  }
+  else if(a==='select-all'){
+    const all=COMPANIES.map((c,i)=>i).filter(i=>COMPANIES[i].review==='待审核');
+    const allSel=all.length>0 && all.every(i=>WS.selected.includes(i));
+    WS.selected = allSel ? [] : all.slice();
+    renderReview();
+  }
+  else if(a==='batch-pass'){
+    const n=WS.selected.length; if(!n) return;
+    WS.selected.forEach(i=>{ if(COMPANIES[i].review==='待审核') COMPANIES[i].review='已审核'; });
+    WS.selected=[];
+    toast('已批量通过 '+n+' 家企业');
+    renderReview();
+  }
+  else if(a==='batch-miss'){
+    const n=WS.selected.length; if(!n) return;
+    WS.selected.forEach(i=>{ if(COMPANIES[i].review==='待审核') COMPANIES[i].review='缺材料'; });
+    WS.selected=[];
+    toast('已将 '+n+' 家企业标记为缺材料');
+    renderReview();
+  }
+  else if(a==='quick-pass'){
+    const i=+el.dataset.i; COMPANIES[i].review='已审核';
+    WS.selected=WS.selected.filter(x=>x!==i);
+    toast('已通过：'+COMPANIES[i].n);
+    renderReview();
+  }
+  else if(a==='save-company'){ COMPANIES[WS.company].review='已审核'; WS.selected=WS.selected.filter(i=>i!==WS.company); toast('已标记已审核：'+COMPANIES[WS.company].n); renderCanvas(); }
+  else if(a==='score-company'){ COMPANIES[WS.company].review='已审核'; WS.selected=WS.selected.filter(i=>i!==WS.company); toast('已确认并提交评分：'+COMPANIES[WS.company].n+' · 烽火指数 '+COMPANIES[WS.company].score); renderCanvas(); }
+  else if(a==='export-report'){ toast('导出报告：'+COMPANIES[+el.dataset.i].n+'（演示，未实际下载）'); }
+  else if(a==='view-report'){ toast('查看报告：'+el.dataset.company+'（演示）'); }
+  else if(a==='download-report'){ toast('下载报告：'+el.dataset.company+'（演示，未实际下载）'); }
+  else if(a==='reset-filter'){ FILTER={task:'全部',risk:'全部',round:'全部',range:'全部',kw:''}; renderReports(); }
+  else if(a==='new-round'){
+    WS.round++; WS.task.round=WS.round; WS.task.status='研判中';
+    COMPANIES.forEach(c=>c.review='待审核');
+    WS.stage=4; WS.company=0; WS.inCompany=false;
+    toast('已开始第 '+WS.round+' 轮：上一轮结果已归档覆盖，请上传新材料');
+    renderStageList(); renderCanvas();
+  }
+  else if(a==='round-history'){ renderHistory(); }
+  else if(a==='close-history'){ $('#history-modal').classList.remove('show'); }
+  else if(a==='supplement-upload'){ openSupplement(); }
+  else if(a==='close-supplement'){ $('#supplement-modal').classList.remove('show'); }
+  else if(a==='sup-mode'){ SUP.mode=el.dataset.mode; renderSupplementMode(); }
+  else if(a==='sup-file'){ SUP.fileIdx=(SUP.fileIdx+1)%SUP_FILES.length; renderSupplementFile(); }
+  else if(a==='submit-supplement'){ submitSupplement(); }
+  else if(a==='hist-view'){ el.closest('.hist-row').classList.toggle('open'); }
+});
+
+/* 筛选器 change / input */
+document.addEventListener('change', e=>{
+  if(e.target.id==='sup-cat'){ SUP.cat=e.target.value; return; }
+  if(e.target.dataset.taskRange!==undefined){ UI.timeRange=e.target.value; renderTasks(); return; }
+  const el = e.target.closest('[data-filter]');
+  if(!el || el.dataset.filter==='kw') return;
+  FILTER[el.dataset.filter] = el.value;
+  renderReportList();
+});
+document.addEventListener('input', e=>{
+  const el = e.target.closest('[data-filter="kw"]');
+  if(!el) return;
+  FILTER.kw = el.value;
+  renderReportList();
+});
+
+/* 初始化 */
+showView('view-dashboard');
+</script>
+</body>
+</html>
