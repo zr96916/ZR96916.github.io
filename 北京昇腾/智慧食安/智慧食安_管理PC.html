@@ -299,14 +299,14 @@ const MOCK = {
     { id:'ENT010', name:'华联超市（食品区）', creditCode:'91310115MA1K3GGGGG', licenseNo:'JY20201228010', town:'城东镇', entityType:'食品销售', bizStatus:'营业', recentOrders:0, legalPerson:'郑小红', bindPhone:'133****4567', bindOpenId:'oHJKL1098mklop432', recipients:[{id:'R9',nickname:'郑小红',remark:'',openid:'oHJKL1098mklop432',phone:'133****9017',status:'有效',bindTime:'2026-08-31 18:50'}] },
   ],
   notifications: [
-    { id:'NTF001', type:'warning', title:'工单超时预警', content:'永和豆浆（城东店）整改工单已超过截止时间24小时未处理', time:'2026-07-03 14:30', read:false },
-    { id:'NTF002', type:'info', title:'新AI报警', content:'老重庆火锅（南桥店）检测到未戴口罩违规', time:'2026-07-03 14:22', read:false },
-    { id:'NTF003', type:'info', title:'证照到期提醒', content:'味多美烘焙坊食品经营许可证将于30天后到期', time:'2026-07-03 13:00', read:false },
-    { id:'NTF004', type:'success', title:'工单审批完成', content:'沙县小吃（中心店）整改工单已通过审核', time:'2026-07-03 11:20', read:true },
-    { id:'NTF005', type:'warning', title:'驳回次数超限', content:'黄焖鸡米饭（学院店）整改工单已累计驳回3次，系统自动关闭', time:'2026-07-03 10:15', read:true },
-    { id:'NTF006', type:'info', title:'新AI报警', content:'老乡鸡（北关店）检测到陌生人闯入', time:'2026-07-03 13:20', read:false },
-    { id:'NTF007', type:'error', title:'摄像头断流', content:'永和豆浆（城东店）后厨-灶台摄像头已离线超过15分钟', time:'2026-07-03 12:05', read:false },
-    { id:'NTF008', type:'success', title:'巡检报告生成完成', content:'城东镇2026年7月第1周巡检报告已自动生成', time:'2026-07-03 08:00', read:true },
+    { id:'NTF001', type:'normal', title:'工单超时预警', content:'永和豆浆（城东店）整改工单已超过截止时间24小时未处理', time:'2026-07-03 14:30', read:false },
+    { id:'NTF002', type:'alarm', title:'AI报警', content:'老重庆火锅（南桥店）检测到未戴口罩违规', time:'2026-07-03 14:22', read:false },
+    { id:'NTF003', type:'normal', title:'证照到期提醒', content:'味多美烘焙坊食品经营许可证将于30天后到期', time:'2026-07-03 13:00', read:false },
+    { id:'NTF004', type:'normal', title:'工单审批完成', content:'沙县小吃（中心店）整改工单已通过审核', time:'2026-07-03 11:20', read:true },
+    { id:'NTF005', type:'normal', title:'驳回次数超限', content:'黄焖鸡米饭（学院店）整改工单已累计驳回3次，系统自动关闭', time:'2026-07-03 10:15', read:true },
+    { id:'NTF006', type:'alarm', title:'AI报警', content:'老乡鸡（北关店）检测到陌生人闯入', time:'2026-07-03 13:20', read:false },
+    { id:'NTF007', type:'normal', title:'摄像头断流', content:'永和豆浆（城东店）后厨-灶台摄像头已离线超过15分钟', time:'2026-07-03 12:05', read:false },
+    { id:'NTF008', type:'normal', title:'巡检报告生成完成', content:'城东镇2026年7月第1周巡检报告已自动生成', time:'2026-07-03 08:00', read:true },
   ],
   feedbacks: [
     { id:'FB001', enterprise:'永和豆浆（城东店）', town:'城东镇', type:'系统问题', content:'摄像头画面经常卡顿，无法查看实时监控，已经持续三天了，请尽快处理。', contact:'张经理', phone:'13800138001', status:'待回复', createTime:'2026-07-22 10:30:00', messages:[] },
@@ -3712,10 +3712,8 @@ function NotificationCenter() {
   const markRead = (id) => setNotifs(notifs.map(n => n.id === id ? {...n, read:true} : n));
 
   const typeStyles = {
-    warning: { bg:'bg-amber-50', icon:'⚠', color:'text-amber-600' },
-    info:    { bg:'bg-blue-50',  icon:'ℹ', color:'text-blue-600' },
-    success: { bg:'bg-emerald-50', icon:'✓', color:'text-emerald-600' },
-    error:   { bg:'bg-red-50', icon:'✕', color:'text-red-600' },
+    alarm:  { bg:'bg-red-50',  icon:'⚠', color:'text-red-600', label:'严重' },
+    normal: { bg:'bg-slate-100', icon:'●', color:'text-slate-500' },
   };
 
   return (
@@ -3744,7 +3742,7 @@ function NotificationCenter() {
       {/* Notification List */}
       <div className="space-y-1.5 animate-fade-in-up">
         {filtered.map(n => {
-          const ts = typeStyles[n.type] || typeStyles.info;
+          const ts = typeStyles[n.type] || typeStyles.normal;
           return (
             <div key={n.id}
               onClick={() => markRead(n.id)}
@@ -3757,6 +3755,7 @@ function NotificationCenter() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <h4 className={`text-sm ${!n.read ? 'font-semibold text-ink' : 'text-ink-secondary'}`}>{n.title}</h4>
+                    {ts.label && <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-50 text-red-600 border border-red-100 font-medium">{ts.label}</span>}
                     {!n.read && <span className="w-1.5 h-1.5 rounded-full bg-gov-500 shrink-0"></span>}
                   </div>
                   <p className="text-[12.5px] text-ink-secondary mt-0.5">{n.content}</p>
