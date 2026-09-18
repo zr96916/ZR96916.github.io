@@ -4096,7 +4096,8 @@ function AnnouncementManagement({ userRole, roleTown }) {
   const [templates, setTemplates] = useState(MOCK.announcementTemplates);
   const [showComposer, setShowComposer] = useState(false);
   const [detailId, setDetailId] = useState(null);
-  const [form, setForm] = useState({ title: '', scope: '全区', scopeTowns: [], scopeGroupIds: [], content: '' });
+  const [form, setForm] = useState({ title: '', scope: '全区', scopeTowns: [], scopeGroupIds: [], content: '', repeatType: 'none', repeatStart: '', repeatEnd: '' });
+  const [editingId, setEditingId] = useState(null);
   const [toast, setToast] = useState(null);
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(null), 2400); };
 
@@ -4116,12 +4117,29 @@ function AnnouncementManagement({ userRole, roleTown }) {
   const groupCount = (g) => groupMembersOf(g, MOCK.enterprises).length;
 
   const resetForm = () => {
-    setForm({ title: '', scope: isDistrict ? '全区' : roleTown, scopeTowns: [], scopeGroupIds: [], content: '' });
+    setForm({ title: '', scope: isDistrict ? '全区' : roleTown, scopeTowns: [], scopeGroupIds: [], content: '', repeatType: 'none', repeatStart: '', repeatEnd: '' });
     setAppliedTplId('');
+    setEditingId(null);
   };
 
   const handleOpenComposer = () => {
     resetForm();
+    setShowComposer(true);
+  };
+
+  const handleOpenEdit = (ann) => {
+    setForm({
+      title: ann.title,
+      scope: ann.scope,
+      scopeTowns: ann.scopeTowns || [],
+      scopeGroupIds: ann.scopeGroupIds || [],
+      content: ann.content,
+      repeatType: ann.repeatType || 'none',
+      repeatStart: ann.repeatStart || '',
+      repeatEnd: ann.repeatEnd || '',
+    });
+    setAppliedTplId('');
+    setEditingId(ann.id);
     setShowComposer(true);
   };
 
@@ -4170,23 +4188,36 @@ function AnnouncementManagement({ userRole, roleTown }) {
     if (form.scope === '自定义分组' && form.scopeGroupIds.length === 0) { showToast('请至少选择一个分组'); return; }
     const scopeText = form.scope === '全区' ? '全区' : form.scope === '自定义镇' ? '自定义镇' : form.scope === '自定义分组' ? '自定义分组' : form.scope;
     const groupNames = form.scope === '自定义分组' ? form.scopeGroupIds.map(id => (MOCK.groups.find(g => g.id === id) || {}).name).filter(Boolean).join('、') : '';
-    const newAnn = {
-      id: 'ANC' + String(announcements.length + 1).padStart(3, '0'),
+    const payload = {
       title: form.title.trim(),
-      source: sourceLabel,
       scope: scopeText,
       scopeTowns: form.scope === '自定义镇' ? form.scopeTowns : (form.scope === '全区' || form.scope === '自定义分组' ? [] : [form.scope]),
       scopeGroupIds: form.scope === '自定义分组' ? form.scopeGroupIds : [],
       scopeGroupNames: groupNames,
       content: form.content.trim(),
-      createTime: new Date().toLocaleString('zh-CN'),
-      status: '已发布',
-      author: authorLabel,
+      repeatType: form.repeatType,
+      repeatStart: form.repeatStart,
+      repeatEnd: form.repeatEnd,
     };
-    setAnnouncements([newAnn, ...announcements]);
-    setShowComposer(false);
-    resetForm();
-    showToast('公告发布成功');
+    if (editingId) {
+      setAnnouncements(announcements.map(a => a.id === editingId ? { ...a, ...payload } : a));
+      setShowComposer(false);
+      resetForm();
+      showToast('公告已更新');
+    } else {
+      const newAnn = {
+        id: 'ANC' + String(announcements.length + 1).padStart(3, '0'),
+        ...payload,
+        source: sourceLabel,
+        createTime: new Date().toLocaleString('zh-CN'),
+        status: '已发布',
+        author: authorLabel,
+      };
+      setAnnouncements([newAnn, ...announcements]);
+      setShowComposer(false);
+      resetForm();
+      showToast('公告发布成功');
+    }
   };
 
   const handleDelete = (annId) => {
@@ -4206,6 +4237,19 @@ function AnnouncementManagement({ userRole, roleTown }) {
     return a.scope;
   };
   const scopeColor = (a) => a.scope === '全区' ? 'blue' : a.scope === '自定义镇' ? 'orange' : a.scope === '自定义分组' ? 'indigo' : 'green';
+
+  const repeatLabel = (a) => {
+    const t = a.repeatType || 'none';
+    if (t === 'none') return '不重复';
+    if (t === 'daily') return '每天重复';
+    if (t === 'weekly') return '每周重复';
+    if (t === 'monthly') return '每月重复';
+    if (t === 'custom') {
+      const range = (a.repeatStart && a.repeatEnd) ? `${a.repeatStart} ~ ${a.repeatEnd}` : '';
+      return range || '自定义重复';
+    }
+    return '不重复';
+  };
 
   const detail = announcements.find(a => a.id === detailId);
 
@@ -4243,6 +4287,7 @@ function AnnouncementManagement({ userRole, roleTown }) {
                 <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">发布人</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">发布时间</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">状态</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">重复时间</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">操作</th>
               </tr>
             </thead>
@@ -4258,17 +4303,23 @@ function AnnouncementManagement({ userRole, roleTown }) {
                   <td className="px-4 py-3 text-xs font-mono text-ink-secondary">{a.createTime}</td>
                   <td className="px-4 py-3"><Badge color="green">{a.status}</Badge></td>
                   <td className="px-4 py-3">
+                    <span className={`text-xs ${(a.repeatType && a.repeatType !== 'none') ? 'text-gov-700 font-medium' : 'text-ink-muted'}`}>{repeatLabel(a)}</span>
+                  </td>
+                  <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       <button className="text-[11px] text-gov-600 hover:text-gov-700 font-medium" onClick={(e) => { e.stopPropagation(); setDetailId(a.id); }}>查看详情</button>
                       {a.source === sourceLabel && (
-                        <button className="text-[11px] text-red-500 hover:text-red-600 font-medium" onClick={(e) => { e.stopPropagation(); handleDelete(a.id); }}>删除</button>
+                        <>
+                          <button className="text-[11px] text-gov-600 hover:text-gov-700 font-medium" onClick={(e) => { e.stopPropagation(); handleOpenEdit(a); }}>编辑</button>
+                          <button className="text-[11px] text-red-500 hover:text-red-600 font-medium" onClick={(e) => { e.stopPropagation(); handleDelete(a.id); }}>删除</button>
+                        </>
                       )}
                     </div>
                   </td>
                 </tr>
               ))}
               {announcements.length === 0 && (
-                <tr><td colSpan="7" className="text-center py-12 text-ink-muted text-xs">暂无公告</td></tr>
+                <tr><td colSpan="8" className="text-center py-12 text-ink-muted text-xs">暂无公告</td></tr>
               )}
             </tbody>
           </table>
@@ -4281,8 +4332,8 @@ function AnnouncementManagement({ userRole, roleTown }) {
           <div className="w-[560px] bg-white h-full shadow-2xl overflow-y-auto animate-slide-right" onClick={e => e.stopPropagation()}>
             <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between z-10">
               <div>
-                <h2 className="text-base font-bold text-ink">新建公告</h2>
-                <p className="text-[11px] text-ink-muted mt-0.5">下发至商户端 · 公告管理</p>
+                <h2 className="text-base font-bold text-ink">{editingId ? '编辑公告' : '新建公告'}</h2>
+                <p className="text-[11px] text-ink-muted mt-0.5">{editingId ? '修改公告内容与下发范围' : '下发至商户端 · 公告管理'}</p>
               </div>
               <button onClick={() => setShowComposer(false)} className="p-1.5 rounded-md hover:bg-slate-100 text-ink-muted">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -4408,10 +4459,48 @@ function AnnouncementManagement({ userRole, roleTown }) {
                 />
               </div>
 
+              {/* 重复时间 */}
+              <div>
+                <label className="block text-xs font-semibold text-ink mb-1.5">重复时间</label>
+                <div className="flex gap-2 mb-2 flex-wrap">
+                  {[
+                    { key: 'none', label: '不重复' },
+                    { key: 'daily', label: '每天' },
+                    { key: 'weekly', label: '每周' },
+                    { key: 'monthly', label: '每月' },
+                    { key: 'custom', label: '自定义' },
+                  ].map(opt => (
+                    <button
+                      key={opt.key}
+                      onClick={() => setForm({ ...form, repeatType: opt.key })}
+                      className={`px-3 py-1.5 text-xs rounded-md border transition-colors ${form.repeatType === opt.key ? 'bg-gov-600 text-white border-gov-600' : 'bg-white text-ink-secondary border-slate-200 hover:bg-slate-50'}`}
+                    >{opt.label}</button>
+                  ))}
+                </div>
+                {form.repeatType === 'custom' && (
+                  <div className="flex items-center gap-2 text-xs text-ink-secondary bg-slate-50 border border-slate-200 rounded-md px-3 py-2 flex-wrap">
+                    <span className="shrink-0 font-medium text-ink">指定日期</span>
+                    <input
+                      type="date"
+                      value={form.repeatStart}
+                      onChange={e => setForm({ ...form, repeatStart: e.target.value })}
+                      className="text-sm border border-slate-200 rounded-md px-2 py-1.5 outline-none focus:border-gov-400 bg-white"
+                    />
+                    <span>至</span>
+                    <input
+                      type="date"
+                      value={form.repeatEnd}
+                      onChange={e => setForm({ ...form, repeatEnd: e.target.value })}
+                      className="text-sm border border-slate-200 rounded-md px-2 py-1.5 outline-none focus:border-gov-400 bg-white"
+                    />
+                  </div>
+                )}
+              </div>
+
               {/* Actions */}
               <div className="flex gap-3 pt-2">
                 <button onClick={() => setShowComposer(false)} className="flex-1 px-4 py-2.5 rounded-md text-sm font-medium bg-white border border-slate-300 text-ink-secondary hover:bg-slate-50 transition-colors">取消</button>
-                <button onClick={handlePublish} className="flex-1 px-4 py-2.5 rounded-md text-sm font-medium bg-gov-600 text-white hover:bg-gov-700 transition-colors">发布公告</button>
+                <button onClick={handlePublish} className="flex-1 px-4 py-2.5 rounded-md text-sm font-medium bg-gov-600 text-white hover:bg-gov-700 transition-colors">{editingId ? '保存修改' : '发布公告'}</button>
               </div>
             </div>
           </div>
@@ -4437,6 +4526,7 @@ function AnnouncementManagement({ userRole, roleTown }) {
                 <span className="px-2 py-0.5 rounded bg-slate-50 border border-slate-200">来源：{detail.source}</span>
                 <Badge color={scopeColor(detail)}>{scopeDisplay(detail)}</Badge>
                 <span>发布人：{detail.author}</span>
+                <span className={`px-2 py-0.5 rounded border ${(detail.repeatType && detail.repeatType !== 'none') ? 'bg-gov-50 border-gov-200 text-gov-700' : 'bg-slate-50 border-slate-200'}`}>重复：{repeatLabel(detail)}</span>
               </div>
               <div className="text-[11px] text-ink-muted">{detail.createTime}</div>
               <div className="border-t border-slate-100 pt-4">
