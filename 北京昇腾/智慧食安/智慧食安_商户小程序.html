@@ -1386,6 +1386,15 @@
               <i data-lucide="x" class="w-3.5 h-3.5 text-slate-400"></i>
             </button>
           </div>
+
+          <!-- OCR 识别 -->
+          <div class="border-t border-slate-100 pt-3">
+            <button onclick="runLicenseOcr()" id="ocrBtn" class="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-blue-200 bg-blue-50 text-blue-600 text-[13px] font-semibold hover:bg-blue-100 active:bg-blue-200 active:scale-[0.98] transition-all">
+              <i data-lucide="scan-line" class="w-5 h-5"></i>
+              <span id="ocrBtnLabel">OCR 识别许可证信息</span>
+            </button>
+            <p class="text-[11px] text-slate-300 text-center mt-2">自动识别主体名称、统一社会信用代码、许可证号、主体业态、法人姓名</p>
+          </div>
         </div>
 
         <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100 space-y-4">
@@ -5457,6 +5466,54 @@ function removeLicenseFile() {
   licenseFileUploaded = false;
   document.getElementById('licenseFileRow').classList.add('hidden');
   document.getElementById('licenseFileRow').classList.remove('flex');
+}
+
+let ocrBusy = false;
+function runLicenseOcr() {
+  if (!licenseFileUploaded) { showToast('请先上传许可证文件', 'error'); return; }
+  if (ocrBusy) return;
+
+  const btn = document.getElementById('ocrBtn');
+  const label = document.getElementById('ocrBtnLabel');
+  ocrBusy = true;
+  btn.classList.add('opacity-60', 'pointer-events-none');
+  label.textContent = '正在识别…';
+
+  setTimeout(() => {
+    // 模拟 OCR 识别结果（食品经营许可证）
+    const result = {
+      name: '好味道餐饮管理有限公司',   // 主体名称 / 经营者名称
+      creditCode: '91110108MA019T2X4K', // 统一社会信用代码（18位）
+      license: 'JY211010812345678',     // 许可证号
+      bizType: '餐饮服务经营者',          // 主体业态
+      legalPerson: '张三',               // 法人姓名
+    };
+    document.getElementById('onboardName').value = result.name;
+    document.getElementById('onboardCreditCode').value = result.creditCode;
+    document.getElementById('onboardLicense').value = result.license;
+    document.getElementById('onboardLegalPerson').value = result.legalPerson;
+
+    // 主体业态（chip 选择）
+    document.querySelectorAll('.chip-onboardBizType').forEach(b => {
+      const on = b.dataset.value === result.bizType;
+      b.classList.toggle('bg-blue-600', on);
+      b.classList.toggle('text-white', on);
+      b.classList.toggle('bg-slate-100', !on);
+      b.classList.toggle('text-slate-500', !on);
+    });
+
+    ocrBusy = false;
+    btn.classList.remove('opacity-60', 'pointer-events-none');
+    label.textContent = 'OCR 识别许可证信息';
+    showToast('识别完成，已自动填入主体信息', 'success');
+
+    // 高亮已填入字段
+    ['onboardName', 'onboardCreditCode', 'onboardLicense', 'onboardLegalPerson'].forEach(id => {
+      const el = document.getElementById(id);
+      el.classList.add('border-blue-400', 'bg-blue-50');
+      setTimeout(() => el.classList.remove('border-blue-400', 'bg-blue-50'), 1500);
+    });
+  }, 1200);
 }
 
 // ===== FEEDBACK SYSTEM =====

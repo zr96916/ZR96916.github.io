@@ -287,16 +287,18 @@ const MOCK = {
     return cams;
   })(),
   enterprises: [
-    { id:'ENT001', name:'永和豆浆（城东店）', creditCode:'91310115MA1K3XXXXX', licenseNo:'JY20201015001', town:'城东镇', entityType:'餐饮服务', bizStatus:'营业', recentOrders:12, legalPerson:'张明华', bindPhone:'139****1234', bindOpenId:'oABCD1234efgh5678', unbindBlocked:true, unbindReason:'当前存在 3 条未处理整改工单', recipients:[{id:'R1',nickname:'张明华',remark:'店长',openid:'oABCD1234efgh5678',phone:'138****8000',status:'有效',bindTime:'2026-08-30 14:23'},{id:'R2',nickname:'李芳',remark:'',openid:'oWXYZ9876lmnop4321',phone:'',status:'有效',bindTime:'2026-09-01 09:10'}] },
-    { id:'ENT002', name:'老重庆火锅（南桥店）', creditCode:'91310115MA1K3YYYYY', licenseNo:'JY20190908002', town:'南桥镇', entityType:'餐饮服务', bizStatus:'营业', recentOrders:5, legalPerson:'李建国', bindPhone:'138****5678', bindOpenId:'oWXYZ9876lmnop4321', recipients:[{id:'R3',nickname:'李建国',remark:'老板',openid:'oQWER5678asdfg9012',phone:'138****0002',status:'有效',bindTime:'2026-08-28 10:02'}] },
-    { id:'ENT003', name:'味多美烘焙坊', creditCode:'91310115MA1K3ZZZZZ', licenseNo:'JY20210512003', town:'城东镇', entityType:'食品销售', bizStatus:'营业', recentOrders:2, legalPerson:'王芳', bindPhone:'137****9012', bindOpenId:'', recipients:[{id:'R4',nickname:'王芳',remark:'',openid:'oPOIU3456zxcvbn789',phone:'137****9012',status:'有效',bindTime:'2026-08-25 16:40'}] },
-    { id:'ENT004', name:'沙县小吃（中心店）', creditCode:'91310115MA1K3AAAAA', licenseNo:'JY20220801004', town:'中心镇', entityType:'餐饮服务', bizStatus:'营业', recentOrders:8, legalPerson:'陈志强', bindPhone:'136****3456', bindOpenId:'oQWER5678asdfg9012', unbindBlocked:true, unbindReason:'存在待审批的变更工单', recipients:[{id:'R5',nickname:'陈志强',remark:'店长',openid:'oMNBV0987qwerty654',phone:'136****9013',status:'有效',bindTime:'2026-07-30 11:15'}] },
-    { id:'ENT005', name:'肯德基（万达店）', creditCode:'91310115MA1K3BBBBB', licenseNo:'JY20210315005', town:'城东镇', entityType:'餐饮服务', bizStatus:'营业', recentOrders:1, legalPerson:'赵丽', bindPhone:'', bindOpenId:'', recipients:[] },
-    { id:'ENT006', name:'老乡鸡（北关店）', creditCode:'91310115MA1K3CCCCC', licenseNo:'JY20201122006', town:'北关镇', entityType:'餐饮服务', bizStatus:'营业', recentOrders:15, legalPerson:'刘伟', bindPhone:'135****7890', bindOpenId:'oTYUI3421zxcvbn987', recipients:[{id:'R6',nickname:'刘伟',remark:'老板',openid:'oTYUI3421zxcvbn987',phone:'135****9014',status:'有效',bindTime:'2026-08-18 09:30'}] },
-    { id:'ENT007', name:'黄焖鸡米饭（学院店）', creditCode:'91310115MA1K3DDDDD', licenseNo:'JY20230105007', town:'南桥镇', entityType:'餐饮服务', bizStatus:'营业', recentOrders:9, legalPerson:'孙磊', bindPhone:'150****2345', bindOpenId:'oASDF7890qwerty654', recipients:[{id:'R7',nickname:'孙磊',remark:'',openid:'oASDF7890qwerty654',phone:'150****9015',status:'有效',bindTime:'2026-09-01 15:20'}] },
-    { id:'ENT008', name:'海底捞（中心广场店）', creditCode:'91310115MA1K3EEEEE', licenseNo:'JY20210618008', town:'中心镇', entityType:'餐饮服务', bizStatus:'营业', recentOrders:3, legalPerson:'周杰', bindPhone:'152****6789', bindOpenId:'oZXCV6543bmnght321', recipients:[{id:'R8',nickname:'周杰',remark:'店长',openid:'oZXCV6543bmnght321',phone:'152****9016',status:'有效',bindTime:'2026-08-22 13:05'}] },
-    { id:'ENT009', name:'第一中学食堂', creditCode:'91310115MA1K3FFFFF', licenseNo:'JY20220901009', town:'北关镇', entityType:'单位食堂', bizStatus:'营业', recentOrders:6, legalPerson:'吴刚', bindPhone:'', bindOpenId:'', recipients:[] },
-    { id:'ENT010', name:'华联超市（食品区）', creditCode:'91310115MA1K3GGGGG', licenseNo:'JY20201228010', town:'城东镇', entityType:'食品销售', bizStatus:'营业', recentOrders:0, legalPerson:'郑小红', bindPhone:'133****4567', bindOpenId:'oHJKL1098mklop432', recipients:[{id:'R9',nickname:'郑小红',remark:'',openid:'oHJKL1098mklop432',phone:'133****9017',status:'有效',bindTime:'2026-08-31 18:50'}] },
+    { id:'ENT001', name:'永和豆浆（城东店）', creditCode:'91310115MA1K3XXXXX', licenseNo:'JY20201015001', town:'城东镇', entityType:'餐饮服务', department:'餐饮', bizMode:'堂食', bizStatus:'营业', recentOrders:12, legalPerson:'张明华', bindPhone:'139****1234', bindOpenId:'oABCD1234efgh5678', unbindBlocked:true, unbindReason:'当前存在 3 条未处理整改工单', recipients:[{id:'R1',nickname:'张明华',remark:'店长',openid:'oABCD1234efgh5678',phone:'138****8000',status:'有效',bindTime:'2026-08-30 14:23'},{id:'R2',nickname:'李芳',remark:'',openid:'oWXYZ9876lmnop4321',phone:'',status:'有效',bindTime:'2026-09-01 09:10'}] },
+    { id:'ENT002', name:'老重庆火锅（南桥店）', creditCode:'91310115MA1K3YYYYY', licenseNo:'JY20190908002', town:'南桥镇', entityType:'餐饮服务', department:'餐饮', bizMode:'堂食', bizStatus:'营业', recentOrders:5, legalPerson:'李建国', bindPhone:'138****5678', bindOpenId:'oWXYZ9876lmnop4321', recipients:[{id:'R3',nickname:'李建国',remark:'老板',openid:'oQWER5678asdfg9012',phone:'138****0002',status:'有效',bindTime:'2026-08-28 10:02'}] },
+    { id:'ENT003', name:'味多美烘焙坊', creditCode:'91310115MA1K3ZZZZZ', licenseNo:'JY20210512003', town:'城东镇', entityType:'食品销售', department:'流通', bizMode:'现场制售', bizStatus:'营业', recentOrders:2, legalPerson:'王芳', bindPhone:'137****9012', bindOpenId:'', recipients:[{id:'R4',nickname:'王芳',remark:'',openid:'oPOIU3456zxcvbn789',phone:'137****9012',status:'有效',bindTime:'2026-08-25 16:40'}] },
+    { id:'ENT004', name:'沙县小吃（中心店）', creditCode:'91310115MA1K3AAAAA', licenseNo:'JY20220801004', town:'中心镇', entityType:'餐饮服务', department:'餐饮', bizMode:'堂食', bizStatus:'营业', recentOrders:8, legalPerson:'陈志强', bindPhone:'136****3456', bindOpenId:'oQWER5678asdfg9012', unbindBlocked:true, unbindReason:'存在待审批的变更工单', recipients:[{id:'R5',nickname:'陈志强',remark:'店长',openid:'oMNBV0987qwerty654',phone:'136****9013',status:'有效',bindTime:'2026-07-30 11:15'}] },
+    { id:'ENT005', name:'肯德基（万达店）', creditCode:'91310115MA1K3BBBBB', licenseNo:'JY20210315005', town:'城东镇', entityType:'餐饮服务', department:'餐饮', bizMode:'堂食', bizStatus:'营业', recentOrders:1, legalPerson:'赵丽', bindPhone:'', bindOpenId:'', recipients:[] },
+    { id:'ENT006', name:'老乡鸡（北关店）', creditCode:'91310115MA1K3CCCCC', licenseNo:'JY20201122006', town:'北关镇', entityType:'餐饮服务', department:'餐饮', bizMode:'外卖', bizStatus:'营业', recentOrders:15, legalPerson:'刘伟', bindPhone:'135****7890', bindOpenId:'oTYUI3421zxcvbn987', recipients:[{id:'R6',nickname:'刘伟',remark:'老板',openid:'oTYUI3421zxcvbn987',phone:'135****9014',status:'有效',bindTime:'2026-08-18 09:30'}] },
+    { id:'ENT007', name:'黄焖鸡米饭（学院店）', creditCode:'91310115MA1K3DDDDD', licenseNo:'JY20230105007', town:'南桥镇', entityType:'餐饮服务', department:'餐饮', bizMode:'外卖', bizStatus:'营业', recentOrders:9, legalPerson:'孙磊', bindPhone:'150****2345', bindOpenId:'oASDF7890qwerty654', recipients:[{id:'R7',nickname:'孙磊',remark:'',openid:'oASDF7890qwerty654',phone:'150****9015',status:'有效',bindTime:'2026-09-01 15:20'}] },
+    { id:'ENT008', name:'海底捞（中心广场店）', creditCode:'91310115MA1K3EEEEE', licenseNo:'JY20210618008', town:'中心镇', entityType:'餐饮服务', department:'餐饮', bizMode:'堂食', bizStatus:'营业', recentOrders:3, legalPerson:'周杰', bindPhone:'152****6789', bindOpenId:'oZXCV6543bmnght321', recipients:[{id:'R8',nickname:'周杰',remark:'店长',openid:'oZXCV6543bmnght321',phone:'152****9016',status:'有效',bindTime:'2026-08-22 13:05'}] },
+    { id:'ENT009', name:'第一中学食堂', creditCode:'91310115MA1K3FFFFF', licenseNo:'JY20220901009', town:'北关镇', entityType:'单位食堂', department:'餐饮', bizMode:'堂食', bizStatus:'营业', recentOrders:6, legalPerson:'吴刚', bindPhone:'', bindOpenId:'', recipients:[] },
+    { id:'ENT010', name:'华联超市（食品区）', creditCode:'91310115MA1K3GGGGG', licenseNo:'JY20201228010', town:'城东镇', entityType:'食品销售', department:'流通', bizMode:'批发零售', bizStatus:'营业', recentOrders:0, legalPerson:'郑小红', bindPhone:'133****4567', bindOpenId:'oHJKL1098mklop432', recipients:[{id:'R9',nickname:'郑小红',remark:'',openid:'oHJKL1098mklop432',phone:'133****9017',status:'有效',bindTime:'2026-08-31 18:50'}] },
+    { id:'ENT011', name:'光明食品厂', creditCode:'91310115MA1K3HHHHH', licenseNo:'JY20240115011', town:'南桥镇', entityType:'食品生产', department:'生产', bizMode:'生产加工', bizStatus:'营业', recentOrders:4, legalPerson:'钱伟', bindPhone:'139****1111', bindOpenId:'', recipients:[] },
+    { id:'ENT012', name:'城东电动车行', creditCode:'91310115MA1K3IIIII', licenseNo:'', town:'城东镇', entityType:'其他', department:'电动车', bizMode:'零售', bizStatus:'营业', recentOrders:0, legalPerson:'周大福', bindPhone:'', bindOpenId:'', recipients:[] },
   ],
   notifications: [
     { id:'NTF001', type:'normal', title:'工单超时预警', content:'永和豆浆（城东店）整改工单已超过截止时间24小时未处理', time:'2026-07-03 14:30', read:false },
@@ -328,7 +330,37 @@ const MOCK = {
     { id:'ANC002', title:'关于证照到期换证流程优化的说明', source:'城东镇市场监管所', scope:'城东镇', scopeTowns:['城东镇'], content:'为简化办事流程，我镇即日起开通证照到期换证"一网通办"，商户可通过微信端在线提交换证材料，无需线下跑腿。\n\n操作路径：登录微信端 → 主体管理 → 证照管理 → 在线换证。', createTime:'2026-07-18 14:30:00', status:'已发布', author:'李所长' },
     { id:'ANC003', title:'关于AI报警误报申诉渠道的公告', source:'区市场监督管理局', scope:'自定义镇', scopeTowns:['南桥镇','中心镇'], content:'近期接到部分商户反映AI报警存在误报情况。现明确申诉渠道如下：\n\n如对AI报警结果有异议，可在收到工单后72小时内通过微信端提交申诉，附相关证据材料，监管人员将在3个工作日内完成复核。', createTime:'2026-07-15 10:00:00', status:'已发布', author:'王主任' },
   ],
+  announcementTemplates: [
+    { id:'TPL001', name:'夏季食品安全专项检查', title:'关于开展2026年夏季食品安全专项检查的通知', content:'各镇街市场监管所、各食品经营单位：\n\n为保障夏季食品安全，现定于2026年8月开展全区食品安全专项检查，重点检查冷食类食品制售、从业人员健康证持证上岗情况、后厨卫生及餐具消毒等环节。\n\n请各单位提前自查自纠，配合现场检查工作。', createTime:'2026-07-20 09:00:00' },
+    { id:'TPL002', name:'证照到期换证提醒', title:'关于证照到期换证流程优化的说明', content:'为简化办事流程，我镇即日起开通证照到期换证"一网通办"，商户可通过微信端在线提交换证材料，无需线下跑腿。\n\n操作路径：登录微信端 → 主体管理 → 证照管理 → 在线换证。', createTime:'2026-07-18 14:30:00' },
+    { id:'TPL003', name:'AI报警误报申诉说明', title:'关于AI报警误报申诉渠道的公告', content:'近期接到部分商户反映AI报警存在误报情况。现明确申诉渠道如下：\n\n如对AI报警结果有异议，可在收到工单后72小时内通过微信端提交申诉，附相关证据材料，监管人员将在3个工作日内完成复核。', createTime:'2026-07-15 10:00:00' },
+  ],
+  groups: [
+    { id:'GRP001', name:'餐饮堂食重点户', conditions:{ department:'餐饮', entityType:'餐饮服务', bizMode:'堂食', town:'all' }, memberIds:['ENT001','ENT002','ENT004','ENT005','ENT008'], createTime:'2026-07-01 10:00:00' },
+    { id:'GRP002', name:'流通环节零售户', conditions:{ department:'流通', entityType:'食品销售', bizMode:'批发零售', town:'all' }, memberIds:['ENT010'], createTime:'2026-07-02 11:30:00' },
+    { id:'GRP003', name:'外卖类餐饮商户', conditions:{ department:'餐饮', entityType:'all', bizMode:'外卖', town:'all' }, memberIds:['ENT006','ENT007'], createTime:'2026-07-03 09:00:00' },
+  ],
 };
+
+// ────────────────────────────────────────
+// SHARED GROUP HELPERS（固定名单组）
+// ────────────────────────────────────────
+
+// 条件匹配：用于新建/编辑分组时预筛候选主体
+function matchGroupConditions(e, c) {
+  if (!c) return true;
+  if (c.department && c.department !== 'all' && e.department !== c.department) return false;
+  if (c.entityType && c.entityType !== 'all' && e.entityType !== c.entityType) return false;
+  if (c.bizMode && c.bizMode !== 'all' && e.bizMode !== c.bizMode) return false;
+  if (c.town && c.town !== 'all' && e.town !== c.town) return false;
+  return true;
+}
+
+// 计算分组实际成员（固定名单：按 memberIds 命中）
+function groupMembersOf(group, list) {
+  if (!group) return [];
+  return list.filter(e => (group.memberIds || []).includes(e.id));
+}
 
 // ────────────────────────────────────────
 // HELPER COMPONENTS
@@ -1313,6 +1345,7 @@ function RiskWarning({ userRole, roleTown }) {
   const [filterType, setFilterType] = useState('all');
   const [filterSeverity, setFilterSeverity] = useState('all');
   const [filterTown, setFilterTown] = useState(isDistrict ? 'all' : roleTown);
+  const [filterCertType, setFilterCertType] = useState('all');
   const [selectedAlarm, setSelectedAlarm] = useState(null); // alarm detail drawer
   const [selectedCert, setSelectedCert] = useState(null);     // cert detail drawer
 
@@ -1344,6 +1377,16 @@ function RiskWarning({ userRole, roleTown }) {
     { id:'C005', enterprise:'老乡鸡（北关店）', certType:'食品经营许可证', certNo:'JY20180810005', expiryDate:'2026-09-30', daysLeft:89, level:'90天' },
     { id:'C006', enterprise:'海底捞（中心广场店）', certType:'ISO22000认证', certNo:'ISO20220501006', expiryDate:'2026-07-20', daysLeft:17, level:'30天' },
   ];
+
+  const certTypeOptions = [
+    { value: 'all', label: '全部证照类型' },
+    { value: '从业人员健康证', label: '健康证' },
+    { value: '食品经营许可证', label: '许可证' },
+    { value: '营业执照', label: '营业执照' },
+    { value: 'ISO22000认证', label: '其他认证' },
+  ];
+
+  const filteredCertData = certExpiryData.filter(c => filterCertType === 'all' || c.certType === filterCertType);
 
   return (
     <div className="space-y-5">
@@ -1395,7 +1438,11 @@ function RiskWarning({ userRole, roleTown }) {
           </>
         ) : (
           <>
-            <span className="ml-auto text-[11px] text-ink-muted">共 {certExpiryData.length} 条记录</span>
+            <select value={filterCertType} onChange={e => setFilterCertType(e.target.value)}
+              className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
+              {certTypeOptions.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+            </select>
+            <span className="ml-auto text-[11px] text-ink-muted">共 {filteredCertData.length} 条记录</span>
           </>
         )}
       </div>
@@ -1461,7 +1508,7 @@ function RiskWarning({ userRole, roleTown }) {
               </tr>
             </thead>
             <tbody>
-              {certExpiryData.map(c => (
+              {filteredCertData.map(c => (
                 <tr key={c.id} className="table-row border-b border-slate-100 last:border-0">
                   <td className="px-4 py-3 text-[11px] font-mono text-gov-600 font-medium">{c.id}</td>
                   <td className="px-4 py-3 text-xs font-medium text-ink">{c.enterprise}</td>
@@ -1481,6 +1528,9 @@ function RiskWarning({ userRole, roleTown }) {
                   </td>
                 </tr>
               ))}
+              {filteredCertData.length === 0 && (
+                <tr><td colSpan="8" className="text-center py-12 text-ink-muted text-xs">暂无匹配的证照到期记录</td></tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -2085,7 +2135,7 @@ function ApprovalRecords({ showDetail, setShowDetail, userRole, roleTown }) {
 // ────────────────────────────────────────
 
 const EMPTY_FORM = {
-  name:'', creditCode:'', licenseNo:'', entityType:'餐饮服务', legalPerson:'', phone:'',
+  name:'', creditCode:'', licenseNo:'', entityType:'餐饮服务', department:'餐饮', bizMode:'堂食', legalPerson:'', phone:'',
   brandName:'', bizScope:'', areaSqm:'', address:'', bizAddress:'', orgId:'城东镇',
   bizStatus:'营业', remark:'',
 };
@@ -2109,8 +2159,16 @@ function EntityManagement({ userRole, roleTown }) {
   const [search, setSearch] = useState('');
   const [filterTown, setFilterTown] = useState('all');
   const [filterType, setFilterType] = useState('all');
+  const [filterDepartment, setFilterDepartment] = useState('all');
+  const [filterBizMode, setFilterBizMode] = useState('all');
   const [expanded, setExpanded] = useState(null);
   const [enterprises, setEnterprises] = useState(MOCK.enterprises);
+  const [groups, setGroups] = useState(MOCK.groups);
+  const [showGroups, setShowGroups] = useState(false);
+  const [groupForm, setGroupForm] = useState({ name:'', conditions:{ department:'all', entityType:'all', bizMode:'all', town:'all' }, memberIds:[] });
+  const [groupSearch, setGroupSearch] = useState('');
+  const [editingGroupId, setEditingGroupId] = useState(null); // null=新建，否则为编辑中的分组 id
+  const [viewingGroup, setViewingGroup] = useState(null); // 查看的分组对象
 
   // Modal state
   const [modalMode, setModalMode] = useState(null); // null | 'add' | 'edit'
@@ -2162,8 +2220,64 @@ function EntityManagement({ userRole, roleTown }) {
     if (search && !e.name.includes(search) && !e.creditCode.includes(search) && !(e.licenseNo || '').includes(search)) return false;
     if (filterTown !== 'all' && e.town !== filterTown) return false;
     if (filterType !== 'all' && e.entityType !== filterType) return false;
+    if (filterDepartment !== 'all' && e.department !== filterDepartment) return false;
+    if (filterBizMode !== 'all' && e.bizMode !== filterBizMode) return false;
     return true;
   });
+
+  const departmentOptions = ['电动车','餐饮','流通','生产'];
+  const bizModeOptions = ['堂食','外卖','批发零售','现场制售','生产加工','零售'];
+  const entityTypeOptions = ['餐饮服务','食品销售','单位食堂','食品生产','其他'];
+  const towns = ['城东镇','南桥镇','中心镇','北关镇'];
+
+  const groupCount = (g) => groupMembersOf(g, enterprises).length;
+  const groupCandidates = enterprises.filter(e =>
+    matchGroupConditions(e, groupForm.conditions) &&
+    (!groupSearch.trim() || e.name.includes(groupSearch.trim()))
+  );
+  const toggleMember = (id) => {
+    const has = groupForm.memberIds.includes(id);
+    setGroupForm({ ...groupForm, memberIds: has ? groupForm.memberIds.filter(x => x !== id) : [...groupForm.memberIds, id] });
+  };
+  const selectAllCandidates = () => {
+    const ids = groupCandidates.map(e => e.id);
+    setGroupForm({ ...groupForm, memberIds: Array.from(new Set([...groupForm.memberIds, ...ids])) });
+  };
+  const clearMembers = () => setGroupForm({ ...groupForm, memberIds: [] });
+  const EMPTY_GROUP_FORM = { name:'', conditions:{ department:'all', entityType:'all', bizMode:'all', town:'all' }, memberIds:[] };
+  const resetGroupForm = () => { setGroupForm({ ...EMPTY_GROUP_FORM }); setGroupSearch(''); setEditingGroupId(null); };
+  const openAddGroup = () => { resetGroupForm(); setShowGroups(true); };
+  const openEditGroup = (g) => {
+    setGroupForm({ name:g.name, conditions:{ ...g.conditions }, memberIds:[...(g.memberIds || [])] });
+    setGroupSearch('');
+    setEditingGroupId(g.id);
+    setShowGroups(true);
+  };
+  const openViewGroup = (g) => setViewingGroup(g);
+  const saveGroup = () => {
+    if (!groupForm.name.trim()) { alert('请填写分组名称'); return; }
+    if (groupForm.memberIds.length === 0) { alert('请至少勾选一个主体'); return; }
+    const payload = {
+      name: groupForm.name.trim(),
+      conditions: { ...groupForm.conditions },
+      memberIds: [...groupForm.memberIds],
+    };
+    if (editingGroupId) {
+      const idx = MOCK.groups.findIndex(g => g.id === editingGroupId);
+      if (idx > -1) MOCK.groups[idx] = { ...MOCK.groups[idx], ...payload };
+      setGroups([...MOCK.groups]);
+    } else {
+      MOCK.groups.push({ id: 'GRP' + Date.now().toString().slice(-6), ...payload, createTime: new Date().toLocaleString('zh-CN') });
+      setGroups([...MOCK.groups]);
+    }
+    resetGroupForm();
+  };
+  const removeGroup = (id) => {
+    if (!window.confirm('确认删除该分组吗？删除后站内信、公告中将无法再选择该分组。')) return;
+    const idx = MOCK.groups.findIndex(g => g.id === id);
+    if (idx > -1) MOCK.groups.splice(idx, 1);
+    setGroups([...MOCK.groups]);
+  };
 
   const staffMock = [
     { name:'张三', position:'主厨', healthCertExp:'2026-09-15', healthStatus:'normal' },
@@ -2189,6 +2303,7 @@ function EntityManagement({ userRole, roleTown }) {
     setEditTargetId(e.id);
     setFormData({
       name:e.name, creditCode:e.creditCode, licenseNo:e.licenseNo || '', entityType:e.entityType,
+      department:e.department || '餐饮', bizMode:e.bizMode || '堂食',
       legalPerson:e.legalPerson, phone:e.phone || '', brandName:e.brandName || '',
       bizScope:e.bizScope || '', areaSqm:e.areaSqm || '', address:e.address || '',
       bizAddress:e.bizAddress || '', orgId:e.town, bizStatus:e.bizStatus, remark:e.remark || '',
@@ -2221,6 +2336,8 @@ function EntityManagement({ userRole, roleTown }) {
         licenseNo: formData.licenseNo,
         town: formData.orgId,
         entityType: formData.entityType,
+        department: formData.department,
+        bizMode: formData.bizMode,
         bizStatus: formData.bizStatus,
         recentOrders: 0,
         legalPerson: formData.legalPerson,
@@ -2234,6 +2351,8 @@ function EntityManagement({ userRole, roleTown }) {
         licenseNo: formData.licenseNo,
         town: formData.orgId,
         entityType: formData.entityType,
+        department: formData.department,
+        bizMode: formData.bizMode,
         bizStatus: formData.bizStatus,
         legalPerson: formData.legalPerson,
       } : ent));
@@ -2348,6 +2467,13 @@ function EntityManagement({ userRole, roleTown }) {
             </div>
           </div>
           <button
+            onClick={openAddGroup}
+            className="flex items-center gap-1.5 bg-white text-xs font-medium px-4 py-2 rounded-md border border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-colors text-ink-secondary"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+            分组管理
+          </button>
+          <button
             onClick={openAdd}
             className="flex items-center gap-1.5 bg-gov-600 text-white text-xs font-medium px-4 py-2 rounded-md hover:bg-gov-700 transition-colors shadow-sm"
           >
@@ -2370,7 +2496,17 @@ function EntityManagement({ userRole, roleTown }) {
         <select value={filterType} onChange={e => setFilterType(e.target.value)}
           className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
           <option value="all">全部主体业态</option>
-          <option value="餐饮服务">餐饮服务</option><option value="食品销售">食品销售</option><option value="单位食堂">单位食堂</option>
+          {entityTypeOptions.map(t => <option key={t} value={t}>{t}</option>)}
+        </select>
+        <select value={filterDepartment} onChange={e => setFilterDepartment(e.target.value)}
+          className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
+          <option value="all">全部所属科室</option>
+          {departmentOptions.map(t => <option key={t} value={t}>{t}</option>)}
+        </select>
+        <select value={filterBizMode} onChange={e => setFilterBizMode(e.target.value)}
+          className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
+          <option value="all">全部经营方式</option>
+          {bizModeOptions.map(t => <option key={t} value={t}>{t}</option>)}
         </select>
         <span className="ml-auto text-[11px] text-ink-muted">共 {filtered.length} 家企业</span>
       </div>
@@ -2385,6 +2521,8 @@ function EntityManagement({ userRole, roleTown }) {
               <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">许可证号</th>
               <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">所属镇</th>
               <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">主体业态</th>
+              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">所属科室</th>
+              <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">经营方式</th>
               <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">营业状态</th>
               <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">绑定关系</th>
               <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">最近工单</th>
@@ -2408,6 +2546,8 @@ function EntityManagement({ userRole, roleTown }) {
                   <td className="px-4 py-3 text-xs font-mono text-ink-secondary">{e.licenseNo || '——'}</td>
                   <td className="px-4 py-3 text-xs text-ink-secondary">{e.town}</td>
                   <td className="px-4 py-3 text-xs text-ink-secondary">{e.entityType}</td>
+                  <td className="px-4 py-3 text-xs text-ink-secondary">{e.department || '—'}</td>
+                  <td className="px-4 py-3 text-xs text-ink-secondary">{e.bizMode || '—'}</td>
                   <td className="px-4 py-3">
                     <span className="flex items-center gap-1 text-xs">
                       <span className={`w-1.5 h-1.5 rounded-full ${e.bizStatus === '营业' ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
@@ -2469,7 +2609,7 @@ function EntityManagement({ userRole, roleTown }) {
                 </tr>
                 {expanded === e.id && (
                   <tr key={`${e.id}-staff`}>
-                    <td colSpan="10" className="bg-slate-50 px-4 py-3">
+                    <td colSpan="11" className="bg-slate-50 px-4 py-3">
                       <div className="ml-8 border-l-2 border-gov-200 pl-6">
                         <div className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-2">从业人员</div>
                         <div className="grid grid-cols-4 gap-2">
@@ -2600,9 +2740,19 @@ function EntityManagement({ userRole, roleTown }) {
                       <div>
                         <label className={labelClass}>主体业态</label>
                         <select className={selectClass} value={formData.entityType} onChange={e => updateForm('entityType',e.target.value)}>
-                          <option value="餐饮服务">餐饮服务</option>
-                          <option value="食品销售">食品销售</option>
-                          <option value="单位食堂">单位食堂</option>
+                          {entityTypeOptions.map(t => <option key={t} value={t}>{t}</option>)}
+                        </select>
+                      </div>
+                      <div>
+                        <label className={labelClass}>所属科室</label>
+                        <select className={selectClass} value={formData.department} onChange={e => updateForm('department',e.target.value)}>
+                          {departmentOptions.map(t => <option key={t} value={t}>{t}</option>)}
+                        </select>
+                      </div>
+                      <div>
+                        <label className={labelClass}>经营方式</label>
+                        <select className={selectClass} value={formData.bizMode} onChange={e => updateForm('bizMode',e.target.value)}>
+                          {bizModeOptions.map(t => <option key={t} value={t}>{t}</option>)}
                         </select>
                       </div>
                       <div>
@@ -2988,6 +3138,166 @@ function EntityManagement({ userRole, roleTown }) {
           {staffToast}
         </div>
       )}
+
+      {/* 分组管理弹窗 */}
+      {showGroups && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop" style={{background:'rgba(15,23,42,0.35)'}} onClick={() => setShowGroups(false)}>
+          <div className="bg-white rounded-lg shadow-elevated w-[760px] max-h-[86vh] overflow-y-auto p-6" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="text-base font-bold text-ink">{editingGroupId ? '编辑分组' : '新增分组'}</h2>
+                <p className="text-[11px] text-ink-muted mt-0.5">条件预筛 + 手动勾选，可在站内信、公告中选择分组作为发送对象</p>
+              </div>
+              <button onClick={() => { setShowGroups(false); resetGroupForm(); }} className="text-ink-muted hover:text-ink text-xl leading-none">×</button>
+            </div>
+
+            {/* 新增分组表单 */}
+            <div className="border border-slate-200 rounded-lg p-4 mb-5 bg-slate-50/50">
+              <h3 className="text-xs font-semibold text-ink mb-3">分组信息</h3>
+              <input value={groupForm.name} onChange={e => setGroupForm({...groupForm, name:e.target.value})} placeholder="分组名称" className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 outline-none focus:border-gov-400 w-full" />
+
+              {/* 条件圈选（用于预筛候选主体） */}
+              <div className="grid grid-cols-5 gap-2.5 mt-2.5">
+                <select value={groupForm.conditions.department} onChange={e => setGroupForm({...groupForm, conditions:{...groupForm.conditions, department:e.target.value}})} className="text-xs border border-slate-200 rounded-md px-2 py-1.5 bg-white outline-none focus:border-gov-400">
+                  <option value="all">不限科室</option>
+                  {departmentOptions.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+                <select value={groupForm.conditions.entityType} onChange={e => setGroupForm({...groupForm, conditions:{...groupForm.conditions, entityType:e.target.value}})} className="text-xs border border-slate-200 rounded-md px-2 py-1.5 bg-white outline-none focus:border-gov-400">
+                  <option value="all">不限业态</option>
+                  {entityTypeOptions.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+                <select value={groupForm.conditions.bizMode} onChange={e => setGroupForm({...groupForm, conditions:{...groupForm.conditions, bizMode:e.target.value}})} className="text-xs border border-slate-200 rounded-md px-2 py-1.5 bg-white outline-none focus:border-gov-400">
+                  <option value="all">不限方式</option>
+                  {bizModeOptions.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+                <select value={groupForm.conditions.town} onChange={e => setGroupForm({...groupForm, conditions:{...groupForm.conditions, town:e.target.value}})} className="text-xs border border-slate-200 rounded-md px-2 py-1.5 bg-white outline-none focus:border-gov-400">
+                  <option value="all">不限镇</option>
+                  {towns.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+                <input value={groupSearch} onChange={e => setGroupSearch(e.target.value)} placeholder="搜索主体名称" className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 outline-none focus:border-gov-400" />
+              </div>
+
+              <div className="mt-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[11px] text-ink-muted">当前筛选 <span className="font-semibold text-gov-600">{groupCandidates.length}</span> 家 · 已勾选 <span className="font-semibold text-gov-600">{groupForm.memberIds.length}</span> 家</span>
+                    <button onClick={selectAllCandidates} className="text-[11px] text-gov-600 hover:text-gov-700 font-medium">＋ 一键全选当前结果</button>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2.5">
+                    {/* 左侧候选池 */}
+                    <div className="border border-slate-200 rounded-md overflow-hidden flex flex-col">
+                      <div className="px-3 py-2 bg-slate-50 border-b border-slate-100 text-[11px] font-semibold text-ink-muted">候选主体</div>
+                      <div className="max-h-48 overflow-y-auto divide-y divide-slate-50">
+                        {groupCandidates.length === 0 && <div className="px-3 py-4 text-center text-[11px] text-ink-muted">无匹配主体</div>}
+                        {groupCandidates.map(e => {
+                          const checked = groupForm.memberIds.includes(e.id);
+                          return (
+                            <label key={e.id} className={`flex items-center gap-2 px-3 py-2 cursor-pointer text-xs ${checked ? 'bg-gov-50/60' : 'hover:bg-slate-50'}`}>
+                              <input type="checkbox" checked={checked} onChange={() => toggleMember(e.id)} className="accent-gov-600 shrink-0" />
+                              <span className="text-ink truncate">{e.name}</span>
+                              <span className="ml-auto text-[10px] text-ink-muted shrink-0">{e.town}</span>
+                            </label>
+                          );
+                        })}
+                      </div>
+                    </div>
+                    {/* 右侧已选 */}
+                    <div className="border border-slate-200 rounded-md overflow-hidden flex flex-col">
+                      <div className="px-3 py-2 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+                        <span className="text-[11px] font-semibold text-ink-muted">已选主体</span>
+                        <button onClick={clearMembers} className="text-[10px] text-ink-muted hover:text-red-500">清空</button>
+                      </div>
+                      <div className="max-h-48 overflow-y-auto divide-y divide-slate-50">
+                        {groupForm.memberIds.length === 0 && <div className="px-3 py-4 text-center text-[11px] text-ink-muted">未勾选主体</div>}
+                        {groupForm.memberIds.map(id => {
+                          const e = enterprises.find(x => x.id === id);
+                          if (!e) return null;
+                          return (
+                            <div key={id} className="flex items-center gap-2 px-3 py-2 text-xs">
+                              <span className="text-gov-600 shrink-0">✓</span>
+                              <span className="text-ink truncate">{e.name}</span>
+                              <button onClick={() => toggleMember(id)} className="ml-auto text-[10px] text-ink-muted hover:text-red-500 shrink-0">移除</button>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-end mt-3">
+                    <button onClick={saveGroup} className="text-xs bg-gov-600 text-white px-4 py-1.5 rounded-md hover:bg-gov-700 transition-colors">{editingGroupId ? '保存修改' : '保存分组'}</button>
+                  </div>
+                </div>
+            </div>
+
+            {/* 分组列表 */}
+            <div className="space-y-2">
+              {groups.map(g => (
+                <div key={g.id} className="border border-slate-200 rounded-lg px-4 py-3 flex items-center justify-between">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-semibold text-ink">{g.name}</span>
+                      <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-gov-50 text-gov-700">{groupCount(g)} 家</span>
+                    </div>
+                    <div className="text-[11px] text-ink-muted mt-1">已圈定 {(g.memberIds || []).length} 家 · 手动名单</div>
+                  </div>
+                  <div className="flex items-center gap-3 shrink-0 ml-3">
+                    <button onClick={() => openViewGroup(g)} className="text-[11px] text-gov-600 hover:text-gov-700 font-medium">查看</button>
+                    <button onClick={() => openEditGroup(g)} className="text-[11px] text-gov-600 hover:text-gov-700 font-medium">编辑</button>
+                    <button onClick={() => removeGroup(g.id)} className="text-[11px] text-red-500 hover:text-red-600 font-medium">删除</button>
+                  </div>
+                </div>
+              ))}
+              {groups.length === 0 && (
+                <div className="text-center py-8 text-ink-muted text-xs">暂无分组，请使用上方表单创建</div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 查看分组弹窗 */}
+      {viewingGroup && (() => {
+        const members = groupMembersOf(viewingGroup, enterprises);
+        return (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center modal-backdrop" style={{background:'rgba(15,23,42,0.35)'}} onClick={() => setViewingGroup(null)}>
+            <div className="bg-white rounded-lg shadow-elevated w-[560px] max-h-[80vh] overflow-y-auto p-6" onClick={e => e.stopPropagation()}>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-base font-bold text-ink">{viewingGroup.name}</h2>
+                  <Badge color="indigo">固定名单</Badge>
+                </div>
+                <button onClick={() => setViewingGroup(null)} className="text-ink-muted hover:text-ink text-xl leading-none">×</button>
+              </div>
+
+              <div className="flex items-center gap-3 text-[11px] text-ink-muted mb-4 flex-wrap">
+                <span className="px-2 py-0.5 rounded bg-gov-50 text-gov-700 font-medium">共 {members.length} 家</span>
+                <span>手动名单</span>
+                <span className="ml-auto">创建于 {viewingGroup.createTime}</span>
+              </div>
+
+              {/* 成员列表 */}
+              <div className="border border-slate-200 rounded-md overflow-hidden">
+                <div className="px-3 py-2 bg-slate-50 border-b border-slate-100 text-[11px] font-semibold text-ink-muted">成员主体（{members.length}）</div>
+                <div className="max-h-72 overflow-y-auto divide-y divide-slate-50">
+                  {members.length === 0 && <div className="px-3 py-8 text-center text-[11px] text-ink-muted">暂无成员</div>}
+                  {members.map(e => (
+                    <div key={e.id} className="flex items-center gap-2 px-3 py-2 text-xs">
+                      <span className="text-ink font-medium truncate">{e.name}</span>
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-ink-muted shrink-0">{e.town}</span>
+                      <span className="text-[10px] text-ink-muted shrink-0">{e.department} · {e.entityType}</span>
+                      <span className="ml-auto text-[10px] text-ink-muted shrink-0 font-mono">{e.licenseNo || '—'}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 mt-4">
+                <button onClick={() => { setViewingGroup(null); openEditGroup(viewingGroup); }} className="px-4 py-2 text-xs border border-slate-200 rounded-md text-ink-secondary hover:bg-slate-50 transition-colors">编辑分组</button>
+                <button onClick={() => setViewingGroup(null)} className="px-4 py-2 text-xs bg-gov-600 text-white rounded-md hover:bg-gov-700 transition-colors">关闭</button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }
@@ -3783,11 +4093,19 @@ function NotificationCenter() {
 function AnnouncementManagement({ userRole, roleTown }) {
   const isDistrict = userRole === 'R01';
   const [announcements, setAnnouncements] = useState(MOCK.announcements);
+  const [templates, setTemplates] = useState(MOCK.announcementTemplates);
   const [showComposer, setShowComposer] = useState(false);
   const [detailId, setDetailId] = useState(null);
-  const [form, setForm] = useState({ title: '', scope: '全区', scopeTowns: [], content: '' });
+  const [form, setForm] = useState({ title: '', scope: '全区', scopeTowns: [], scopeGroupIds: [], content: '' });
   const [toast, setToast] = useState(null);
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(null), 2400); };
+
+  // 模板相关
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [showTplForm, setShowTplForm] = useState(false);
+  const [editingTplId, setEditingTplId] = useState(null);
+  const [tplForm, setTplForm] = useState({ name: '', title: '', content: '' });
+  const [appliedTplId, setAppliedTplId] = useState('');
 
   // 来源根据账号带出
   const sourceLabel = isDistrict ? '区市场监督管理局' : `${roleTown}市场监管所`;
@@ -3795,8 +4113,11 @@ function AnnouncementManagement({ userRole, roleTown }) {
 
   const towns = ['城东镇', '南桥镇', '中心镇', '北关镇'];
 
+  const groupCount = (g) => groupMembersOf(g, MOCK.enterprises).length;
+
   const resetForm = () => {
-    setForm({ title: '', scope: isDistrict ? '全区' : roleTown, scopeTowns: [], content: '' });
+    setForm({ title: '', scope: isDistrict ? '全区' : roleTown, scopeTowns: [], scopeGroupIds: [], content: '' });
+    setAppliedTplId('');
   };
 
   const handleOpenComposer = () => {
@@ -3804,17 +4125,59 @@ function AnnouncementManagement({ userRole, roleTown }) {
     setShowComposer(true);
   };
 
+  // ── 模板功能 ──
+  const openAddTpl = () => { setTplForm({ name: '', title: '', content: '' }); setEditingTplId(null); setShowTplForm(true); };
+  const openEditTpl = (t) => { setTplForm({ name: t.name, title: t.title, content: t.content }); setEditingTplId(t.id); setShowTplForm(true); };
+  const saveTpl = () => {
+    if (!tplForm.name.trim()) { showToast('请填写模板名称'); return; }
+    if (!tplForm.title.trim()) { showToast('请填写公告标题'); return; }
+    if (!tplForm.content.trim()) { showToast('请填写公告内容'); return; }
+    const payload = { name: tplForm.name.trim(), title: tplForm.title.trim(), content: tplForm.content.trim() };
+    if (editingTplId) {
+      setTemplates(templates.map(t => t.id === editingTplId ? { ...t, ...payload } : t));
+    } else {
+      setTemplates([...templates, { id: 'TPL' + Date.now().toString().slice(-6), ...payload, createTime: new Date().toLocaleString('zh-CN') }]);
+    }
+    setShowTplForm(false);
+    setEditingTplId(null);
+    setTplForm({ name: '', title: '', content: '' });
+    showToast(editingTplId ? '模板已更新' : '模板已保存');
+  };
+  const removeTpl = (id) => {
+    const tpl = templates.find(t => t.id === id);
+    if (!tpl) return;
+    if (window.confirm(`确认删除模板「${tpl.name}」吗？\n\n删除后不影响已发布公告。`)) {
+      setTemplates(templates.filter(t => t.id !== id));
+      showToast('模板已删除');
+    }
+  };
+  const applyTemplate = (id) => {
+    const tpl = templates.find(t => t.id === id);
+    if (!tpl) return;
+    setForm(f => ({ ...f, title: tpl.title, content: tpl.content }));
+    setAppliedTplId(id);
+  };
+  const useTemplate = (id) => {
+    applyTemplate(id);
+    setShowTemplates(false);
+    setShowComposer(true);
+  };
+
   const handlePublish = () => {
     if (!form.title.trim()) { showToast('请填写公告标题'); return; }
     if (!form.content.trim()) { showToast('请填写详细内容'); return; }
     if (form.scope === '自定义镇' && form.scopeTowns.length === 0) { showToast('请至少选择一个镇'); return; }
-    const scopeText = form.scope === '全区' ? '全区' : form.scope === '自定义镇' ? '自定义镇' : form.scope;
+    if (form.scope === '自定义分组' && form.scopeGroupIds.length === 0) { showToast('请至少选择一个分组'); return; }
+    const scopeText = form.scope === '全区' ? '全区' : form.scope === '自定义镇' ? '自定义镇' : form.scope === '自定义分组' ? '自定义分组' : form.scope;
+    const groupNames = form.scope === '自定义分组' ? form.scopeGroupIds.map(id => (MOCK.groups.find(g => g.id === id) || {}).name).filter(Boolean).join('、') : '';
     const newAnn = {
       id: 'ANC' + String(announcements.length + 1).padStart(3, '0'),
       title: form.title.trim(),
       source: sourceLabel,
       scope: scopeText,
-      scopeTowns: form.scope === '自定义镇' ? form.scopeTowns : (form.scope === '全区' ? [] : [form.scope]),
+      scopeTowns: form.scope === '自定义镇' ? form.scopeTowns : (form.scope === '全区' || form.scope === '自定义分组' ? [] : [form.scope]),
+      scopeGroupIds: form.scope === '自定义分组' ? form.scopeGroupIds : [],
+      scopeGroupNames: groupNames,
       content: form.content.trim(),
       createTime: new Date().toLocaleString('zh-CN'),
       status: '已发布',
@@ -3839,8 +4202,10 @@ function AnnouncementManagement({ userRole, roleTown }) {
   const scopeDisplay = (a) => {
     if (a.scope === '全区') return '全区';
     if (a.scope === '自定义镇') return `${a.scopeTowns.join('、')}（${a.scopeTowns.length}个镇）`;
+    if (a.scope === '自定义分组') return a.scopeGroupNames || '自定义分组';
     return a.scope;
   };
+  const scopeColor = (a) => a.scope === '全区' ? 'blue' : a.scope === '自定义镇' ? 'orange' : a.scope === '自定义分组' ? 'indigo' : 'green';
 
   const detail = announcements.find(a => a.id === detailId);
 
@@ -3852,9 +4217,14 @@ function AnnouncementManagement({ userRole, roleTown }) {
           <h1 className="text-xl font-bold text-ink tracking-tight">公告管理</h1>
           <p className="text-sm text-ink-secondary mt-0.5">向下辖商户下发监管公告 · {isDistrict ? '区级可全区或自定义镇下发' : '镇级仅可下发本镇'}</p>
         </div>
-        <button onClick={handleOpenComposer} className="text-sm bg-gov-600 text-white px-4 py-2 rounded-md hover:bg-gov-700 transition-colors flex items-center gap-1.5">
-          <span className="text-base leading-none">＋</span> 新建公告
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => setShowTemplates(true)} className="text-sm bg-white border border-slate-300 text-ink-secondary px-4 py-2 rounded-md hover:bg-slate-50 transition-colors flex items-center gap-1.5">
+            <span className="text-base leading-none">📋</span> 模板管理
+          </button>
+          <button onClick={handleOpenComposer} className="text-sm bg-gov-600 text-white px-4 py-2 rounded-md hover:bg-gov-700 transition-colors flex items-center gap-1.5">
+            <span className="text-base leading-none">＋</span> 新建公告
+          </button>
+        </div>
       </div>
 
       {/* List */}
@@ -3882,7 +4252,7 @@ function AnnouncementManagement({ userRole, roleTown }) {
                   <td className="px-4 py-3 text-xs font-medium text-ink max-w-[320px] truncate">{a.title}</td>
                   <td className="px-4 py-3 text-xs text-ink-secondary">{a.source}</td>
                   <td className="px-4 py-3">
-                    <Badge color={a.scope === '全区' ? 'blue' : a.scope === '自定义镇' ? 'orange' : 'green'}>{scopeDisplay(a)}</Badge>
+                    <Badge color={scopeColor(a)}>{scopeDisplay(a)}</Badge>
                   </td>
                   <td className="px-4 py-3 text-xs text-ink-secondary">{a.author}</td>
                   <td className="px-4 py-3 text-xs font-mono text-ink-secondary">{a.createTime}</td>
@@ -3929,12 +4299,28 @@ function AnnouncementManagement({ userRole, roleTown }) {
                 </div>
               </div>
 
+              {/* 套用模板 */}
+              <div>
+                <label className="block text-xs font-semibold text-ink mb-1.5">套用模板 <span className="text-ink-muted font-normal">（可选，选中后自动填充标题与内容）</span></label>
+                <select
+                  value={appliedTplId}
+                  onChange={e => { if (e.target.value) applyTemplate(e.target.value); else setAppliedTplId(''); }}
+                  className="w-full text-sm border border-slate-200 rounded-md px-3 py-2.5 outline-none focus:border-gov-400 bg-white"
+                >
+                  <option value="">不使用模板</option>
+                  {templates.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                </select>
+                {templates.length === 0 && (
+                  <p className="text-[11px] text-ink-muted mt-1">暂无模板，可在「模板管理」中创建</p>
+                )}
+              </div>
+
               {/* 公告范围 */}
               <div>
                 <label className="block text-xs font-semibold text-ink mb-1.5">公告范围</label>
-                {isDistrict ? (
-                  <>
-                    <div className="flex gap-2 mb-2">
+                <div className="flex gap-2 mb-2 flex-wrap">
+                  {isDistrict ? (
+                    <>
                       <button
                         onClick={() => setForm({ ...form, scope: '全区', scopeTowns: [] })}
                         className={`px-4 py-2 text-xs rounded-md border transition-colors ${form.scope === '全区' ? 'bg-gov-600 text-white border-gov-600' : 'bg-white text-ink-secondary border-slate-200 hover:bg-slate-50'}`}
@@ -3943,30 +4329,58 @@ function AnnouncementManagement({ userRole, roleTown }) {
                         onClick={() => setForm({ ...form, scope: '自定义镇' })}
                         className={`px-4 py-2 text-xs rounded-md border transition-colors ${form.scope === '自定义镇' ? 'bg-gov-600 text-white border-gov-600' : 'bg-white text-ink-secondary border-slate-200 hover:bg-slate-50'}`}
                       >自定义镇</button>
-                    </div>
-                    {form.scope === '自定义镇' && (
-                      <div className="grid grid-cols-2 gap-2">
-                        {towns.map(t => {
-                          const checked = form.scopeTowns.includes(t);
-                          return (
-                            <button
-                              key={t}
-                              onClick={() => setForm({ ...form, scopeTowns: checked ? form.scopeTowns.filter(x => x !== t) : [...form.scopeTowns, t] })}
-                              className={`px-3 py-2 text-xs rounded-md border flex items-center gap-2 transition-colors ${checked ? 'bg-gov-50 border-gov-300 text-gov-700' : 'bg-white border-slate-200 text-ink-secondary hover:bg-slate-50'}`}
-                            >
-                              <span className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${checked ? 'bg-gov-600 border-gov-600' : 'border-slate-300'}`}>
-                                {checked && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>}
-                              </span>
-                              {t}
-                            </button>
-                          );
-                        })}
-                      </div>
+                    </>
+                  ) : (
+                    <button
+                      onClick={() => setForm({ ...form, scope: roleTown })}
+                      className={`px-4 py-2 text-xs rounded-md border transition-colors ${form.scope === roleTown ? 'bg-gov-600 text-white border-gov-600' : 'bg-white text-ink-secondary border-slate-200 hover:bg-slate-50'}`}
+                    >{roleTown}（本镇下发）</button>
+                  )}
+                  <button
+                    onClick={() => setForm({ ...form, scope: '自定义分组', scopeTowns: [] })}
+                    className={`px-4 py-2 text-xs rounded-md border transition-colors ${form.scope === '自定义分组' ? 'bg-gov-600 text-white border-gov-600' : 'bg-white text-ink-secondary border-slate-200 hover:bg-slate-50'}`}
+                  >自定义分组</button>
+                </div>
+                {form.scope === '自定义镇' && (
+                  <div className="grid grid-cols-2 gap-2">
+                    {towns.map(t => {
+                      const checked = form.scopeTowns.includes(t);
+                      return (
+                        <button
+                          key={t}
+                          onClick={() => setForm({ ...form, scopeTowns: checked ? form.scopeTowns.filter(x => x !== t) : [...form.scopeTowns, t] })}
+                          className={`px-3 py-2 text-xs rounded-md border flex items-center gap-2 transition-colors ${checked ? 'bg-gov-50 border-gov-300 text-gov-700' : 'bg-white border-slate-200 text-ink-secondary hover:bg-slate-50'}`}
+                        >
+                          <span className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${checked ? 'bg-gov-600 border-gov-600' : 'border-slate-300'}`}>
+                            {checked && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>}
+                          </span>
+                          {t}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+                {form.scope === '自定义分组' && (
+                  <div className="grid grid-cols-2 gap-2">
+                    {MOCK.groups.length === 0 && (
+                      <div className="col-span-2 text-xs text-ink-muted px-2 py-1">暂无可选分组，请先在「主体管理」中创建固定名单组</div>
                     )}
-                  </>
-                ) : (
-                  <div className="px-3 py-2.5 bg-slate-50 rounded-md border border-slate-200 text-sm text-ink">
-                    {roleTown}（镇级仅可下发本镇）
+                    {MOCK.groups.map(g => {
+                      const checked = form.scopeGroupIds.includes(g.id);
+                      return (
+                        <button
+                          key={g.id}
+                          onClick={() => setForm({ ...form, scopeGroupIds: checked ? form.scopeGroupIds.filter(x => x !== g.id) : [...form.scopeGroupIds, g.id] })}
+                          className={`px-3 py-2 text-xs rounded-md border flex items-center gap-2 transition-colors ${checked ? 'bg-gov-50 border-gov-300 text-gov-700' : 'bg-white border-slate-200 text-ink-secondary hover:bg-slate-50'}`}
+                        >
+                          <span className={`w-3.5 h-3.5 rounded border flex items-center justify-center shrink-0 ${checked ? 'bg-gov-600 border-gov-600' : 'border-slate-300'}`}>
+                            {checked && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>}
+                          </span>
+                          <span className="font-medium flex-1 text-left">{g.name}</span>
+                          <span className="text-[11px] text-ink-muted">{groupCount(g)} 家</span>
+                        </button>
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -4021,12 +4435,91 @@ function AnnouncementManagement({ userRole, roleTown }) {
               <h1 className="text-lg font-bold text-ink leading-snug">{detail.title}</h1>
               <div className="flex items-center gap-3 text-[11px] text-ink-muted flex-wrap">
                 <span className="px-2 py-0.5 rounded bg-slate-50 border border-slate-200">来源：{detail.source}</span>
-                <Badge color={detail.scope === '全区' ? 'blue' : detail.scope === '自定义镇' ? 'orange' : 'green'}>{scopeDisplay(detail)}</Badge>
+                <Badge color={scopeColor(detail)}>{scopeDisplay(detail)}</Badge>
                 <span>发布人：{detail.author}</span>
               </div>
               <div className="text-[11px] text-ink-muted">{detail.createTime}</div>
               <div className="border-t border-slate-100 pt-4">
                 <div className="text-xs text-ink leading-relaxed whitespace-pre-wrap">{detail.content}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 模板管理 Drawer */}
+      {showTemplates && (
+        <div className="fixed inset-0 z-50 flex justify-end modal-backdrop" style={{background:'rgba(15,23,42,0.3)'}} onClick={() => setShowTemplates(false)}>
+          <div className="w-[560px] bg-white h-full shadow-2xl overflow-y-auto animate-slide-right" onClick={e => e.stopPropagation()}>
+            <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between z-10">
+              <div>
+                <h2 className="text-base font-bold text-ink">公告模板</h2>
+                <p className="text-[11px] text-ink-muted mt-0.5">保存常用公告内容，新建公告时一键套用</p>
+              </div>
+              <button onClick={() => setShowTemplates(false)} className="p-1.5 rounded-md hover:bg-slate-100 text-ink-muted">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+            <div className="p-6 space-y-4">
+              <button onClick={openAddTpl} className="w-full text-sm bg-gov-600 text-white px-4 py-2.5 rounded-md hover:bg-gov-700 transition-colors flex items-center justify-center gap-1.5">
+                <span className="text-base leading-none">＋</span> 新增模板
+              </button>
+
+              {templates.length === 0 && (
+                <div className="text-center py-12 text-ink-muted text-xs">暂无模板，点击上方「新增模板」创建</div>
+              )}
+
+              {templates.map(t => (
+                <div key={t.id} className="border border-slate-200 rounded-lg p-4 hover:border-gov-300 transition-colors">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <span className="text-sm font-semibold text-ink">{t.name}</span>
+                      <div className="text-xs text-ink-secondary mt-1 truncate">{t.title}</div>
+                    </div>
+                    <span className="text-[11px] text-ink-muted shrink-0 whitespace-nowrap">{t.createTime}</span>
+                  </div>
+                  <p className="text-[11px] text-ink-muted mt-2 leading-relaxed">{t.content.length > 60 ? t.content.slice(0, 60) + '…' : t.content}</p>
+                  <div className="flex items-center gap-3 mt-3 pt-3 border-t border-slate-100">
+                    <button onClick={() => useTemplate(t.id)} className="text-[11px] bg-gov-600 text-white px-3 py-1 rounded hover:bg-gov-700 font-medium">使用</button>
+                    <button onClick={() => openEditTpl(t)} className="text-[11px] text-gov-600 hover:text-gov-700 font-medium">编辑</button>
+                    <button onClick={() => removeTpl(t.id)} className="text-[11px] text-red-500 hover:text-red-600 font-medium">删除</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 模板表单弹窗 */}
+      {showTplForm && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center modal-backdrop" style={{background:'rgba(15,23,42,0.4)'}} onClick={() => { setShowTplForm(false); setEditingTplId(null); }}>
+          <div className="bg-white rounded-lg shadow-elevated w-[520px] max-h-[80vh] overflow-y-auto p-6" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="text-base font-bold text-ink">{editingTplId ? '编辑模板' : '新增模板'}</h2>
+                <p className="text-[11px] text-ink-muted mt-0.5">模板将保存标题与内容，新建公告时可一键套用</p>
+              </div>
+              <button onClick={() => { setShowTplForm(false); setEditingTplId(null); }} className="text-ink-muted hover:text-ink text-xl leading-none">×</button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-ink mb-1.5">模板名称 <span className="text-red-500">*</span></label>
+                <input value={tplForm.name} onChange={e => setTplForm({ ...tplForm, name: e.target.value })} placeholder="例如：夏季食品安全专项检查" className="w-full text-sm border border-slate-200 rounded-md px-3 py-2.5 outline-none focus:border-gov-400" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-ink mb-1.5">公告标题 <span className="text-red-500">*</span></label>
+                <input value={tplForm.title} onChange={e => setTplForm({ ...tplForm, title: e.target.value })} placeholder="请输入公告标题" className="w-full text-sm border border-slate-200 rounded-md px-3 py-2.5 outline-none focus:border-gov-400" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-ink mb-1.5">公告内容 <span className="text-red-500">*</span></label>
+                <textarea value={tplForm.content} onChange={e => setTplForm({ ...tplForm, content: e.target.value })} placeholder="请输入公告内容..." rows={8} className="w-full text-sm border border-slate-200 rounded-md px-3 py-2.5 outline-none focus:border-gov-400 resize-none leading-relaxed" />
+              </div>
+
+              <div className="flex gap-3 pt-1">
+                <button onClick={() => { setShowTplForm(false); setEditingTplId(null); }} className="flex-1 px-4 py-2.5 rounded-md text-sm font-medium bg-white border border-slate-300 text-ink-secondary hover:bg-slate-50 transition-colors">取消</button>
+                <button onClick={saveTpl} className="flex-1 px-4 py-2.5 rounded-md text-sm font-medium bg-gov-600 text-white hover:bg-gov-700 transition-colors">{editingTplId ? '保存修改' : '保存模板'}</button>
               </div>
             </div>
           </div>
@@ -4087,6 +4580,8 @@ function FeedbackHandling({ userRole, roleTown }) {
   const [feedbacks, setFeedbacks] = useState(MOCK.feedbacks);
   const [showCompose, setShowCompose] = useState(false);
   const [composeMerchant, setComposeMerchant] = useState('');
+  const [composeTarget, setComposeTarget] = useState('merchant');
+  const [composeGroupId, setComposeGroupId] = useState('');
   const [composeContent, setComposeContent] = useState('');
   const [composeAttachments, setComposeAttachments] = useState([]);
 
@@ -4099,6 +4594,7 @@ function FeedbackHandling({ userRole, roleTown }) {
   });
 
   const merchantOptions = MOCK.enterprises.filter(e => isDistrict || e.town === roleTown);
+  const groupCount = (g) => groupMembersOf(g, MOCK.enterprises).length;
   // 主体绑定手机号
   const getBindPhone = (f) => {
     const ent = MOCK.enterprises.find(e => e.name === f.enterprise);
@@ -4132,12 +4628,22 @@ function FeedbackHandling({ userRole, roleTown }) {
   };
 
   const handleSendNew = () => {
-    if (!composeMerchant || (!composeContent.trim() && composeAttachments.length === 0)) return;
-    const ent = MOCK.enterprises.find(e => e.id === composeMerchant);
-    if (!ent) return;
+    if (!composeContent.trim() && composeAttachments.length === 0) return;
+    let targets = [];
+    if (composeTarget === 'group') {
+      const g = MOCK.groups.find(x => x.id === composeGroupId);
+      if (!g) return;
+      targets = groupMembersOf(g, MOCK.enterprises);
+    } else {
+      const ent = MOCK.enterprises.find(e => e.id === composeMerchant);
+      if (!ent) return;
+      targets = [ent];
+    }
+    if (targets.length === 0) return;
     const nowStr = new Date().toISOString().slice(0, 19).replace('T', ' ');
-    const newMsg = {
-      id: 'FB' + String(Date.now()).slice(-6),
+    const stamp = Date.now();
+    const newMsgs = targets.map((ent, i) => ({
+      id: 'FB' + String(stamp).slice(-6) + String(i),
       enterprise: ent.name,
       town: ent.town,
       content: composeContent.trim(),
@@ -4145,11 +4651,13 @@ function FeedbackHandling({ userRole, roleTown }) {
       status: '待回复',
       createTime: nowStr,
       initiatedByAdmin: true,
-      messages: [{ id: 'M' + Date.now(), sender: 'admin', content: composeContent.trim(), attachments: composeAttachments, time: nowStr, isAdmin: true }],
-    };
-    setFeedbacks([newMsg, ...feedbacks]);
+      messages: [{ id: 'M' + stamp + i, sender: 'admin', content: composeContent.trim(), attachments: composeAttachments, time: nowStr, isAdmin: true }],
+    }));
+    setFeedbacks([...newMsgs, ...feedbacks]);
     setShowCompose(false);
     setComposeMerchant('');
+    setComposeGroupId('');
+    setComposeTarget('merchant');
     setComposeContent('');
     setComposeAttachments([]);
   };
@@ -4336,11 +4844,30 @@ function FeedbackHandling({ userRole, roleTown }) {
             </div>
             <div className="space-y-3">
               <div>
-                <label className="block text-xs font-medium text-ink-secondary mb-1">选择商户 <span className="text-red-500">*</span></label>
-                <select value={composeMerchant} onChange={e => setComposeMerchant(e.target.value)} className="w-full text-sm border border-slate-200 rounded-md px-3 py-2 outline-none focus:border-gov-400 bg-white">
-                  <option value="">请选择商户</option>
-                  {merchantOptions.map(e => <option key={e.id} value={e.id}>{e.name}（{e.town}）</option>)}
-                </select>
+                <label className="block text-xs font-medium text-ink-secondary mb-1">发送对象 <span className="text-red-500">*</span></label>
+                <div className="flex gap-2 mb-2">
+                  <button
+                    onClick={() => { setComposeTarget('merchant'); setComposeGroupId(''); }}
+                    className={`px-3 py-1.5 text-xs rounded-md border transition-colors ${composeTarget === 'merchant' ? 'bg-gov-600 text-white border-gov-600' : 'bg-white text-ink-secondary border-slate-200 hover:bg-slate-50'}`}
+                  >单个商户</button>
+                  <button
+                    onClick={() => { setComposeTarget('group'); setComposeMerchant(''); }}
+                    className={`px-3 py-1.5 text-xs rounded-md border transition-colors ${composeTarget === 'group' ? 'bg-gov-600 text-white border-gov-600' : 'bg-white text-ink-secondary border-slate-200 hover:bg-slate-50'}`}
+                  >自定义分组</button>
+                </div>
+                {composeTarget === 'merchant' ? (
+                  <select value={composeMerchant} onChange={e => setComposeMerchant(e.target.value)} className="w-full text-sm border border-slate-200 rounded-md px-3 py-2 outline-none focus:border-gov-400 bg-white">
+                    <option value="">请选择商户</option>
+                    {merchantOptions.map(e => <option key={e.id} value={e.id}>{e.name}（{e.town}）</option>)}
+                  </select>
+                ) : (
+                  <select value={composeGroupId} onChange={e => setComposeGroupId(e.target.value)} className="w-full text-sm border border-slate-200 rounded-md px-3 py-2 outline-none focus:border-gov-400 bg-white">
+                    <option value="">请选择分组</option>
+                    {MOCK.groups.length === 0
+                      ? <option value="" disabled>暂无固定名单组，请先在「主体管理」中创建</option>
+                      : MOCK.groups.map(g => <option key={g.id} value={g.id}>{g.name}（{groupCount(g)} 家）</option>)}
+                  </select>
+                )}
               </div>
               <div>
                 <label className="block text-xs font-medium text-ink-secondary mb-1">内容 <span className="text-red-500">*</span></label>
