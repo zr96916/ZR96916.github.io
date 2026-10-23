@@ -32,35 +32,35 @@ html,body{width:100%;height:100%;color:var(--text-primary);
 @keyframes pulse{0%,to{opacity:1}50%{opacity:.4}}
 
 /* ============ 侧边栏 ============ */
-#sidebar{background:linear-gradient(180deg,#ffffffd9,#eaf6fcf2);border-right:1px solid var(--hud-line);backdrop-filter:blur(14px);width:var(--sidebar-w);height:100%;flex-direction:column;display:flex;position:relative;z-index:200;transition:width .3s}
-#sidebar.collapsed{width:64px}
+.sidebar{background:linear-gradient(180deg,#ffffffd9,#eaf6fcf2);border-right:1px solid var(--hud-line);backdrop-filter:blur(14px);width:var(--sidebar-w);height:100%;flex-direction:column;display:flex;position:relative;z-index:200;transition:width .3s}
+.sidebar.collapsed{width:64px}
 .sb-header{border-bottom:1px solid #1ea0d280;align-items:center;gap:10px;padding:16px 14px;display:flex}
 .sb-logo{background:linear-gradient(135deg,var(--blue-jc),var(--cyan-dim));border-radius:6px;flex-shrink:0;justify-content:center;align-items:center;width:30px;height:30px;font-size:16px;display:flex;box-shadow:0 0 12px #00e5ff4d}
 .sb-title-wrap{white-space:nowrap;overflow:hidden}
 .sb-title{color:var(--text-primary);letter-spacing:1px;font-size:13px;font-weight:700}
 .sb-subtitle{color:var(--text-dim);letter-spacing:2px;font-size:9px}
-#sidebar.collapsed .sb-title-wrap{display:none}
+.sidebar.collapsed .sb-title-wrap{display:none}
 .sb-toggle{border:1px solid var(--hud-line);background:#ffffff9e;color:var(--text-secondary);cursor:pointer;border-radius:50%;width:22px;height:22px;font-size:10px;position:absolute;right:-11px;top:64px;transition:all .3s}
 .sb-toggle:hover{color:var(--blue-deep);border-color:var(--hud-bright)}
 nav{flex:1;padding-top:8px;overflow:hidden auto}
 .nav-group-label{color:var(--text-dim);letter-spacing:2px;white-space:nowrap;padding:10px 14px 4px;font-size:9px}
-#sidebar.collapsed .nav-group-label{text-align:center;padding:10px 4px 4px;font-size:8px}
+.sidebar.collapsed .nav-group-label{text-align:center;padding:10px 4px 4px;font-size:8px}
 .nav-item{cursor:pointer;color:var(--text-secondary);white-space:nowrap;border-radius:4px;align-items:center;gap:10px;margin:1px 8px;padding:10px 14px;font-size:12px;transition:all .25s;display:flex;position:relative}
 .nav-item:hover{color:var(--blue-deep);background:#2196f31a}
 .nav-item.active{color:var(--blue-deep);border-left:2px solid var(--cyan);background:linear-gradient(90deg,#1ab4e829,#2196f30f);box-shadow:inset 0 0 12px #1ab4e80f}
 .nav-item .ni-icon{text-align:center;flex-shrink:0;width:18px;font-size:14px}
-#sidebar.collapsed .nav-item{justify-content:center;gap:0;margin:1px 6px;padding:10px 6px}
-#sidebar.collapsed .ni-label{display:none}
+.sidebar.collapsed .nav-item{justify-content:center;gap:0;margin:1px 6px;padding:10px 6px}
+.sidebar.collapsed .ni-label{display:none}
 .nav-badge{background:var(--red-glow);color:#fff;border-radius:9px;padding:0 7px;font-size:10px;font-weight:700;line-height:16px;margin-left:auto}
-#sidebar.collapsed .nav-badge{display:none}
+.sidebar.collapsed .nav-badge{display:none}
 .sb-footer{border-top:1px solid #1ea0d280;padding:12px 14px;display:flex;align-items:center;gap:10px}
 .sb-user-avatar{background:linear-gradient(135deg,var(--gold),var(--orange));color:#000;border-radius:50%;flex-shrink:0;justify-content:center;align-items:center;width:28px;height:28px;font-size:11px;font-weight:700;display:flex}
 .sb-user-name{color:var(--text-primary);font-size:12px;font-weight:600;line-height:1.4}
 .sb-user-meta{color:var(--text-dim);font-size:9px;line-height:1.4}
-#sidebar.collapsed .sb-user-info{display:none}
+.sidebar.collapsed .sb-user-info{display:none}
 .logout-btn{border:1px solid var(--hud-line);background:0 0;color:var(--text-dim);cursor:pointer;border-radius:3px;padding:3px 8px;font-size:9px;margin-left:auto;transition:all .25s}
 .logout-btn:hover{color:var(--red-glow);border-color:var(--red-glow)}
-#sidebar.collapsed .logout-btn{display:none}
+.sidebar.collapsed .logout-btn{display:none}
 
 /* ============ 主区域 ============ */
 #main-area{flex:1;min-width:0;height:100%;flex-direction:column;display:flex;position:relative;z-index:1}
@@ -216,13 +216,738 @@ nav{flex:1;padding-top:8px;overflow:hidden auto}
 #toast.err{background:linear-gradient(135deg,var(--red),var(--red-glow))}
 
 .empty-tip{text-align:center;color:var(--text-dim);font-size:11px;padding:30px 0}
+
+/* ============ 登录页 ============ */
+#view-index{height:100%;align-items:center;justify-content:center;gap:70px;position:relative;overflow:hidden;display:none}
+.idx-glow{position:absolute;border-radius:50%;filter:blur(90px);opacity:.35;pointer-events:none}
+.lg-brand{position:relative;z-index:1;max-width:520px;animation:.6s fadeIn}
+.lg-sys{display:flex;align-items:center;gap:10px;margin-bottom:22px}
+.lg-logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#e3f2fd,#bbdefb);border:1px solid var(--hud-line);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.lg-sys-name{font-size:12px;font-weight:700;color:var(--blue-deep);letter-spacing:1px}
+.lg-sys-sub{font-size:10px;color:var(--text-dim);margin-top:2px}
+.lg-title{font-size:30px;font-weight:800;color:#1565c0;line-height:1.55;letter-spacing:2px}
+.lg-card{width:380px;background:var(--glass-strong);border:1px solid var(--hud-line);border-radius:14px;box-shadow:0 20px 60px #1a8fd026;padding:26px 28px 28px;position:relative;z-index:1;animation:.6s fadeInUp}
+.lg-card h2{font-size:18px;color:var(--text-primary);letter-spacing:1px}
+.lg-hint{font-size:10px;color:var(--text-dim);margin:4px 0 8px}
+.lg-label{font-size:10px;color:var(--text-dim);margin:10px 0 5px}
+.lg-input{width:100%;border:1px solid var(--hud-line);background:#fff;border-radius:8px;padding:10px 12px;font-size:12px;color:var(--text-primary);outline:none;transition:all .2s}
+.lg-input:focus{border-color:var(--blue-electric);box-shadow:0 0 0 3px #1ab4e81f}
+.lg-role-row{display:flex;align-items:center;gap:8px;margin:14px 0 18px}
+.lg-role-label{font-size:10px;color:var(--text-dim)}
+.lg-pill{border:1px solid var(--hud-line);background:#ffffffd9;border-radius:20px;padding:4px 14px;font-size:11px;color:var(--text-secondary);cursor:pointer;transition:all .2s}
+.lg-pill:hover{border-color:var(--hud-bright)}
+.lg-pill.sel{border-color:var(--blue-electric);background:#00e5ff14;color:var(--blue-deep)}
+.login-btn{width:100%;border:none;border-radius:8px;background:linear-gradient(90deg,#1e88e5,#2bb4e8);color:#fff;font-size:14px;font-weight:700;letter-spacing:6px;padding:12px 0;cursor:pointer;transition:all .25s;box-shadow:0 8px 20px #1e88e540}
+.login-btn:hover{transform:translateY(-1px);box-shadow:0 10px 26px #1e88e555}
+.lg-foot{position:absolute;bottom:18px;left:0;right:0;text-align:center;color:var(--text-dim);font-size:10px;letter-spacing:2px;z-index:1}
+
+/* ============ 主用户 · 分层人机复核工作台 ============ */
+#view-main,#view-sub{height:100%}
+.batch-row{display:flex;gap:10px}
+.batch-card{flex:1;border:1px solid var(--hud-line);border-radius:6px;padding:10px 12px;cursor:pointer;background:#1ea0d20a;transition:all .25s}
+.batch-card:hover{border-color:var(--hud-bright)}
+.batch-card.active{border-color:var(--cyan);background:#00e5ff14;box-shadow:inset 0 0 14px #1ab4e81a}
+.bc-top{display:flex;align-items:center;gap:8px;font-weight:700;font-size:12px;color:var(--text-primary)}
+.bc-meta{font-size:10px;color:var(--text-dim);margin-top:4px}
+.bc-prog{margin-top:3px;font-size:10px;color:var(--text-secondary)}
+.bc-prog b{color:var(--red-glow)}
+.batch-info{margin-top:10px;border-top:1px dashed var(--hud-line);padding-top:8px;font-size:11px;color:var(--text-secondary);line-height:1.8}
+.batch-info b{color:var(--text-primary)}
+.stat-cards{display:flex;gap:12px;flex-shrink:0}
+.stat-card{flex:1;background:var(--glass);border:1px solid var(--hud-line);text-align:center;padding:12px 0 10px}
+.sc-num{font-size:30px;font-weight:800;line-height:1.15}
+.sc-label{font-size:11px;color:var(--text-dim);letter-spacing:2px;margin-top:2px}
+.tri-label{flex-shrink:0;font-size:12px;font-weight:700;color:var(--text-secondary);letter-spacing:1px}
+.tri-col{flex:1;min-height:430px;display:flex;gap:12px}
+.case-panel{width:256px;flex-shrink:0}
+#scope-tabs{flex-wrap:nowrap}
+#scope-tabs .sync-tab{flex:1;min-width:0;text-align:center;padding:7px 4px}
+#rectify-tool{border:1px dashed var(--hud-bright);background:#ffffffa1;border-radius:6px;padding:8px 9px;margin-bottom:10px;display:none}
+.rt-row{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-secondary);margin-bottom:6px}
+.rt-row:last-of-type{margin-bottom:0}
+.rt-label{width:56px;flex-shrink:0;color:var(--text-primary)}
+.rt-input{width:64px;border:1px solid var(--hud-line);border-radius:4px;padding:3px 6px;font-size:11px;color:var(--text-primary);background:#fff}
+.rt-hint{font-size:10px;color:var(--text-dim);margin-top:6px;line-height:1.6}
+.rt-gen{width:100%;margin-top:7px;padding:6px 0;font-size:11px}
+.doc-panel{flex:1;min-width:0}
+.judge-col{width:256px;flex-shrink:0;display:flex;flex-direction:column;gap:12px}
+.cmp-panel{flex:1}
+.judge-panel{flex-shrink:0}
+.case-list{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:6px}
+.case-item{border:1px solid var(--hud-line);border-radius:6px;padding:8px 10px;cursor:pointer;background:#ffffff8c;transition:all .2s;flex-shrink:0}
+.case-item:hover{border-color:var(--hud-bright)}
+.case-item.sel{border-color:var(--cyan);background:#00e5ff14;box-shadow:inset 0 0 10px #1ab4e81f}
+.ci-top{display:flex;align-items:center;justify-content:space-between;font-weight:700;font-size:12px;color:var(--text-primary)}
+.ci-sub{font-size:10px;color:var(--text-dim);margin-top:3px}
+.case-scroll-hint{text-align:center;font-size:10px;color:var(--text-dim);padding-top:6px;flex-shrink:0}
+.doc-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-shrink:0;flex-wrap:wrap}
+.doc-title{font-size:13px;font-weight:700;color:var(--text-primary)}
+.doc-model{margin-left:auto;font-size:10px;color:var(--text-dim)}
+.doc-paper{flex:1;min-height:0;overflow:auto;background:#fffcf0;border:1px solid #e8dfc0;border-radius:4px;padding:16px 22px;font-size:12px;color:#6b5618;line-height:2.1}
+.doc-paper .hl{background:#ffe94d;padding:0 4px;border-radius:2px;color:#4a3c00}
+.doc-foot{flex-shrink:0;padding-top:8px}
+.cmp-row{display:flex;justify-content:space-between;gap:8px;font-size:11px;padding:5px 2px;border-bottom:1px dashed #1ea0d233}
+.cmp-row .k{color:var(--text-dim);flex-shrink:0}
+.cmp-row .v{color:var(--text-primary);font-weight:600;text-align:right}
+.cmp-result{margin-top:8px;border-radius:4px;padding:8px 0;text-align:center;font-size:11px;font-weight:700}
+.cmp-result.bad{background:#ffe94d59;border:1px solid #d8c500;color:#7a6600}
+.cmp-result.good{background:#00e6761f;border:1px solid #00e67666;color:var(--green-glow)}
+.cmp-src{font-size:9px;color:var(--text-dim);font-weight:400}
+.judge-btn{cursor:pointer;width:100%;border-radius:6px;padding:11px 0;font-size:13px;font-weight:700;border:1px solid;transition:all .25s}
+.judge-btn.pass{background:#00e6761f;border-color:#00e67680;color:var(--green-glow)}
+.judge-btn.pass:hover{background:#00e6763d;transform:translateY(-1px)}
+.judge-btn.reject{background:#ff17441f;border-color:#ff174466;color:var(--red-glow)}
+.judge-btn.reject:hover{background:#ff17443d;transform:translateY(-1px)}
+
+/* ============ 主用户 · 页面切换 ============ */
+.mpage{display:none;flex-direction:column;gap:12px;flex:1;min-height:0}
+.mpage.on{display:flex}
+
+/* 通用表格 / 控件 */
+.mp-table{width:100%;border-collapse:collapse;font-size:11px}
+.mp-table th{background:linear-gradient(90deg,#4db3e6,#2b8fd0);color:#fff;font-weight:600;padding:8px 10px;text-align:left;white-space:nowrap}
+.mp-table td{padding:8px 10px;border-bottom:1px solid #e3f2fb;color:var(--text-primary);white-space:nowrap}
+.mp-table tr:hover td{background:#f0faff}
+.mp-select,.mp-input{border:1px solid var(--hud-line);background:#fff;border-radius:5px;padding:6px 10px;font-size:11px;color:var(--text-primary);outline:none}
+.mp-input.sm{width:52px;text-align:center}
+.mp-btn{border:1px solid var(--hud-line);background:#fff;color:var(--text-secondary);border-radius:5px;padding:6px 12px;font-size:11px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.mp-btn:hover{border-color:var(--hud-bright);color:var(--blue-deep)}
+.mp-btn.primary{background:linear-gradient(135deg,var(--blue-jc),var(--blue-electric));color:#fff;border:none}
+.mp-btn.primary:hover{opacity:.9}
+.mp-btn.xs{padding:3px 8px;font-size:10px;border-radius:4px}
+.mp-note{font-size:10px;color:var(--text-dim)}
+.arch-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+/* 驾驶舱 */
+.dash-hero{display:flex;gap:12px;flex-shrink:0}
+.dh-card{flex:1;background:var(--glass);border:1px solid var(--hud-line);text-align:center;padding:14px 0 12px}
+.dh-num{font-size:34px;font-weight:800;color:var(--blue-deep);line-height:1.15}
+.dh-label{font-size:11px;color:var(--text-dim);letter-spacing:2px;margin-top:2px}
+.dash-mid{display:flex;gap:12px;flex:1.4;min-height:280px}
+.dash-bottom{display:flex;gap:12px;flex:1;min-height:180px}
+.dash-col{width:250px;flex-shrink:0}
+.dash-map{flex:1;min-width:0}
+.cov-row{display:flex;align-items:center;gap:8px;font-size:11px;padding:4px 2px}
+.cov-name{width:56px;color:var(--text-secondary);flex-shrink:0}
+.cov-bar{flex:1;height:6px;background:#1ea0d21f;border-radius:3px;overflow:hidden}
+.cov-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue-jc),var(--blue-electric));border-radius:3px}
+.cov-val{width:44px;text-align:right;color:var(--text-primary);font-weight:600}
+.rank-row{display:flex;align-items:center;gap:10px;padding:8px 4px;border-bottom:1px dashed #1ea0d233;font-size:11px}
+.rank-no{width:22px;height:22px;border-radius:50%;background:#1ea0d21f;color:var(--blue-deep);font-weight:700;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
+.rank-name{flex:1;color:var(--text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rank-cnt{color:var(--red-glow);font-weight:700}
+.lg-row{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-secondary);padding:3px 0}
+.lg-row b{margin-left:auto;color:var(--text-primary)}
+.lg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.mp-pulse{animation:pulse 1.6s infinite}
+.map-legend{position:absolute;bottom:8px;left:12px;font-size:10px;color:var(--text-dim);display:flex;gap:12px;z-index:2}
+
+/* 数据归集 */
+.src-tabs{display:flex;gap:8px}
+.src-tab{border:1px solid var(--hud-line);background:#fff;border-radius:6px;padding:7px 14px;font-size:11px;color:var(--text-secondary);cursor:pointer;transition:all .2s;white-space:nowrap}
+.src-tab.active{background:linear-gradient(135deg,var(--blue-jc),var(--blue-electric));color:#fff;border-color:transparent}
+.drop-zone{border:2px dashed var(--hud-line);border-radius:8px;background:#1ea0d20a;padding:22px 0;text-align:center;color:var(--text-secondary);font-size:12px;line-height:1.9;cursor:pointer;transition:all .25s;flex-shrink:0}
+.drop-zone:hover{border-color:var(--blue-electric);background:#1ea0d214}
+.drop-zone b{color:var(--blue-deep)}
+
+/* 智能初核 */
+.batch-cards-sm{display:flex;gap:10px}
+.bcs-card{flex:1;border:1px solid var(--hud-line);border-radius:6px;padding:9px 11px;cursor:pointer;background:#1ea0d20a;transition:all .25s}
+.bcs-card:hover{border-color:var(--hud-bright)}
+.bcs-card.active{border-color:var(--cyan);background:#00e5ff14;box-shadow:inset 0 0 12px #1ab4e81a}
+.bcs-no{font-weight:700;font-size:12px;color:var(--text-primary);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.bcs-meta{font-size:10px;color:var(--text-dim);margin-top:3px}
+.bcs-meta b{color:var(--red-glow)}
+.chk-tiles{display:flex;gap:12px;flex-shrink:0}
+.chk-tile{flex:1;border-radius:8px;text-align:center;padding:16px 0 12px}
+.chk-tile.bad{background:linear-gradient(90deg,#ffe3e3,#fff3f0);border:1px solid #ffcdd2}
+.chk-tile.ok{background:linear-gradient(90deg,#e0f7fa,#e8f5e9);border:1px solid #b2ebf2}
+.chk-num{font-size:34px;font-weight:800}
+.chk-tile.bad .chk-num{color:var(--red-glow)}
+.chk-tile.ok .chk-num{color:var(--blue-electric)}
+.chk-label{font-size:12px;color:var(--text-secondary);margin-top:2px}
+.sync-tab.tb-bad.active{background:#e53935;color:#fff;border-color:transparent}
+.sync-tab.tb-ok.active{background:#2bbbad;color:#fff;border-color:transparent}
+.sync-tab.gold.active{background:linear-gradient(135deg,#e09b00,#f0b429);color:#fff;border-color:transparent}
+
+/* ============ 终核判定 / 验收退回 模态框 ============ */
+.modal-mask{position:fixed;inset:0;background:#0d4a7059;backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:900}
+.modal-mask.on{display:flex}
+.modal-box{width:470px;background:#fff;border:1px solid var(--hud-line);border-radius:12px;box-shadow:0 24px 60px #0d6eab40;padding:22px 24px;animation:.25s fadeInUp}
+.modal-title{font-size:15px;font-weight:700;color:var(--text-primary);letter-spacing:1px}
+.jm-case{font-size:11px;color:var(--text-secondary);margin:6px 0 4px;padding:8px 10px;background:#f2fbff;border-radius:6px;border:1px dashed var(--hud-line);line-height:1.8}
+.jm-case b{color:var(--text-primary)}
+.jm-label{font-size:11px;color:var(--text-secondary);margin:12px 0 6px;font-weight:700}
+.jm-required{color:var(--red-glow)}
+.jm-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.jm-opt{border:1px solid var(--hud-line);border-radius:8px;padding:8px 10px;font-size:11px;color:var(--text-primary);cursor:pointer;transition:all .2s;background:#fff}
+.jm-opt:hover{border-color:var(--hud-bright)}
+.jm-opt.sel{border-color:var(--blue-electric);background:#00e5ff0f;box-shadow:0 0 0 3px #1ab4e817}
+.jm-opt .jo-sub{display:block;font-size:9px;color:var(--text-dim);margin-top:2px}
+.jm-org{font-size:11px;color:var(--text-dim);padding:8px 10px;background:#f2fbff;border-radius:6px;border:1px solid var(--hud-line);display:flex;align-items:center;gap:8px}
+.jm-org span{margin-left:auto;color:var(--text-primary);font-weight:600}
+.jm-text{width:100%;min-height:64px;resize:vertical;border:1px solid var(--hud-line);border-radius:8px;padding:8px 10px;font-size:11px;color:var(--text-primary);outline:none;font-family:inherit;line-height:1.7}
+.jm-text:focus{border-color:var(--blue-electric);box-shadow:0 0 0 3px #1ab4e81f}
+.jm-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+.jm-btns .judge-btn{width:auto;padding:8px 22px}
+
+/* ============ 整改验收 ============ */
+.rc-paper{flex:1;min-height:0;overflow:auto;background:#fff;border:1px solid var(--hud-line);border-radius:4px;padding:14px 18px;font-size:12px;color:var(--text-primary);line-height:2.05}
+.rc-files{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.rc-file{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--hud-line);border-radius:6px;padding:5px 10px;font-size:10px;color:var(--blue-deep);background:#f2fbff;cursor:pointer;transition:all .2s}
+.rc-file:hover{border-color:var(--blue-electric)}
+.judge-btn.back{background:#fb8c001f;border-color:#fb8c0066;color:#e65100}
+.judge-btn.back:hover{background:#fb8c003d;transform:translateY(-1px)}
 </style>
 </head>
 <body>
+<!-- ============ 视图：登录页（身份选择） ============ -->
+<div id="view-index">
+  <div class="idx-glow" style="width:480px;height:480px;background:#9fdcff;top:-140px;left:8%"></div>
+  <div class="idx-glow" style="width:420px;height:420px;background:#b3e5fc;bottom:-160px;right:6%"></div>
+  <div class="lg-brand">
+    <div class="lg-sys">
+      <div class="lg-logo">⚖️</div>
+      <div>
+        <div class="lg-sys-name">检察工作网专用系统</div>
+        <div class="lg-sys-sub">大数据法律监督模型应用</div>
+      </div>
+    </div>
+    <div class="lg-title">大数据法律监督模型应用<br>规范性智能核查系统</div>
+  </div>
+  <div class="lg-card">
+    <h2>系统登录</h2>
+    <div class="lg-hint">请输入账号密码登录，并选择用户身份</div>
+    <div class="lg-label">账号</div>
+    <input class="lg-input" id="login-user" value="admin" onkeydown="if(event.key==='Enter')doLogin()">
+    <div class="lg-label">密码</div>
+    <input class="lg-input" id="login-pass" type="password" value="123456" onkeydown="if(event.key==='Enter')doLogin()">
+    <div class="lg-role-row">
+      <span class="lg-role-label">演示身份</span>
+      <div class="lg-pill sel" id="role-main" onclick="selRole('main')">主用户</div>
+      <div class="lg-pill" id="role-sub" onclick="selRole('sub')">子用户</div>
+    </div>
+    <button class="login-btn" onclick="doLogin()">登 录</button>
+  </div>
+  <div class="lg-foot">原型演示 · 数据均为虚构 · 选择身份后登录进入对应工作台</div>
+</div>
+
+<!-- ============ 视图：主用户 · 分层人机复核工作台（市院级） ============ -->
+<div id="view-main" style="display:none">
+<div id="app">
+  <aside class="sidebar" id="sidebar-main">
+    <div class="sb-header">
+      <div class="sb-logo">⚖️</div>
+      <div class="sb-title-wrap">
+        <div class="sb-title">规范性智能核查系统</div>
+        <div class="sb-subtitle">北京市人民检察院</div>
+      </div>
+    </div>
+    <button class="sb-toggle" id="sb-toggle-main" onclick="toggleSidebar('sidebar-main','sb-toggle-main')">◀</button>
+    <nav>
+      <div class="nav-item" data-mp="dashboard" onclick="mp('dashboard')"><span class="ni-icon">📊</span><span class="ni-label">全市监管驾驶舱</span></div>
+      <div class="nav-group-label">核查流程</div>
+      <div class="nav-item" data-mp="collect" onclick="mp('collect')"><span class="ni-icon">📥</span><span class="ni-label">第一步 · 数据归集</span></div>
+      <div class="nav-item" data-mp="check" onclick="mp('check')"><span class="ni-icon">🔍</span><span class="ni-label">第二步 · 智能纠核</span></div>
+      <div class="nav-item" data-mp="review" onclick="mp('review')"><span class="ni-icon">✅</span><span class="ni-label">第三步 · 分层复核</span></div>
+      <div class="nav-item" data-mp="archive" onclick="mp('archive')"><span class="ni-icon">🗂️</span><span class="ni-label">第四步 · 汇总归档</span></div>
+      <div class="nav-group-label">⚙️ 系统</div>
+      <div class="nav-item" data-mp="sysmgmt" onclick="mp('sysmgmt')"><span class="ni-icon">🗄️</span><span class="ni-label">系统管理</span></div>
+      <div class="nav-item" data-mp="fsm" onclick="mp('fsm')"><span class="ni-icon">🧭</span><span class="ni-label">全流程状态机</span></div>
+    </nav>
+    <div class="sb-footer">
+      <div class="sb-user-avatar">黄</div>
+      <div class="sb-user-info">
+        <div class="sb-user-name">黄凯</div>
+        <div class="sb-user-meta">市院级 · 市局管理员</div>
+      </div>
+      <button class="logout-btn" onclick="showView('index')">退出</button>
+    </div>
+  </aside>
+
+  <div id="main-area">
+    <header id="header">
+      <div class="header-left"></div>
+      <div class="header-title-wrap">
+        <div class="header-title">大数据法律监督模型应用规范性智能核查系统</div>
+      </div>
+      <div class="header-right">
+        <span class="header-user">
+          <span class="hu-avatar">黄</span>
+          <span style="display:flex;flex-direction:column;align-items:flex-start;line-height:1.4">
+            <span class="hu-name">黄凯</span>
+            <span class="hu-meta">市院级 · 市局管理员</span>
+          </span>
+        </span>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="mpage on" id="mp-review">
+      <!-- 步骤头 -->
+      <div class="page-step-header">
+        <span class="step-num">3</span>
+        <div>
+          <div class="psh-title">分层人机复核工作台</div>
+          <div class="psh-sub">机器初核 · 自动比对 → 人工终核 · 分层判定 · 全程留痕</div>
+        </div>
+        <div class="psh-right">
+          <div class="r1">复核流程：批次生成 → 机器初核 → 人工终核 → 汇总归档</div>
+        </div>
+      </div>
+
+      <!-- 复核批次 -->
+      <div class="hud-panel" style="flex-shrink:0">
+        <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+        <div class="panel-title">🗂️ 复核批次</div>
+        <div class="panel-inner">
+          <div class="batch-row" id="batch-row"></div>
+          <div class="batch-info" id="batch-info"></div>
+        </div>
+      </div>
+
+      <!-- 统计卡 -->
+      <div class="stat-cards">
+        <div class="stat-card" style="border-bottom:3px solid var(--red-glow)"><div class="sc-num" style="color:var(--red-glow)">442</div><div class="sc-label">全量复核</div></div>
+        <div class="stat-card" style="border-bottom:3px solid var(--blue-electric)"><div class="sc-num" style="color:var(--blue-electric)">89</div><div class="sc-label">抽样复核</div></div>
+        <div class="stat-card" style="border-bottom:3px solid var(--green-glow)"><div class="sc-num" style="color:var(--green-glow)">120</div><div class="sc-label">已确认合规</div></div>
+        <div class="stat-card" style="border-bottom:3px solid var(--gold-bright)"><div class="sc-num" style="color:var(--gold-bright)">319</div><div class="sc-label">待复核</div></div>
+      </div>
+
+      <div class="tri-label">🔍 分层复核工作台 · 三栏对照</div>
+
+      <!-- 三栏：案件队列 / 文书核验 / 比对与终核 -->
+      <div class="tri-col">
+        <div class="hud-panel case-panel">
+          <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+          <div class="panel-title">📋 案件队列 <span class="panel-actions"><span class="flt-count" id="case-count"></span></span></div>
+          <div class="panel-inner">
+            <div class="sync-tabs" id="scope-tabs">
+              <div class="sync-tab active blue" id="scope-full" onclick="switchScope('full')">全量复核</div>
+              <div class="sync-tab" id="scope-sample" onclick="switchScope('sample')">抽样复核</div>
+              <div class="sync-tab gold" id="scope-rectify" onclick="switchScope('rectify')">整改验收</div>
+            </div>
+            <div id="rectify-tool">
+              <div class="rt-row"><span class="rt-label">验收比例</span><input id="rt-ratio" type="number" min="1" max="100" value="30" class="rt-input">%</div>
+              <div class="rt-row"><span class="rt-label">验收上限</span><select id="rt-cap" class="rt-input"><option value="10">10 件</option><option value="50" selected>50 件</option><option value="100">100 件</option><option value="200">200 件</option></select></div>
+              <button class="mp-btn primary rt-gen" onclick="genRectifyQueue()">⚡ 生成验收清单</button>
+              <div class="rt-hint" id="rt-hint">按比例从待审批工单池抽样生成审批清单；应抽件数超过上限时按上限执行</div>
+            </div>
+            <div class="case-list" id="case-list"></div>
+            <div class="case-scroll-hint">↓ 下滑加载更多 ↓</div>
+          </div>
+        </div>
+
+        <div class="hud-panel doc-panel">
+          <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+          <div class="panel-title">📄 文书核验</div>
+          <div class="panel-inner">
+            <div class="doc-head" id="doc-head"></div>
+            <div class="doc-paper" id="doc-paper"></div>
+            <div class="doc-foot"><button class="review-btn primary" onclick="showToast('原型演示：提取关联文书（功能占位）','warn')">提取文书</button></div>
+          </div>
+        </div>
+
+        <div class="judge-col">
+          <div class="hud-panel cmp-panel">
+            <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+            <div class="panel-title" id="cmp-cat-title">① 类别比对 <span class="panel-actions"><span class="cmp-src">机器初核 · 自动比对</span></span></div>
+            <div class="panel-inner" id="cmp-cat"></div>
+          </div>
+          <div class="hud-panel cmp-panel">
+            <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+            <div class="panel-title" id="cmp-src-title">② 来源比对 <span class="panel-actions"><span class="cmp-src">机器初核 · 自动比对</span></span></div>
+            <div class="panel-inner" id="cmp-src"></div>
+          </div>
+          <div class="hud-panel judge-panel">
+            <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+            <div class="panel-title" id="judge-title">③ 终核判定 <span class="panel-actions"><span class="cmp-src">最终结论</span></span></div>
+            <div class="panel-inner" style="gap:8px">
+              <div id="judge-btns" style="display:flex;flex-direction:column;gap:8px">
+                <button class="judge-btn pass" onclick="judgeCase('pass')">合规通过</button>
+                <button class="judge-btn reject" onclick="judgeCase('reject')">判定违规</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div><!-- /mp-review -->
+
+      <!-- ============ 页面：全市监管驾驶舱 ============ -->
+      <div class="mpage" id="mp-dashboard">
+        <div class="dash-hero">
+          <div class="dh-card">
+            <div class="dh-num">15</div><div class="dh-label">接入监管模型</div>
+            <div class="cov-bar" style="margin:6px 30px 0"><i style="width:75%"></i></div>
+            <div class="mp-note" style="margin-top:4px">模型接入进度 · 查看（点击可填充）</div>
+          </div>
+          <div class="dh-card"><div class="dh-num">1,247</div><div class="dh-label">自动核查案件</div></div>
+          <div class="dh-card"><div class="dh-num" style="color:var(--red-glow)">342</div><div class="dh-label">发现异常案件</div></div>
+          <div class="dh-card"><div class="dh-num" style="color:var(--green-glow)">218</div><div class="dh-label">已修改案件</div></div>
+        </div>
+        <div class="dash-mid">
+          <div class="hud-panel dash-col">
+            <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+            <div class="panel-title">📊 各院模型应用覆盖率</div>
+            <div class="panel-inner" style="overflow:auto" id="cov-list"></div>
+          </div>
+          <div class="hud-panel dash-map">
+            <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+            <div class="panel-title">🗺️ 北京市检察机关风险态势图</div>
+            <div class="panel-inner" style="position:relative">
+              <svg viewBox="0 0 460 360" style="width:100%;height:100%">
+                <path d="M150,45 L230,18 L320,35 L395,80 L430,140 L405,200 L415,250 L360,300 L300,330 L230,315 L180,330 L130,300 L95,250 L75,190 L95,130 L120,80 Z" fill="#cfeaf8" stroke="#8fd0ee" stroke-width="1.5"/>
+                <g font-size="9" fill="#3d7eab">
+                  <text x="138" y="86">延庆区</text><text x="240" y="66">怀柔区</text><text x="322" y="70">密云区</text>
+                  <text x="176" y="140">昌平区</text><text x="295" y="126">顺义区</text><text x="382" y="122">平谷区</text>
+                  <text x="88" y="182">门头沟区</text><text x="178" y="182">海淀区</text><text x="262" y="180">朝阳区</text>
+                  <text x="120" y="216">石景山区</text><text x="322" y="252">通州区</text><text x="126" y="284">房山区</text>
+                  <text x="214" y="296">大兴区</text>
+                </g>
+                <g fill="#1a8fd0">
+                  <circle cx="160" cy="92" r="2.5"/><circle cx="252" cy="72" r="2.5"/><circle cx="334" cy="76" r="2.5"/>
+                  <circle cx="190" cy="145" r="2.5"/><circle cx="308" cy="131" r="2.5"/><circle cx="394" cy="127" r="2.5"/>
+                  <circle cx="192" cy="186" r="2.5"/><circle cx="274" cy="184" r="2.5"/><circle cx="134" cy="220" r="2.5"/>
+                  <circle cx="334" cy="257" r="2.5"/><circle cx="152" cy="288" r="2.5"/>
+                </g>
+                <circle class="mp-pulse" cx="232" cy="222" r="6" fill="#e53935"/>
+                <text x="244" y="226" font-size="10" font-weight="700" fill="#c62828">市院 · 东城</text>
+                <circle class="mp-pulse" cx="104" cy="196" r="5" fill="#e53935" style="animation-delay:.5s"/>
+                <text x="64" y="214" font-size="10" font-weight="700" fill="#c62828">门头沟</text>
+                <circle class="mp-pulse" cx="226" cy="300" r="5" fill="#fb8c00" style="animation-delay:1s"/>
+                <text x="238" y="312" font-size="10" font-weight="700" fill="#e65100">大兴 · 高风险</text>
+              </svg>
+              <div class="map-legend"><span>🔴 风险集中区</span><span>🟠 异常上升区</span></div>
+            </div>
+          </div>
+          <div class="hud-panel dash-col">
+            <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+            <div class="panel-title">🏆 模型案件排行 <span class="panel-actions"><span class="sync-tab active blue" style="padding:2px 8px;font-size:9px">排行</span><span class="sync-tab" style="padding:2px 8px;font-size:9px" onclick="showToast('原型演示：比例视图（功能占位）','warn')">比例</span></span></div>
+            <div class="panel-inner" style="overflow:auto" id="rank-list"></div>
+          </div>
+        </div>
+        <div class="dash-bottom">
+          <div class="hud-panel" style="flex:1.4">
+            <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+            <div class="panel-title">📈 近5个月模型应用规范性趋势</div>
+            <div class="panel-inner"><svg id="trend-svg" viewBox="0 0 560 170" style="width:100%;height:100%"></svg></div>
+          </div>
+          <div class="hud-panel" style="flex:1">
+            <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+            <div class="panel-title">🍩 异常类型分布</div>
+            <div class="panel-inner" style="display:flex;flex-direction:row;align-items:center;gap:14px">
+              <svg id="donut-svg" viewBox="0 0 160 160" style="width:130px;height:130px;flex-shrink:0"></svg>
+              <div id="donut-legend" style="flex:1"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ 页面：第一步 · 多源数据归集 ============ -->
+      <div class="mpage" id="mp-collect">
+        <div class="page-step-header">
+          <span class="step-num">1</span>
+          <div>
+            <div class="psh-title">多源数据归集</div>
+            <div class="psh-sub">多源数据导入、拉取业务系统、模型流水 / 核查数据，支持 Excel 批量导入</div>
+          </div>
+          <div class="psh-right"><div class="r1">归集来源：检察平台 · 业务系统 · 线索平台</div></div>
+        </div>
+        <div class="hud-panel" style="flex-shrink:0">
+          <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+          <div class="panel-title">📥 数据更新 <span class="panel-actions"><span class="mp-note">上次同步：2026-09-28 18:26:17</span></span></div>
+          <div class="panel-inner">
+            <div class="src-tabs" style="margin-bottom:10px">
+              <div class="src-tab" onclick="showToast('原型演示：触发归档归集（功能占位）','warn')">🔄 触发归档归集</div>
+              <div class="src-tab active">检察平台数据上传</div>
+              <div class="src-tab" onclick="showToast('原型演示：检察业务系统上传（功能占位）','warn')">检察业务系统上传</div>
+            </div>
+            <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center">
+              <button class="mp-btn primary" onclick="showToast('原型演示：+ 新增（功能占位）','warn')">+ 新增</button>
+              <button class="mp-btn" onclick="showToast('原型演示：下载模板（功能占位）','warn')">下载模板</button>
+              <button class="mp-btn" onclick="showToast('原型演示：导出（功能占位）','warn')">导出</button>
+            </div>
+            <div class="drop-zone" onclick="showToast('原型演示：选择 .xlsx / .xls / .et 文件（功能占位）','warn')"><b>上传线索明细（B 表）</b><br>点击选择 .xlsx / .xls / .et 文件，导入到 Java 后端</div>
+          </div>
+        </div>
+        <div class="hud-panel" style="flex-shrink:0">
+          <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+          <div class="panel-title">📋 线索明细 <span class="panel-actions"><span class="mp-note">已加载 200 条（最多显示 10 条）</span></span></div>
+          <div class="panel-inner">
+            <table class="mp-table">
+              <tr><th>流水编号</th><th>模型名称</th><th>线索编号</th><th>登记院</th><th>批次</th><th>状态</th></tr>
+              <tr><td class="mono" style="color:var(--gold)">DM021(2026)第1109号</td><td>(无)批准逮捕决定书监督模型</td><td class="mono">XSDM021100</td><td>石景山区人民检察院</td><td class="mono">202609280006</td><td><span class="tag tag-g">SUCCESS</span></td></tr>
+              <tr><td class="mono" style="color:var(--gold)">DM021(2026)第1099号</td><td>未成年刑事案件羁押必要性审查监督模型</td><td class="mono">XSDM021099</td><td>海淀区人民检察院</td><td class="mono">202609280006</td><td><span class="tag tag-g">SUCCESS</span></td></tr>
+              <tr><td class="mono" style="color:var(--gold)">DM021(2026)第1098号</td><td>未按规定保障残疾当事人诉讼权利监督模型</td><td class="mono">XSDM021098</td><td>朝阳区人民检察院</td><td class="mono">202609280006</td><td><span class="tag tag-g">SUCCESS</span></td></tr>
+              <tr><td class="mono" style="color:var(--gold)">DM021(2026)第1097号</td><td>未成年人监护缺失监督模型</td><td class="mono">XSDM021097</td><td>房山区人民检察院</td><td class="mono">202609280006</td><td><span class="tag tag-g">SUCCESS</span></td></tr>
+              <tr><td class="mono" style="color:var(--gold)">DM021(2026)第1096号</td><td>不批准逮捕理由说明监督模型</td><td class="mono">XSDM021096</td><td>门头沟区人民检察院</td><td class="mono">202609280006</td><td><span class="tag tag-g">SUCCESS</span></td></tr>
+              <tr><td class="mono" style="color:var(--gold)">DM021(2026)第1095号</td><td>涉案手机电子数据取证违法监督模型</td><td class="mono">XSDM021095</td><td>西城区人民检察院</td><td class="mono">202609280006</td><td><span class="tag tag-g">SUCCESS</span></td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="hud-panel" style="flex-shrink:0">
+          <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+          <div class="panel-title">🗂️ 数据更新记录</div>
+          <div class="panel-inner">
+            <table class="mp-table">
+              <tr><th>同步类型</th><th>触发方式</th><th>状态</th><th>记录数</th><th>完成时间</th></tr>
+              <tr><td>线索平台</td><td>文件导入</td><td><span class="tag tag-g">成功</span></td><td>100</td><td class="mono">2026-09-28 18:26:17</td></tr>
+              <tr><td>线索平台</td><td>文件导入</td><td><span class="tag tag-g">成功</span></td><td>100</td><td class="mono">2026-09-27 20:40:32</td></tr>
+              <tr><td>检察平台</td><td>文件导入</td><td><span class="tag tag-g">成功</span></td><td>156</td><td class="mono">2026-09-27 20:40:13</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ 页面：第二步 · 智能初核 ============ -->
+      <div class="mpage" id="mp-check">
+        <div class="page-step-header">
+          <span class="step-num">2</span>
+          <div>
+            <div class="psh-title">智能初核</div>
+            <div class="psh-sub">AI 自动模型智能初核，核查案件关键要素覆盖点</div>
+          </div>
+          <div class="psh-right"><div class="r1">初核结果推送至第三步 · 分层人机复核工作台</div></div>
+        </div>
+        <div class="hud-panel" style="flex-shrink:0">
+          <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+          <div class="panel-title">🔄 初核批次</div>
+          <div class="panel-inner">
+            <div style="display:flex;gap:10px;align-items:flex-start">
+              <div class="batch-cards-sm" style="flex:1" id="chk-batches"></div>
+              <div style="display:flex;gap:8px;align-items:center;flex-shrink:0;flex-wrap:wrap">
+                <span style="font-size:11px;color:var(--text-secondary)">抽样比例</span>
+                <input class="mp-input sm" id="chk-ratio" value="10">
+                <span style="font-size:11px;color:var(--text-secondary)">%</span>
+                <button class="mp-btn" onclick="showToast('已保存抽样比例：10%')">保存</button>
+                <button class="mp-btn" onclick="showToast('原型演示：缓存预览点反馈（功能占位）','warn')">缓存预览点反馈</button>
+                <button class="mp-btn primary" onclick="runChk()">▶ 发起智能初核</button>
+              </div>
+            </div>
+            <div class="batch-info" id="chk-info"></div>
+          </div>
+        </div>
+        <div class="chk-tiles">
+          <div class="chk-tile bad"><div class="chk-num" id="chk-abn">1</div><div class="chk-label">类别不符（全量复核）</div></div>
+          <div class="chk-tile ok"><div class="chk-num" id="chk-ok">7</div><div class="chk-label">类别吻合</div></div>
+        </div>
+        <div class="hud-panel" style="flex:1;min-height:200px">
+          <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+          <div class="panel-title">🧪 智能初核结果 <span class="panel-actions"><span class="mp-note" id="chk-note"></span></span></div>
+          <div class="panel-inner">
+            <div class="sync-tabs" style="margin-bottom:10px">
+              <div class="sync-tab tb-bad active" id="chk-tab-bad" onclick="chkTabSel('bad')"></div>
+              <div class="sync-tab tb-ok" id="chk-tab-ok" onclick="chkTabSel('ok')"></div>
+              <button class="mp-btn" style="margin-left:auto" onclick="showToast('原型演示：导出Excel（功能占位）','warn')">导出Excel</button>
+            </div>
+            <table class="mp-table" id="chk-table"></table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ 页面：第四步 · 汇总研判归档 ============ -->
+      <div class="mpage" id="mp-archive">
+        <div class="page-step-header">
+          <span class="step-num">4</span>
+          <div>
+            <div class="psh-title">汇总研判归档</div>
+            <div class="psh-sub">整改台账 · 全局汇总 · 四态闭环 · 支持筛选与导出</div>
+          </div>
+          <div class="psh-right"><div class="r1">台账数据来源：第三步终核判定 + 分用户处置结果回传</div></div>
+        </div>
+        <div class="hud-panel" style="flex:1;min-height:300px">
+          <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+          <div class="panel-title">📋 台账汇总 <span class="panel-actions"><button class="mp-btn" onclick="exportLedger()">导出Excel</button></span></div>
+          <div class="panel-inner">
+            <div class="arch-toolbar" style="margin-bottom:10px">
+              <select class="mp-select" id="arch-org"><option value="">全局责任院</option><option>东城区人民检察院</option><option>海淀区人民检察院</option><option>朝阳区人民检察院</option></select>
+              <select class="mp-select" id="arch-st"><option value="">全局处理状态</option><option>已整改</option><option>待审批</option><option>整改中</option><option>待整改</option></select>
+              <input class="mp-input" id="arch-kw" placeholder="输入案号">
+              <button class="mp-btn primary" onclick="renderArch()">查询</button>
+              <button class="mp-btn" onclick="resetArch()">重置筛选</button>
+              <span class="mp-note" style="margin-left:auto" id="arch-count"></span>
+            </div>
+            <table class="mp-table" id="arch-table"></table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ 页面：系统管理 ============ -->
+      <div class="mpage" id="mp-sysmgmt">
+        <div class="page-step-header">
+          <span class="step-num" style="font-size:17px">⚙️</span>
+          <div>
+            <div class="psh-title">系统管理</div>
+            <div class="psh-sub">用户、单位、角色管理，部门配置、未赋予明细授权、日志</div>
+          </div>
+          <div class="psh-right"><div class="r1">上次同步：--</div></div>
+        </div>
+        <div class="hud-panel" style="flex:1;min-height:260px">
+          <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+          <div class="panel-title">🛠️ 系统管理</div>
+          <div class="panel-inner">
+            <div class="sync-tabs" style="margin-bottom:10px">
+              <div class="sync-tab active blue">👤 用户管理</div>
+              <div class="sync-tab" onclick="showToast('原型演示：单位管理（功能占位）','warn')">🏢 单位管理</div>
+              <div class="sync-tab" onclick="showToast('原型演示：部门管理（功能占位）','warn')">🗂️ 部门管理</div>
+              <div class="sync-tab" onclick="showToast('原型演示：未赋予明细授权（功能占位）','warn')">🔑 未赋予明细授权</div>
+              <div class="sync-tab" onclick="showToast('原型演示：日志（功能占位）','warn')">📝 日志</div>
+            </div>
+            <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center;flex-wrap:wrap">
+              <button class="mp-btn primary" onclick="showToast('原型演示：+ 新建用户（功能占位）','warn')">+ 新建用户</button>
+              <button class="mp-btn" onclick="showToast('原型演示：下载模板（功能占位）','warn')">下载模板</button>
+              <button class="mp-btn" onclick="showToast('原型演示：导入（功能占位）','warn')">导入</button>
+              <button class="mp-btn" onclick="showToast('原型演示：导出（功能占位）','warn')">导出</button>
+              <span class="mp-note">共 3 人，数据来自后端用户接口</span>
+            </div>
+            <table class="mp-table">
+              <tr><th>用户名</th><th>姓名</th><th>所属部门</th><th>手机</th><th>状态</th><th>操作</th></tr>
+              <tr><td class="mono">admin</td><td>管理员</td><td>-</td><td class="mono">15888888888</td><td><span class="tag tag-g">正常</span></td>
+                <td><button class="mp-btn xs" onclick="showToast('原型演示：编辑（功能占位）','warn')">编辑</button> <button class="mp-btn xs" onclick="showToast('原型演示：停用（功能占位）','warn')">停用</button> <button class="mp-btn xs" onclick="showToast('原型演示：重置密码（功能占位）','warn')">重置密码</button> <button class="mp-btn xs" onclick="showToast('原型演示：删除（功能占位）','warn')">删除</button></td></tr>
+              <tr><td class="mono">dispatcher</td><td>调度员</td><td>北京市朝阳区人民检察院</td><td class="mono">15666666666</td><td><span class="tag tag-g">正常</span></td>
+                <td><button class="mp-btn xs" onclick="showToast('原型演示：编辑（功能占位）','warn')">编辑</button> <button class="mp-btn xs" onclick="showToast('原型演示：停用（功能占位）','warn')">停用</button> <button class="mp-btn xs" onclick="showToast('原型演示：重置密码（功能占位）','warn')">重置密码</button> <button class="mp-btn xs" onclick="showToast('原型演示：删除（功能占位）','warn')">删除</button></td></tr>
+              <tr><td class="mono">handler</td><td>承办人</td><td>北京市朝阳区人民检察院</td><td class="mono">15666666667</td><td><span class="tag tag-g">正常</span></td>
+                <td><button class="mp-btn xs" onclick="showToast('原型演示：编辑（功能占位）','warn')">编辑</button> <button class="mp-btn xs" onclick="showToast('原型演示：停用（功能占位）','warn')">停用</button> <button class="mp-btn xs" onclick="showToast('原型演示：重置密码（功能占位）','warn')">重置密码</button> <button class="mp-btn xs" onclick="showToast('原型演示：删除（功能占位）','warn')">删除</button></td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ 页面：全流程状态机 ============ -->
+      <div class="mpage" id="mp-fsm">
+        <div class="page-step-header">
+          <span class="step-num" style="font-size:17px">🧭</span>
+          <div>
+            <div class="psh-title">全流程状态机</div>
+            <div class="psh-sub">案件与工单全生命周期 · 机器初核 → 终核判定 → 违规整改 → 整改审批 → 已整改归档</div>
+          </div>
+          <div class="psh-right">
+            <div class="r1">四层：视图 / 批次 / 案件工单 / 台账</div>
+            <button class="mp-btn" style="margin-top:8px;color:var(--red-glow);border-color:#ef535066" onclick="showToast('已退出当前身份 · 返回登录页');showView('index')">⏏ 退回登录页</button>
+          </div>
+        </div>
+        <div class="hud-panel" style="flex-shrink:0">
+          <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+          <div class="panel-title">🧭 全流程泳道总览 <span class="panel-actions"><span class="cmp-src">主用户 = 市院级管理员 · 子用户 = 基层院承办员</span></span></div>
+          <div class="panel-inner" style="overflow:auto">
+            <svg viewBox="0 0 680 580" style="width:100%;max-width:840px;height:auto;display:block;margin:0 auto" role="img">
+              <defs>
+                <marker id="fsm-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </marker>
+              </defs>
+              <rect x="20" y="40" width="640" height="100" rx="12" fill="#f0f8fd" stroke="#b5e3f4" stroke-width="0.5"/>
+              <rect x="20" y="150" width="640" height="100" rx="12" fill="#e9f5fe" stroke="#b5e3f4" stroke-width="0.5"/>
+              <rect x="20" y="260" width="640" height="100" rx="12" fill="#fdf6e4" stroke="#f0dcae" stroke-width="0.5"/>
+              <rect x="20" y="370" width="640" height="100" rx="12" fill="#e9f5fe" stroke="#b5e3f4" stroke-width="0.5"/>
+              <text x="640" y="58" text-anchor="end" font-size="12" fill="#7aa8c4">机器 · 自动初核</text>
+              <text x="640" y="168" text-anchor="end" font-size="12" fill="#7aa8c4">主用户 · 终核判定</text>
+              <text x="640" y="278" text-anchor="end" font-size="12" fill="#7aa8c4">子用户 · 违规处置</text>
+              <text x="640" y="388" text-anchor="end" font-size="12" fill="#7aa8c4">主用户 · 整改验收</text>
+              <g>
+                <rect x="40" y="74" width="170" height="48" rx="8" fill="#ffffff" stroke="#b5e3f4" stroke-width="0.5"/>
+                <text x="125" y="92" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#3d7eab">多源数据归集</text>
+                <text x="125" y="110" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#7aa8c4">检察平台 · B表导入</text>
+              </g>
+              <g>
+                <rect x="255" y="74" width="170" height="48" rx="8" fill="#ffffff" stroke="#b5e3f4" stroke-width="0.5"/>
+                <text x="340" y="92" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#3d7eab">智能初核</text>
+                <text x="340" y="110" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#7aa8c4">CHK-YYYYMMDD-NNN</text>
+              </g>
+              <g>
+                <rect x="470" y="74" width="170" height="48" rx="8" fill="#ffffff" stroke="#b5e3f4" stroke-width="0.5"/>
+                <text x="555" y="92" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#3d7eab">机器比对</text>
+                <text x="555" y="110" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#7aa8c4">类别比对 · 来源比对</text>
+              </g>
+              <line x1="210" y1="98" x2="250" y2="98" stroke="#7aa8c4" stroke-width="1.5" marker-end="url(#fsm-arrow)"/>
+              <line x1="425" y1="98" x2="465" y2="98" stroke="#7aa8c4" stroke-width="1.5" marker-end="url(#fsm-arrow)"/>
+              <g>
+                <rect x="40" y="184" width="170" height="48" rx="8" fill="#dceffb" stroke="#1a8fd0" stroke-width="0.5"/>
+                <text x="125" y="202" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#0d6eab">待复核</text>
+                <text x="125" y="220" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#3d7eab">全量 · 抽样 · 整改验收</text>
+              </g>
+              <g>
+                <rect x="255" y="184" width="170" height="48" rx="8" fill="#ddf4f0" stroke="#2bbbad" stroke-width="0.5"/>
+                <text x="340" y="202" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#0c7a6e">合规 · 直接归档</text>
+                <text x="340" y="220" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#2bbbad">终态 · 无需交办</text>
+              </g>
+              <line x1="210" y1="208" x2="250" y2="208" stroke="#7aa8c4" stroke-width="1.5" marker-end="url(#fsm-arrow)"/>
+              <text x="231" y="196" text-anchor="middle" font-size="11" fill="#2bbbad">合规通过</text>
+              <line x1="125" y1="232" x2="125" y2="291" stroke="#7aa8c4" stroke-width="1.5" marker-end="url(#fsm-arrow)"/>
+              <text x="140" y="266" font-size="11" fill="#e53935">判定违规 · 选4类问题类别</text>
+              <g>
+                <rect x="40" y="294" width="170" height="48" rx="8" fill="#fdf1cf" stroke="#e09b00" stroke-width="0.5"/>
+                <text x="125" y="312" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#9a6b00">待整改</text>
+                <text x="125" y="330" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#b57e00">主用户复核有问题交办</text>
+              </g>
+              <g>
+                <rect x="255" y="294" width="170" height="48" rx="8" fill="#fdf1cf" stroke="#e09b00" stroke-width="0.5"/>
+                <text x="340" y="312" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#9a6b00">整改中</text>
+                <text x="340" y="330" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#b57e00">开始整改后</text>
+              </g>
+              <g>
+                <rect x="470" y="294" width="170" height="48" rx="8" fill="#fdf1cf" stroke="#e09b00" stroke-width="0.5"/>
+                <text x="555" y="312" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#9a6b00">待审批</text>
+                <text x="555" y="330" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#b57e00">整改说明必填 ≥10字</text>
+              </g>
+              <line x1="210" y1="318" x2="250" y2="318" stroke="#7aa8c4" stroke-width="1.5" marker-end="url(#fsm-arrow)"/>
+              <text x="231" y="306" text-anchor="middle" font-size="11" fill="#7aa8c4">开始整改</text>
+              <line x1="425" y1="318" x2="465" y2="318" stroke="#7aa8c4" stroke-width="1.5" marker-end="url(#fsm-arrow)"/>
+              <text x="446" y="306" text-anchor="middle" font-size="11" fill="#7aa8c4">提交处置</text>
+              <path d="M555,342 C555,372 125,376 125,401" fill="none" stroke="#7aa8c4" stroke-width="1.5" marker-end="url(#fsm-arrow)"/>
+              <text x="470" y="378" text-anchor="middle" font-size="11" fill="#7aa8c4">转入验收队列</text>
+              <g>
+                <rect x="40" y="404" width="170" height="48" rx="8" fill="#dceffb" stroke="#1a8fd0" stroke-width="0.5"/>
+                <text x="125" y="422" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#0d6eab">待审批</text>
+                <text x="125" y="440" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#3d7eab">抽样生成 · 审批队列</text>
+              </g>
+              <g>
+                <rect x="255" y="404" width="170" height="48" rx="8" fill="#ddf4f0" stroke="#2bbbad" stroke-width="0.5"/>
+                <text x="340" y="422" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#0c7a6e">已整改 · 归档</text>
+                <text x="340" y="440" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#2bbbad">终态 · 主用户审批通过</text>
+              </g>
+              <line x1="210" y1="428" x2="250" y2="428" stroke="#7aa8c4" stroke-width="1.5" marker-end="url(#fsm-arrow)"/>
+              <text x="231" y="416" text-anchor="middle" font-size="11" fill="#2bbbad">审批通过</text>
+              <path d="M70,404 C70,378 125,378 125,345" fill="none" stroke="#e53935" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#fsm-arrow)"/>
+              <text x="100" y="392" font-size="11" fill="#e53935">审批不通过 · 退回待整改</text>
+              <line x1="340" y1="452" x2="340" y2="481" stroke="#2bbbad" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#fsm-arrow)"/>
+              <text x="352" y="470" font-size="11" fill="#2bbbad">同步台账</text>
+              <rect x="20" y="486" width="640" height="74" rx="12" fill="#f4fbff" stroke="#b5e3f4" stroke-width="0.5"/>
+              <text x="40" y="510" font-size="13" font-weight="700" fill="#1a4f7a">批次层与台账层状态</text>
+              <text x="40" y="530" font-size="11" fill="#3d7eab">初核批次 CHK-YYYYMMDD-NNN：执行中 → 已完成　·　复核批次 REV-YYYYMMDD-NNN：复核中 → 已完成</text>
+              <text x="40" y="550" font-size="11" fill="#3d7eab">汇总归档台账：待整改 → 整改中 → 待审批 → 已整改（审批通过自动同步）　·　视图层：登录 → 主/子用户工作台 → 退出回登录</text>
+            </svg>
+          </div>
+        </div>
+        <div class="hud-panel" style="flex:1;min-height:180px">
+          <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+          <div class="panel-title">📋 状态迁移表 <span class="panel-actions"><span class="cmp-src">层 2 · 案件与工单（核心）</span></span></div>
+          <div class="panel-inner" style="overflow:auto">
+            <table class="mp-table">
+              <tr><th>层级</th><th>当前状态</th><th>动作</th><th>操作者</th><th>后继状态</th><th>守卫条件</th></tr>
+              <tr><td rowspan="2">案件 · 终核</td><td><span class="tag tag-b">待复核</span></td><td>合规通过</td><td>主用户</td><td><span class="tag tag-g">合规 · 直接归档</span>（终态）</td><td>确认模态 · 意见选填</td></tr>
+              <tr><td><span class="tag tag-b">待复核</span></td><td>判定违规</td><td>主用户</td><td><span class="tag tag-r">违规</span> → 生成整改工单交办承办院</td><td>必选 4 类问题类别之一</td></tr>
+              <tr><td rowspan="2">工单 · 整改</td><td><span class="tag tag-r">待整改</span></td><td>开始整改</td><td>子用户</td><td><span class="tag tag-o">整改中</span></td><td>仅「待整改」状态可触发</td></tr>
+              <tr><td><span class="tag tag-o">整改中</span></td><td>提交处置</td><td>子用户</td><td><span class="tag tag-b">待审批</span></td><td>整改说明必填 ≥10 字</td></tr>
+              <tr><td rowspan="3">工单 · 审批</td><td><span class="tag tag-b">待审批池</span></td><td>生成验收清单</td><td>主用户</td><td><span class="tag tag-b">待审批</span>（抽样队列）</td><td>按验收比例抽样；应抽超过上限按上限（10/50/100/200）</td></tr>
+              <tr><td><span class="tag tag-b">待审批</span></td><td>审批通过</td><td>主用户</td><td><span class="tag tag-g">已整改</span>（终态 · 同步台账）</td><td>审批确认后自动移出队列</td></tr>
+              <tr><td><span class="tag tag-b">待审批</span></td><td>审批不通过</td><td>主用户</td><td><span class="tag tag-r">待整改</span>（退回子用户重新整改）</td><td>必选 3 类原因之一 · 审批后自动移出</td></tr>
+            </table>
+            <div class="mp-note" style="margin-top:10px">关键设计：工单统一四态「待整改 / 整改中 / 待审批 / 已整改」· 子用户「待审批」= 主用户「整改验收」队列（同一节点两侧视角）· 两个终态（合规 / 已整改）共同汇入汇总台账 · 审批不通过不建新单，回到原工单「待整改」，一单一案一号到底</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============ 视图：分用户 · 违规处置工作台（基层院） ============ -->
+<div id="view-sub" style="display:none">
 <div id="app">
 
   <!-- 侧边栏 -->
-  <aside id="sidebar">
+  <aside id="sidebar" class="sidebar">
     <div class="sb-header">
       <div class="sb-logo">⚖️</div>
       <div class="sb-title-wrap">
@@ -241,7 +966,7 @@ nav{flex:1;padding-top:8px;overflow:hidden auto}
         <div class="sb-user-name">赵志强</div>
         <div class="sb-user-meta">朝阳院 · 承办员</div>
       </div>
-      <button class="logout-btn" onclick="showToast('原型演示：退出登录','warn')">退出</button>
+      <button class="logout-btn" onclick="showView('index')">退出</button>
     </div>
   </aside>
 
@@ -272,7 +997,7 @@ nav{flex:1;padding-top:8px;overflow:hidden auto}
           <div class="psh-sub">处理上级「判定违规」后交办至本单位的整改工单 · 全程留痕 · 闭环管理</div>
         </div>
         <div class="psh-right">
-          <div class="r1">工单流转：收到 → 提交处置 → 上级审批 → 完成闭环</div>
+          <div class="r1">工单流转：待整改 → 整改中 → 待审批 → 已整改</div>
         </div>
       </div>
 
@@ -305,8 +1030,9 @@ nav{flex:1;padding-top:8px;overflow:hidden auto}
     </div>
   </div>
 </div>
+</div>
 
-<!-- 详情抽屉 -->
+<!-- 详情抽屉（分用户视图） -->
 <div class="drawer-mask" id="drawer-mask" onclick="closeDrawer()"></div>
 <div class="drawer" id="drawer">
   <div class="drawer-head">
@@ -320,14 +1046,36 @@ nav{flex:1;padding-top:8px;overflow:hidden auto}
   <div class="drawer-body" id="drawer-body"></div>
 </div>
 
+<!-- 终核判定 / 整改验收 通用模态 -->
+<div class="modal-mask" id="judge-modal" onclick="closeJudgeModal(event)">
+  <div class="modal-box">
+    <div class="modal-title" id="jm-title"></div>
+    <div class="jm-case" id="jm-case"></div>
+    <div id="jm-opts-wrap">
+      <div class="jm-label"><span id="jm-opts-label">问题类别（单选）</span><span class="jm-required"> *</span></div>
+      <div class="jm-opts" id="jm-opts"></div>
+    </div>
+    <div id="jm-org-wrap">
+      <div class="jm-label">流转去向</div>
+      <div class="jm-org" id="jm-org"></div>
+    </div>
+    <div class="jm-label">处理意见（选填）</div>
+    <textarea class="jm-text" id="jm-text"></textarea>
+    <div class="jm-btns">
+      <button class="mp-btn" onclick="closeModal()">取消</button>
+      <button class="judge-btn" id="jm-confirm" onclick="modalConfirm()"></button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
 /* =====================================================
  * 数据：上级判定违规后交办至朝阳院的整改工单（演示数据）
  * 状态机（下级视角）：
- *   PENDING 待处置 → IN_PROGRESS 整改中 → SUBMITTED 已整改/待上级审批 → MUNICIPAL_REVIEW 上级审批 → APPROVED 审批通过 → CLOSED 已闭环
- * 下级仅可操作：PENDING→IN_PROGRESS（开始整改）、IN_PROGRESS→SUBMITTED（提交处置）
+ *   PENDING 待整改 → IN_PROGRESS 整改中 → SUBMITTED 待审批 → CLOSED 已整改（主用户审批通过 · 终态）
+ * 下级仅可操作：PENDING→IN_PROGRESS（开始整改）、IN_PROGRESS→SUBMITTED（提交处置）；主用户审批不通过退回 PENDING 待整改
  * ===================================================== */
 var CURRENT_USER = { name:'赵志强', org:'朝阳区人民检察院', short:'朝阳院', role:'承办员' };
 var SUPERVISORS = { 'sjhc1':'张明远（市院）', 'sjhc2':'李慧芳（市院）', 'fyhc1':'王建国（一分院）' };
@@ -345,7 +1093,7 @@ var WORK_ORDERS = [
     judgeNote:'经复核，该案数据来源与模型线索归集要求不符，应从线索平台归集而实际取自业务系统，已写入整改台账。',
     status:'PENDING', assignTime:'2026-10-08 16:40' },
 
-  { id:'WG-2026-0318', caseNo:'京08检行监[2026]0091号', model:'行政非诉执行监督模型', problemType:'案件模型关联不实',
+  { id:'WG-2026-0318', caseNo:'京08检行监[2026]0091号', model:'行政非诉执行监督模型', problemType:'案件模型关联不符',
     actual:'行政检察', expected:'行政检察', supPoint:'对行政机关申请法院强制执行案件合法性进行监督',
     source:'业务系统案件', judgeTime:'2026-10-07 09:55', judgeBy:'sjhc1',
     judgeNote:'经复核，该案与所用监督模型的关联关系不实，监督事项超出模型应然监督点范围，已写入整改台账。',
@@ -369,7 +1117,7 @@ var WORK_ORDERS = [
     judgeNote:'经复核，该案存在文书卷宗信息不完整等其他不符合规范情形，已写入整改台账。',
     status:'IN_PROGRESS', assignTime:'2026-09-26 15:50', startTime:'2026-09-27 10:05', rectNote:'' },
 
-  { id:'WG-2026-0273', caseNo:'京08检执监[2026]0158号', model:'羁押必要性审查监督模型', problemType:'案件模型关联不实',
+  { id:'WG-2026-0273', caseNo:'京08检执监[2026]0158号', model:'羁押必要性审查监督模型', problemType:'案件模型关联不符',
     actual:'刑事检察', expected:'刑事执行检察', supPoint:'对羁押必要性审查案件开展全流程监督',
     source:'业务系统案件', judgeTime:'2026-09-24 10:18', judgeBy:'fyhc1',
     judgeNote:'经复核，该案与所用监督模型的关联关系不实，已写入整改台账。',
@@ -400,16 +1148,16 @@ var WORK_ORDERS = [
     actual:'公益诉讼检察', expected:'公益诉讼检察', supPoint:'对食品药品安全领域侵害公益行为进行监督',
     source:'业务系统案件', judgeTime:'2026-09-15 09:12', judgeBy:'sjhc1',
     judgeNote:'经复核，该案数据来源与模型线索归集要求不符，已写入整改台账。',
-    status:'MUNICIPAL_REVIEW', assignTime:'2026-09-15 09:20', startTime:'2026-09-16 10:00', submitTime:'2026-09-28 17:32',
+    status:'SUBMITTED', assignTime:'2026-09-15 09:20', startTime:'2026-09-16 10:00', submitTime:'2026-09-28 17:32',
     rectNote:'已补录线索平台来源信息，完成数据源切换与比对验证，形成整改报告。', reviewTime:'2026-10-07 11:20' },
 
-  { id:'WG-2026-0211', caseNo:'京08检刑诉[2026]0088号', model:'司法救助线索筛查模型', problemType:'案件模型关联不实',
+  { id:'WG-2026-0211', caseNo:'京08检刑诉[2026]0088号', model:'司法救助线索筛查模型', problemType:'案件模型关联不符',
     actual:'控告申诉检察', expected:'控告申诉检察', supPoint:'对符合司法救助条件的案件线索进行筛查',
     source:'线索平台案件', judgeTime:'2026-09-11 16:28', judgeBy:'sjhc2',
     judgeNote:'经复核，该案与所用监督模型的关联关系不实，已写入整改台账。',
     status:'CLOSED', assignTime:'2026-09-11 16:35', startTime:'2026-09-12 09:15', submitTime:'2026-09-24 14:40',
     rectNote:'已解除错误模型关联，重新按应然监督点挂接司法救助线索筛查模型，并完成历史数据更正。',
-    reviewTime:'2026-09-26 10:15', approveTime:'2026-09-28 09:00', closeTime:'2026-09-28 09:05', approveNote:'整改到位，佐证材料齐全，同意销号。' },
+    reviewTime:'2026-09-26 10:15', approveTime:'2026-09-28 09:00', closeTime:'2026-09-28 09:05', approveNote:'整改到位，佐证材料齐全，审批通过，同意归档。' },
 
   { id:'WG-2026-0196', caseNo:'京08检民诉[2026]0155号', model:'民事虚假诉讼监督模型', problemType:'案件类别不符',
     actual:'刑事检察', expected:'民事检察', supPoint:'对民事调解书、判决书涉及虚假诉讼进行监督',
@@ -417,7 +1165,7 @@ var WORK_ORDERS = [
     judgeNote:'经复核，案件实际监督事项与模型应然监督点不匹配，已写入整改台账。',
     status:'CLOSED', assignTime:'2026-09-08 11:48', startTime:'2026-09-09 10:30', submitTime:'2026-09-20 16:00',
     rectNote:'已完成案件类别更正，补充虚假诉讼监督审查意见书，同步更新统一业务应用系统案卡信息。',
-    reviewTime:'2026-09-22 14:10', approveTime:'2026-09-24 09:30', closeTime:'2026-09-24 09:35', approveNote:'整改情况属实，符合闭环条件，准予销号。' },
+    reviewTime:'2026-09-22 14:10', approveTime:'2026-09-24 09:30', closeTime:'2026-09-24 09:35', approveNote:'整改情况属实，审批通过，准予归档。' },
 
   { id:'WG-2026-0182', caseNo:'京08检执监[2026]0073号', model:'社区矫正脱管漏管监督模型', problemType:'其他不符合',
     actual:'刑事执行检察', expected:'刑事执行检察', supPoint:'对社区矫正人员脱管、漏管问题进行监督',
@@ -425,22 +1173,20 @@ var WORK_ORDERS = [
     judgeNote:'经复核，该案存在监督文书未入卷等其他不符合规范情形，已写入整改台账。',
     status:'CLOSED', assignTime:'2026-09-05 10:30', startTime:'2026-09-06 09:20', submitTime:'2026-09-16 15:26',
     rectNote:'已补齐监督文书并完成入卷归档，对承办检察官开展卷宗规范专项自查。',
-    reviewTime:'2026-09-18 10:00', approveTime:'2026-09-19 09:10', closeTime:'2026-09-19 09:15', approveNote:'整改完成质量良好，同意完成闭环。' }
+    reviewTime:'2026-09-18 10:00', approveTime:'2026-09-19 09:10', closeTime:'2026-09-19 09:15', approveNote:'整改完成质量良好，审批通过，同意归档。' }
 ];
 
 /* 近八周趋势（新收/闭环） —— 已随图表弱化移除 */
 
 /* ============ 状态口径 ============ */
 var STATUS_META = {
-  PENDING:        { label:'待处置',   tag:'tag-r', flow:0, css:'var(--red)' },
+  PENDING:        { label:'待整改',   tag:'tag-r', flow:0, css:'var(--red)' },
   IN_PROGRESS:    { label:'整改中',   tag:'tag-o', flow:1, css:'var(--gold-bright)' },
-  SUBMITTED:      { label:'已整改 · 待上级审批', tag:'tag-b', flow:2, css:'var(--blue-electric)' },
-  MUNICIPAL_REVIEW:{label:'上级审批中', tag:'tag-b', flow:2, css:'var(--blue-electric)' },
-  APPROVED:       { label:'审批通过', tag:'tag-g', flow:3, css:'var(--green-glow)' },
-  CLOSED:         { label:'已闭环',   tag:'tag-g', flow:3, css:'var(--green-glow)' }
+  SUBMITTED:      { label:'待审批',   tag:'tag-b', flow:2, css:'var(--blue-electric)' },
+  CLOSED:         { label:'已整改',   tag:'tag-g', flow:3, css:'var(--green-glow)' }
 };
-var FLOW_STEPS = ['收到工单','提交处置','上级审批','完成闭环'];
-var PROBLEM_COLORS = {'案件类别不符':'var(--red-glow)','案件来源不符':'var(--gold-bright)','案件模型关联不实':'var(--blue-electric)','其他不符合':'var(--cyan)'};
+var FLOW_STEPS = ['待整改','整改中','待审批','已整改'];
+var PROBLEM_COLORS = {'案件类别不符':'var(--red-glow)','案件来源不符':'var(--gold-bright)','案件模型关联不符':'var(--blue-electric)','其他不符合':'var(--cyan)'};
 
 /* ============ 工具 ============ */
 function $(id){return document.getElementById(id)}
@@ -450,19 +1196,42 @@ function showToast(msg,type){
   var t=$('toast');t.textContent=msg;t.className=type||'';t.style.display='block';
   clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.style.display='none'},2600);
 }
-function toggleSidebar(){
-  var sb=$('sidebar');sb.classList.toggle('collapsed');
-  $('sb-toggle').textContent=sb.classList.contains('collapsed')?'▶':'◀';
+function toggleSidebar(sbId,btnId){
+  var sb=$(sbId||'sidebar');sb.classList.toggle('collapsed');
+  var btn=$(btnId||'sb-toggle');btn.textContent=sb.classList.contains('collapsed')?'▶':'◀';
+}
+
+/* ============ 视图切换（Index / 主用户 / 分用户） ============ */
+function showView(v){
+  $('view-index').style.display=(v==='index')?'flex':'none';
+  $('view-main').style.display=(v==='main')?'block':'none';
+  $('view-sub').style.display=(v==='sub')?'block':'none';
+  closeDrawer();
+}
+
+/* ============ 登录页 · 身份选择与登录 ============ */
+var curRole='main';
+function selRole(r){
+  curRole=r;
+  $('role-main').classList.toggle('sel',r==='main');
+  $('role-sub').classList.toggle('sel',r==='sub');
+}
+function doLogin(){
+  var u=$('login-user').value.trim(),p=$('login-pass').value.trim();
+  if(!u){showToast('请输入账号','warn');return;}
+  if(!p){showToast('请输入密码','warn');return;}
+  showView(curRole==='main'?'main':'sub');
+  showToast(curRole==='main'?'登录成功 · 欢迎黄凯（市院级管理员 · 主用户）':'登录成功 · 欢迎赵志强（基层院承办员 · 子用户）');
 }
 
 /* ============ 状态 tabs（全部/各分项） ============ */
 var currentStatusFilter='';
 var TAB_DEFS=[
   {key:'',           label:'全部',       cls:''},
-  {key:'PENDING',    label:'待处置',     cls:'danger'},
+  {key:'PENDING',    label:'待整改',     cls:'danger'},
   {key:'IN_PROGRESS',label:'整改中',     cls:'gold'},
-  {key:'SUBMITTED',  label:'待上级审批', cls:'blue'},
-  {key:'CLOSED',     label:'已闭环',     cls:'green'}
+  {key:'SUBMITTED',  label:'待审批', cls:'blue'},
+  {key:'CLOSED',     label:'已整改',     cls:'green'}
 ];
 function renderTabs(){
   var cnt={ALL:0,PENDING:0,IN_PROGRESS:0,SUBMITTED:0,CLOSED:0};
@@ -470,7 +1239,7 @@ function renderTabs(){
     cnt.ALL++;
     if(w.status==='PENDING')cnt.PENDING++;
     else if(w.status==='IN_PROGRESS')cnt.IN_PROGRESS++;
-    else if(w.status==='SUBMITTED'||w.status==='MUNICIPAL_REVIEW')cnt.SUBMITTED++;
+    else if(w.status==='SUBMITTED')cnt.SUBMITTED++;
     else if(w.status==='CLOSED')cnt.CLOSED++;
   });
   var html='';
@@ -495,7 +1264,7 @@ function resetFilter(){
 function applyFilter(list){
   var tp=$('flt-type').value, kw=$('flt-kw').value.trim().toLowerCase();
   return list.filter(function(w){
-    var wst = w.status==='MUNICIPAL_REVIEW'?'SUBMITTED':w.status;
+    var wst = w.status;
     if(currentStatusFilter && wst!==currentStatusFilter)return false;
     if(tp && w.problemType!==tp)return false;
     if(kw && w.caseNo.toLowerCase().indexOf(kw)<0 && w.id.toLowerCase().indexOf(kw)<0)return false;
@@ -506,8 +1275,7 @@ function applyFilter(list){
 /* ============ 台账表格 ============ */
 function statusTag(w){
   var m=STATUS_META[w.status];
-  var label = w.status==='MUNICIPAL_REVIEW'?'上级审批中':m.label;
-  return '<span class="tag '+m.tag+'">'+label+'</span>';
+  return '<span class="tag '+m.tag+'">'+m.label+'</span>';
 }
 function flowLabel(w){
   var f=STATUS_META[w.status].flow;
@@ -555,21 +1323,20 @@ function openDrawer(id){
     if(i===1){
       if(w.submitTime) meta='<b>'+w.submitTime+'</b><br>承办员 '+CURRENT_USER.name+' 提交处置';
       else if(w.startTime) meta='<b>'+w.startTime+'</b><br>承办员 '+CURRENT_USER.name+' 开始整改';
-      else meta='待处置 · '+CURRENT_USER.name;
+      else meta='待整改 · '+CURRENT_USER.name;
     }
     if(i===2){
       if(w.approveTime) meta='<b>'+w.approveTime+'</b><br>'+SUPERVISORS[w.judgeBy]+' 审批通过';
-      else if(w.reviewTime) meta='<b>'+w.reviewTime+'</b><br>'+SUPERVISORS[w.judgeBy]+' 复核中';
-      else if(w.submitTime) meta='等待上级审批';
+      else if(w.submitTime) meta='等待主用户审批';
       else meta='—';
     }
     if(i===3){
-      if(w.closeTime) meta='<b>'+w.closeTime+'</b><br>销号归档';
+      if(w.closeTime) meta='<b>'+w.closeTime+'</b><br>已整改 · 归档';
       else meta='—';
     }
     nodes+='<div class="flow-node '+cls+'">'
       +'<div class="fn-dot">'+dot+'</div>'
-      +'<div class="fn-label">'+(i===flow&&w.status!=='CLOSED'&&w.status!=='APPROVED'?s+'（当前）':s)+'</div>'
+      +'<div class="fn-label">'+(i===flow&&w.status!=='CLOSED'?s+'（当前）':s)+'</div>'
       +'<div class="fn-meta">'+meta+'</div>'
       +'</div>';
   });
@@ -579,46 +1346,38 @@ function openDrawer(id){
   trace+=traceItem(w.assignTime,'系统生成整改工单 <b>'+w.id+'</b>，分派至'+CURRENT_USER.short+'承办员 '+CURRENT_USER.name,true);
   if(w.startTime) trace+=traceItem(w.startTime,CURRENT_USER.name+' 开始整改（状态 → 整改中）',true);
   else trace+=traceItem('','待 '+CURRENT_USER.name+' 开始整改',false);
-  if(w.submitTime) trace+=traceItem(w.submitTime,CURRENT_USER.name+' 提交处置结果（状态 → 已整改，转入上级审批）',true);
+  if(w.submitTime) trace+=traceItem(w.submitTime,CURRENT_USER.name+' 提交处置结果（状态 → 待审批，转主用户审批）',true);
   else if(w.startTime) trace+=traceItem('','待 '+CURRENT_USER.name+' 提交处置结果',false);
-  if(w.reviewTime) trace+=traceItem(w.reviewTime,'上级 '+SUPERVISORS[w.judgeBy]+' 开始复核审批',true);
-  else if(w.submitTime) trace+=traceItem('','等待上级审批',false);
-  if(w.approveTime) trace+=traceItem(w.approveTime,'上级审批通过：'+(w.approveNote||'同意销号'),true);
-  if(w.closeTime) trace+=traceItem(w.closeTime,'工单完成闭环 · 销号归档',true);
+  if(w.approveTime) trace+=traceItem(w.approveTime,'主用户审批通过：'+(w.approveNote||'整改通过'),true);
+  else if(w.submitTime) trace+=traceItem('','等待主用户审批（审批不通过将退回待整改）',false);
+  if(w.closeTime) trace+=traceItem(w.closeTime,'工单已整改 · 归档',true);
 
   /* 操作区（下级仅可操作前两步） */
   var actionHtml='';
   if(w.status==='PENDING'){
     actionHtml='<div class="action-card pending">'
-      +'<div class="ac-title">🛠️ 整改操作 <span class="ac-hint">当前：待处置</span></div>'
-      +'<div class="ac-status-row"><span>当前状态：<b>待处置</b></span><span>判定依据：<b>'+w.problemType+'</b></span></div>'
+      +'<div class="ac-title">🛠️ 整改操作 <span class="ac-hint">当前：待整改</span></div>'
+      +'<div class="ac-status-row"><span>当前状态：<b>待整改</b></span><span>判定依据：<b>'+w.problemType+'</b></span></div>'
       +'<button class="rw-btn rw-btn-start" onclick="startRectify(\''+w.id+'\')">开始整改（状态 → 整改中）</button>'
       +'</div>';
   }else if(w.status==='IN_PROGRESS'){
     actionHtml='<div class="action-card acting">'
       +'<div class="ac-title">🛠️ 整改操作 <span class="ac-hint">当前：整改中 · 开始于 '+w.startTime+'</span></div>'
-      +'<div class="rw-textarea-label">整改说明（提交至上级审批，必填）</div>'
+      +'<div class="rw-textarea-label">整改说明（提交后转主用户审批，必填）</div>'
       +'<textarea class="rw-textarea" id="rect-note" placeholder="请填写整改措施、完成情况及佐证材料说明…"></textarea>'
-      +'<button class="rw-btn rw-btn-submit" onclick="submitRectify(\''+w.id+'\')">提交处置结果（状态 → 已整改 · 待上级审批）</button>'
+      +'<button class="rw-btn rw-btn-submit" onclick="submitRectify(\''+w.id+'\')">提交处置结果（状态 → 待审批）</button>'
       +'</div>';
   }else if(w.status==='SUBMITTED'){
     actionHtml='<div class="action-card waiting">'
-      +'<div class="ac-title">⏳ 等待上级审批 <span class="ac-hint">提交时间：'+w.submitTime+'</span></div>'
-      +'<div class="readonly-banner">ℹ️ 已提交处置结果，工单已转入上级审批环节，等待'+SUPERVISORS[w.judgeBy]+'复核。审批驳回时工单将退回整改中。</div>'
-      +'<div class="rw-textarea-label" style="margin-top:10px">已提交的整改说明</div>'
-      +'<div class="judge-quote" style="border-left-color:var(--green-glow);background:#00e67608">'+esc(w.rectNote||'—')+'</div>'
-      +'</div>';
-  }else if(w.status==='MUNICIPAL_REVIEW'){
-    actionHtml='<div class="action-card waiting">'
-      +'<div class="ac-title">⏳ 上级审批中 <span class="ac-hint">复核开始：'+w.reviewTime+'</span></div>'
-      +'<div class="readonly-banner">ℹ️ 上级已开始复核审批，请耐心等待审批结论。</div>'
+      +'<div class="ac-title">⏳ 等待审批 <span class="ac-hint">提交时间：'+w.submitTime+'</span></div>'
+      +'<div class="readonly-banner">ℹ️ 已提交处置结果，工单处于「待审批」状态，等待'+SUPERVISORS[w.judgeBy]+'审批。审批不通过时工单将退回「待整改」，需重新整改。</div>'
       +'<div class="rw-textarea-label" style="margin-top:10px">已提交的整改说明</div>'
       +'<div class="judge-quote" style="border-left-color:var(--green-glow);background:#00e67608">'+esc(w.rectNote||'—')+'</div>'
       +'</div>';
   }else{
     actionHtml='<div class="action-card closed">'
-      +'<div class="ac-title">✅ 已完成闭环 <span class="ac-hint">闭环时间：'+w.closeTime+'</span></div>'
-      +'<div class="readonly-banner" style="border-color:#00e67666;color:var(--green-glow)">✔ 审批意见：'+esc(w.approveNote||'同意销号')+'</div>'
+      +'<div class="ac-title">✅ 已整改 <span class="ac-hint">审批通过时间：'+w.closeTime+'</span></div>'
+      +'<div class="readonly-banner" style="border-color:#00e67666;color:var(--green-glow)">✔ 审批意见：'+esc(w.approveNote||'整改通过，同意归档')+'</div>'
       +'<div class="rw-textarea-label" style="margin-top:10px">已提交的整改说明</div>'
       +'<div class="judge-quote" style="border-left-color:var(--green-glow);background:#00e67608">'+esc(w.rectNote||'—')+'</div>'
       +'</div>';
@@ -649,7 +1408,7 @@ function openDrawer(id){
     +'</div>'
     +'<div class="judge-quote" style="margin-top:6px"><b>复核意见：</b>'+w.judgeNote+'</div>'
 
-    +'<div class="sec-title" style="margin-top:16px"><span class="st-ico">③</span> 处理进度 · 工单流转（收到 → 提交处置 → 上级审批 → 完成闭环）</div>'
+    +'<div class="sec-title" style="margin-top:16px"><span class="st-ico">③</span> 处理进度 · 工单流转（待整改 → 整改中 → 待审批 → 已整改）</div>'
     +'<div class="flow-track">'+nodes+'</div>'
     +'<div class="sec-title" style="margin-top:10px;padding-top:10px;border-top:1px dashed var(--hud-line)">流转留痕明细</div>'
     +'<div class="trace-list">'+trace+'</div>'
@@ -689,7 +1448,7 @@ function submitRectify(id){
   if(!note){showToast('请填写整改说明后再提交','err');return;}
   if(note.length<10){showToast('整改说明过于简单，请补充整改措施与佐证情况（不少于10字）','err');return;}
   w.status='SUBMITTED';w.submitTime=nowStr();w.rectNote=note;
-  showToast('处置结果已提交：'+w.caseNo+'（状态 → 已整改 · 待上级审批）');
+  showToast('处置结果已提交：'+w.caseNo+'（状态 → 待审批，等待主用户审批）');
   refreshAll();openDrawer(id);
 }
 function refreshAll(){renderTabs();renderTable();}
@@ -698,6 +1457,459 @@ function exportLedger(){
   showToast('原型演示：台账导出 Excel（功能占位）','warn');
 }
 
+/* =====================================================
+ * 主用户 · 分层人机复核工作台（市院级视角）
+ * 机器初核（类别比对 / 来源比对）→ 人工终核（合规通过 / 判定违规）
+ * ===================================================== */
+var MAIN_BATCHES=[
+  {no:4,code:'REV-20260615-004',st:'复核中',cls:'tag-b',time:'2026-06-15 09:00',bTime:'2026-06-15 09:00:15',prog:'4 / 442'},
+  {no:3,code:'REV-20260520-003',st:'已完成',cls:'tag-g',time:'2026-05-20 14:20',bTime:'2026-05-20 14:20:00',prog:'386 / 386'},
+  {no:2,code:'REV-20260520-002',st:'已完成',cls:'tag-g',time:'2026-05-20 14:00',bTime:'2026-05-20 14:00:00',prog:'202 / 202'},
+  {no:1,code:'REV-20260510-001',st:'已完成',cls:'tag-g',time:'2026-05-10 13:00',bTime:'2026-05-10 13:00:00',prog:'243 / 243'}
+];
+var curBatch=0;
+function renderBatches(){
+  $('batch-row').innerHTML=MAIN_BATCHES.map(function(b,i){
+    return '<div class="batch-card'+(i===curBatch?' active':'')+'" onclick="selBatch('+i+')">'
+      +'<div class="bc-top">第 '+b.no+' 批 <span class="tag '+b.cls+'">'+b.st+'</span></div>'
+      +'<div class="bc-meta mono" style="color:var(--blue-deep)">'+b.code+'</div>'
+      +'<div class="bc-meta">生成时间：'+b.time+'</div>'
+      +'<div class="bc-prog">进度 <b>'+b.prog+'</b></div></div>';
+  }).join('');
+  var b=MAIN_BATCHES[curBatch];
+  $('batch-info').innerHTML='当前批次：<b>第 '+b.no+' 批（'+b.code+'）</b> · 初核时间：<b>'+b.bTime+'</b> · 批次人：<b>系统管理员</b> · 抽取范围：<b>类别不符 + 全量复核 + 类别归档复核</b> · 数据总量：<b>531 件</b> · 其中全量复核：<b>442 件</b>';
+}
+function selBatch(i){curBatch=i;renderBatches();showToast('已切换至第 '+MAIN_BATCHES[i].no+' 批');}
+
+var REVIEW_CASES=[
+  {no:'060001号',model:'公安派出所刑事立案监督模型',org:'东城院',tag:'待复核',
+   docNo:'京06检刑诉[2024]0001号',sup:'对公安派出所应当立案而不立案的刑事案件进行监督',
+   cmp:{actual:'公诉检察',mcat:'刑事检察',src:'业务系统案件',srcLine:'ALIY_MC：BIZ_SYSTEM',catBad:1,srcBad:1}},
+  {no:'060002号',model:'民事虚假诉讼监督模型',org:'门头沟院',tag:'待复核',
+   docNo:'京06检民诉[2024]0002号',sup:'对民事调解书、判决书涉及虚假诉讼进行监督',
+   cmp:{actual:'民事检察',mcat:'民事检察',src:'业务系统案件',srcLine:'ALIY_MC：BIZ_SYSTEM',catBad:0,srcBad:1}},
+  {no:'060004号',model:'行政非诉执行监督模型',org:'石景山院',tag:'合规',
+   docNo:'京06检执监[2024]0004号',sup:'对行政机关申请法院强制执行案件合法性进行监督',
+   cmp:{actual:'行政检察',mcat:'行政检察',src:'线索平台案件',srcLine:'线索平台案件',catBad:0,srcBad:0}},
+  {no:'060007号',model:'食品药品安全公益诉讼模型',org:'海淀院',tag:'违规',
+   docNo:'京06检公诉[2024]0007号',sup:'对食品药品安全领域侵害公益行为进行监督',
+   cmp:{actual:'行政检察',mcat:'公益诉讼检察',src:'业务系统案件',srcLine:'ALIY_MC：BIZ_SYSTEM',catBad:1,srcBad:1}},
+  {no:'060008号',model:'社区矫正脱管漏管监督模型',org:'丰台院',tag:'待复核',
+   docNo:'京06检刑执[2024]0008号',sup:'对社区矫正人员脱管、漏管问题进行监督',
+   cmp:{actual:'刑事执行检察',mcat:'刑事执行检察',src:'业务系统案件',srcLine:'ALIY_MC：BIZ_SYSTEM',catBad:1,srcBad:0}},
+  {no:'060009号',model:'行政争议实质性化解监督模型',org:'东城院',tag:'待复核',
+   docNo:'京06检行监[2024]0009号',sup:'对符合条件的行政争议开展实质性化解',
+   cmp:{actual:'行政检察',mcat:'行政检察',src:'业务系统案件',srcLine:'ALIY_MC：BIZ_SYSTEM',catBad:0,srcBad:1}},
+  {no:'060013号',model:'司法救助线索筛查模型',org:'门头沟院',tag:'待复核',
+   docNo:'京06检刑诉[2024]0013号',sup:'对符合司法救助条件的案件线索进行筛查',
+   cmp:{actual:'控告申诉检察',mcat:'刑事检察',src:'线索平台案件',srcLine:'线索平台案件',catBad:1,srcBad:1}},
+  {no:'060016号',model:'羁押必要性审查监督模型',org:'朝阳院',tag:'合规',
+   docNo:'京06检执监[2024]0016号',sup:'对羁押必要性审查案件开展全流程监督',
+   cmp:{actual:'刑事执行检察',mcat:'刑事执行检察',src:'线索平台案件',srcLine:'线索平台案件',catBad:0,srcBad:0}},
+  {no:'060018号',model:'未成年人监护干预监督模型',org:'石景山院',tag:'待复核',
+   docNo:'京06检未检[2024]0018号',sup:'对侵害未成年人权益的监护行为进行监督',
+   cmp:{actual:'未成年人检察',mcat:'未成年人检察',src:'业务系统案件',srcLine:'ALIY_MC：BIZ_SYSTEM',catBad:1,srcBad:0}}
+];
+var curCase=0,curScope='full';
+/* 整改验收：待审批工单池（子用户已提交处置）+ 按比例/上限抽样的审批队列 */
+var RECTIFY_POOL=[
+  {no:'060007号',model:'食品药品安全公益诉讼模型',org:'海淀',docNo:'京06检公诉[2024]0007号',
+   problem:'案件类别不符',submitBy:'赵志强',submitTime:'2026-10-18 16:42',
+   rectify:'已重新核定案件类别为"公益诉讼检察"，同步更正业务系统登记信息，并修正该模型的类别映射配置，附系统更正前后截图。',
+   files:['情况说明_海淀院.pdf','系统更正前后截图.png'],status:'待审批'},
+  {no:'060013号',model:'司法救助线索筛查模型',org:'门头沟',docNo:'京06检刑诉[2024]0013号',
+   problem:'案件类别不符',submitBy:'刘晓婷',submitTime:'2026-10-17 11:20',
+   rectify:'案件类别与数据来源均已更正：类别修正为刑事检察，数据来源由业务系统案件改为线索平台案件，双字段已同步回传核验。',
+   files:['整改报告_门头沟院.pdf','B表更正记录.xlsx'],status:'待审批'},
+  {no:'060002号',model:'民事虚假诉讼监督模型',org:'门头沟',docNo:'京06检民诉[2024]0002号',
+   problem:'案件来源不符',submitBy:'赵志强',submitTime:'2026-10-16 09:05',
+   rectify:'数据来源字段已按归集要求更正为线索平台案件，并通过 B 表重新提交核验，机器比对结果：来源吻合。',
+   files:['更正后B表.xlsx'],status:'待审批'}
+];
+(function seedRectifyPool(){
+  var orgs=['东城','海淀','朝阳','丰台','石景山','通州','房山','大兴','昌平','延庆'];
+  var models=['公安派出所刑事立案监督模型','民事虚假诉讼监督模型','行政非诉执行监督模型','社区矫正脱管漏管监督模型','羁押必要性审查监督模型','未成年人监护干预监督模型','司法救助线索筛查模型','涉黑涉恶案件财产刑执行监督模型'];
+  var probs=['案件类别不符','案件来源不符','案件模型关联不符','其他不符合'];
+  var names=['王建军','李思颖','陈昊','周雨薇','孙立群','郑晓岚','赵志强','刘晓婷'];
+  var rectTexts={
+    '案件类别不符':'已重新核定案件类别并同步更正业务系统登记信息，附系统更正前后截图。',
+    '案件来源不符':'数据来源字段已按归集要求更正为线索平台案件，并通过 B 表重新提交核验。',
+    '案件模型关联不符':'已修正案件与监督模型的关联映射配置，重新校验关联关系成立。',
+    '其他不符合':'已按规范要求补正相关文书卷宗信息，并完成内部复核。'
+  };
+  var times=['09:15','10:30','14:22','16:05'];
+  for(var i=0;i<27;i++){
+    var org=orgs[i%orgs.length],model=models[i%models.length],prob=probs[i%probs.length];
+    RECTIFY_POOL.push({
+      no:'0'+(6010+i*3)+'号',model:model,org:org,docNo:'京06检刑诉[2024]'+String(100+i).padStart(4,'0')+'号',
+      problem:prob,submitBy:names[i%names.length],submitTime:'2026-10-'+(10+i%10)+' '+times[i%4],
+      rectify:rectTexts[prob],
+      files:['整改报告_'+org+'院.pdf','更正后B表.xlsx'],status:'待审批'
+    });
+  }
+})();
+var RECTIFY_QUEUE=[];
+function genRectifyQueue(){
+  var ratio=parseFloat($('rt-ratio').value);
+  if(isNaN(ratio)||ratio<1||ratio>100){showToast('验收比例请输入 1–100 之间的数值','err');return;}
+  var cap=parseInt($('rt-cap').value,10)||10;
+  var total=RECTIFY_POOL.length;
+  var raw=Math.ceil(total*ratio/100);
+  var over=raw>cap;
+  var n=Math.min(raw,cap);
+  var idx=RECTIFY_POOL.map(function(_,i){return i;});
+  for(var i=idx.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=idx[i];idx[i]=idx[j];idx[j]=t;}
+  RECTIFY_QUEUE=idx.slice(0,n).map(function(i){RECTIFY_POOL[i].status='待审批';return RECTIFY_POOL[i];});
+  curCase=0;
+  renderCaseList();renderDocPanel();
+  showToast('已生成验收清单：应抽 '+raw+' 件'+(over?'，超过上限 '+cap+'，按上限执行':'')+' · 实抽 '+n+' 件（待审批池 '+total+' 件）');
+}
+function curCaseArr(){return curScope==='rectify'?RECTIFY_QUEUE:REVIEW_CASES;}
+function renderCaseList(){
+  if(curScope==='rectify'){
+    $('case-count').textContent='待审批 '+RECTIFY_QUEUE.length+' 件';
+    if(!RECTIFY_QUEUE.length){
+      $('case-list').innerHTML='<div class="empty-tip">尚未生成验收清单<br>设置验收比例 / 上限后<br>点击「生成验收清单」</div>';
+      return;
+    }
+    $('case-list').innerHTML=RECTIFY_QUEUE.map(function(c,i){
+      return '<div class="case-item'+(i===curCase?' sel':'')+'" onclick="selCase('+i+')">'
+        +'<div class="ci-top"><span>'+c.no+'</span><span class="tag tag-b">待审批</span></div>'
+        +'<div class="ci-sub">'+c.model+' · '+c.org+'院</div>'
+        +'<div class="ci-sub" style="color:var(--gold-bright)">'+c.problem+' · '+c.submitTime+'</div></div>';
+    }).join('');
+    return;
+  }
+  var list=curScope==='sample'?REVIEW_CASES.slice(0,4):REVIEW_CASES;
+  $('case-list').innerHTML=list.map(function(c){
+    var i=REVIEW_CASES.indexOf(c);
+    var cls=c.tag==='合规'?'tag-g':(c.tag==='违规'?'tag-r':'tag-b');
+    return '<div class="case-item'+(i===curCase?' sel':'')+'" onclick="selCase('+i+')">'
+      +'<div class="ci-top"><span>'+c.no+'</span><span class="tag '+cls+'">'+c.tag+'</span></div>'
+      +'<div class="ci-sub">'+c.model+' · '+c.org+'</div></div>';
+  }).join('');
+  $('case-count').textContent=(curScope==='sample'?'89/89':'172/442');
+}
+function selCase(i){curCase=i;renderCaseList();renderDocPanel();}
+function switchScope(s){
+  curScope=s;curCase=0;
+  $('scope-full').className='sync-tab'+(s==='full'?' active blue':'');
+  $('scope-sample').className='sync-tab'+(s==='sample'?' active':'');
+  $('scope-rectify').className='sync-tab gold'+(s==='rectify'?' active':'');
+  $('rectify-tool').style.display=(s==='rectify')?'block':'none';
+  renderCaseList();renderDocPanel();
+}
+function tagCls(c){return c.tag==='合规'?'tag-g':(c.tag==='违规'?'tag-r':'tag-b');}
+function renderDocPanel(){
+  /* —— 整改验收：抽样研判队列（生成后逐条研判，研判完成自动移出） —— */
+  if(curScope==='rectify'){
+    var r=RECTIFY_QUEUE[curCase];
+    if(!r){
+      $('doc-head').innerHTML='<span class="doc-model">整改验收 · 抽样审批</span>';
+      $('doc-paper').className='rc-paper';
+      $('doc-paper').innerHTML='<div class="empty-tip">尚未生成验收清单<br>在左侧设置验收比例与上限，点击「生成验收清单」</div>';
+      $('cmp-cat-title').innerHTML='① 问题回顾 <span class="panel-actions"><span class="cmp-src">原终核结论</span></span>';
+      $('cmp-cat').innerHTML='<div class="empty-tip">待生成</div>';
+      $('cmp-src-title').innerHTML='② 整改核验 <span class="panel-actions"><span class="cmp-src">子用户提交</span></span>';
+      $('cmp-src').innerHTML='<div class="empty-tip">待生成</div>';
+      $('judge-title').innerHTML='③ 审批判定 <span class="panel-actions"><span class="cmp-src">最终结论</span></span>';
+      $('judge-btns').innerHTML='<div class="empty-tip">待生成</div>';
+      return;
+    }
+    var stCls='tag-b';
+    $('doc-head').innerHTML='<span class="doc-title mono">'+r.docNo+'</span>'
+      +'<span class="tag '+stCls+'">待审批</span>'
+      +'<span class="doc-model">'+r.model+' · '+r.org+'院</span>';
+    $('doc-paper').className='rc-paper';
+    $('doc-paper').innerHTML='<div style="font-weight:700;font-size:13px;margin-bottom:8px">整改处置提交（子用户 · 违规处置工作台）</div>'
+      +'<div>提交人：'+r.submitBy+'（'+r.org+'人民检察院 · 承办员）</div>'
+      +'<div>提交时间：'+r.submitTime+'</div>'
+      +'<div style="margin-top:4px">原判定问题：<span style="background:#ffe94d;padding:0 4px;border-radius:2px">'+r.problem+'</span></div>'
+      +'<div style="margin-top:4px">整改说明：'+r.rectify+'</div>'
+      +'<div class="rc-files">'+r.files.map(function(f){return '<span class="rc-file" onclick="showToast(\'原型演示：预览附件（功能占位）\',\'warn\')">📎 '+f+'</span>';}).join('')+'</div>';
+    $('cmp-cat-title').innerHTML='① 问题回顾 <span class="panel-actions"><span class="cmp-src">原终核结论</span></span>';
+    $('cmp-cat').innerHTML='<div class="cmp-row"><span class="k">终核结论</span><span class="v" style="color:var(--red-glow)">判定违规</span></div>'
+      +'<div class="cmp-row"><span class="k">问题类别</span><span class="v">'+r.problem+'</span></div>'
+      +'<div class="cmp-row"><span class="k">交办批次</span><span class="v mono">REV-20260615-004</span></div>'
+      +'<div class="cmp-result bad">待审批 · 等待主用户审批</div>';
+    $('cmp-src-title').innerHTML='② 整改核验 <span class="panel-actions"><span class="cmp-src">子用户提交</span></span>';
+    $('cmp-src').innerHTML='<div class="cmp-row"><span class="k">提交人</span><span class="v">'+r.submitBy+'</span></div>'
+      +'<div class="cmp-row"><span class="k">提交时间</span><span class="v mono">'+r.submitTime+'</span></div>'
+      +'<div class="cmp-row"><span class="k">证明材料</span><span class="v">'+r.files.length+' 份</span></div>'
+      +'<div class="cmp-result good">已提交 · 待主用户审批</div>';
+    $('judge-title').innerHTML='③ 审批判定 <span class="panel-actions"><span class="cmp-src">最终结论 · 审批后自动移出队列</span></span>';
+    $('judge-btns').innerHTML='<button class="judge-btn pass" onclick="acceptRectify()">审批通过</button>'
+      +'<button class="judge-btn back" onclick="rectifyBack()">审批不通过 · 退回</button>';
+    return;
+  }
+  /* —— 全量 / 抽样复核：机器初核比对 + 人工终核 —— */
+  var c=REVIEW_CASES[curCase];
+  $('doc-head').innerHTML='<span class="doc-title mono">'+c.docNo+'</span>'
+    +'<span class="tag '+tagCls(c)+'">'+(c.tag==='待复核'?'已入库 · 待终核':c.tag)+'</span>'
+    +'<span class="doc-model">'+c.model+'</span>';
+  $('doc-paper').className='doc-paper';
+  var rows=[
+    ['应监督点',c.sup,1],
+    ['案件类别',c.cmp.actual,1],
+    ['模型案件类别',c.cmp.mcat,1],
+    ['数据来源',c.cmp.srcLine,1],
+    ['线索归集要求','线索平台案件',1],
+    ['应监督别','个案监督',0],
+    ['所属条线',c.cmp.mcat,1],
+    ['承办单位',c.org,0],
+    ['最终评定',c.final||'—',c.final?1:0],
+    ['模型审核结论','—',0]
+  ].map(function(f){
+    return '<div>'+f[0]+'：<span'+(f[2]?' class="hl"':'')+'>'+esc(f[1])+'</span></div>';
+  }).join('');
+  $('doc-paper').innerHTML='<div style="text-align:center;font-size:15px;font-weight:700;letter-spacing:2px;margin-bottom:8px">B 表制做记录</div>'+rows;
+  var catRows='<div class="cmp-row"><span class="k">实案类别</span><span class="v">'+c.cmp.actual+'</span></div>'
+    +'<div class="cmp-row"><span class="k">模型案件类别</span><span class="v">'+c.cmp.mcat+'</span></div>'
+    +'<div class="cmp-row"><span class="k">数据来源</span><span class="v">'+c.cmp.src+'</span></div>';
+  $('cmp-cat').innerHTML=catRows
+    +(c.cmp.catBad?'<div class="cmp-result bad">类别不吻合</div>':'<div class="cmp-result good">类别吻合</div>');
+  $('cmp-src').innerHTML='<div class="cmp-row"><span class="k">数据来源</span><span class="v">'+c.cmp.srcLine+'</span></div>'
+    +'<div class="cmp-row"><span class="k">归集要求</span><span class="v">线索平台案件</span></div>'
+    +(c.cmp.srcBad?'<div class="cmp-result bad">来源不吻合</div>':'<div class="cmp-result good">来源吻合</div>');
+  $('cmp-cat-title').innerHTML='① 类别比对 <span class="panel-actions"><span class="cmp-src">机器初核 · 自动比对</span></span>';
+  $('cmp-src-title').innerHTML='② 来源比对 <span class="panel-actions"><span class="cmp-src">机器初核 · 自动比对</span></span>';
+  $('judge-title').innerHTML='③ 终核判定 <span class="panel-actions"><span class="cmp-src">最终结论</span></span>';
+  $('judge-btns').innerHTML='<button class="judge-btn pass" onclick="judgeCase(\'pass\')">合规通过</button>'
+    +'<button class="judge-btn reject" onclick="judgeCase(\'reject\')">判定违规</button>';
+}
+/* ============ 终核判定 / 验收退回 · 通用模态 ============ */
+var MODAL={sel:null};
+var JUDGE_CATS=[
+  ['案件来源不符','数据来源与线索归集要求不一致'],
+  ['案件类别不符','实案类别与模型应用类别不一致'],
+  ['案件模型关联不符','案件与监督模型的关联关系不成立'],
+  ['其他不符合','其他不符合应用规范的情形']
+];
+function openModal(cfg){
+  MODAL=cfg;
+  $('jm-title').textContent=cfg.title;
+  $('jm-case').innerHTML=cfg.caseHTML;
+  $('jm-opts-wrap').style.display=cfg.opts?'block':'none';
+  if(cfg.opts){
+    MODAL.sel=cfg.opts[0][0];
+    $('jm-opts-label').textContent=cfg.optsLabel||'问题类别（单选）';
+    $('jm-opts').innerHTML=cfg.opts.map(function(o,i){
+      return '<div class="jm-opt'+(i===0?' sel':'')+'" data-v="'+o[0]+'" onclick="selModalOpt(this)">'+o[0]+'<span class="jo-sub">'+o[1]+'</span></div>';
+    }).join('');
+  }
+  $('jm-org-wrap').style.display=cfg.org?'block':'none';
+  if(cfg.org)$('jm-org').innerHTML=cfg.org;
+  $('jm-text').value='';
+  $('jm-text').placeholder=cfg.placeholder||'';
+  var btn=$('jm-confirm');
+  btn.textContent=cfg.confirmText;
+  btn.className='judge-btn '+(cfg.cls==='reject'?'reject':'pass');
+  $('judge-modal').classList.add('on');
+}
+function selModalOpt(el){
+  MODAL.sel=el.dataset.v;
+  document.querySelectorAll('.jm-opt').forEach(function(o){o.classList.remove('sel');});
+  el.classList.add('sel');
+}
+function closeModal(){$('judge-modal').classList.remove('on');}
+function closeJudgeModal(ev){if(!ev||ev.target.id==='judge-modal')closeModal();}
+function modalConfirm(){
+  var txt=$('jm-text').value.trim();
+  var fn=MODAL.confirm;
+  closeModal();
+  fn(MODAL.sel,txt);
+}
+function judgeCase(t){
+  var c=REVIEW_CASES[curCase];
+  if(t==='pass'){
+    openModal({title:'终核判定 · 合规通过',
+      caseHTML:'案件：<b>'+c.docNo+'</b> · '+c.model+' · '+c.org+'院',
+      org:'流转去向<span style="color:var(--green-glow)">无需交办 · 直接归档</span>',
+      placeholder:'填写合规通过意见，将随核验记录归档（选填）',
+      confirmText:'确认合规通过',cls:'pass',
+      confirm:function(sel,txt){
+        c.tag='合规';c.final='合规 · 核验无异常';
+        renderCaseList();renderDocPanel();
+        showToast('终核判定 · 合规通过：'+c.docNo+(txt?' · 意见：'+txt:''));
+      }});
+  }else{
+    openModal({title:'终核判定 · 判定违规',
+      caseHTML:'案件：<b>'+c.docNo+'</b> · '+c.model+' · '+c.org+'院',
+      opts:JUDGE_CATS,
+      org:'流转去向<span>'+c.org+'人民检察院 · 违规处置工作台</span>',
+      placeholder:'填写判定意见，将随整改工单推送至承办院（选填）',
+      confirmText:'确认判定违规 · 生成整改工单',cls:'reject',
+      confirm:function(sel,txt){
+        c.tag='违规';c.final='违规 · '+sel;
+        renderCaseList();renderDocPanel();
+        showToast('终核判定 · 判定违规（'+sel+'）：'+c.docNo+' · 已生成整改工单并交办至'+c.org+'人民检察院','warn');
+      }});
+  }
+}
+/* ============ 整改验收 ============ */
+function acceptRectify(){
+  var r=RECTIFY_QUEUE[curCase];
+  if(!r){showToast('请先生成验收清单，再逐条审批','warn');return;}
+  openModal({title:'整改验收 · 审批通过',
+    caseHTML:'案件：<b>'+r.docNo+'</b> · 提交人：'+r.submitBy+'（'+r.org+'院） · 原问题：'+r.problem,
+    org:'流转去向<span style="color:var(--green-glow)">工单已整改（终态）· 同步至汇总归档台账 · 自动移出审批队列</span>',
+    placeholder:'填写审批意见（选填）',
+    confirmText:'确认审批通过',cls:'pass',
+    confirm:function(sel,txt){
+      r.status='已整改';
+      RECTIFY_QUEUE.splice(curCase,1);
+      if(curCase>=RECTIFY_QUEUE.length)curCase=Math.max(0,RECTIFY_QUEUE.length-1);
+      renderCaseList();renderDocPanel();
+      showToast('审批通过：'+r.docNo+' · 工单已整改并同步至汇总归档台账，自动移出队列（剩 '+RECTIFY_QUEUE.length+' 件待审批）'+(txt?' · 意见：'+txt:''));
+    }});
+}
+function rectifyBack(){
+  var r=RECTIFY_QUEUE[curCase];
+  if(!r){showToast('请先生成验收清单，再逐条审批','warn');return;}
+  openModal({title:'整改验收 · 审批不通过',
+    caseHTML:'案件：<b>'+r.docNo+'</b> · 提交人：'+r.submitBy+'（'+r.org+'院） · 原问题：'+r.problem,
+    optsLabel:'审批不通过原因（单选）',
+    opts:[['整改不到位','整改措施未解决问题'],['材料不全','证明材料缺失，需补交'],['类别仍不符','更正后类别仍不吻合']],
+    org:'流转去向<span>'+r.org+'人民检察院 · 违规处置工作台 · 工单退回「待整改」· 自动移出审批队列</span>',
+    placeholder:'填写审批不通过原因说明，子用户将收到重改通知（选填）',
+    confirmText:'确认审批不通过 · 退回待整改',cls:'reject',
+    confirm:function(sel,txt){
+      r.status='待整改';
+      RECTIFY_QUEUE.splice(curCase,1);
+      if(curCase>=RECTIFY_QUEUE.length)curCase=Math.max(0,RECTIFY_QUEUE.length-1);
+      renderCaseList();renderDocPanel();
+      showToast('审批不通过已退回（'+sel+'）：'+r.docNo+' · 工单退回「待整改」，已通知'+r.org+'院重新整改，自动移出队列（剩 '+RECTIFY_QUEUE.length+' 件待审批）','warn');
+    }});
+}
+
+/* ============ 主用户 · 页面切换 ============ */
+function mp(id){
+  document.querySelectorAll('#view-main .nav-item[data-mp]').forEach(function(n){n.classList.toggle('active',n.dataset.mp===id);});
+  document.querySelectorAll('#view-main .mpage').forEach(function(p){p.classList.toggle('on',p.id==='mp-'+id);});
+  closeDrawer();
+}
+
+/* ============ 驾驶舱 ============ */
+var COV=[['一分院',36.4],['海淀院',28.2],['石景山院',34.9],['门头沟院',43.3],['昌平院',35.9],['东城院',39.0],['二分院',34.4],['市检院',44.3],['西城院',39.6],['丰台院',33.6],['平谷院',26.9],['房山院',23.7],['三分院',31.9]];
+function renderDash(){
+  $('cov-list').innerHTML=COV.map(function(c){
+    return '<div class="cov-row"><span class="cov-name">'+c[0]+'</span><div class="cov-bar"><i style="width:'+c[1]+'%"></i></div><span class="cov-val">'+c[1]+'%</span></div>';
+  }).join('');
+  var RANK=[['01','未成年人监护干预监督模型',65],['02','民事申诉执行活动监督模型',60],['03','社区矫正脱管漏管监督模型',59],['04','食品药品安全公益诉讼监督模型',58],['05','国有土地使用权出让公益诉讼监督模型',57]];
+  $('rank-list').innerHTML=RANK.map(function(r){
+    return '<div class="rank-row"><span class="rank-no">'+r[0]+'</span><span class="rank-name">'+r[1]+'</span><span class="rank-cnt">'+r[2]+'件</span></div>';
+  }).join('');
+}
+function renderTrend(){
+  var months=['2024-03','2024-04','2024-05','2024-06','2024-07','2024-08'];
+  var S=[{v:[1105,1148,1186,1204,1226,1247],c:'#1e88e5',n:'核查总量'},
+         {v:[246,271,295,312,329,342],c:'#e53935',n:'发现异常'},
+         {v:[138,155,171,186,203,218],c:'#2bbbad',n:'已修改'}];
+  var W=560,H=170,P=30,max=1300;
+  function pt(v,i){var x=P+i*(W-P*2)/(months.length-1);var y=H-P-(v/max)*(H-P*2);return x.toFixed(1)+','+y.toFixed(1);}
+  function line(a,c){var pts=a.map(pt).join(' ');return '<polyline points="'+pts+'" fill="none" stroke="'+c+'" stroke-width="2" stroke-linejoin="round"/>'
+    +a.map(function(v,i){var xy=pt(v,i).split(',');return '<circle cx="'+xy[0]+'" cy="'+xy[1]+'" r="3" fill="'+c+'"/>';}).join('');}
+  var grid='';for(var g=0;g<=4;g++){var y=P+g*(H-P*2)/4;var val=Math.round(max-(max/4*g));
+    grid+='<line x1="'+P+'" y1="'+y+'" x2="'+(W-P)+'" y2="'+y+'" stroke="#1ea0d226"/><text x="2" y="'+(y+3)+'" font-size="8" fill="#7aa8c4">'+val+'</text>';}
+  var xl=months.map(function(m,i){var x=P+i*(W-P*2)/(months.length-1);return '<text x="'+x+'" y="'+(H-8)+'" font-size="8" fill="#7aa8c4" text-anchor="middle">'+m+'</text>';}).join('');
+  var lg=S.map(function(s,i){return '<rect x="'+(W/2-140+i*100)+'" y="4" width="10" height="4" fill="'+s.c+'"/><text x="'+(W/2-126+i*100)+'" y="9" font-size="9" fill="#3d7eab">'+s.n+'</text>';}).join('');
+  $('trend-svg').innerHTML=grid+S.map(function(s){return line(s.v,s.c);}).join('')+xl+lg;
+}
+function renderDonut(){
+  var data=[['案件类别不符',22.8,'#1e88e5'],['案件来源不符',23.9,'#e53935'],['案件模型关联不符',30.3,'#2bbbad'],['其他不符合',23.0,'#f0b429']];
+  var C=2*Math.PI*60,off=0;
+  var segs=data.map(function(d){
+    var len=C*d[1]/100;
+    var s='<circle r="60" cx="80" cy="80" fill="none" stroke="'+d[2]+'" stroke-width="22" stroke-dasharray="'+len.toFixed(1)+' '+(C-len).toFixed(1)+'" stroke-dashoffset="'+(-off).toFixed(1)+'" transform="rotate(-90 80 80)"/>';
+    off+=len;return s;
+  }).join('');
+  $('donut-svg').innerHTML=segs+'<text x="80" y="77" text-anchor="middle" font-size="13" font-weight="700" fill="#1a4f7a">342</text><text x="80" y="92" text-anchor="middle" font-size="8" fill="#7aa8c4">异常案件</text>';
+  $('donut-legend').innerHTML=data.map(function(d){
+    return '<div class="lg-row"><span class="lg-dot" style="background:'+d[2]+'"></span>'+d[0]+'<b>'+d[1]+'%</b></div>';
+  }).join('');
+}
+
+/* ============ 智能初核 ============ */
+var CHK_BATCHES=[
+  {no:'CHK-20260929-004',time:'2026-09-29 09:39:16',total:8,abn:1},
+  {no:'CHK-20260928-009',time:'2026-09-28 13:52:45',total:8,abn:1},
+  {no:'CHK-20260927-013',time:'2026-09-27 07:41:42',total:532,abn:512}
+];
+var curChk=0,chkTab='bad';
+var CHK_ROWS={
+  bad:[['DM021(2026)第1003号','刑事立案监督大数据法律监督模型','案件类别不符','—','D端','—','通州区人民检察院','2026-09-29 09:39:16']],
+  ok:[['DM021(2026)第1001号','公安派出所刑事立案监督模型','类别吻合','刑事检察','D端','正常','东城区人民检察院','2026-09-29 09:39:16'],
+      ['DM021(2026)第1002号','民事虚假诉讼监督模型','类别吻合','民事检察','D端','正常','海淀区人民检察院','2026-09-29 09:39:16'],
+      ['DM021(2026)第1004号','行政非诉执行监督模型','类别吻合','行政检察','D端','正常','朝阳区人民检察院','2026-09-29 09:39:16']]
+};
+function renderChk(){
+  $('chk-batches').innerHTML=CHK_BATCHES.map(function(b,i){
+    return '<div class="bcs-card'+(i===curChk?' active':'')+'" onclick="selChk('+i+')">'
+      +'<div class="bcs-no">'+b.no+' <span class="tag tag-g">完成</span></div>'
+      +'<div class="bcs-meta">生成时间：'+b.time+'</div>'
+      +'<div class="bcs-meta">线索总计：'+b.total+' · <b>异常：'+b.abn+'</b></div></div>';
+  }).join('');
+  var b=CHK_BATCHES[curChk];
+  $('chk-info').innerHTML='当前批次：<b>'+b.no+'</b> · 执行时间：<b>'+b.time+'</b> · 操作人：<b>——</b> · 核查范围：<b>'+b.total+' 件</b> · 核查总量：<b>'+b.total+' 件</b>';
+  $('chk-abn').textContent=b.abn;
+  $('chk-ok').textContent=b.total-b.abn;
+  $('chk-tab-bad').textContent='⚠ 类别不符（'+b.abn+'）';
+  $('chk-tab-ok').textContent='✔ 类别吻合（'+(b.total-b.abn)+'）';
+  $('chk-note').textContent='当前显示：'+b.no+' · 共 '+b.total+' 件';
+  renderChkTable();
+}
+function selChk(i){curChk=i;chkTab='bad';renderChk();}
+function chkTabSel(t){chkTab=t;
+  $('chk-tab-bad').classList.toggle('active',t==='bad');
+  $('chk-tab-ok').classList.toggle('active',t==='ok');
+  renderChkTable();}
+function renderChkTable(){
+  var rows=CHK_ROWS[chkTab];
+  var body=rows.map(function(r){
+    return '<tr><td class="mono" style="color:var(--gold)">'+r[0]+'</td><td>'+r[1]+'</td>'
+      +'<td><span class="tag '+(chkTab==='bad'?'tag-r':'tag-g')+'">'+r[2]+'</span></td>'
+      +'<td>'+r[3]+'</td><td>'+r[4]+'</td><td>'+r[5]+'</td><td>'+r[6]+'</td><td class="mono">'+r[7]+'</td>'
+      +'<td><button class="mp-btn xs" onclick="chkDetail()">查看详情</button></td></tr>';
+  }).join('');
+  $('chk-table').innerHTML='<tr><th>流水编号</th><th>应用模型</th><th>实案类别</th><th>应用类别</th><th>数据来源</th><th>线索状况</th><th>承办单位</th><th>初核时间</th><th>操作</th></tr>'+body;
+}
+function chkDetail(){showToast('原型演示：查看详情（功能占位）','warn');}
+function runChk(){showToast('原型演示：已发起智能初核，批次 '+CHK_BATCHES[curChk].no+' 执行中…');}
+
+/* ============ 汇总研判归档 ============ */
+var ARCH_ROWS=[
+  ['京06检刑诉[2024]0001号','案件类别不符','东城区人民检察院','已整改','2024-09-14','2024-08-10 10:00:00'],
+  ['京06检刑诉[2024]0002号','案件类别不符','东城区人民检察院','待审批','2024-10-02','2024-09-28 10:00:00'],
+  ['京06检刑诉[2024]0003号','案件类别不符','东城区人民检察院','待审批','2024-08-02','2024-07-21 10:00:00'],
+  ['京06检刑诉[2024]0004号','案件来源不符','东城区人民检察院','待审批','2024-10-27','2024-07-21 10:00:00'],
+  ['京06检刑诉[2024]0007号','案件来源不符','东城区人民检察院','待整改','2024-11-18','2024-11-18 10:00:00'],
+  ['京06检刑诉[2024]0009号','案件类别不符','东城区人民检察院','已整改','2024-08-03','2024-08-11 10:00:00'],
+  ['京06检刑诉[2024]0014号','案件类别不符','东城区人民检察院','待审批','2024-10-24','2024-07-12 10:00:00'],
+  ['京06检刑诉[2024]0019号','案件类别不符','东城区人民检察院','待审批','2024-08-11','2024-08-16 10:00:00'],
+  ['京06检刑诉[2024]0020号','案件来源不符','东城区人民检察院','已整改','2024-08-18','2024-08-22 10:00:00'],
+  ['京06检刑诉[2024]0021号','案件类别不符','东城区人民检察院','已整改','2024-08-16','2024-07-10 10:00:00'],
+  ['京06检刑诉[2024]0027号','案件类别不符','东城区人民检察院','已整改','2024-09-21','2024-09-29 10:00:00'],
+  ['京06检刑诉[2024]0029号','案件类别不符','东城区人民检察院','待整改','2024-11-18','2024-07-29 10:00:00'],
+  ['京06检刑诉[2024]0030号','案件来源不符','东城区人民检察院','待审批','2024-11-27','2024-08-15 10:00:00'],
+  ['京06检刑诉[2024]0031号','案件类别不符','东城区人民检察院','已整改','2024-08-15','2024-09-10 10:00:00'],
+  ['京06检刑诉[2024]0034号','案件来源不符','东城区人民检察院','待审批','2024-08-07','2024-09-25 10:00:00'],
+  ['京06检刑诉[2024]0036号','案件来源不符','东城区人民检察院','待审批','2024-09-26','2024-08-14 10:00:00'],
+  ['京06检刑诉[2024]0037号','案件来源不符','东城区人民检察院','待审批','2024-11-04','2024-09-25 10:00:00'],
+  ['京06检刑诉[2024]0038号','案件类别不符','东城区人民检察院','已整改','2024-11-27','2024-09-14 10:00:00']
+];
+function renderArch(){
+  var org=$('arch-org').value,st=$('arch-st').value,kw=$('arch-kw').value.trim();
+  var rows=ARCH_ROWS.filter(function(r){return (!org||r[2]===org)&&(!st||r[3]===st)&&(!kw||r[0].indexOf(kw)>=0);});
+  $('arch-table').innerHTML='<tr><th>案号</th><th>问题类型</th><th>责任院</th><th>处理状态</th><th>截止日期</th><th>更新时间</th></tr>'
+    +(rows.length?rows.map(function(r){
+      var tc=r[1]==='案件类别不符'?'tag-r':'tag-o';
+      var sc=r[3]==='已整改'?'tag-g':(r[3]==='待审批'?'tag-b':(r[3]==='整改中'?'tag-o':'tag-r'));
+      return '<tr><td class="mono" style="color:var(--gold)">'+r[0]+'</td><td><span class="tag '+tc+'">'+r[1]+'</span></td><td>'+r[2]+'</td><td><span class="tag '+sc+'">'+r[3]+'</span></td><td>'+r[4]+'</td><td class="mono">'+r[5]+'</td></tr>';
+    }).join(''):'<tr><td colspan="6" class="empty-tip">无匹配数据</td></tr>');
+  $('arch-count').textContent='共 '+rows.length+' 条（台账总量 89 条）';
+}
+function resetArch(){$('arch-org').selectedIndex=0;$('arch-st').selectedIndex=0;$('arch-kw').value='';renderArch();}
+
 /* ============ 初始化 ============ */
 (function init(){
   var sel=$('flt-type');
@@ -705,6 +1917,10 @@ function exportLedger(){
     var o=document.createElement('option');o.value=k;o.textContent=k;sel.appendChild(o);
   });
   renderTabs();renderTable();
+  /* 主用户视图渲染 + 默认进入身份选择入口 */
+  renderBatches();renderCaseList();renderDocPanel();
+  renderDash();renderTrend();renderDonut();renderChk();renderArch();
+  showView('index');
 })();
 </script>
 </body>
