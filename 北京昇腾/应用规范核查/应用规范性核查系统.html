@@ -531,7 +531,7 @@ nav{flex:1;padding-top:8px;overflow:hidden auto}
               <div class="rt-row"><span class="rt-label">验收比例</span><input id="rt-ratio" type="number" min="1" max="100" value="30" class="rt-input">%</div>
               <div class="rt-row"><span class="rt-label">验收上限</span><select id="rt-cap" class="rt-input"><option value="10">10 件</option><option value="50" selected>50 件</option><option value="100">100 件</option><option value="200">200 件</option></select></div>
               <button class="mp-btn primary rt-gen" onclick="genRectifyQueue()">⚡ 生成验收清单</button>
-              <div class="rt-hint" id="rt-hint">按比例从待审批工单池抽样生成审批清单；应抽件数超过上限时按上限执行</div>
+              <div class="rt-hint" id="rt-hint">按比例从已整改工单池抽样生成验收清单；应抽件数超过上限时按上限执行</div>
             </div>
             <div class="case-list" id="case-list"></div>
             <div class="case-scroll-hint">↓ 下滑加载更多 ↓</div>
@@ -761,7 +761,7 @@ nav{flex:1;padding-top:8px;overflow:hidden auto}
           <div class="panel-inner">
             <div class="arch-toolbar" style="margin-bottom:10px">
               <select class="mp-select" id="arch-org"><option value="">全局责任院</option><option>东城区人民检察院</option><option>海淀区人民检察院</option><option>朝阳区人民检察院</option></select>
-              <select class="mp-select" id="arch-st"><option value="">全局处理状态</option><option>已整改</option><option>待审批</option><option>整改中</option><option>待整改</option></select>
+              <select class="mp-select" id="arch-st"><option value="">全局处理状态</option><option>已整改</option><option>整改中</option><option>待整改</option></select>
               <input class="mp-input" id="arch-kw" placeholder="输入案号">
               <button class="mp-btn primary" onclick="renderArch()">查询</button>
               <button class="mp-btn" onclick="resetArch()">重置筛选</button>
@@ -887,8 +887,8 @@ nav{flex:1;padding-top:8px;overflow:hidden auto}
               </g>
               <g>
                 <rect x="470" y="294" width="170" height="48" rx="8" fill="#fdf1cf" stroke="#e09b00" stroke-width="0.5"/>
-                <text x="555" y="312" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#9a6b00">待审批</text>
-                <text x="555" y="330" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#b57e00">整改说明必填 ≥10字</text>
+                <text x="555" y="312" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#9a6b00">已整改</text>
+                <text x="555" y="330" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#b57e00">子用户提交 · 待主用户验收</text>
               </g>
               <line x1="210" y1="318" x2="250" y2="318" stroke="#7aa8c4" stroke-width="1.5" marker-end="url(#fsm-arrow)"/>
               <text x="231" y="306" text-anchor="middle" font-size="11" fill="#7aa8c4">开始整改</text>
@@ -898,18 +898,18 @@ nav{flex:1;padding-top:8px;overflow:hidden auto}
               <text x="470" y="378" text-anchor="middle" font-size="11" fill="#7aa8c4">转入验收队列</text>
               <g>
                 <rect x="40" y="404" width="170" height="48" rx="8" fill="#dceffb" stroke="#1a8fd0" stroke-width="0.5"/>
-                <text x="125" y="422" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#0d6eab">待审批</text>
-                <text x="125" y="440" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#3d7eab">抽样生成 · 审批队列</text>
+                <text x="125" y="422" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#0d6eab">抽样验收清单</text>
+                <text x="125" y="440" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#3d7eab">从「已整改」池按比例抽样</text>
               </g>
               <g>
                 <rect x="255" y="404" width="170" height="48" rx="8" fill="#ddf4f0" stroke="#2bbbad" stroke-width="0.5"/>
                 <text x="340" y="422" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#0c7a6e">已整改 · 归档</text>
-                <text x="340" y="440" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#2bbbad">终态 · 主用户审批通过</text>
+                <text x="340" y="440" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#2bbbad">终态 · 主用户验收通过</text>
               </g>
               <line x1="210" y1="428" x2="250" y2="428" stroke="#7aa8c4" stroke-width="1.5" marker-end="url(#fsm-arrow)"/>
-              <text x="231" y="416" text-anchor="middle" font-size="11" fill="#2bbbad">审批通过</text>
+              <text x="231" y="416" text-anchor="middle" font-size="11" fill="#2bbbad">验收通过</text>
               <path d="M70,404 C70,378 125,378 125,345" fill="none" stroke="#e53935" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#fsm-arrow)"/>
-              <text x="100" y="392" font-size="11" fill="#e53935">审批不通过 · 退回待整改</text>
+              <text x="100" y="392" font-size="11" fill="#e53935">验收不通过 · 退回待整改</text>
               <line x1="340" y1="452" x2="340" y2="481" stroke="#2bbbad" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#fsm-arrow)"/>
               <text x="352" y="470" font-size="11" fill="#2bbbad">同步台账</text>
               <rect x="20" y="486" width="640" height="74" rx="12" fill="#f4fbff" stroke="#b5e3f4" stroke-width="0.5"/>
@@ -928,10 +928,10 @@ nav{flex:1;padding-top:8px;overflow:hidden auto}
               <tr><td rowspan="2">案件 · 终核</td><td><span class="tag tag-b">待复核</span></td><td>合规通过</td><td>主用户</td><td><span class="tag tag-g">合规 · 直接归档</span>（终态）</td><td>确认模态 · 意见选填</td></tr>
               <tr><td><span class="tag tag-b">待复核</span></td><td>判定违规</td><td>主用户</td><td><span class="tag tag-r">违规</span> → 生成整改工单交办承办院</td><td>必选 4 类问题类别之一</td></tr>
               <tr><td rowspan="2">工单 · 整改</td><td><span class="tag tag-r">待整改</span></td><td>开始整改</td><td>子用户</td><td><span class="tag tag-o">整改中</span></td><td>仅「待整改」状态可触发</td></tr>
-              <tr><td><span class="tag tag-o">整改中</span></td><td>提交处置</td><td>子用户</td><td><span class="tag tag-b">待审批</span></td><td>整改说明必填 ≥10 字</td></tr>
-              <tr><td rowspan="3">工单 · 审批</td><td><span class="tag tag-b">待审批池</span></td><td>生成验收清单</td><td>主用户</td><td><span class="tag tag-b">待审批</span>（抽样队列）</td><td>按验收比例抽样；应抽超过上限按上限（10/50/100/200）</td></tr>
-              <tr><td><span class="tag tag-b">待审批</span></td><td>审批通过</td><td>主用户</td><td><span class="tag tag-g">已整改</span>（终态 · 同步台账）</td><td>审批确认后自动移出队列</td></tr>
-              <tr><td><span class="tag tag-b">待审批</span></td><td>审批不通过</td><td>主用户</td><td><span class="tag tag-r">待整改</span>（退回子用户重新整改）</td><td>必选 3 类原因之一 · 审批后自动移出</td></tr>
+              <tr><td><span class="tag tag-o">整改中</span></td><td>提交处置</td><td>子用户</td><td><span class="tag tag-g">已整改</span></td><td>整改说明必填 ≥10 字</td></tr>
+              <tr><td rowspan="3">工单 · 验收</td><td><span class="tag tag-g">已整改</span>池</td><td>生成验收清单</td><td>主用户</td><td>抽样验收队列</td><td>按验收比例抽样；应抽超过上限按上限（10/50/100/200）</td></tr>
+              <tr><td><span class="tag tag-g">已整改</span>（队列中）</td><td>验收通过</td><td>主用户</td><td><span class="tag tag-g">已整改</span>（终态 · 归档同步台账）</td><td>验收确认后自动移出队列</td></tr>
+              <tr><td><span class="tag tag-g">已整改</span>（队列中）</td><td>验收不通过</td><td>主用户</td><td><span class="tag tag-r">待整改</span>（退回子用户重新整改）</td><td>必选 3 类原因之一 · 验收后自动移出</td></tr>
             </table>
             <div class="mp-note" style="margin-top:10px">关键设计：工单统一四态「待整改 / 整改中 / 待审批 / 已整改」· 子用户「待审批」= 主用户「整改验收」队列（同一节点两侧视角）· 两个终态（合规 / 已整改）共同汇入汇总台账 · 审批不通过不建新单，回到原工单「待整改」，一单一案一号到底</div>
           </div>
@@ -1074,8 +1074,8 @@ nav{flex:1;padding-top:8px;overflow:hidden auto}
 /* =====================================================
  * 数据：上级判定违规后交办至朝阳院的整改工单（演示数据）
  * 状态机（下级视角）：
- *   PENDING 待整改 → IN_PROGRESS 整改中 → SUBMITTED 待审批 → CLOSED 已整改（主用户审批通过 · 终态）
- * 下级仅可操作：PENDING→IN_PROGRESS（开始整改）、IN_PROGRESS→SUBMITTED（提交处置）；主用户审批不通过退回 PENDING 待整改
+ *   PENDING 待整改 → IN_PROGRESS 整改中 → RECTIFIED 已整改（子用户提交 · 主用户验收通过后归档为终态）
+ * 下级仅可操作：PENDING→IN_PROGRESS（开始整改）、IN_PROGRESS→RECTIFIED（提交处置）；主用户验收不通过由「已整改」退回 PENDING 待整改
  * ===================================================== */
 var CURRENT_USER = { name:'赵志强', org:'朝阳区人民检察院', short:'朝阳院', role:'承办员' };
 var SUPERVISORS = { 'sjhc1':'张明远（市院）', 'sjhc2':'李慧芳（市院）', 'fyhc1':'王建国（一分院）' };
@@ -1127,53 +1127,53 @@ var WORK_ORDERS = [
     actual:'控告申诉检察', expected:'民事检察', supPoint:'对民事执行活动违法情形进行监督',
     source:'线索平台案件', judgeTime:'2026-09-23 09:33', judgeBy:'sjhc2',
     judgeNote:'经复核，案件实际监督事项与模型应然监督点不匹配，已写入整改台账。',
-    status:'SUBMITTED', assignTime:'2026-09-23 09:40', startTime:'2026-09-24 10:12', submitTime:'2026-10-06 16:20',
+    status:'RECTIFIED', assignTime:'2026-09-23 09:40', startTime:'2026-09-24 10:12', submitTime:'2026-10-06 16:20',
     rectNote:'已重新核对案件卷宗，纠正系统类别标注错误，补充民事执行监督审查报告，并同步完善案件受理台账。' },
 
   { id:'WG-2026-0255', caseNo:'京08检刑诉[2026]0102号', model:'涉黑涉恶案件财产刑执行监督模型', problemType:'案件来源不符',
     actual:'刑事执行检察', expected:'刑事执行检察', supPoint:'对涉黑涉恶案件财产刑执行活动进行监督',
     source:'业务系统案件', judgeTime:'2026-09-21 14:05', judgeBy:'sjhc1',
     judgeNote:'经复核，该案数据来源与模型线索归集要求不符，已写入整改台账。',
-    status:'SUBMITTED', assignTime:'2026-09-21 14:10', startTime:'2026-09-22 09:30', submitTime:'2026-10-05 11:45',
+    status:'RECTIFIED', assignTime:'2026-09-21 14:10', startTime:'2026-09-22 09:30', submitTime:'2026-10-05 11:45',
     rectNote:'已按模型归集规范重新对接线索平台数据源，完成该案数据回溯比对，差异清单已上报承办部门负责人复核。' },
 
   { id:'WG-2026-0248', caseNo:'京08检行监[2026]0117号', model:'行政争议实质性化解监督模型', problemType:'案件类别不符',
     actual:'行政检察', expected:'控告申诉检察', supPoint:'对符合条件的行政争议开展实质性化解',
     source:'线索平台案件', judgeTime:'2026-09-18 10:50', judgeBy:'sjhc2',
     judgeNote:'经复核，案件实际监督事项与模型应然监督点不匹配，已写入整改台账。',
-    status:'SUBMITTED', assignTime:'2026-09-18 11:00', startTime:'2026-09-19 14:20', submitTime:'2026-10-03 15:08',
+    status:'RECTIFIED', assignTime:'2026-09-18 11:00', startTime:'2026-09-19 14:20', submitTime:'2026-10-03 15:08',
     rectNote:'已完成案件类别更正与重新关联，组织召开个案评析会，形成整改情况说明并附佐证卷宗三册。' },
 
   { id:'WG-2026-0230', caseNo:'京08检公诉[2026]0062号', model:'食品药品安全公益诉讼模型', problemType:'案件来源不符',
     actual:'公益诉讼检察', expected:'公益诉讼检察', supPoint:'对食品药品安全领域侵害公益行为进行监督',
     source:'业务系统案件', judgeTime:'2026-09-15 09:12', judgeBy:'sjhc1',
     judgeNote:'经复核，该案数据来源与模型线索归集要求不符，已写入整改台账。',
-    status:'SUBMITTED', assignTime:'2026-09-15 09:20', startTime:'2026-09-16 10:00', submitTime:'2026-09-28 17:32',
+    status:'RECTIFIED', assignTime:'2026-09-15 09:20', startTime:'2026-09-16 10:00', submitTime:'2026-09-28 17:32',
     rectNote:'已补录线索平台来源信息，完成数据源切换与比对验证，形成整改报告。', reviewTime:'2026-10-07 11:20' },
 
   { id:'WG-2026-0211', caseNo:'京08检刑诉[2026]0088号', model:'司法救助线索筛查模型', problemType:'案件模型关联不符',
     actual:'控告申诉检察', expected:'控告申诉检察', supPoint:'对符合司法救助条件的案件线索进行筛查',
     source:'线索平台案件', judgeTime:'2026-09-11 16:28', judgeBy:'sjhc2',
     judgeNote:'经复核，该案与所用监督模型的关联关系不实，已写入整改台账。',
-    status:'CLOSED', assignTime:'2026-09-11 16:35', startTime:'2026-09-12 09:15', submitTime:'2026-09-24 14:40',
+    status:'RECTIFIED', assignTime:'2026-09-11 16:35', startTime:'2026-09-12 09:15', submitTime:'2026-09-24 14:40',
     rectNote:'已解除错误模型关联，重新按应然监督点挂接司法救助线索筛查模型，并完成历史数据更正。',
-    reviewTime:'2026-09-26 10:15', approveTime:'2026-09-28 09:00', closeTime:'2026-09-28 09:05', approveNote:'整改到位，佐证材料齐全，审批通过，同意归档。' },
+    reviewTime:'2026-09-26 10:15', approveTime:'2026-09-28 09:00', closeTime:'2026-09-28 09:05', approveNote:'整改到位，佐证材料齐全，验收通过，同意归档。' },
 
   { id:'WG-2026-0196', caseNo:'京08检民诉[2026]0155号', model:'民事虚假诉讼监督模型', problemType:'案件类别不符',
     actual:'刑事检察', expected:'民事检察', supPoint:'对民事调解书、判决书涉及虚假诉讼进行监督',
     source:'线索平台案件', judgeTime:'2026-09-08 11:40', judgeBy:'sjhc1',
     judgeNote:'经复核，案件实际监督事项与模型应然监督点不匹配，已写入整改台账。',
-    status:'CLOSED', assignTime:'2026-09-08 11:48', startTime:'2026-09-09 10:30', submitTime:'2026-09-20 16:00',
+    status:'RECTIFIED', assignTime:'2026-09-08 11:48', startTime:'2026-09-09 10:30', submitTime:'2026-09-20 16:00',
     rectNote:'已完成案件类别更正，补充虚假诉讼监督审查意见书，同步更新统一业务应用系统案卡信息。',
-    reviewTime:'2026-09-22 14:10', approveTime:'2026-09-24 09:30', closeTime:'2026-09-24 09:35', approveNote:'整改情况属实，审批通过，准予归档。' },
+    reviewTime:'2026-09-22 14:10', approveTime:'2026-09-24 09:30', closeTime:'2026-09-24 09:35', approveNote:'整改情况属实，验收通过，准予归档。' },
 
   { id:'WG-2026-0182', caseNo:'京08检执监[2026]0073号', model:'社区矫正脱管漏管监督模型', problemType:'其他不符合',
     actual:'刑事执行检察', expected:'刑事执行检察', supPoint:'对社区矫正人员脱管、漏管问题进行监督',
     source:'业务系统案件', judgeTime:'2026-09-05 10:22', judgeBy:'fyhc1',
     judgeNote:'经复核，该案存在监督文书未入卷等其他不符合规范情形，已写入整改台账。',
-    status:'CLOSED', assignTime:'2026-09-05 10:30', startTime:'2026-09-06 09:20', submitTime:'2026-09-16 15:26',
+    status:'RECTIFIED', assignTime:'2026-09-05 10:30', startTime:'2026-09-06 09:20', submitTime:'2026-09-16 15:26',
     rectNote:'已补齐监督文书并完成入卷归档，对承办检察官开展卷宗规范专项自查。',
-    reviewTime:'2026-09-18 10:00', approveTime:'2026-09-19 09:10', closeTime:'2026-09-19 09:15', approveNote:'整改完成质量良好，审批通过，同意归档。' }
+    reviewTime:'2026-09-18 10:00', approveTime:'2026-09-19 09:10', closeTime:'2026-09-19 09:15', approveNote:'整改完成质量良好，验收通过，同意归档。' }
 ];
 
 /* 近八周趋势（新收/闭环） —— 已随图表弱化移除 */
@@ -1182,10 +1182,9 @@ var WORK_ORDERS = [
 var STATUS_META = {
   PENDING:        { label:'待整改',   tag:'tag-r', flow:0, css:'var(--red)' },
   IN_PROGRESS:    { label:'整改中',   tag:'tag-o', flow:1, css:'var(--gold-bright)' },
-  SUBMITTED:      { label:'待审批',   tag:'tag-b', flow:2, css:'var(--blue-electric)' },
-  CLOSED:         { label:'已整改',   tag:'tag-g', flow:3, css:'var(--green-glow)' }
+  RECTIFIED:      { label:'已整改',   tag:'tag-g', flow:2, css:'var(--green-glow)' }
 };
-var FLOW_STEPS = ['待整改','整改中','待审批','已整改'];
+var FLOW_STEPS = ['待整改','整改中','已整改'];
 var PROBLEM_COLORS = {'案件类别不符':'var(--red-glow)','案件来源不符':'var(--gold-bright)','案件模型关联不符':'var(--blue-electric)','其他不符合':'var(--cyan)'};
 
 /* ============ 工具 ============ */
@@ -1230,17 +1229,15 @@ var TAB_DEFS=[
   {key:'',           label:'全部',       cls:''},
   {key:'PENDING',    label:'待整改',     cls:'danger'},
   {key:'IN_PROGRESS',label:'整改中',     cls:'gold'},
-  {key:'SUBMITTED',  label:'待审批', cls:'blue'},
-  {key:'CLOSED',     label:'已整改',     cls:'green'}
+  {key:'RECTIFIED',  label:'已整改',     cls:'green'}
 ];
 function renderTabs(){
-  var cnt={ALL:0,PENDING:0,IN_PROGRESS:0,SUBMITTED:0,CLOSED:0};
+  var cnt={ALL:0,PENDING:0,IN_PROGRESS:0,RECTIFIED:0};
   WORK_ORDERS.forEach(function(w){
     cnt.ALL++;
     if(w.status==='PENDING')cnt.PENDING++;
     else if(w.status==='IN_PROGRESS')cnt.IN_PROGRESS++;
-    else if(w.status==='SUBMITTED')cnt.SUBMITTED++;
-    else if(w.status==='CLOSED')cnt.CLOSED++;
+    else if(w.status==='RECTIFIED')cnt.RECTIFIED++;
   });
   var html='';
   TAB_DEFS.forEach(function(t){
@@ -1249,7 +1246,7 @@ function renderTabs(){
       +'" onclick="switchStatusTab(\''+t.key+'\')">'+t.label+' <span class="cnt">'+n+'</span></div>';
   });
   $('status-tabs').innerHTML=html;
-  $('nav-badge').textContent=cnt.PENDING+cnt.IN_PROGRESS+cnt.SUBMITTED;
+  $('nav-badge').textContent=cnt.PENDING+cnt.IN_PROGRESS+cnt.RECTIFIED;
 }
 function switchStatusTab(key){
   currentStatusFilter=(currentStatusFilter===key)?'':key;
@@ -1321,22 +1318,17 @@ function openDrawer(id){
     var meta='';
     if(i===0) meta='<b>'+w.judgeTime+'</b><br>上级判定 · '+SUPERVISORS[w.judgeBy]+'<br>交办至'+CURRENT_USER.short;
     if(i===1){
-      if(w.submitTime) meta='<b>'+w.submitTime+'</b><br>承办员 '+CURRENT_USER.name+' 提交处置';
-      else if(w.startTime) meta='<b>'+w.startTime+'</b><br>承办员 '+CURRENT_USER.name+' 开始整改';
-      else meta='待整改 · '+CURRENT_USER.name;
+      if(w.startTime) meta='<b>'+w.startTime+'</b><br>承办员 '+CURRENT_USER.name+' 开始整改';
+      else meta='待 '+CURRENT_USER.name+' 开始整改';
     }
     if(i===2){
-      if(w.approveTime) meta='<b>'+w.approveTime+'</b><br>'+SUPERVISORS[w.judgeBy]+' 审批通过';
-      else if(w.submitTime) meta='等待主用户审批';
-      else meta='—';
-    }
-    if(i===3){
-      if(w.closeTime) meta='<b>'+w.closeTime+'</b><br>已整改 · 归档';
+      if(w.approveTime) meta='<b>'+w.approveTime+'</b><br>'+SUPERVISORS[w.judgeBy]+' 验收通过 · 归档';
+      else if(w.submitTime) meta='<b>'+w.submitTime+'</b><br>已提交 · 待主用户验收';
       else meta='—';
     }
     nodes+='<div class="flow-node '+cls+'">'
       +'<div class="fn-dot">'+dot+'</div>'
-      +'<div class="fn-label">'+(i===flow&&w.status!=='CLOSED'?s+'（当前）':s)+'</div>'
+      +'<div class="fn-label">'+(i===flow?s+'（当前）':s)+'</div>'
       +'<div class="fn-meta">'+meta+'</div>'
       +'</div>';
   });
@@ -1346,11 +1338,10 @@ function openDrawer(id){
   trace+=traceItem(w.assignTime,'系统生成整改工单 <b>'+w.id+'</b>，分派至'+CURRENT_USER.short+'承办员 '+CURRENT_USER.name,true);
   if(w.startTime) trace+=traceItem(w.startTime,CURRENT_USER.name+' 开始整改（状态 → 整改中）',true);
   else trace+=traceItem('','待 '+CURRENT_USER.name+' 开始整改',false);
-  if(w.submitTime) trace+=traceItem(w.submitTime,CURRENT_USER.name+' 提交处置结果（状态 → 待审批，转主用户审批）',true);
+  if(w.submitTime) trace+=traceItem(w.submitTime,CURRENT_USER.name+' 提交处置结果（状态 → 已整改，转主用户验收）',true);
   else if(w.startTime) trace+=traceItem('','待 '+CURRENT_USER.name+' 提交处置结果',false);
-  if(w.approveTime) trace+=traceItem(w.approveTime,'主用户审批通过：'+(w.approveNote||'整改通过'),true);
-  else if(w.submitTime) trace+=traceItem('','等待主用户审批（审批不通过将退回待整改）',false);
-  if(w.closeTime) trace+=traceItem(w.closeTime,'工单已整改 · 归档',true);
+  if(w.approveTime) trace+=traceItem(w.approveTime,'主用户验收通过：'+(w.approveNote||'整改通过，同意归档'),true);
+  else if(w.submitTime) trace+=traceItem('','等待主用户验收（验收不通过将退回待整改）',false);
 
   /* 操作区（下级仅可操作前两步） */
   var actionHtml='';
@@ -1363,24 +1354,26 @@ function openDrawer(id){
   }else if(w.status==='IN_PROGRESS'){
     actionHtml='<div class="action-card acting">'
       +'<div class="ac-title">🛠️ 整改操作 <span class="ac-hint">当前：整改中 · 开始于 '+w.startTime+'</span></div>'
-      +'<div class="rw-textarea-label">整改说明（提交后转主用户审批，必填）</div>'
+      +'<div class="rw-textarea-label">整改说明（提交后转主用户验收，必填）</div>'
       +'<textarea class="rw-textarea" id="rect-note" placeholder="请填写整改措施、完成情况及佐证材料说明…"></textarea>'
-      +'<button class="rw-btn rw-btn-submit" onclick="submitRectify(\''+w.id+'\')">提交处置结果（状态 → 待审批）</button>'
+      +'<button class="rw-btn rw-btn-submit" onclick="submitRectify(\''+w.id+'\')">提交处置结果（状态 → 已整改）</button>'
       +'</div>';
-  }else if(w.status==='SUBMITTED'){
-    actionHtml='<div class="action-card waiting">'
-      +'<div class="ac-title">⏳ 等待审批 <span class="ac-hint">提交时间：'+w.submitTime+'</span></div>'
-      +'<div class="readonly-banner">ℹ️ 已提交处置结果，工单处于「待审批」状态，等待'+SUPERVISORS[w.judgeBy]+'审批。审批不通过时工单将退回「待整改」，需重新整改。</div>'
-      +'<div class="rw-textarea-label" style="margin-top:10px">已提交的整改说明</div>'
-      +'<div class="judge-quote" style="border-left-color:var(--green-glow);background:#00e67608">'+esc(w.rectNote||'—')+'</div>'
-      +'</div>';
-  }else{
-    actionHtml='<div class="action-card closed">'
-      +'<div class="ac-title">✅ 已整改 <span class="ac-hint">审批通过时间：'+w.closeTime+'</span></div>'
-      +'<div class="readonly-banner" style="border-color:#00e67666;color:var(--green-glow)">✔ 审批意见：'+esc(w.approveNote||'整改通过，同意归档')+'</div>'
-      +'<div class="rw-textarea-label" style="margin-top:10px">已提交的整改说明</div>'
-      +'<div class="judge-quote" style="border-left-color:var(--green-glow);background:#00e67608">'+esc(w.rectNote||'—')+'</div>'
-      +'</div>';
+  }else if(w.status==='RECTIFIED'){
+    if(w.approveTime){
+      actionHtml='<div class="action-card closed">'
+        +'<div class="ac-title">✅ 已整改 · 验收通过 <span class="ac-hint">验收时间：'+w.approveTime+'</span></div>'
+        +'<div class="readonly-banner" style="border-color:#00e67666;color:var(--green-glow)">✔ 验收意见：'+esc(w.approveNote||'整改通过，同意归档')+'</div>'
+        +'<div class="rw-textarea-label" style="margin-top:10px">已提交的整改说明</div>'
+        +'<div class="judge-quote" style="border-left-color:var(--green-glow);background:#00e67608">'+esc(w.rectNote||'—')+'</div>'
+        +'</div>';
+    }else{
+      actionHtml='<div class="action-card waiting">'
+        +'<div class="ac-title">⏳ 等待验收 <span class="ac-hint">提交时间：'+w.submitTime+'</span></div>'
+        +'<div class="readonly-banner">ℹ️ 已提交处置结果，工单处于「已整改」状态，等待主用户验收。验收不通过时工单将退回「待整改」，需重新整改。</div>'
+        +'<div class="rw-textarea-label" style="margin-top:10px">已提交的整改说明</div>'
+        +'<div class="judge-quote" style="border-left-color:var(--green-glow);background:#00e67608">'+esc(w.rectNote||'—')+'</div>'
+        +'</div>';
+    }
   }
 
   body.innerHTML=
@@ -1408,7 +1401,7 @@ function openDrawer(id){
     +'</div>'
     +'<div class="judge-quote" style="margin-top:6px"><b>复核意见：</b>'+w.judgeNote+'</div>'
 
-    +'<div class="sec-title" style="margin-top:16px"><span class="st-ico">③</span> 处理进度 · 工单流转（待整改 → 整改中 → 待审批 → 已整改）</div>'
+    +'<div class="sec-title" style="margin-top:16px"><span class="st-ico">③</span> 处理进度 · 工单流转（待整改 → 整改中 → 已整改 · 验收不通过退回待整改）</div>'
     +'<div class="flow-track">'+nodes+'</div>'
     +'<div class="sec-title" style="margin-top:10px;padding-top:10px;border-top:1px dashed var(--hud-line)">流转留痕明细</div>'
     +'<div class="trace-list">'+trace+'</div>'
@@ -1447,8 +1440,8 @@ function submitRectify(id){
   var note=$('rect-note').value.trim();
   if(!note){showToast('请填写整改说明后再提交','err');return;}
   if(note.length<10){showToast('整改说明过于简单，请补充整改措施与佐证情况（不少于10字）','err');return;}
-  w.status='SUBMITTED';w.submitTime=nowStr();w.rectNote=note;
-  showToast('处置结果已提交：'+w.caseNo+'（状态 → 待审批，等待主用户审批）');
+  w.status='RECTIFIED';w.submitTime=nowStr();w.rectNote=note;
+  showToast('处置结果已提交：'+w.caseNo+'（状态 → 已整改，等待主用户验收）');
   refreshAll();openDrawer(id);
 }
 function refreshAll(){renderTabs();renderTable();}
@@ -1511,20 +1504,20 @@ var REVIEW_CASES=[
    cmp:{actual:'未成年人检察',mcat:'未成年人检察',src:'业务系统案件',srcLine:'ALIY_MC：BIZ_SYSTEM',catBad:1,srcBad:0}}
 ];
 var curCase=0,curScope='full';
-/* 整改验收：待审批工单池（子用户已提交处置）+ 按比例/上限抽样的审批队列 */
+/* 整改验收：已整改工单池（子用户已提交处置）+ 按比例/上限抽样的验收队列 */
 var RECTIFY_POOL=[
   {no:'060007号',model:'食品药品安全公益诉讼模型',org:'海淀',docNo:'京06检公诉[2024]0007号',
    problem:'案件类别不符',submitBy:'赵志强',submitTime:'2026-10-18 16:42',
    rectify:'已重新核定案件类别为"公益诉讼检察"，同步更正业务系统登记信息，并修正该模型的类别映射配置，附系统更正前后截图。',
-   files:['情况说明_海淀院.pdf','系统更正前后截图.png'],status:'待审批'},
+   files:['情况说明_海淀院.pdf','系统更正前后截图.png'],status:'已整改'},
   {no:'060013号',model:'司法救助线索筛查模型',org:'门头沟',docNo:'京06检刑诉[2024]0013号',
    problem:'案件类别不符',submitBy:'刘晓婷',submitTime:'2026-10-17 11:20',
    rectify:'案件类别与数据来源均已更正：类别修正为刑事检察，数据来源由业务系统案件改为线索平台案件，双字段已同步回传核验。',
-   files:['整改报告_门头沟院.pdf','B表更正记录.xlsx'],status:'待审批'},
+   files:['整改报告_门头沟院.pdf','B表更正记录.xlsx'],status:'已整改'},
   {no:'060002号',model:'民事虚假诉讼监督模型',org:'门头沟',docNo:'京06检民诉[2024]0002号',
    problem:'案件来源不符',submitBy:'赵志强',submitTime:'2026-10-16 09:05',
    rectify:'数据来源字段已按归集要求更正为线索平台案件，并通过 B 表重新提交核验，机器比对结果：来源吻合。',
-   files:['更正后B表.xlsx'],status:'待审批'}
+   files:['更正后B表.xlsx'],status:'已整改'}
 ];
 (function seedRectifyPool(){
   var orgs=['东城','海淀','朝阳','丰台','石景山','通州','房山','大兴','昌平','延庆'];
@@ -1544,7 +1537,7 @@ var RECTIFY_POOL=[
       no:'0'+(6010+i*3)+'号',model:model,org:org,docNo:'京06检刑诉[2024]'+String(100+i).padStart(4,'0')+'号',
       problem:prob,submitBy:names[i%names.length],submitTime:'2026-10-'+(10+i%10)+' '+times[i%4],
       rectify:rectTexts[prob],
-      files:['整改报告_'+org+'院.pdf','更正后B表.xlsx'],status:'待审批'
+      files:['整改报告_'+org+'院.pdf','更正后B表.xlsx'],status:'已整改'
     });
   }
 })();
@@ -1559,22 +1552,22 @@ function genRectifyQueue(){
   var n=Math.min(raw,cap);
   var idx=RECTIFY_POOL.map(function(_,i){return i;});
   for(var i=idx.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=idx[i];idx[i]=idx[j];idx[j]=t;}
-  RECTIFY_QUEUE=idx.slice(0,n).map(function(i){RECTIFY_POOL[i].status='待审批';return RECTIFY_POOL[i];});
+  RECTIFY_QUEUE=idx.slice(0,n).map(function(i){RECTIFY_POOL[i].status='已整改';return RECTIFY_POOL[i];});
   curCase=0;
   renderCaseList();renderDocPanel();
-  showToast('已生成验收清单：应抽 '+raw+' 件'+(over?'，超过上限 '+cap+'，按上限执行':'')+' · 实抽 '+n+' 件（待审批池 '+total+' 件）');
+  showToast('已生成验收清单：应抽 '+raw+' 件'+(over?'，超过上限 '+cap+'，按上限执行':'')+' · 实抽 '+n+' 件（已整改池 '+total+' 件）');
 }
 function curCaseArr(){return curScope==='rectify'?RECTIFY_QUEUE:REVIEW_CASES;}
 function renderCaseList(){
   if(curScope==='rectify'){
-    $('case-count').textContent='待审批 '+RECTIFY_QUEUE.length+' 件';
+    $('case-count').textContent='待验收 '+RECTIFY_QUEUE.length+' 件';
     if(!RECTIFY_QUEUE.length){
       $('case-list').innerHTML='<div class="empty-tip">尚未生成验收清单<br>设置验收比例 / 上限后<br>点击「生成验收清单」</div>';
       return;
     }
     $('case-list').innerHTML=RECTIFY_QUEUE.map(function(c,i){
       return '<div class="case-item'+(i===curCase?' sel':'')+'" onclick="selCase('+i+')">'
-        +'<div class="ci-top"><span>'+c.no+'</span><span class="tag tag-b">待审批</span></div>'
+        +'<div class="ci-top"><span>'+c.no+'</span><span class="tag tag-g">已整改</span></div>'
         +'<div class="ci-sub">'+c.model+' · '+c.org+'院</div>'
         +'<div class="ci-sub" style="color:var(--gold-bright)">'+c.problem+' · '+c.submitTime+'</div></div>';
     }).join('');
@@ -1601,24 +1594,24 @@ function switchScope(s){
 }
 function tagCls(c){return c.tag==='合规'?'tag-g':(c.tag==='违规'?'tag-r':'tag-b');}
 function renderDocPanel(){
-  /* —— 整改验收：抽样研判队列（生成后逐条研判，研判完成自动移出） —— */
+  /* —— 整改验收：从已整改池抽样生成清单，逐条验收，验收后自动移出 —— */
   if(curScope==='rectify'){
     var r=RECTIFY_QUEUE[curCase];
     if(!r){
-      $('doc-head').innerHTML='<span class="doc-model">整改验收 · 抽样审批</span>';
+      $('doc-head').innerHTML='<span class="doc-model">整改验收 · 抽样清单</span>';
       $('doc-paper').className='rc-paper';
       $('doc-paper').innerHTML='<div class="empty-tip">尚未生成验收清单<br>在左侧设置验收比例与上限，点击「生成验收清单」</div>';
       $('cmp-cat-title').innerHTML='① 问题回顾 <span class="panel-actions"><span class="cmp-src">原终核结论</span></span>';
       $('cmp-cat').innerHTML='<div class="empty-tip">待生成</div>';
       $('cmp-src-title').innerHTML='② 整改核验 <span class="panel-actions"><span class="cmp-src">子用户提交</span></span>';
       $('cmp-src').innerHTML='<div class="empty-tip">待生成</div>';
-      $('judge-title').innerHTML='③ 审批判定 <span class="panel-actions"><span class="cmp-src">最终结论</span></span>';
+      $('judge-title').innerHTML='③ 验收判定 <span class="panel-actions"><span class="cmp-src">最终结论</span></span>';
       $('judge-btns').innerHTML='<div class="empty-tip">待生成</div>';
       return;
     }
-    var stCls='tag-b';
+    var stCls='tag-g';
     $('doc-head').innerHTML='<span class="doc-title mono">'+r.docNo+'</span>'
-      +'<span class="tag '+stCls+'">待审批</span>'
+      +'<span class="tag '+stCls+'">已整改</span>'
       +'<span class="doc-model">'+r.model+' · '+r.org+'院</span>';
     $('doc-paper').className='rc-paper';
     $('doc-paper').innerHTML='<div style="font-weight:700;font-size:13px;margin-bottom:8px">整改处置提交（子用户 · 违规处置工作台）</div>'
@@ -1631,15 +1624,15 @@ function renderDocPanel(){
     $('cmp-cat').innerHTML='<div class="cmp-row"><span class="k">终核结论</span><span class="v" style="color:var(--red-glow)">判定违规</span></div>'
       +'<div class="cmp-row"><span class="k">问题类别</span><span class="v">'+r.problem+'</span></div>'
       +'<div class="cmp-row"><span class="k">交办批次</span><span class="v mono">REV-20260615-004</span></div>'
-      +'<div class="cmp-result bad">待审批 · 等待主用户审批</div>';
+      +'<div class="cmp-result bad">已整改 · 等待主用户验收</div>';
     $('cmp-src-title').innerHTML='② 整改核验 <span class="panel-actions"><span class="cmp-src">子用户提交</span></span>';
     $('cmp-src').innerHTML='<div class="cmp-row"><span class="k">提交人</span><span class="v">'+r.submitBy+'</span></div>'
       +'<div class="cmp-row"><span class="k">提交时间</span><span class="v mono">'+r.submitTime+'</span></div>'
       +'<div class="cmp-row"><span class="k">证明材料</span><span class="v">'+r.files.length+' 份</span></div>'
-      +'<div class="cmp-result good">已提交 · 待主用户审批</div>';
-    $('judge-title').innerHTML='③ 审批判定 <span class="panel-actions"><span class="cmp-src">最终结论 · 审批后自动移出队列</span></span>';
-    $('judge-btns').innerHTML='<button class="judge-btn pass" onclick="acceptRectify()">审批通过</button>'
-      +'<button class="judge-btn back" onclick="rectifyBack()">审批不通过 · 退回</button>';
+      +'<div class="cmp-result good">已提交 · 待主用户验收</div>';
+    $('judge-title').innerHTML='③ 验收判定 <span class="panel-actions"><span class="cmp-src">最终结论 · 验收后自动移出队列</span></span>';
+    $('judge-btns').innerHTML='<button class="judge-btn pass" onclick="acceptRectify()">验收通过</button>'
+      +'<button class="judge-btn back" onclick="rectifyBack()">验收不通过 · 退回</button>';
     return;
   }
   /* —— 全量 / 抽样复核：机器初核比对 + 人工终核 —— */
@@ -1749,36 +1742,36 @@ function judgeCase(t){
 /* ============ 整改验收 ============ */
 function acceptRectify(){
   var r=RECTIFY_QUEUE[curCase];
-  if(!r){showToast('请先生成验收清单，再逐条审批','warn');return;}
-  openModal({title:'整改验收 · 审批通过',
+  if(!r){showToast('请先生成验收清单，再逐条验收','warn');return;}
+  openModal({title:'整改验收 · 验收通过',
     caseHTML:'案件：<b>'+r.docNo+'</b> · 提交人：'+r.submitBy+'（'+r.org+'院） · 原问题：'+r.problem,
-    org:'流转去向<span style="color:var(--green-glow)">工单已整改（终态）· 同步至汇总归档台账 · 自动移出审批队列</span>',
-    placeholder:'填写审批意见（选填）',
-    confirmText:'确认审批通过',cls:'pass',
+    org:'流转去向<span style="color:var(--green-glow)">工单维持「已整改」（终态）· 归档并同步至汇总台账 · 自动移出验收队列</span>',
+    placeholder:'填写验收意见（选填）',
+    confirmText:'确认验收通过',cls:'pass',
     confirm:function(sel,txt){
       r.status='已整改';
       RECTIFY_QUEUE.splice(curCase,1);
       if(curCase>=RECTIFY_QUEUE.length)curCase=Math.max(0,RECTIFY_QUEUE.length-1);
       renderCaseList();renderDocPanel();
-      showToast('审批通过：'+r.docNo+' · 工单已整改并同步至汇总归档台账，自动移出队列（剩 '+RECTIFY_QUEUE.length+' 件待审批）'+(txt?' · 意见：'+txt:''));
+      showToast('验收通过：'+r.docNo+' · 工单「已整改」归档并同步至汇总归档台账，自动移出队列（剩 '+RECTIFY_QUEUE.length+' 件待验收）'+(txt?' · 意见：'+txt:''));
     }});
 }
 function rectifyBack(){
   var r=RECTIFY_QUEUE[curCase];
-  if(!r){showToast('请先生成验收清单，再逐条审批','warn');return;}
-  openModal({title:'整改验收 · 审批不通过',
+  if(!r){showToast('请先生成验收清单，再逐条验收','warn');return;}
+  openModal({title:'整改验收 · 验收不通过',
     caseHTML:'案件：<b>'+r.docNo+'</b> · 提交人：'+r.submitBy+'（'+r.org+'院） · 原问题：'+r.problem,
-    optsLabel:'审批不通过原因（单选）',
+    optsLabel:'验收不通过原因（单选）',
     opts:[['整改不到位','整改措施未解决问题'],['材料不全','证明材料缺失，需补交'],['类别仍不符','更正后类别仍不吻合']],
-    org:'流转去向<span>'+r.org+'人民检察院 · 违规处置工作台 · 工单退回「待整改」· 自动移出审批队列</span>',
-    placeholder:'填写审批不通过原因说明，子用户将收到重改通知（选填）',
-    confirmText:'确认审批不通过 · 退回待整改',cls:'reject',
+    org:'流转去向<span>'+r.org+'人民检察院 · 违规处置工作台 · 工单由「已整改」退回「待整改」· 自动移出验收队列</span>',
+    placeholder:'填写验收不通过原因说明，子用户将收到重改通知（选填）',
+    confirmText:'确认验收不通过 · 退回待整改',cls:'reject',
     confirm:function(sel,txt){
       r.status='待整改';
       RECTIFY_QUEUE.splice(curCase,1);
       if(curCase>=RECTIFY_QUEUE.length)curCase=Math.max(0,RECTIFY_QUEUE.length-1);
       renderCaseList();renderDocPanel();
-      showToast('审批不通过已退回（'+sel+'）：'+r.docNo+' · 工单退回「待整改」，已通知'+r.org+'院重新整改，自动移出队列（剩 '+RECTIFY_QUEUE.length+' 件待审批）','warn');
+      showToast('验收不通过已退回（'+sel+'）：'+r.docNo+' · 工单由「已整改」退回「待整改」，已通知'+r.org+'院重新整改，自动移出队列（剩 '+RECTIFY_QUEUE.length+' 件待验收）','warn');
     }});
 }
 
@@ -1879,22 +1872,22 @@ function runChk(){showToast('原型演示：已发起智能初核，批次 '+CHK
 /* ============ 汇总研判归档 ============ */
 var ARCH_ROWS=[
   ['京06检刑诉[2024]0001号','案件类别不符','东城区人民检察院','已整改','2024-09-14','2024-08-10 10:00:00'],
-  ['京06检刑诉[2024]0002号','案件类别不符','东城区人民检察院','待审批','2024-10-02','2024-09-28 10:00:00'],
-  ['京06检刑诉[2024]0003号','案件类别不符','东城区人民检察院','待审批','2024-08-02','2024-07-21 10:00:00'],
-  ['京06检刑诉[2024]0004号','案件来源不符','东城区人民检察院','待审批','2024-10-27','2024-07-21 10:00:00'],
+  ['京06检刑诉[2024]0002号','案件类别不符','东城区人民检察院','整改中','2024-10-02','2024-09-28 10:00:00'],
+  ['京06检刑诉[2024]0003号','案件类别不符','东城区人民检察院','已整改','2024-08-02','2024-07-21 10:00:00'],
+  ['京06检刑诉[2024]0004号','案件来源不符','东城区人民检察院','已整改','2024-10-27','2024-07-21 10:00:00'],
   ['京06检刑诉[2024]0007号','案件来源不符','东城区人民检察院','待整改','2024-11-18','2024-11-18 10:00:00'],
   ['京06检刑诉[2024]0009号','案件类别不符','东城区人民检察院','已整改','2024-08-03','2024-08-11 10:00:00'],
-  ['京06检刑诉[2024]0014号','案件类别不符','东城区人民检察院','待审批','2024-10-24','2024-07-12 10:00:00'],
-  ['京06检刑诉[2024]0019号','案件类别不符','东城区人民检察院','待审批','2024-08-11','2024-08-16 10:00:00'],
+  ['京06检刑诉[2024]0014号','案件类别不符','东城区人民检察院','整改中','2024-10-24','2024-07-12 10:00:00'],
+  ['京06检刑诉[2024]0019号','案件类别不符','东城区人民检察院','已整改','2024-08-11','2024-08-16 10:00:00'],
   ['京06检刑诉[2024]0020号','案件来源不符','东城区人民检察院','已整改','2024-08-18','2024-08-22 10:00:00'],
   ['京06检刑诉[2024]0021号','案件类别不符','东城区人民检察院','已整改','2024-08-16','2024-07-10 10:00:00'],
   ['京06检刑诉[2024]0027号','案件类别不符','东城区人民检察院','已整改','2024-09-21','2024-09-29 10:00:00'],
   ['京06检刑诉[2024]0029号','案件类别不符','东城区人民检察院','待整改','2024-11-18','2024-07-29 10:00:00'],
-  ['京06检刑诉[2024]0030号','案件来源不符','东城区人民检察院','待审批','2024-11-27','2024-08-15 10:00:00'],
+  ['京06检刑诉[2024]0030号','案件来源不符','东城区人民检察院','已整改','2024-11-27','2024-08-15 10:00:00'],
   ['京06检刑诉[2024]0031号','案件类别不符','东城区人民检察院','已整改','2024-08-15','2024-09-10 10:00:00'],
-  ['京06检刑诉[2024]0034号','案件来源不符','东城区人民检察院','待审批','2024-08-07','2024-09-25 10:00:00'],
-  ['京06检刑诉[2024]0036号','案件来源不符','东城区人民检察院','待审批','2024-09-26','2024-08-14 10:00:00'],
-  ['京06检刑诉[2024]0037号','案件来源不符','东城区人民检察院','待审批','2024-11-04','2024-09-25 10:00:00'],
+  ['京06检刑诉[2024]0034号','案件来源不符','东城区人民检察院','整改中','2024-08-07','2024-09-25 10:00:00'],
+  ['京06检刑诉[2024]0036号','案件来源不符','东城区人民检察院','整改中','2024-09-26','2024-08-14 10:00:00'],
+  ['京06检刑诉[2024]0037号','案件来源不符','东城区人民检察院','已整改','2024-11-04','2024-09-25 10:00:00'],
   ['京06检刑诉[2024]0038号','案件类别不符','东城区人民检察院','已整改','2024-11-27','2024-09-14 10:00:00']
 ];
 function renderArch(){
@@ -1903,7 +1896,7 @@ function renderArch(){
   $('arch-table').innerHTML='<tr><th>案号</th><th>问题类型</th><th>责任院</th><th>处理状态</th><th>截止日期</th><th>更新时间</th></tr>'
     +(rows.length?rows.map(function(r){
       var tc=r[1]==='案件类别不符'?'tag-r':'tag-o';
-      var sc=r[3]==='已整改'?'tag-g':(r[3]==='待审批'?'tag-b':(r[3]==='整改中'?'tag-o':'tag-r'));
+      var sc=r[3]==='已整改'?'tag-g':(r[3]==='整改中'?'tag-o':'tag-r');
       return '<tr><td class="mono" style="color:var(--gold)">'+r[0]+'</td><td><span class="tag '+tc+'">'+r[1]+'</span></td><td>'+r[2]+'</td><td><span class="tag '+sc+'">'+r[3]+'</span></td><td>'+r[4]+'</td><td class="mono">'+r[5]+'</td></tr>';
     }).join(''):'<tr><td colspan="6" class="empty-tip">无匹配数据</td></tr>');
   $('arch-count').textContent='共 '+rows.length+' 条（台账总量 89 条）';
