@@ -819,7 +819,7 @@ nav{flex:1;padding-top:8px;overflow:hidden auto}
           <span class="step-num" style="font-size:17px">🧭</span>
           <div>
             <div class="psh-title">全流程状态机</div>
-            <div class="psh-sub">案件与工单全生命周期 · 机器初核 → 终核判定 → 违规整改 → 整改审批 → 已整改归档</div>
+            <div class="psh-sub">案件与工单全生命周期 · 机器初核 → 终核判定 → 违规整改 → 整改验收 → 已整改归档</div>
           </div>
           <div class="psh-right">
             <div class="r1">四层：视图 / 批次 / 案件工单 / 台账</div>
@@ -915,7 +915,7 @@ nav{flex:1;padding-top:8px;overflow:hidden auto}
               <rect x="20" y="486" width="640" height="74" rx="12" fill="#f4fbff" stroke="#b5e3f4" stroke-width="0.5"/>
               <text x="40" y="510" font-size="13" font-weight="700" fill="#1a4f7a">批次层与台账层状态</text>
               <text x="40" y="530" font-size="11" fill="#3d7eab">初核批次 CHK-YYYYMMDD-NNN：执行中 → 已完成　·　复核批次 REV-YYYYMMDD-NNN：复核中 → 已完成</text>
-              <text x="40" y="550" font-size="11" fill="#3d7eab">汇总归档台账：待整改 → 整改中 → 待审批 → 已整改（审批通过自动同步）　·　视图层：登录 → 主/子用户工作台 → 退出回登录</text>
+              <text x="40" y="550" font-size="11" fill="#3d7eab">汇总归档台账：待整改 → 整改中 → 已整改（验收通过归档自动同步）　·　视图层：登录 → 主/子用户工作台 → 退出回登录</text>
             </svg>
           </div>
         </div>
@@ -933,7 +933,7 @@ nav{flex:1;padding-top:8px;overflow:hidden auto}
               <tr><td><span class="tag tag-g">已整改</span>（队列中）</td><td>验收通过</td><td>主用户</td><td><span class="tag tag-g">已整改</span>（终态 · 归档同步台账）</td><td>验收确认后自动移出队列</td></tr>
               <tr><td><span class="tag tag-g">已整改</span>（队列中）</td><td>验收不通过</td><td>主用户</td><td><span class="tag tag-r">待整改</span>（退回子用户重新整改）</td><td>必选 3 类原因之一 · 验收后自动移出</td></tr>
             </table>
-            <div class="mp-note" style="margin-top:10px">关键设计：工单统一四态「待整改 / 整改中 / 待审批 / 已整改」· 子用户「待审批」= 主用户「整改验收」队列（同一节点两侧视角）· 两个终态（合规 / 已整改）共同汇入汇总台账 · 审批不通过不建新单，回到原工单「待整改」，一单一案一号到底</div>
+            <div class="mp-note" style="margin-top:10px">关键设计：工单统一三态「待整改 / 整改中 / 已整改」· 子用户提交处置即「已整改」，主用户验收不通过由「已整改」退回「待整改」· 两个终态（合规 / 已整改·归档）共同汇入汇总台账 · 验收不通过不建新单，一单一案一号到底</div>
           </div>
         </div>
       </div>
@@ -997,7 +997,7 @@ nav{flex:1;padding-top:8px;overflow:hidden auto}
           <div class="psh-sub">处理上级「判定违规」后交办至本单位的整改工单 · 全程留痕 · 闭环管理</div>
         </div>
         <div class="psh-right">
-          <div class="r1">工单流转：待整改 → 整改中 → 待审批 → 已整改</div>
+          <div class="r1">工单流转：待整改 → 整改中 → 已整改（验收不通过退回待整改）</div>
         </div>
       </div>
 
