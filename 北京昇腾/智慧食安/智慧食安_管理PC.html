@@ -208,6 +208,8 @@ const MOCK = {
     { id:'ALM007', time:'2026-07-03 13:05:30', enterprise:'黄焖鸡米饭（学院店）', town:'南桥镇', detectType:'明火离人', severity:'高', status:'待整改', confidence:0.89, orderNo:'WO20260703007' },
     { id:'ALM008', time:'2026-07-03 12:48:22', enterprise:'海底捞（中心广场店）', town:'中心镇', detectType:'未戴口罩', severity:'中', status:'已确认', confidence:0.93, orderNo:'WO20260701018' },
   ],
+  // 人工上报预警（手动发起）：运行期由「生成风险预警」弹窗写入，仅存于内存
+  manualWarnings: [],
   approvals: [
     { id:'APR001', orderNo:'WO20260703001', orderType:'整改', sourceType:'AI报警', sourceDesc:'后厨鼠患报警（ALM001），置信度90%', sourceLinkId:'ALM001', enterprise:'永和豆浆（城东店）', town:'城东镇', submitTime:'2026-07-03 09:15:00', severity:'高', status:'待审批', progressStep:1, summary:'已按要求完成全面消杀，更换防鼠设施，清理后厨死角。', rectPhotos:[{name:'消杀现场.jpg'},{name:'防鼠设施.jpg'}], rejectHistory:[] },
     { id:'APR002', orderNo:'WO20260703002', orderType:'整改', sourceType:'证照到期', sourceDesc:'食品经营许可证即将到期（C001），剩余30天', sourceLinkId:'C001', enterprise:'老重庆火锅（南桥店）', town:'南桥镇', submitTime:'2026-07-03 08:40:00', severity:'低', status:'待审批', progressStep:1, summary:'已获取新证照，编号JY20260703002，有效期至2031年7月。', rectPhotos:[{name:'新证照.jpg'}], rejectHistory:[] },
@@ -616,6 +618,7 @@ function App() {
   const [userRole, setUserRole] = useState('R01'); // R01=区级, R02=镇级
   const roleTown = '城东镇'; // 演示用：R02 默认所属镇
   const [loading, setLoading] = useState(true);
+  const [warningFocus, setWarningFocus] = useState(null); // 生成人工上报后跳转定位的预警编号
 
   useEffect(() => {
     const t = setTimeout(() => setLoading(false), 800);
@@ -629,10 +632,10 @@ function App() {
   const renderContent = () => {
     switch (activeNav) {
       case 'dashboard':    return <Dashboard loading={!dashReady} onNavigate={setActiveNav} userRole={userRole} roleTown={roleTown} />;
-      case 'risk':         return <RiskWarning userRole={userRole} roleTown={roleTown} />;
+      case 'risk':         return <RiskWarning userRole={userRole} roleTown={roleTown} focusId={warningFocus} onFocusConsumed={() => setWarningFocus(null)} />;
       case 'approval':     return <ApprovalRecords showDetail={showDetail} setShowDetail={setShowDetail} userRole={userRole} roleTown={roleTown} />;
       case 'entity':       return <EntityManagement userRole={userRole} roleTown={roleTown} />;
-      case 'video':        return <VideoSurveillance userRole={userRole} roleTown={roleTown} />;
+      case 'video':        return <VideoSurveillance userRole={userRole} roleTown={roleTown} onNavigate={(key, focusId) => { setActiveNav(key); if (focusId) setWarningFocus(focusId); }} />;
       case 'device':       return <DeviceAssociation userRole={userRole} roleTown={roleTown} />;
       case 'feedback':     return <FeedbackHandling userRole={userRole} roleTown={roleTown} />;
       case 'announcement': return <AnnouncementManagement userRole={userRole} roleTown={roleTown} />;
@@ -1338,45 +1341,40 @@ function BuildIcon(){ return (<svg width="18" height="18" viewBox="0 0 24 24" fi
 // RISK WARNING (3.2 风险预警)
 // ────────────────────────────────────────
 
-function RiskWarning({ userRole, roleTown }) {
+function RiskWarning({ userRole, roleTown, focusId, onFocusConsumed }) {
   const isDistrict = userRole === 'R01';
-  const [tab, setTab] = useState('待审核'); // 待审核 | 待整改 | 已确认 | 已撤销
-  const [riskSource, setRiskSource] = useState('alarm'); // alarm | cert
+  const focusRec = focusId ? MOCK.manualWarnings.find(m => m.id === focusId) : null;
+  const [tab, setTab] = useState(focusRec ? focusRec.status : '待审核'); // 待审核 | 待整改 | 已确认 | 已撤销
+  const [riskSource, setRiskSource] = useState(focusRec ? 'manual' : 'all'); // all（默认：全部） | alarm | cert | manual
   const [filterType, setFilterType] = useState('all');
   const [filterSeverity, setFilterSeverity] = useState('all');
   const [filterTown, setFilterTown] = useState(isDistrict ? 'all' : roleTown);
   const [filterCertType, setFilterCertType] = useState('all');
   const [selectedAlarm, setSelectedAlarm] = useState(null); // alarm detail drawer
   const [selectedCert, setSelectedCert] = useState(null);     // cert detail drawer
+  const [selectedManual, setSelectedManual] = useState(focusRec || null); // manual detail drawer
+  const [toast, setToast] = useState(null);
 
-  const filteredAlarms = MOCK.alarms.filter(a => {
-    if (!isDistrict && a.town !== roleTown) return false;
-    if (filterType !== 'all' && a.detectType !== filterType) return false;
-    if (filterSeverity !== 'all' && a.severity !== filterSeverity) return false;
-    if (filterTown !== 'all' && a.town !== filterTown) return false;
-    if (tab !== 'all' && a.status !== tab) return false;
-    return true;
-  });
-
-  const statusCounts = {
-    '待审核': MOCK.alarms.filter(a => a.status === '待审核').length,
-    '待整改': MOCK.alarms.filter(a => a.status === '待整改').length,
-    '已确认': MOCK.alarms.filter(a => a.status === '已确认').length,
-    '已撤销': MOCK.alarms.filter(a => a.status === '已撤销').length,
-  };
+  // 从视频监控「查看预警」跳转而来：定位并打开该条人工上报预警
+  useEffect(() => {
+    if (focusRec && onFocusConsumed) onFocusConsumed();
+  }, []);
 
   const detectTypes = ['鼠患','未戴口罩','未戴帽子','垃圾桶未加盖','陌生人闯入','明火离人','抽烟'];
   const towns = ['城东镇','南桥镇','中心镇','北关镇'];
+  const inScope = town => isDistrict || town === roleTown;
 
-  // Certificate expiry mock data
+  // Certificate expiry mock data —— 补齐与 AI 报警的交集字段（所属镇 / 紧急程度 / 状态），以支持「全部预警」合并视图
   const certExpiryData = [
-    { id:'C001', enterprise:'永和豆浆（城东店）', certType:'食品经营许可证', certNo:'JY20201015001', expiryDate:'2026-08-02', daysLeft:30, level:'30天' },
-    { id:'C002', enterprise:'老重庆火锅（南桥店）', certType:'营业执照', certNo:'91310115MA1K3YYYYY', expiryDate:'2026-07-10', daysLeft:7, level:'7天' },
-    { id:'C003', enterprise:'味多美烘焙坊', certType:'食品经营许可证', certNo:'JY20190620003', expiryDate:'2026-07-05', daysLeft:2, level:'3天' },
-    { id:'C004', enterprise:'沙县小吃（中心店）', certType:'从业人员健康证', certNo:'JK20210115004', expiryDate:'2026-07-15', daysLeft:12, level:'30天' },
-    { id:'C005', enterprise:'老乡鸡（北关店）', certType:'食品经营许可证', certNo:'JY20180810005', expiryDate:'2026-09-30', daysLeft:89, level:'90天' },
-    { id:'C006', enterprise:'海底捞（中心广场店）', certType:'ISO22000认证', certNo:'ISO20220501006', expiryDate:'2026-07-20', daysLeft:17, level:'30天' },
+    { id:'C001', enterprise:'永和豆浆（城东店）', town:'城东镇', certType:'食品经营许可证', certNo:'JY20201015001', expiryDate:'2026-08-02', daysLeft:30, level:'30天', status:'待整改' },
+    { id:'C002', enterprise:'老重庆火锅（南桥店）', town:'南桥镇', certType:'营业执照', certNo:'91310115MA1K3YYYYY', expiryDate:'2026-07-10', daysLeft:7, level:'7天', status:'待审核' },
+    { id:'C003', enterprise:'味多美烘焙坊', town:'城东镇', certType:'食品经营许可证', certNo:'JY20190620003', expiryDate:'2026-07-05', daysLeft:2, level:'3天', status:'待整改' },
+    { id:'C004', enterprise:'沙县小吃（中心店）', town:'中心镇', certType:'从业人员健康证', certNo:'JK20210115004', expiryDate:'2026-07-15', daysLeft:12, level:'30天', status:'已确认' },
+    { id:'C005', enterprise:'老乡鸡（北关店）', town:'北关镇', certType:'食品经营许可证', certNo:'JY20180810005', expiryDate:'2026-09-30', daysLeft:89, level:'90天', status:'待审核' },
+    { id:'C006', enterprise:'海底捞（中心广场店）', town:'中心镇', certType:'ISO22000认证', certNo:'ISO20220501006', expiryDate:'2026-07-20', daysLeft:17, level:'30天', status:'已撤销' },
   ];
+  // 证照到期预警的紧急程度由剩余天数推导（≤7天 高 / ≤30天 中 / 其余 低）
+  const certSeverityOf = days => days <= 7 ? '高' : days <= 30 ? '中' : '低';
 
   const certTypeOptions = [
     { value: 'all', label: '全部证照类型' },
@@ -1386,14 +1384,86 @@ function RiskWarning({ userRole, roleTown }) {
     { value: 'ISO22000认证', label: '其他认证' },
   ];
 
-  const filteredCertData = certExpiryData.filter(c => filterCertType === 'all' || c.certType === filterCertType);
+  const filteredAlarms = MOCK.alarms.filter(a => {
+    if (!inScope(a.town)) return false;
+    if (filterType !== 'all' && a.detectType !== filterType) return false;
+    if (filterSeverity !== 'all' && a.severity !== filterSeverity) return false;
+    if (filterTown !== 'all' && a.town !== filterTown) return false;
+    if (tab !== 'all' && a.status !== tab) return false;
+    return true;
+  });
+
+  const filteredCertData = certExpiryData.filter(c => {
+    if (!inScope(c.town)) return false;
+    if (filterCertType !== 'all' && c.certType !== filterCertType) return false;
+    if (filterSeverity !== 'all' && certSeverityOf(c.daysLeft) !== filterSeverity) return false;
+    if (filterTown !== 'all' && c.town !== filterTown) return false;
+    if (tab !== 'all' && c.status !== tab) return false;
+    return true;
+  });
+
+  // 人工上报预警（手动发起）
+  const filteredManual = MOCK.manualWarnings.filter(m => {
+    if (!inScope(m.town)) return false;
+    if (filterSeverity !== 'all' && m.severity !== filterSeverity) return false;
+    if (filterTown !== 'all' && m.town !== filterTown) return false;
+    if (tab !== 'all' && m.status !== tab) return false;
+    return true;
+  });
+
+  // 「全部预警」合并视图：只取三类预警的交集字段
+  const mergedRows = [
+    ...filteredAlarms.map(a => ({
+      key: `alarm-${a.id}`, kind: 'alarm', id: a.id, kindLabel: 'AI报警',
+      enterprise: a.enterprise, town: a.town, content: a.detectType,
+      severity: a.severity, status: a.status, time: a.time, raw: a,
+    })),
+    ...filteredCertData.map(c => ({
+      key: `cert-${c.id}`, kind: 'cert', id: c.id, kindLabel: '证照到期',
+      enterprise: c.enterprise, town: c.town, content: `${c.certType}到期`,
+      severity: certSeverityOf(c.daysLeft), status: c.status, time: c.expiryDate, raw: c,
+    })),
+    ...filteredManual.map(m => ({
+      key: `manual-${m.id}`, kind: 'manual', id: m.id, kindLabel: '人工上报',
+      enterprise: m.enterprise, town: m.town, content: m.detectType,
+      severity: m.severity, status: m.status, time: m.time, raw: m,
+    })),
+  ].sort((x, y) => (x.time < y.time ? 1 : x.time > y.time ? -1 : 0));
+
+  // 状态页签计数：跟随当前预警类别（全部 / AI / 证照 / 人工上报）与权限范围
+  const countByStatus = status => {
+    let n = 0;
+    if (riskSource === 'all' || riskSource === 'alarm') n += MOCK.alarms.filter(a => inScope(a.town) && a.status === status).length;
+    if (riskSource === 'all' || riskSource === 'cert') n += certExpiryData.filter(c => inScope(c.town) && c.status === status).length;
+    if (riskSource === 'all' || riskSource === 'manual') n += MOCK.manualWarnings.filter(m => inScope(m.town) && m.status === status).length;
+    return n;
+  };
+  const statusCounts = {
+    '待审核': countByStatus('待审核'),
+    '待整改': countByStatus('待整改'),
+    '已确认': countByStatus('已确认'),
+    '已撤销': countByStatus('已撤销'),
+  };
+
+  const totalCount = riskSource === 'alarm' ? filteredAlarms.length
+    : riskSource === 'cert' ? filteredCertData.length
+    : riskSource === 'manual' ? filteredManual.length
+    : mergedRows.length;
+
+  const showToast = msg => { setToast(msg); setTimeout(() => setToast(null), 2400); };
+  const actManual = (next, msg) => {
+    const rec = MOCK.manualWarnings.find(m => m.id === selectedManual.id);
+    if (rec) rec.status = next;
+    setSelectedManual({ ...selectedManual, status: next });
+    showToast(msg);
+  };
 
   return (
     <div className="space-y-5">
       <div>
         <h1 className="text-xl font-bold text-ink tracking-tight">风险预警</h1>
         <p className="text-sm text-ink-secondary mt-0.5">
-          {isDistrict ? 'AI报警记录 + 证照到期预警，按状态分类管理' : `${roleTown} · AI报警记录 + 证照到期预警`}
+          {isDistrict ? 'AI报警记录 + 证照到期预警 + 人工上报，按状态分类管理' : `${roleTown} · AI报警记录 + 证照到期预警 + 人工上报`}
         </p>
       </div>
 
@@ -1407,48 +1477,99 @@ function RiskWarning({ userRole, roleTown }) {
         ))}
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-wrap items-center gap-3 bg-white rounded-lg border border-slate-200 p-3 animate-fade-in-up">
-        <span className="text-[11px] text-ink-muted font-medium">筛选：</span>
-        <select value={riskSource} onChange={e => setRiskSource(e.target.value)}
-          className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
-          <option value="alarm">AI报警记录</option>
-          <option value="cert">证照到期预警</option>
-        </select>
-        {riskSource === 'alarm' ? (
-          <>
-            <select value={filterSeverity} onChange={e => setFilterSeverity(e.target.value)}
-              className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
-              <option value="all">全部紧急程度</option>
-              <option value="高">高</option>
-              <option value="中">中</option>
-              <option value="低">低</option>
-            </select>
-            <select value={filterType} onChange={e => setFilterType(e.target.value)}
-              className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
-              <option value="all">全部检测类型</option>
-              {detectTypes.map(t => <option key={t} value={t}>{t}</option>)}
-            </select>
+      {/* Filters —— 默认「全部预警」只展示两类预警的交集筛选条件；选中具体类别后再展开该类别的专属条件 */}
+      <div className="bg-white rounded-lg border border-slate-200 p-3 animate-fade-in-up">
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="text-[11px] text-ink-muted font-medium">筛选：</span>
+          <select value={riskSource} onChange={e => setRiskSource(e.target.value)}
+            className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
+            <option value="all">全部预警（AI报警 + 证照到期 + 人工上报）</option>
+            <option value="alarm">AI报警记录</option>
+            <option value="cert">证照到期预警</option>
+            <option value="manual">人工上报</option>
+          </select>
+          {/* 交集筛选条件：紧急程度、所属镇 —— 两类预警均适用 */}
+          <select value={filterSeverity} onChange={e => setFilterSeverity(e.target.value)}
+            className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
+            <option value="all">全部紧急程度</option>
+            <option value="高">高</option>
+            <option value="中">中</option>
+            <option value="低">低</option>
+          </select>
+          {isDistrict ? (
             <select value={filterTown} onChange={e => setFilterTown(e.target.value)}
               className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
               <option value="all">全部镇/街道</option>
               {towns.map(t => <option key={t} value={t}>{t}</option>)}
             </select>
-            <span className="ml-auto text-[11px] text-ink-muted">共 {filteredAlarms.length} 条记录</span>
-          </>
-        ) : (
-          <>
+          ) : (
+            <span className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-slate-50 text-ink-muted">{roleTown}（本镇范围）</span>
+          )}
+          {/* 下一级：选中 AI报警记录 后展示检测类型 */}
+          {riskSource === 'alarm' && (
+            <select value={filterType} onChange={e => setFilterType(e.target.value)}
+              className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
+              <option value="all">全部检测类型</option>
+              {detectTypes.map(t => <option key={t} value={t}>{t}</option>)}
+            </select>
+          )}
+          {/* 下一级：选中 证照到期预警 后展示证照类型 */}
+          {riskSource === 'cert' && (
             <select value={filterCertType} onChange={e => setFilterCertType(e.target.value)}
               className="text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400">
               {certTypeOptions.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
             </select>
-            <span className="ml-auto text-[11px] text-ink-muted">共 {filteredCertData.length} 条记录</span>
-          </>
-        )}
+          )}
+          <span className="ml-auto text-[11px] text-ink-muted">共 {totalCount} 条记录</span>
+        </div>
       </div>
 
-      {/* Content */}
-      {riskSource === 'alarm' ? (
+      {/* Content —— 全部预警：交集字段合并表；AI报警 / 证照到期：各自明细表 */}
+      {riskSource === 'all' ? (
+        <div className="bg-white rounded-lg border border-slate-200 overflow-hidden animate-fade-in-up">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-slate-50 border-b border-slate-200">
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">编号</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">预警类别</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">企业名称</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">所属镇</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">预警内容</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">紧急程度</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">状态</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">时间</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">查看详情</th>
+              </tr>
+            </thead>
+            <tbody>
+              {mergedRows.map(r => (
+                <tr key={r.key} className="table-row border-b border-slate-100 last:border-0">
+                  <td className="px-4 py-3 text-[11px] font-mono text-gov-600 font-medium">{r.id}</td>
+                  <td className="px-4 py-3">
+                    <Badge color={r.kind === 'alarm' ? 'blue' : r.kind === 'cert' ? 'orange' : 'indigo'}>{r.kindLabel}</Badge>
+                  </td>
+                  <td className="px-4 py-3 text-xs font-medium text-ink">{r.enterprise}</td>
+                  <td className="px-4 py-3 text-xs text-ink-secondary">{r.town}</td>
+                  <td className="px-4 py-3 text-xs">{r.content}</td>
+                  <td className="px-4 py-3">
+                    <Badge color={r.severity==='高'?'red':r.severity==='中'?'yellow':'gray'}>{r.severity}</Badge>
+                  </td>
+                  <td className="px-4 py-3">
+                    <Badge color={r.status==='待整改'?'yellow':r.status==='已确认'?'green':r.status==='待审核'?'red':'gray'} dot={r.status==='待整改'}>{r.status}</Badge>
+                  </td>
+                  <td className="px-4 py-3 text-xs font-mono text-ink-secondary">{r.time}</td>
+                  <td className="px-4 py-3">
+                    <button onClick={() => r.kind === 'alarm' ? setSelectedAlarm(r.raw) : r.kind === 'cert' ? setSelectedCert(r.raw) : setSelectedManual(r.raw)} className="text-[11px] text-gov-600 hover:text-gov-700 font-medium border border-gov-300 rounded-md px-2.5 py-1 hover:bg-gov-50 transition-colors">查看详情</button>
+                  </td>
+                </tr>
+              ))}
+              {mergedRows.length === 0 && (
+                <tr><td colSpan="9" className="text-center py-12 text-ink-muted text-xs">该状态下暂无预警记录</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      ) : riskSource === 'alarm' ? (
         <div className="bg-white rounded-lg border border-slate-200 overflow-hidden animate-fade-in-up">
           <table className="w-full text-sm">
             <thead>
@@ -1492,7 +1613,7 @@ function RiskWarning({ userRole, roleTown }) {
             </tbody>
           </table>
         </div>
-      ) : (
+      ) : riskSource === 'cert' ? (
         <div className="bg-white rounded-lg border border-slate-200 overflow-hidden animate-fade-in-up">
           <table className="w-full text-sm">
             <thead>
@@ -1530,6 +1651,46 @@ function RiskWarning({ userRole, roleTown }) {
               ))}
               {filteredCertData.length === 0 && (
                 <tr><td colSpan="8" className="text-center py-12 text-ink-muted text-xs">暂无匹配的证照到期记录</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="bg-white rounded-lg border border-slate-200 overflow-hidden animate-fade-in-up">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-slate-50 border-b border-slate-200">
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">编号</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">企业名称</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">所属镇</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">检测类型</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">紧急程度</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">状态</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">报警时间</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider">查看详情</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredManual.map(m => (
+                <tr key={m.id} className="table-row border-b border-slate-100 last:border-0">
+                  <td className="px-4 py-3 text-[11px] font-mono text-gov-600 font-medium">{m.id}</td>
+                  <td className="px-4 py-3 text-xs font-medium text-ink">{m.enterprise}</td>
+                  <td className="px-4 py-3 text-xs text-ink-secondary">{m.town}</td>
+                  <td className="px-4 py-3 text-xs">{m.detectType}</td>
+                  <td className="px-4 py-3">
+                    <Badge color={m.severity==='高'?'red':m.severity==='中'?'yellow':'gray'}>{m.severity}</Badge>
+                  </td>
+                  <td className="px-4 py-3">
+                    <Badge color={m.status==='待整改'?'yellow':m.status==='已确认'?'green':m.status==='待审核'?'red':'gray'} dot={m.status==='待整改'}>{m.status}</Badge>
+                  </td>
+                  <td className="px-4 py-3 text-xs font-mono text-ink-secondary">{m.time}</td>
+                  <td className="px-4 py-3">
+                    <button onClick={() => setSelectedManual(m)} className="text-[11px] text-gov-600 hover:text-gov-700 font-medium border border-gov-300 rounded-md px-2.5 py-1 hover:bg-gov-50 transition-colors">查看详情</button>
+                  </td>
+                </tr>
+              ))}
+              {filteredManual.length === 0 && (
+                <tr><td colSpan="8" className="text-center py-12 text-ink-muted text-xs">该状态下暂无人工上报预警，可在视频监控画面中点击「生成风险预警」发起</td></tr>
               )}
             </tbody>
           </table>
@@ -1720,6 +1881,100 @@ function RiskWarning({ userRole, roleTown }) {
               </section>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* ═══ Manual Warning Detail Drawer ═══ */}
+      {selectedManual && (
+        <div className="fixed inset-0 z-50 flex justify-end modal-backdrop" style={{background:'rgba(15,23,42,0.3)'}} onClick={() => setSelectedManual(null)}>
+          <div className="w-[580px] bg-white h-full shadow-2xl overflow-y-auto animate-slide-right" onClick={e => e.stopPropagation()}>
+            <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between z-10">
+              <div>
+                <h2 className="text-base font-bold text-ink">人工上报预警 · {selectedManual.detectType}</h2>
+                <p className="text-[11px] text-ink-muted mt-0.5">{selectedManual.id} · {selectedManual.time}</p>
+              </div>
+              <button onClick={() => setSelectedManual(null)} className="text-ink-muted hover:text-ink text-lg leading-none">✕</button>
+            </div>
+
+            <div className="px-6 py-5 space-y-5">
+              {/* 现场照片 */}
+              <section>
+                <h3 className="text-xs font-semibold text-ink mb-2">现场照片</h3>
+                <div className="grid grid-cols-1 gap-2">
+                  {selectedManual.shots.map((s, i) => (
+                    <div key={i} className="relative aspect-video rounded-lg overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900">
+                      <div className="absolute inset-0 opacity-20" style={{background:'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px)'}}></div>
+                      <span className="absolute top-1.5 left-1.5 text-[10px] text-white/70 bg-black/40 px-1.5 py-0.5 rounded">截图 {i + 1}</span>
+                      <div className="absolute bottom-1.5 left-1.5 right-1.5 text-[10px] text-white/80 truncate">{s}</div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              {/* 预警信息 */}
+              <section>
+                <h3 className="text-xs font-semibold text-ink mb-2">预警信息</h3>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2.5 text-xs">
+                  {[
+                    ['预警编号', selectedManual.id],
+                    ['企业名称', selectedManual.enterprise],
+                    ['所属镇/街道', selectedManual.town],
+                    ['监控点位', selectedManual.cameraLabel],
+                    ['检测类型', selectedManual.detectType],
+                    ['紧急程度', selectedManual.severity],
+                    ['当前状态', selectedManual.status],
+                    ['报警时间', selectedManual.time],
+                    ['创建人', selectedManual.creator],
+                    ['创建时间', selectedManual.createdAt],
+                  ].map(([k, v]) => (
+                    <div key={k} className="flex gap-2">
+                      <span className="text-ink-muted w-20 shrink-0">{k}</span>
+                      <span className="text-ink font-medium break-all">{v}</span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              {/* 问题描述 */}
+              <section>
+                <h3 className="text-xs font-semibold text-ink mb-2">问题描述</h3>
+                <p className="text-xs text-ink-secondary leading-relaxed bg-slate-50 border border-slate-100 rounded-lg px-3 py-2.5 whitespace-pre-wrap">{selectedManual.desc}</p>
+              </section>
+
+              {/* 处置 */}
+              <section>
+                <h3 className="text-xs font-semibold text-ink mb-2">{selectedManual.status === '待审核' ? '人工确认' : '处置记录'}</h3>
+                {selectedManual.status === '待审核' ? (
+                  <>
+                    <p className="text-xs text-ink-secondary leading-relaxed mb-3">
+                      该预警以「仅登记」方式提交，尚未下发。确认后将转为「待整改」并进入预警列表；不采纳则撤销该预警。
+                    </p>
+                    <div className="flex gap-2">
+                      <button onClick={() => actManual('待整改', `预警 ${selectedManual.id} 已确认下发`)}
+                        className="px-3 py-1.5 text-xs rounded-md bg-gov-600 text-white hover:bg-gov-700 font-medium">确认下发</button>
+                      <button onClick={() => actManual('已撤销', `预警 ${selectedManual.id} 已撤销`)}
+                        className="px-3 py-1.5 text-xs rounded-md border border-slate-200 text-ink-secondary hover:bg-slate-50">不采纳</button>
+                    </div>
+                  </>
+                ) : selectedManual.status === '待整改' ? (
+                  <p className="text-xs text-ink-secondary leading-relaxed">
+                    已于 {selectedManual.createdAt} 直接下发至商户整改，商户端可见该预警。本次未生成整改工单、未发送站内信。
+                  </p>
+                ) : selectedManual.status === '已确认' ? (
+                  <p className="text-xs text-ink-secondary leading-relaxed">该预警已整改完成并确认归档。</p>
+                ) : (
+                  <p className="text-xs text-ink-secondary leading-relaxed">该预警已撤销。</p>
+                )}
+              </section>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {toast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[70] bg-white border border-slate-200 shadow-xl rounded-lg px-4 py-3 flex items-center gap-2 animate-fade-in-up">
+          <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span className="text-xs text-ink">{toast}</span>
         </div>
       )}
     </div>
@@ -3303,28 +3558,216 @@ function EntityManagement({ userRole, roleTown }) {
 }
 
 // ────────────────────────────────────────
+// 人工上报预警（手动发起风险预警）
+// ────────────────────────────────────────
+
+// 视频点位：视频监控页与「生成风险预警」弹窗共用
+const VIDEO_CAMERAS = [
+  { id:'CAM001', enterprise:'永和豆浆（城东店）', location:'后厨-灶台', town:'城东镇', online:true },
+  { id:'CAM002', enterprise:'永和豆浆（城东店）', location:'后厨-加工区', town:'城东镇', online:true },
+  { id:'CAM003', enterprise:'老重庆火锅（南桥店）', location:'后厨-凉菜间', town:'南桥镇', online:true },
+  { id:'CAM004', enterprise:'老重庆火锅（南桥店）', location:'后厨-灶台', town:'南桥镇', online:false },
+  { id:'CAM005', enterprise:'海底捞（中心广场店）', location:'后厨-洗碗间', town:'中心镇', online:true },
+  { id:'CAM006', enterprise:'海底捞（中心广场店）', location:'后厨-灶台', town:'中心镇', online:true },
+  { id:'CAM007', enterprise:'老乡鸡（北关店）', location:'后厨-加工区', town:'北关镇', online:true },
+  { id:'CAM008', enterprise:'黄焖鸡米饭（学院店）', location:'后厨-灶台', town:'南桥镇', online:true },
+  { id:'CAM009', enterprise:'沙县小吃（中心店）', location:'后厨-全景', town:'中心镇', online:true },
+  { id:'CAM010', enterprise:'味多美烘焙坊', location:'后厨-烘焙间', town:'城东镇', online:true },
+];
+
+const pad2 = n => String(n).padStart(2, '0');
+const fmtDateTime = d => `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())} ${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`;
+
+const INPUT_CLS = 'text-xs border border-slate-200 rounded-md px-2.5 py-1.5 bg-white text-ink outline-none focus:border-gov-400';
+
+function ManualWarningDialog({ preset, isDistrict, onClose, onCreated }) {
+  const now = new Date();
+  // 入口只有视频监控画面：企业名称 / 所属镇 / 监控点位由画面带入，不可编辑
+  const enterprise = preset ? preset.enterprise : '';
+  const town = preset ? preset.town : '';
+  const camera = preset ? (VIDEO_CAMERAS.find(c => c.id === preset.cameraId) || null) : null;
+
+  const [detectType, setDetectType] = useState('抽烟');
+  const [otherType, setOtherType] = useState('');
+  const [severity, setSeverity] = useState('中');
+  const [foundAt, setFoundAt] = useState(fmtDateTime(now));
+  const [desc, setDesc] = useState('');
+  const [mode, setMode] = useState('direct'); // direct=直接下发 | review=仅登记待确认
+  const [shot, setShot] = useState(() => ({ key: 'S' + Date.now(), time: fmtDateTime(now) }));
+  const [err, setErr] = useState('');
+
+  // 仅保留一张现场照片：重新抓拍即为覆盖
+  const recapture = () => setShot({ key: 'S' + Date.now(), time: fmtDateTime(new Date()) });
+
+  const submit = () => {
+    if (!enterprise) { setErr('未关联企业，请从视频监控画面发起'); return; }
+    if (detectType === '其他' && !otherType.trim()) { setErr('选择「其他」时请填写检测类型说明'); return; }
+    if (!desc.trim()) { setErr('请填写问题描述'); return; }
+    if (!shot) { setErr('请先抓拍一张现场照片'); return; }
+    if (foundAt > fmtDateTime(new Date())) { setErr('报警时间不能晚于当前时间'); return; }
+
+    const d = new Date();
+    const rec = {
+      id: `MW${d.getFullYear()}${pad2(d.getMonth()+1)}${pad2(d.getDate())}${String(MOCK.manualWarnings.length + 1).padStart(3, '0')}`,
+      enterprise,
+      town,
+      cameraId: camera ? camera.id : '',
+      cameraLabel: camera ? `${camera.location} · ${camera.id}` : '—',
+      detectType: detectType === '其他' ? otherType.trim() : detectType,
+      severity,
+      status: mode === 'direct' ? '待整改' : '待审核',
+      time: foundAt,
+      desc: desc.trim(),
+      creator: isDistrict ? '张主任（区级管理员）' : '李所长（镇级管理员）',
+      createdAt: fmtDateTime(new Date()),
+      shots: [shot.name || `抓拍 ${shot.time}`],
+      dispatch: mode,
+      orderNo: null,
+    };
+    MOCK.manualWarnings.unshift(rec);
+    onCreated(rec);
+  };
+
+  return (
+    <div className="fixed inset-0 z-[60] flex items-center justify-center modal-backdrop" style={{background:'rgba(15,23,42,0.45)'}} onClick={onClose}>
+      <div className="w-[820px] max-h-[92vh] bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
+        {/* Header */}
+        <div className="flex items-start justify-between px-5 py-4 border-b border-slate-100">
+          <div>
+            <h3 className="text-base font-bold text-ink">生成风险预警</h3>
+            <p className="text-[11px] text-ink-muted mt-0.5">人工上报 · 提交后纳入风险预警统一管理</p>
+          </div>
+          <button onClick={onClose} className="text-ink-muted hover:text-ink text-lg leading-none">✕</button>
+        </div>
+
+        {/* Body */}
+        <div className="px-5 py-4 overflow-y-auto">
+          <div className="grid grid-cols-[300px_1fr] gap-5">
+            {/* 左：现场照片（仅 1 张） */}
+            <div>
+              <div className="text-[11px] text-ink-muted mb-1.5">现场照片 <span className="text-red-500">*</span></div>
+              <div className="relative aspect-video rounded-lg overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900">
+                <div className="absolute inset-0 opacity-20" style={{background:'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px)'}}></div>
+                <span className="absolute top-2 left-2 text-[10px] text-white/70 bg-black/40 px-1.5 py-0.5 rounded">● LIVE</span>
+                <span className="absolute top-2 right-2 text-[10px] text-white/70 bg-black/40 px-1.5 py-0.5 rounded">{shot ? shot.time : '暂无照片'}</span>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-white/25 text-xs">{shot ? '现场照片' : '点击下方抓拍当前画面'}</span>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-2 py-1.5">
+                  <div className="text-[10px] text-white/80 truncate">
+                    {enterprise || '未关联企业'}{camera ? ` · ${camera.location}` : ''}
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-2 mt-2">
+                <button onClick={recapture} className="flex-1 text-[11px] py-1.5 rounded-md border border-gov-300 text-gov-600 hover:bg-gov-50 transition-colors">{shot ? '重新抓拍' : '抓拍当前画面'}</button>
+              </div>
+              <div className="text-[10px] text-ink-muted mt-1.5">仅支持 1 张照片，重新抓拍将覆盖</div>
+            </div>
+
+            {/* 右：字段 —— 与 AI 预警详情保持一致；企业 / 所属镇 / 点位由画面带入，不可编辑 */}
+            <div className="space-y-2.5">
+              <div className="grid grid-cols-[72px_1fr] items-center gap-2">
+                <span className="text-[11px] text-ink-muted">预警编号</span>
+                <span className={`${INPUT_CLS} bg-slate-50 text-ink-secondary`}>系统自动生成</span>
+              </div>
+              <div className="grid grid-cols-[72px_1fr] items-center gap-2">
+                <span className="text-[11px] text-ink-muted">企业名称</span>
+                <span className={`${INPUT_CLS} bg-slate-50 text-ink-secondary`}>{enterprise || '—'}</span>
+              </div>
+              <div className="grid grid-cols-[72px_1fr] items-center gap-2">
+                <span className="text-[11px] text-ink-muted">所属镇/街道</span>
+                <span className={`${INPUT_CLS} bg-slate-50 text-ink-secondary`}>{town || '—'}</span>
+              </div>
+              <div className="grid grid-cols-[72px_1fr] items-center gap-2">
+                <span className="text-[11px] text-ink-muted">监控点位</span>
+                <span className={`${INPUT_CLS} bg-slate-50 text-ink-secondary`}>{camera ? `${camera.location} · ${camera.id}` : '未关联点位'}</span>
+              </div>
+              <label className="grid grid-cols-[72px_1fr] items-center gap-2">
+                <span className="text-[11px] text-ink-muted">检测类型 <span className="text-red-500">*</span></span>
+                <select value={detectType} onChange={e => setDetectType(e.target.value)} className={INPUT_CLS}>
+                  {['鼠患','未戴口罩','未戴帽子','垃圾桶未加盖','陌生人闯入','明火离人','抽烟','其他'].map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </label>
+              {detectType === '其他' && (
+                <label className="grid grid-cols-[72px_1fr] items-center gap-2">
+                  <span className="text-[11px] text-ink-muted">类型说明 <span className="text-red-500">*</span></span>
+                  <input value={otherType} onChange={e => setOtherType(e.target.value)} placeholder="如：地面积水、操作台不洁" className={INPUT_CLS} />
+                </label>
+              )}
+              <div className="grid grid-cols-[72px_1fr] items-center gap-2">
+                <span className="text-[11px] text-ink-muted">紧急程度</span>
+                <div className="flex gap-1.5">
+                  {['高','中','低'].map(v => (
+                    <button key={v} onClick={() => setSeverity(v)}
+                      className={`px-3 py-1 text-xs rounded-md border transition-colors ${severity === v ? (v === '高' ? 'bg-red-600 text-white border-red-600' : v === '中' ? 'bg-amber-500 text-white border-amber-500' : 'bg-slate-500 text-white border-slate-500') : 'bg-white text-ink-secondary border-slate-200 hover:bg-slate-50'}`}
+                    >{v}</button>
+                  ))}
+                </div>
+              </div>
+              <label className="grid grid-cols-[72px_1fr] items-center gap-2">
+                <span className="text-[11px] text-ink-muted">报警时间 <span className="text-red-500">*</span></span>
+                <input value={foundAt} onChange={e => setFoundAt(e.target.value)} className={INPUT_CLS} />
+              </label>
+              <div className="grid grid-cols-[72px_1fr] items-center gap-2">
+                <span className="text-[11px] text-ink-muted">当前状态</span>
+                <span className="flex items-center gap-2">
+                  <Badge color={mode === 'direct' ? 'yellow' : 'red'} dot={mode === 'direct'}>{mode === 'direct' ? '待整改' : '待审核'}</Badge>
+                  <span className="text-[10px] text-ink-muted">（提交后）</span>
+                </span>
+              </div>
+              <div className="grid grid-cols-[72px_1fr] gap-2">
+                <span className="text-[11px] text-ink-muted pt-1.5">问题描述 <span className="text-red-500">*</span></span>
+                <textarea value={desc} onChange={e => setDesc(e.target.value)} rows={3}
+                  placeholder="描述发现的具体问题，如：后厨一名工作人员在操作台旁吸烟，现场无劝阻人员。"
+                  className={`${INPUT_CLS} resize-none`}></textarea>
+              </div>
+              <div className="grid grid-cols-[72px_1fr] gap-2">
+                <span className="text-[11px] text-ink-muted pt-1.5">处置方式</span>
+                <div className="space-y-1.5">
+                  <label className="flex items-start gap-2 cursor-pointer">
+                    <input type="radio" checked={mode === 'direct'} onChange={() => setMode('direct')} className="mt-0.5" />
+                    <span className="text-[11px] text-ink leading-4">直接下发<br /><span className="text-ink-muted">提交后状态「待整改」，商户端可见</span></span>
+                  </label>
+                  <label className="flex items-start gap-2 cursor-pointer">
+                    <input type="radio" checked={mode === 'review'} onChange={() => setMode('review')} className="mt-0.5" />
+                    <span className="text-[11px] text-ink leading-4">仅登记，待人工确认后再下发<br /><span className="text-ink-muted">提交后状态「待审核」</span></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {err && <div className="mt-3 text-[11px] text-red-600 bg-red-50 border border-red-100 rounded-md px-3 py-2">{err}</div>}
+        </div>
+
+        {/* Footer */}
+        <div className="flex items-center gap-3 px-5 py-3 border-t border-slate-100 bg-slate-50">
+          <span className="text-[11px] text-ink-muted">提交后状态「{mode === 'direct' ? '待整改' : '待审核'}」 · 本次不生成整改工单、不发送站内信</span>
+          <div className="ml-auto flex gap-2">
+            <button onClick={onClose} className="px-4 py-1.5 text-xs rounded-md border border-slate-200 bg-white text-ink-secondary hover:bg-slate-50">取消</button>
+            <button onClick={submit} className="px-4 py-1.5 text-xs rounded-md bg-gov-600 text-white hover:bg-gov-700 font-medium">确认生成预警</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ────────────────────────────────────────
 // VIDEO SURVEILLANCE (3.6 视频监控)
 // ────────────────────────────────────────
 
-function VideoSurveillance({ userRole, roleTown }) {
+function VideoSurveillance({ userRole, roleTown, onNavigate }) {
   const isDistrict = userRole === 'R01';
   const [layout, setLayout] = useState(4);
   const [selectedTown, setSelectedTown] = useState('all');
   const [isCarouselOn, setIsCarouselOn] = useState(false);
   const [carouselIndex, setCarouselIndex] = useState(0);
+  const [warnCamera, setWarnCamera] = useState(null); // 生成预警弹窗的视频点位
+  const [createdToast, setCreatedToast] = useState(null);
 
-  const cameras = [
-    { id:'CAM001', enterprise:'永和豆浆（城东店）', location:'后厨-灶台', town:'城东镇', online:true },
-    { id:'CAM002', enterprise:'永和豆浆（城东店）', location:'后厨-加工区', town:'城东镇', online:true },
-    { id:'CAM003', enterprise:'老重庆火锅（南桥店）', location:'后厨-凉菜间', town:'南桥镇', online:true },
-    { id:'CAM004', enterprise:'老重庆火锅（南桥店）', location:'后厨-灶台', town:'南桥镇', online:false },
-    { id:'CAM005', enterprise:'海底捞（中心广场店）', location:'后厨-洗碗间', town:'中心镇', online:true },
-    { id:'CAM006', enterprise:'海底捞（中心广场店）', location:'后厨-灶台', town:'中心镇', online:true },
-    { id:'CAM007', enterprise:'老乡鸡（北关店）', location:'后厨-加工区', town:'北关镇', online:true },
-    { id:'CAM008', enterprise:'黄焖鸡米饭（学院店）', location:'后厨-灶台', town:'南桥镇', online:true },
-    { id:'CAM009', enterprise:'沙县小吃（中心店）', location:'后厨-全景', town:'中心镇', online:true },
-    { id:'CAM010', enterprise:'味多美烘焙坊', location:'后厨-烘焙间', town:'城东镇', online:true },
-  ];
+  const cameras = VIDEO_CAMERAS;
 
   const filtered = selectedTown === 'all' ? cameras : cameras.filter(c => c.town === selectedTown);
   const sortedFiltered = React.useMemo(() => [...filtered].sort((a, b) => a.id.localeCompare(b.id)), [filtered]);
@@ -3414,15 +3857,47 @@ function VideoSurveillance({ userRole, roleTown }) {
               )}
               <div className="video-play-overlay">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21" /></svg>
+                <div className="absolute bottom-2 left-0 right-0 flex items-center justify-center gap-2">
+                  <button
+                    onClick={e => { e.stopPropagation(); if (c.online && (isDistrict || c.town === roleTown)) setWarnCamera(c); }}
+                    disabled={!c.online || (!isDistrict && c.town !== roleTown)}
+                    title={!c.online ? '设备离线，无法抓拍' : (!isDistrict && c.town !== roleTown) ? '镇级账号仅可对本镇点位发起预警' : '以当前画面生成一条人工上报预警'}
+                    className={`px-2.5 py-1 text-[11px] rounded-md font-medium shadow-sm transition-colors ${(c.online && (isDistrict || c.town === roleTown)) ? 'bg-white/90 text-gov-700 hover:bg-white' : 'bg-white/40 text-white/60 cursor-not-allowed'}`}
+                  >⚠ 生成预警</button>
+                </div>
               </div>
             </div>
             <div className="p-3">
               <div className="text-[12px] font-medium text-ink">{c.enterprise}</div>
-              <div className="text-[10px] text-ink-muted mt-0.5">{c.location}</div>
+              <div className="text-[10px] text-ink-muted mt-0.5">{c.location} · {c.id}</div>
             </div>
           </div>
         ))}
       </div>
+
+      {/* 生成风险预警（人工上报） */}
+      {warnCamera && (
+        <ManualWarningDialog
+          preset={{ enterprise: warnCamera.enterprise, town: warnCamera.town, cameraId: warnCamera.id }}
+          isDistrict={isDistrict}
+          onClose={() => setWarnCamera(null)}
+          onCreated={rec => {
+            setWarnCamera(null);
+            setCreatedToast(rec);
+            setTimeout(() => setCreatedToast(null), 6000);
+          }}
+        />
+      )}
+
+      {createdToast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[70] bg-white border border-slate-200 shadow-xl rounded-lg px-4 py-3 flex items-center gap-3 animate-fade-in-up">
+          <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span className="text-xs text-ink">已生成人工上报预警 <span className="font-mono font-medium">{createdToast.id}</span></span>
+          {onNavigate && (
+            <button onClick={() => { const id = createdToast.id; setCreatedToast(null); onNavigate('risk', id); }} className="text-[11px] text-gov-600 hover:text-gov-700 font-medium">查看预警 →</button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

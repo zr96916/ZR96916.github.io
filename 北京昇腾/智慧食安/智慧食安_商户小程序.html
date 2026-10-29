@@ -468,48 +468,77 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
 
-      <!-- Response form -->
-      <div class="px-5 pb-24" id="responseFormSection">
+  <!-- ===== WARNING DETAIL OVERLAY (风险预警详情) ===== -->
+  <div class="overlay-panel" id="warningDetailOverlay">
+    <div class="flex items-center gap-3 px-5 py-4 border-b border-slate-200 bg-white shrink-0">
+      <button onclick="closeWarningDetail()" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-slate-100 transition-colors">
+        <i data-lucide="arrow-left" class="w-5 h-5 text-slate-700"></i>
+      </button>
+      <span class="text-base font-semibold text-slate-900 flex-1">风险预警详情</span>
+      <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-red-50 text-red-600" id="warningDetailSeverity">高</span>
+      <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-amber-50 text-amber-600" id="warningDetailStatus">待整改</span>
+    </div>
+
+    <div class="flex-1 overflow-y-auto">
+      <!-- 预警字段 -->
+      <div class="p-5">
         <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100">
-          <h3 class="text-base font-semibold text-slate-900 mb-4" id="responseFormTitle">提交整改反馈</h3>
-
-          <!-- Text area -->
-          <label class="block text-sm font-medium text-slate-600 mb-1.5">整改说明</label>
-          <textarea
-            id="responseText"
-            rows="4"
-            placeholder="请描述您已完成的整改措施..."
-            class="w-full px-4 py-3 text-sm text-slate-800 bg-slate-50 rounded-xl border border-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400 transition-all resize-none"
-          ></textarea>
-
-          <!-- Photo upload -->
-          <label class="block text-sm font-medium text-slate-600 mt-5 mb-1.5">整改照片</label>
-          <div class="grid grid-cols-3 gap-3" id="photoGrid">
-            <div class="photo-upload-zone flex flex-col items-center justify-center gap-1.5 py-7" onclick="addPhoto()">
-              <i data-lucide="camera" class="w-6 h-6 text-slate-300"></i>
-              <span class="text-xs text-slate-300">上传照片</span>
+          <div class="space-y-0">
+            <div class="flex items-center py-2.5 border-b border-slate-50">
+              <span class="text-[13px] text-slate-400 w-20 shrink-0">预警编号</span>
+              <span class="text-[13px] text-slate-700 font-medium" id="warningDetailId">W24061801</span>
+            </div>
+            <div class="flex items-center py-2.5 border-b border-slate-50">
+              <span class="text-[13px] text-slate-400 w-20 shrink-0">预警类别</span>
+              <span class="text-[13px] text-slate-700 font-medium" id="warningDetailKind">AI报警</span>
+            </div>
+            <div class="flex items-center py-2.5 border-b border-slate-50">
+              <span class="text-[13px] text-slate-400 w-20 shrink-0">企业名称</span>
+              <span class="text-[13px] text-slate-700 font-medium" id="warningDetailEnterprise">好味道餐饮管理有限公司</span>
+            </div>
+            <div class="flex items-center py-2.5 border-b border-slate-50">
+              <span class="text-[13px] text-slate-400 w-20 shrink-0">所属镇/街道</span>
+              <span class="text-[13px] text-slate-700 font-medium" id="warningDetailTown">中关村街道</span>
+            </div>
+            <div class="flex items-center py-2.5 border-b border-slate-50">
+              <span class="text-[13px] text-slate-400 w-20 shrink-0">预警内容</span>
+              <span class="text-[13px] text-slate-700 font-medium" id="warningDetailContent">未规范佩戴口罩/帽子</span>
+            </div>
+            <div class="flex items-center py-2.5 border-b border-slate-50">
+              <span class="text-[13px] text-slate-400 w-20 shrink-0">监控点位</span>
+              <span class="text-[13px] text-slate-700 font-medium" id="warningDetailCamera">后厨烹饪区摄像头</span>
+            </div>
+            <div class="flex items-center py-2.5">
+              <span class="text-[13px] text-slate-400 w-20 shrink-0">报警时间</span>
+              <span class="text-[13px] text-slate-700 font-medium" id="warningDetailTime">2024-06-18 10:24</span>
             </div>
           </div>
-
-          <!-- Submit button -->
-          <button
-            onclick="submitResponse()"
-            id="submitResponseBtn"
-            class="w-full mt-6 py-3.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all"
-          >
-            提交反馈
-          </button>
-
-          <!-- Appeal button -->
-          <button
-            onclick="submitAppeal()"
-            id="appealBtn"
-            class="w-full mt-3 py-3.5 bg-white text-slate-600 text-sm font-medium rounded-xl border border-slate-200 hover:bg-slate-50 active:bg-slate-100 active:scale-[0.98] transition-all"
-          >
-            发起申诉
-          </button>
         </div>
+      </div>
+
+      <!-- 预警信息 -->
+      <div class="px-5 mb-4">
+        <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100">
+          <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">预警信息</h3>
+          <p class="text-[13px] text-slate-700 leading-relaxed" id="warningDetailDesc"></p>
+        </div>
+      </div>
+
+      <!-- 预警截图 -->
+      <div class="px-5 mb-4" id="warningImagesSection">
+        <div class="bg-white rounded-2xl p-5 shadow-card border border-slate-100">
+          <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">预警截图</h3>
+          <div class="grid grid-cols-2 gap-3" id="warningImagesGrid"></div>
+        </div>
+      </div>
+
+      <!-- 底部操作：整改 / 申诉 -->
+      <div class="px-5 pb-[max(24px,env(safe-area-inset-bottom))] pt-2 space-y-3">
+        <button onclick="warningRectify()" class="w-full py-3.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 active:bg-blue-900 active:scale-[0.98] transition-all">整改</button>
+        <button onclick="warningAppeal()" class="w-full py-3.5 bg-white text-slate-600 text-sm font-medium rounded-xl border border-slate-200 hover:bg-slate-50 active:bg-slate-100 active:scale-[0.98] transition-all">申诉</button>
       </div>
     </div>
   </div>
@@ -2262,6 +2291,28 @@
         </div>
       </div>
 
+      <!-- ========== TAB: WARNING (预警) ========== -->
+      <div id="tab-warning" class="hidden">
+        <!-- 汇总概览 -->
+        <div class="px-5 pt-3 pb-2">
+          <div class="bg-white rounded-2xl p-4 shadow-card border border-slate-100 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
+                <i data-lucide="alert-triangle" class="w-5 h-5 text-red-500"></i>
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-slate-800">风险预警</p>
+                <p class="text-xs text-slate-400">汇总展示管理端推送的风险预警</p>
+              </div>
+            </div>
+            <span class="text-xs font-semibold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full whitespace-nowrap">待整改 <span id="warningPendingCount">4</span></span>
+          </div>
+        </div>
+
+        <!-- 预警列表 -->
+        <div class="px-5 pb-24 space-y-3" id="warningList"></div>
+      </div>
+
       <!-- ========== TAB: ENTERPRISE ========== -->
       <div id="tab-enterprise" class="hidden flex flex-col min-h-full">
         <!-- Approval notice banner (hidden by default) -->
@@ -2623,6 +2674,10 @@
         <i data-lucide="home" class="w-5 h-5"></i>
         <span class="text-[10px] font-semibold">首页</span>
       </button>
+      <button onclick="switchTab('warning')" class="tab-item flex flex-col items-center gap-1 py-1 px-2 text-white/60" id="tabBtnWarning">
+        <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+        <span class="text-[10px] font-medium">预警</span>
+      </button>
       <button onclick="switchTab('orders')" class="tab-item flex flex-col items-center gap-1 py-1 px-2 text-white/60" id="tabBtnOrders">
         <i data-lucide="clipboard-list" class="w-5 h-5"></i>
         <span class="text-[10px] font-medium">工单</span>
@@ -2643,7 +2698,6 @@
 // ===== STATE =====
 let currentTab = 'home';
 let currentOrderId = null;
-let photoCount = 0;
 let appealPhotoCount = 0;
 let onboardingState = 'unregistered'; // 'unregistered' | 'pending' | 'rejected' | 'approved'
 let onboardPath = 'choice'; // 'choice' | 'bind' | 'new'
@@ -3053,6 +3107,7 @@ function switchTab(tab) {
   const reminderOverlay = document.getElementById('reminderDetailOverlay');
   const reminderCenterOverlay = document.getElementById('reminderCenterOverlay');
   const entChangeOverlay = document.getElementById('entChangeDetailOverlay');
+  const warningDetailOverlay = document.getElementById('warningDetailOverlay');
   if (orderOverlay.classList.contains('open')) {
     orderOverlay.classList.remove('open');
   }
@@ -3068,6 +3123,9 @@ function switchTab(tab) {
   if (entChangeOverlay.classList.contains('open')) {
     entChangeOverlay.classList.remove('open');
   }
+  if (warningDetailOverlay.classList.contains('open')) {
+    warningDetailOverlay.classList.remove('open');
+  }
   document.getElementById('bottomTabBar').style.display = '';
 
   currentTab = tab;
@@ -3075,11 +3133,13 @@ function switchTab(tab) {
   // Hide all tabs
   document.getElementById('tab-home').classList.add('hidden');
   document.getElementById('tab-orders').classList.add('hidden');
+  document.getElementById('tab-warning').classList.add('hidden');
   document.getElementById('tab-enterprise').classList.add('hidden');
   document.getElementById('tab-my').classList.add('hidden');
 
   // Show selected tab
   document.getElementById('tab-' + tab).classList.remove('hidden');
+  if (tab === 'warning') renderWarningList();
 
   // Re-trigger stagger animation
   const visibleContent = document.getElementById('tab-' + tab);
@@ -3136,6 +3196,9 @@ function updateHeader(tab) {
     sub.style.display = '';
   } else if (tab === 'orders') {
     title.textContent = '工单中心';
+    sub.style.display = 'none';
+  } else if (tab === 'warning') {
+    title.textContent = '风险预警';
     sub.style.display = 'none';
   } else if (tab === 'enterprise') {
     title.textContent = '企业信息';
@@ -3896,7 +3959,7 @@ function openOrderDetail(orderId) {
     document.getElementById('detailAlertInfo').textContent = data.alertInfo;
     // Set section title based on order type
     const alertTitle = document.getElementById('alertInfoTitle');
-    if (data.orderType === '报警工单' || data.orderType === '申诉记录') {
+    if (data.orderType === '报警工单' || data.orderType === '整改工单' || data.orderType === '申诉记录') {
       alertTitle.textContent = '告警信息';
     } else {
       alertTitle.textContent = '详情说明';
@@ -3961,56 +4024,15 @@ function openOrderDetail(orderId) {
     setStepState(steps[2], 'completed');
   }
 
-  // Show/hide submitted content and form based on status
+  // Show/hide submitted content based on status
   const submittedSection = document.getElementById('submittedContentSection');
-  const formSection = document.getElementById('responseFormSection');
-  const responseTitle = document.getElementById('responseFormTitle');
-  const submitBtn = document.getElementById('submitResponseBtn');
-  const appealBtn = document.getElementById('appealBtn');
-
   const hasSubmitted = data.submittedText;
 
-  if (statusText === '待审核') {
+  if ((statusText === '已驳回' || statusText === '已通过') && hasSubmitted) {
+    submittedSection.classList.remove('hidden');
+    document.getElementById('submittedText').textContent = data.submittedText;
+  } else {
     submittedSection.classList.add('hidden');
-    formSection.style.display = '';
-    responseTitle.textContent = '提交整改反馈';
-    submitBtn.textContent = '提交反馈';
-    submitBtn.style.display = '';
-    appealBtn.style.display = '';
-    document.getElementById('responseText').readOnly = false;
-    document.getElementById('responseText').value = '';
-    resetPhotos();
-    showUploadZone(true);
-  } else if (statusText === '已驳回') {
-    if (hasSubmitted) {
-      submittedSection.classList.remove('hidden');
-      document.getElementById('submittedText').textContent = data.submittedText;
-    } else {
-      submittedSection.classList.add('hidden');
-    }
-    formSection.style.display = '';
-    responseTitle.textContent = '重新提交整改';
-    submitBtn.textContent = '重新提交';
-    submitBtn.style.display = '';
-    appealBtn.style.display = 'none';
-    document.getElementById('responseText').readOnly = false;
-    document.getElementById('responseText').value = '';
-    resetPhotos();
-    showUploadZone(true);
-  } else if (statusText === '已通过') {
-    if (hasSubmitted) {
-      submittedSection.classList.remove('hidden');
-      document.getElementById('submittedText').textContent = data.submittedText;
-    } else {
-      submittedSection.classList.add('hidden');
-    }
-    formSection.style.display = 'none';
-  }
-
-  // Reset form
-  if (statusText === '待审核' || statusText === '已驳回') {
-    document.getElementById('responseText').value = '';
-    resetPhotos();
   }
 
   // Open overlay
@@ -4018,11 +4040,6 @@ function openOrderDetail(orderId) {
   document.getElementById('bottomTabBar').style.display = 'none';
 
   setTimeout(() => lucide.createIcons(), 100);
-}
-
-function showUploadZone(show) {
-  const zones = document.querySelectorAll('#photoGrid .photo-upload-zone');
-  zones.forEach(z => { z.style.display = show ? '' : 'none'; });
 }
 
 function setStepState(step, state) {
@@ -4075,70 +4092,7 @@ function closeAppeal() {
   document.getElementById('bottomTabBar').style.display = '';
 }
 
-// ===== PHOTO UPLOAD =====
-function addPhoto() {
-  if (photoCount >= 6) {
-    showToast('最多上传6张照片');
-    return;
-  }
-  // Simulate adding a photo
-  photoCount++;
-  const grid = document.getElementById('photoGrid');
-  const colors = ['#FEF3C7', '#DBEAFE', '#D1FAE5', '#FCE7F3', '#E0E7FF', '#FEE2E2'];
-  const color = colors[(photoCount - 1) % colors.length];
-  const thumb = document.createElement('div');
-  thumb.className = 'photo-thumb bg-slate-100 flex items-center justify-center';
-  thumb.style.backgroundColor = color;
-  thumb.innerHTML = `
-    <div class="text-center">
-      <i data-lucide="image" class="w-5 h-5 text-slate-400 mx-auto mb-1"></i>
-      <span class="text-[10px] text-slate-400">照片 ${photoCount}</span>
-    </div>
-    <button onclick="removePhoto(this)" class="absolute top-1.5 right-1.5 w-5 h-5 bg-black/40 rounded-full flex items-center justify-center">
-      <i data-lucide="x" class="w-3 h-3 text-white"></i>
-    </button>
-  `;
-
-  // Insert before the upload zone
-  const uploadZone = grid.querySelector('.photo-upload-zone');
-  grid.insertBefore(thumb, uploadZone);
-
-  if (photoCount >= 6) {
-    uploadZone.style.display = 'none';
-  }
-
-  setTimeout(() => lucide.createIcons(), 50);
-}
-
-function removePhoto(btn) {
-  const thumb = btn.parentElement;
-  thumb.remove();
-  photoCount--;
-  const grid = document.getElementById('photoGrid');
-  const uploadZone = grid.querySelector('.photo-upload-zone');
-  uploadZone.style.display = '';
-  // Update remaining photo labels
-  updatePhotoLabels(grid);
-}
-
-function updatePhotoLabels(grid) {
-  const thumbs = grid.querySelectorAll('.photo-thumb');
-  thumbs.forEach((thumb, i) => {
-    const label = thumb.querySelector('span');
-    if (label) label.textContent = `照片 ${i + 1}`;
-  });
-}
-
-function resetPhotos() {
-  photoCount = 0;
-  const grid = document.getElementById('photoGrid');
-  const thumbs = grid.querySelectorAll('.photo-thumb');
-  thumbs.forEach(t => t.remove());
-  const uploadZone = grid.querySelector('.photo-upload-zone');
-  if (uploadZone) uploadZone.style.display = '';
-}
-
-// Appeal photo upload
+// ===== APPEAL PHOTO UPLOAD =====
 function addAppealPhoto() {
   if (appealPhotoCount >= 6) {
     showToast('最多上传6张材料');
@@ -4183,81 +4137,7 @@ function resetAppealPhotos() {
   if (uploadZone) uploadZone.style.display = '';
 }
 
-// ===== SUBMISSIONS =====
-function submitResponse() {
-  const text = document.getElementById('responseText').value.trim();
-  if (!text && photoCount === 0) {
-    showToast('请填写整改说明或上传整改照片');
-    return;
-  }
-
-  const data = orderData[currentOrderId];
-  if (!data) return;
-
-  // If rejected order being re-submitted, transition to 待审核
-  if (data.status === '已驳回') {
-    data.status = '待审核';
-    data.statusClass = 'bg-orange-50 text-orange-600';
-    data.submittedText = text || data.submittedText;
-
-    // Update the card in the list
-    const card = document.querySelector(`[onclick="openOrderDetail('${currentOrderId}')"]`);
-    if (card) {
-      card.setAttribute('data-status', 'pending');
-      const badge = card.querySelector('.rounded-full.whitespace-nowrap');
-      if (badge) {
-        badge.textContent = '待审核';
-        badge.className = 'text-[11px] font-semibold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-full whitespace-nowrap';
-      }
-    }
-
-    // Update the detail overlay badge and stepper
-    const detailBadge = document.getElementById('detailStatusBadge');
-    detailBadge.textContent = '待审核';
-    detailBadge.className = 'text-xs font-medium px-2.5 py-1 rounded-full bg-orange-50 text-orange-600';
-
-    const steps = [
-      { circle: document.getElementById('step1Circle'), label: document.getElementById('step1Label') },
-      { circle: document.getElementById('step2Circle'), label: document.getElementById('step2Label') },
-      { circle: document.getElementById('step3Circle'), label: document.getElementById('step3Label') },
-    ];
-    setStepState(steps[0], 'completed');
-    setStepState(steps[1], 'active');
-    setStepState(steps[2], 'pending');
-
-    // Update submitted content visibility
-    const submittedSection = document.getElementById('submittedContentSection');
-    submittedSection.classList.remove('hidden');
-    document.getElementById('submittedText').textContent = text || data.submittedText;
-
-    // Hide form
-    document.getElementById('responseFormSection').style.display = 'none';
-
-    showToast('已重新提交，状态更新为待审核', 'success');
-    setTimeout(() => lucide.createIcons(), 50);
-    return;
-  }
-
-  showToast('整改反馈提交成功', 'success');
-  setTimeout(() => {
-    closeOrderDetail();
-  }, 1200);
-}
-
-function submitAppeal() {
-  closeOrderDetail();
-  currentOrderId = currentOrderId || 'order1';
-  const data = orderData[currentOrderId];
-  document.getElementById('appealOrderRef').textContent = (data ? data.id + ' — ' + data.title : 'WO240601 — 后厨卫生整改通知');
-  document.getElementById('appealText').value = '';
-  resetAppealPhotos();
-  setTimeout(() => {
-    document.getElementById('appealOverlay').classList.add('open');
-    document.getElementById('bottomTabBar').style.display = 'none';
-    lucide.createIcons();
-  }, 350);
-}
-
+// ===== APPEAL SUBMISSION =====
 function submitAppealForm() {
   const text = document.getElementById('appealText').value.trim();
   if (!text) {
@@ -4268,6 +4148,230 @@ function submitAppealForm() {
   setTimeout(() => {
     closeAppeal();
   }, 1200);
+}
+
+// ===== WARNING TAB (预警 · 汇总管理端风险预警) =====
+// 字段与「管理端 - 风险预警」对齐：预警类别 / 企业名称 / 所属镇 / 预警内容 / 紧急程度 / 状态 / 时间
+const warningData = [
+  {
+    id: 'W24061801',
+    kind: 'AI报警', kindClass: 'bg-blue-50 text-blue-600',
+    enterprise: '好味道餐饮管理有限公司', town: '中关村街道',
+    content: '未规范佩戴口罩/帽子',
+    cameraLabel: '后厨烹饪区摄像头',
+    severity: '高', severityClass: 'bg-red-50 text-red-600',
+    status: '待整改', statusClass: 'bg-amber-50 text-amber-600',
+    time: '2024-06-18 10:24',
+    desc: 'AI 行为分析识别到后厨烹饪区有员工在岗期间未佩戴口罩与厨师帽，存在卫生安全隐患。请核实人员并规范穿戴，落实晨检制度。',
+    images: [
+      { time: '2024-06-18 10:24:05', camera: '后厨烹饪区摄像头' },
+      { time: '2024-06-18 10:24:09', camera: '后厨烹饪区摄像头' },
+    ],
+  },
+  {
+    id: 'W24061703',
+    kind: 'AI报警', kindClass: 'bg-blue-50 text-blue-600',
+    enterprise: '好味道餐饮管理有限公司', town: '中关村街道',
+    content: '冷链仓库温度超限',
+    cameraLabel: '冷链仓库全景摄像头',
+    severity: '中', severityClass: 'bg-amber-50 text-amber-600',
+    status: '待整改', statusClass: 'bg-amber-50 text-amber-600',
+    time: '2024-06-17 15:30',
+    desc: '冷链仓库温度在 15:30-15:55 期间持续超过 4℃，可能影响食材品质。请检查冷链设备运行状态并确认食材安全。',
+    images: [
+      { time: '2024-06-17 15:30:12', camera: '冷链仓库全景摄像头' },
+    ],
+  },
+  {
+    id: 'W24061605',
+    kind: '证照到期', kindClass: 'bg-orange-50 text-orange-600',
+    enterprise: '好味道餐饮管理有限公司', town: '中关村街道',
+    content: '食品经营许可证到期',
+    cameraLabel: '—',
+    severity: '中', severityClass: 'bg-amber-50 text-amber-600',
+    status: '待整改', statusClass: 'bg-amber-50 text-amber-600',
+    time: '2024-07-20',
+    desc: '你单位的食品经营许可证（编号：JY111050XXXXXX）将于 2024-07-20 到期，请提前办理延续手续。',
+    images: [],
+  },
+  {
+    id: 'W24061502',
+    kind: '人工上报', kindClass: 'bg-purple-50 text-purple-600',
+    enterprise: '好味道餐饮管理有限公司', town: '中关村街道',
+    content: '后厨操作台面清洁不达标',
+    cameraLabel: '后厨操作区摄像头',
+    severity: '高', severityClass: 'bg-red-50 text-red-600',
+    status: '待整改', statusClass: 'bg-amber-50 text-amber-600',
+    time: '2024-06-15 11:40',
+    desc: '监管人员现场检查发现后厨操作台面存在明显油污残留，已拍照留存。请及时清洁并保持操作间卫生。',
+    images: [
+      { time: '2024-06-15 11:40:18', camera: '后厨操作区摄像头' },
+    ],
+  },
+];
+
+let currentWarningId = null;
+let warningRectifyCounter = 0;
+let warningAppealCounter = 0;
+
+function renderWarningList() {
+  const listEl = document.getElementById('warningList');
+  if (!listEl) return;
+  document.getElementById('warningPendingCount').textContent = warningData.filter(w => w.status === '待整改').length;
+  const iconOf = k => k === 'AI报警' ? 'alert-triangle' : k === '证照到期' ? 'file-clock' : 'clipboard-list';
+  listEl.innerHTML = warningData.map(w => `
+    <div onclick="openWarningDetail('${w.id}')" class="group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated">
+      <div class="flex items-start gap-3">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 mt-0.5 ${w.kindClass}">
+          <i data-lucide="${iconOf(w.kind)}" class="w-5 h-5"></i>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-0.5">
+            <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-md ${w.kindClass}">${w.kind}</span>
+            <span class="text-[11px] text-slate-400">${w.time.split(' ')[0]}</span>
+          </div>
+          <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">${w.content}</h3>
+          <p class="text-[12px] text-slate-400 mt-1 leading-relaxed truncate">${w.enterprise} · ${w.town}</p>
+        </div>
+        <div class="flex flex-col items-end gap-1.5 shrink-0">
+          <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full whitespace-nowrap ${w.severityClass}">${w.severity}</span>
+          <span class="text-[11px] font-medium px-2.5 py-0.5 rounded-full whitespace-nowrap ${w.statusClass}">${w.status}</span>
+        </div>
+      </div>
+    </div>`).join('');
+  setTimeout(() => lucide.createIcons(), 50);
+}
+
+function openWarningDetail(id) {
+  const w = warningData.find(x => x.id === id);
+  if (!w) return;
+  currentWarningId = id;
+
+  document.getElementById('warningDetailId').textContent = w.id;
+  document.getElementById('warningDetailKind').textContent = w.kind;
+  document.getElementById('warningDetailEnterprise').textContent = w.enterprise;
+  document.getElementById('warningDetailTown').textContent = w.town;
+  document.getElementById('warningDetailContent').textContent = w.content;
+  document.getElementById('warningDetailCamera').textContent = w.cameraLabel;
+  document.getElementById('warningDetailTime').textContent = w.time;
+  document.getElementById('warningDetailDesc').textContent = w.desc;
+
+  const severityBadge = document.getElementById('warningDetailSeverity');
+  severityBadge.textContent = w.severity;
+  severityBadge.className = 'text-xs font-medium px-2.5 py-1 rounded-full ' + w.severityClass;
+  const statusBadge = document.getElementById('warningDetailStatus');
+  statusBadge.textContent = w.status;
+  statusBadge.className = 'text-xs font-medium px-2.5 py-1 rounded-full ' + w.statusClass;
+
+  const imgSection = document.getElementById('warningImagesSection');
+  const imgGrid = document.getElementById('warningImagesGrid');
+  if (w.images && w.images.length) {
+    imgSection.style.display = '';
+    imgGrid.innerHTML = w.images.map((img, i) => `
+      <div class="photo-thumb bg-slate-100 flex items-center justify-center">
+        <div class="text-center">
+          <i data-lucide="camera" class="w-6 h-6 text-slate-300 mx-auto mb-1"></i>
+          <span class="text-[10px] text-slate-400">截图 ${i + 1}</span>
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+          <span class="text-[10px] text-white font-medium">${img.time}</span>
+          <span class="text-[10px] text-white/70 block">${img.camera}</span>
+        </div>
+      </div>`).join('');
+  } else {
+    imgSection.style.display = 'none';
+  }
+
+  document.getElementById('warningDetailOverlay').classList.add('open');
+  document.getElementById('bottomTabBar').style.display = 'none';
+  setTimeout(() => lucide.createIcons(), 100);
+}
+
+function closeWarningDetail() {
+  document.getElementById('warningDetailOverlay').classList.remove('open');
+  document.getElementById('bottomTabBar').style.display = '';
+}
+
+function warningRectify() { generateOrderFromWarning('rectify'); }
+function warningAppeal() { generateOrderFromWarning('appeal'); }
+
+function generateOrderFromWarning(kind) {
+  const w = warningData.find(x => x.id === currentWarningId);
+  if (!w) return;
+  const now = new Date();
+  const dateStr = now.toISOString().slice(0, 16).replace('T', ' ');
+
+  let orderId, order;
+  const deviceLabel = w.kind === 'AI报警' ? '明厨亮灶专用智能摄像头' : '—';
+  if (kind === 'rectify') {
+    warningRectifyCounter++;
+    orderId = 'warnRectify' + warningRectifyCounter;
+    order = {
+      orderType: '整改工单', typeTag: '整改', typeClass: 'bg-red-50 text-red-600',
+      title: w.content,
+      id: 'RG' + now.toISOString().slice(0, 10).replace(/-/g, '') + String(warningRectifyCounter).padStart(2, '0'),
+      date: dateStr, device: deviceLabel, cameras: w.cameraLabel,
+      alertInfo: w.desc, alertImages: w.images,
+      status: '待审核', statusClass: 'bg-orange-50 text-orange-600'
+    };
+  } else {
+    warningAppealCounter++;
+    orderId = 'warnAppeal' + warningAppealCounter;
+    order = {
+      orderType: '申诉记录', typeTag: '申诉', typeClass: 'bg-orange-50 text-orange-600',
+      title: w.content + ' — 申诉',
+      id: 'AP' + now.toISOString().slice(0, 10).replace(/-/g, '') + String(warningAppealCounter).padStart(2, '0'),
+      date: dateStr, device: deviceLabel, cameras: w.cameraLabel,
+      alertInfo: '你单位就「' + w.content + '」风险预警发起了申诉，请等待监管审核。',
+      alertImages: [],
+      status: '待审核', statusClass: 'bg-orange-50 text-orange-600', isAppeal: true
+    };
+  }
+
+  orderData[orderId] = order;
+  insertWarningOrderCard(orderId, order);
+  w.status = '已生成工单';
+  w.statusClass = 'bg-green-50 text-green-600';
+
+  closeWarningDetail();
+  renderWarningList();
+  showToast(kind === 'rectify' ? '已生成整改工单，可在工单中心查看' : '已生成申诉工单，可在工单中心查看', 'success');
+
+  // 切换到工单 tab 并定位到「待审核」
+  switchTab('orders');
+  const pendingBtn = document.querySelector('#orderFilterBar button');
+  if (pendingBtn) filterOrders('pending', pendingBtn);
+
+  const countEl = document.getElementById('pendingOrderCount');
+  countEl.textContent = (parseInt(countEl.textContent, 10) + 1);
+}
+
+function insertWarningOrderCard(orderId, order) {
+  const list = document.getElementById('orderList');
+  const card = document.createElement('div');
+  card.className = 'order-card group bg-white rounded-2xl p-[18px] shadow-card border border-slate-100 active:bg-slate-50 transition-all cursor-pointer hover:shadow-elevated';
+  card.setAttribute('data-status', order.status === '待审核' ? 'pending' : (order.status === '已通过' ? 'passed' : 'rejected'));
+  card.setAttribute('data-date', order.date);
+  card.setAttribute('onclick', `openOrderDetail('${orderId}')`);
+  card.innerHTML = `
+    <div class="flex items-start gap-3">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 mt-0.5 ${order.typeClass}">
+        <i data-lucide="${order.typeTag === '申诉' ? 'message-square-warning' : 'alert-circle'}" class="w-5 h-5"></i>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 mb-0.5">
+          <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded-md ${order.typeClass}">${order.typeTag}</span>
+          <span class="text-[11px] text-slate-400">${order.id}</span>
+        </div>
+        <h3 class="text-[15px] font-semibold text-slate-800 leading-snug">${order.title}</h3>
+        <p class="text-[12px] text-slate-400 mt-1 leading-relaxed">提交时间：${order.date}</p>
+      </div>
+      <div class="flex flex-col items-end gap-1.5 shrink-0">
+        <span class="text-[11px] font-semibold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-full whitespace-nowrap">待审核</span>
+      </div>
+    </div>`;
+  list.insertBefore(card, list.firstChild);
+  setTimeout(() => lucide.createIcons(), 50);
 }
 
 // ===== TOAST =====
@@ -4303,6 +4407,9 @@ window.addEventListener('popstate', (e) => {
   } else if (document.getElementById('orderDetailOverlay').classList.contains('open')) {
     closeOrderDetail();
     e.preventDefault();
+  } else if (document.getElementById('warningDetailOverlay').classList.contains('open')) {
+    closeWarningDetail();
+    e.preventDefault();
   }
 });
 
@@ -4318,6 +4425,8 @@ document.addEventListener('keydown', (e) => {
       closeAppeal();
     } else if (document.getElementById('orderDetailOverlay').classList.contains('open')) {
       closeOrderDetail();
+    } else if (document.getElementById('warningDetailOverlay').classList.contains('open')) {
+      closeWarningDetail();
     }
   }
 });
