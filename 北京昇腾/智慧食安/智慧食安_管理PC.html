@@ -2617,6 +2617,20 @@ function EntityManagement({ userRole, roleTown }) {
     setTimeout(() => setSavedToast(false), 2400);
   };
 
+  // Delete enterprise
+  const handleDelete = (enterpriseId) => {
+    const ent = enterprises.find(e => e.id === enterpriseId);
+    if (!ent) return;
+    if (ent.unbindBlocked) {
+      alert(`无法删除：${ent.unbindReason}\n\n请先处理完相关事项后再进行删除操作。`);
+      return;
+    }
+    if (window.confirm(`确认删除主体「${ent.name}」吗？\n\n删除后该主体及其绑定的微信接收关系将被移除，且无法恢复。`)) {
+      setEnterprises(enterprises.filter(e => e.id !== enterpriseId));
+      if (expanded === enterpriseId) setExpanded(null);
+    }
+  };
+
   // Unbind enterprise from WeChat
   const handleUnbind = (enterpriseId) => {
     const ent = enterprises.find(e => e.id === enterpriseId);
@@ -2859,6 +2873,7 @@ function EntityManagement({ userRole, roleTown }) {
                     <div className="flex items-center gap-2">
                       <button onClick={() => openEdit(e)} className="text-[11px] text-gov-600 hover:text-gov-700 font-medium">编辑</button>
                       <button className="text-[11px] text-ink-muted hover:text-ink font-medium">详情</button>
+                      <button onClick={() => handleDelete(e.id)} className="text-[11px] text-red-500 hover:text-red-600 font-medium">删除</button>
                     </div>
                   </td>
                 </tr>
@@ -5478,6 +5493,44 @@ function FeedbackHandling({ userRole, roleTown }) {
 function SystemSettings() {
   const [tab, setTab] = useState('users');
 
+  // 报警算法按组织节点配置
+  const AI_ALGO_TYPES = ['鼠患检测','未戴口罩检测','未戴帽子检测','垃圾桶未加盖','陌生人闯入','明火离人','抽烟检测'];
+  const AI_ALGO_META = {
+    '鼠患检测': { sens:'中', window:'5分钟', threshold:'3次/日' },
+    '未戴口罩检测': { sens:'高', window:'3分钟', threshold:'5次/日' },
+    '未戴帽子检测': { sens:'低', window:'10分钟', threshold:'8次/日' },
+    '垃圾桶未加盖': { sens:'中', window:'5分钟', threshold:'5次/日' },
+    '陌生人闯入': { sens:'高', window:'2分钟', threshold:'2次/日' },
+    '明火离人': { sens:'高', window:'3分钟', threshold:'2次/日' },
+    '抽烟检测': { sens:'中', window:'5分钟', threshold:'3次/日' },
+  };
+  const ORG_NODES = [
+    { id:'qu', label:'区市场监督管理局', level:0 },
+    { id:'cd', label:'城东镇市场监管所', level:1 },
+    { id:'nq', label:'南桥镇市场监管所', level:1 },
+    { id:'zx', label:'中心镇市场监管所', level:1 },
+    { id:'bg', label:'北关镇市场监管所', level:1 },
+    { id:'cn', label:'城南镇市场监管所', level:1 },
+    { id:'xj', label:'西江镇市场监管所', level:1 },
+    { id:'dh', label:'东湖镇市场监管所', level:1 },
+  ];
+  const [aiNode, setAiNode] = useState('qu');
+  const [aiConfig, setAiConfig] = useState(() => {
+    const allOn = {}; AI_ALGO_TYPES.forEach(t => allOn[t] = true);
+    const cfg = {};
+    ORG_NODES.forEach(n => cfg[n.id] = { ...allOn });
+    // 示例：部分镇节点关闭了敏感检测项，体现节点差异
+    cfg['nq'] = { ...allOn, '未戴帽子检测': false, '垃圾桶未加盖': false };
+    cfg['dh'] = { ...allOn, '明火离人': false };
+    return cfg;
+  });
+  const toggleAlgo = (t) => setAiConfig(prev => ({ ...prev, [aiNode]: { ...prev[aiNode], [t]: !prev[aiNode][t] } }));
+  const setAllAlgo = (on) => {
+    const n = {}; AI_ALGO_TYPES.forEach(t => n[t] = on);
+    setAiConfig(prev => ({ ...prev, [aiNode]: n }));
+  };
+  const enabledCount = (nodeId) => AI_ALGO_TYPES.filter(t => aiConfig[nodeId][t]).length;
+
   const settingTabs = [
     { key:'users', label:'用户管理' },
     { key:'roles', label:'角色与权限' },
@@ -5587,26 +5640,72 @@ function SystemSettings() {
         )}
 
         {tab === 'ai' && (
-          <div className="bg-white rounded-lg border border-slate-200 p-5">
-            <h3 className="text-sm font-semibold text-ink mb-4">AI报警规则配置</h3>
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { type:'鼠患检测', sens:'中', window:'5分钟', threshold:'3次/日', enabled:true },
-                { type:'未戴口罩检测', sens:'高', window:'3分钟', threshold:'5次/日', enabled:true },
-                { type:'未戴帽子检测', sens:'低', window:'10分钟', threshold:'8次/日', enabled:true },
-                { type:'垃圾桶未加盖', sens:'中', window:'5分钟', threshold:'5次/日', enabled:true },
-                { type:'陌生人闯入', sens:'高', window:'2分钟', threshold:'2次/日', enabled:true },
-                { type:'明火离人', sens:'高', window:'3分钟', threshold:'2次/日', enabled:true },
-                { type:'抽烟检测', sens:'中', window:'5分钟', threshold:'3次/日', enabled:true },
-              ].map((a,i) => (
-                <div key={i} className="border border-slate-200 rounded-lg p-3 flex items-center justify-between">
-                  <div>
-                    <div className="text-xs font-medium text-ink">{a.type}</div>
-                    <div className="text-[10px] text-ink-muted mt-0.5">灵敏度:{a.sens} · 去重:{a.window} · 熔断:{a.threshold}</div>
-                  </div>
-                  <Badge color={a.enabled ? 'green' : 'gray'}>{a.enabled ? '启用' : '禁用'}</Badge>
+          <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
+            <div className="flex items-start">
+              {/* 组织节点树 */}
+              <div className="w-64 shrink-0 border-r border-slate-200 p-4">
+                <div className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-3">组织节点</div>
+                <div className="space-y-0.5">
+                  {ORG_NODES.map(n => (
+                    <button
+                      key={n.id}
+                      onClick={() => setAiNode(n.id)}
+                      className={`w-full text-left px-3 py-2 rounded-md flex items-center justify-between gap-2 transition-colors ${aiNode === n.id ? 'bg-gov-50 text-gov-700 font-medium' : 'text-ink-secondary hover:bg-slate-50'}`}
+                      style={{ marginLeft: n.level * 16 }}
+                    >
+                      <span className="text-xs flex items-center gap-1.5 truncate">
+                        {n.level === 1 && <span className="text-ink-muted">├</span>}
+                        {n.label}
+                      </span>
+                      <span className={`text-[10px] shrink-0 px-1.5 py-0.5 rounded ${enabledCount(n.id) === AI_ALGO_TYPES.length ? 'bg-emerald-50 text-emerald-600' : enabledCount(n.id) === 0 ? 'bg-slate-100 text-slate-400' : 'bg-amber-50 text-amber-600'}`}>
+                        {enabledCount(n.id)}/{AI_ALGO_TYPES.length}
+                      </span>
+                    </button>
+                  ))}
                 </div>
-              ))}
+                <p className="text-[10px] text-ink-muted mt-4 leading-relaxed">各节点独立配置，镇级节点默认继承区级设置，可单独开启或关闭。</p>
+              </div>
+
+              {/* 当前节点算法开关 */}
+              <div className="flex-1 min-w-0 p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <div className="text-sm font-semibold text-ink">{ORG_NODES.find(n => n.id === aiNode).label}</div>
+                    <div className="text-[11px] text-ink-muted mt-0.5">已启用 {enabledCount(aiNode)} / {AI_ALGO_TYPES.length} 项报警算法</div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => setAllAlgo(true)} className="text-[11px] px-2.5 py-1 rounded border border-slate-200 text-ink-secondary hover:bg-slate-50 transition-colors">全部启用</button>
+                    <button onClick={() => setAllAlgo(false)} className="text-[11px] px-2.5 py-1 rounded border border-slate-200 text-ink-secondary hover:bg-slate-50 transition-colors">全部禁用</button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  {AI_ALGO_TYPES.map(t => {
+                    const on = aiConfig[aiNode][t];
+                    const meta = AI_ALGO_META[t];
+                    return (
+                      <div key={t} className={`border rounded-lg p-3 flex items-center justify-between gap-3 transition-colors ${on ? 'border-gov-200 bg-gov-50/40' : 'border-slate-200 bg-white'}`}>
+                        <div className="min-w-0">
+                          <div className="text-xs font-medium text-ink">{t}</div>
+                          <div className="text-[10px] text-ink-muted mt-0.5">灵敏度:{meta.sens} · 去重:{meta.window} · 熔断:{meta.threshold}</div>
+                        </div>
+                        <button
+                          onClick={() => toggleAlgo(t)}
+                          className={`relative shrink-0 w-9 h-5 rounded-full transition-colors ${on ? 'bg-gov-600' : 'bg-slate-300'}`}
+                          title={on ? '点击禁用' : '点击启用'}
+                        >
+                          <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${on ? 'translate-x-4' : 'translate-x-0'}`}></span>
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-4 text-[10px] text-ink-muted flex items-center gap-1.5">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  关闭的算法将在该组织节点范围内停止生成对应类型的 AI 报警，不影响其他节点。
+                </div>
+              </div>
             </div>
           </div>
         )}
